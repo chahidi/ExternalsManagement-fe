@@ -1,5 +1,5 @@
 {
-    "name": "xm-fe",
+    "name": "ExternalsManagement-fe",
     "version": "19.0.0",
     "scripts": {
         "ng": "ng",

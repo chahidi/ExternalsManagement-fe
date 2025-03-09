@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "xm-fe": {
+        "ExternalsManagement-fe": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/xm-fe",
+                        "outputPath": "dist/ExternalsManagement-fe",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": [
@@ -64,10 +64,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "xm-fe:build:production"
+                            "buildTarget": "ExternalsManagement-fe:build:production"
                         },
                         "development": {
-                            "buildTarget": "xm-fe:build:development"
+                            "buildTarget": "ExternalsManagement-fe:build:development"
                         }
                     },
                     "defaultConfiguration": "development"

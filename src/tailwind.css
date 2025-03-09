@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.layout-topbar-logo .dar-image {
+    max-width: 20px !important;
+    height: auto !important;
+}

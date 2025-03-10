@@ -3,7 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
-import { LayoutService } from '../../core/services/layout.service';
+import { LayoutService } from '../../service/layout.service';
 
 @Component({
     selector: 'app-topbar',

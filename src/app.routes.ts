@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './app/shared/layout/layout.component';
-import { DashboardComponent } from './app/pages/dashboard/dashboard.component';
+import { DashboardComponent } from './app/features/dashboard/dashboard.component';
 
 export const appRoutes: Routes = [
     {
@@ -8,9 +8,9 @@ export const appRoutes: Routes = [
         component: LayoutComponent,
         children: [
             { path: '', component: DashboardComponent },
-            { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
+            { path: 'features', loadChildren: () => import('./app/features/pages.routes') }
         ]
     },
-    { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
+    { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }
 ];

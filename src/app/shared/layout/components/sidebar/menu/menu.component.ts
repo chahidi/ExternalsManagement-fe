@@ -17,13 +17,6 @@ export class MenuComponent {
             {
                 items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/'] }]
             },
-            // {
-            //     items: [{
-            //         label: 'Login',
-            //         icon: 'pi pi-fw pi-sign-in',
-            //         routerLink: ['/auth/login']
-            //     }]
-            // },
             {
                 label: 'Externals Management',
                 items: [
@@ -34,7 +27,7 @@ export class MenuComponent {
             {
                 label: 'Candidates',
                 items: [
-                    { label: 'New Candidate', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/card-view'] },
+                    { label: 'New Candidate', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-candidate'] }
                 ]
             }
         ];

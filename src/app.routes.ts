@@ -8,9 +8,15 @@ export const appRoutes: Routes = [
         component: LayoutComponent,
         children: [
             { path: '', component: DashboardComponent },
-            { path: 'features', loadChildren: () => import('./app/features/pages.routes') }
+            { path: 'features', loadChildren: () => import('./app/features/features.routes') }
         ]
+    }, 
+    {
+        path: 'candidates',
+        component: LayoutComponent,
+        loadChildren: () => import('./app/features/candidate/candidate-routes').then((m) => m.CANDIDATE_FORMS_ROUTES),
     },
+
     { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }
 ];

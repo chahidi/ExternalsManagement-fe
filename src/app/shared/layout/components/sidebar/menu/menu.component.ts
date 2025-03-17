@@ -27,7 +27,15 @@ export class MenuComponent {
             {
                 label: 'Candidates',
                 items: [
-                    { label: 'Candidate', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-candidate'] }
+                    { label: 'New CV', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-cv'] },
+                    { label: 'Candidate', icon: 'pi pi-fw pi-user', routerLink: ['/candidates/new-candidate'] }
+                ]
+            },
+            {
+                label: 'Prompt Management',
+                items: [
+                    { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
+                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
                 ]
             }
         ];

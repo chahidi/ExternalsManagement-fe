@@ -28,7 +28,7 @@ export class MenuComponent {
                 label: 'Candidates',
                 items: [
                     { label: 'New CV', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-cv'] },
-                    { label: 'Candidate', icon: 'pi pi-fw pi-user', routerLink: ['/candidates/new-candidate'] }
+                    { label: 'Candidate List', icon: 'pi pi-fw pi-list', routerLink: ['/candidates/new-candidate'] }
                 ]
             },
             {

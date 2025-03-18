@@ -13,11 +13,10 @@ export interface Candidate {
   gender: string; 
   mainTech: string;
   summary: string;
-  contacts: Contact[] = [];
-  experiences: Experience[] = [];
-  skills: Skill[] = [];
-  educations: Education[] = [];
-  cvFiles: CvFiles[] = [];
+  contacts: Contact[];
+  experiences: Experience[];
+  skills: Skill[];
+  educations: Education[];
   address: Address;
-  languages: Language[] = [];
+  languages: Language[];
 }

@@ -4,5 +4,5 @@ export interface Country {
   id: string; 
   name: string;
   englishName: string;
-  cities: City[] = []; 
+  cities: City[]; 
 }

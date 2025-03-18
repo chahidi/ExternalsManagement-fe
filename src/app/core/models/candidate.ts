@@ -1,9 +1,23 @@
+import { Contact } from './contact';
+import { Experience } from './experience';
+import { Skill } from './skill';
+import { Education } from './education';
+import { Address } from './address';
+import { Language } from './language';
+
 export interface Candidate {
-    candidateId: number;
-  
-    /******* personnal information  *************/
-    birthDate: Date | string;
-    cin: string;
-    firstName: string;
-    lastName: string
+  id: string; 
+  fullName: string;
+  birthDate: string; 
+  yearsOfExperience: number;
+  gender: string; 
+  mainTech: string;
+  summary: string;
+  contacts: Contact[] = [];
+  experiences: Experience[] = [];
+  skills: Skill[] = [];
+  educations: Education[] = [];
+  cvFiles: CvFiles[] = [];
+  address: Address;
+  languages: Language[] = [];
 }

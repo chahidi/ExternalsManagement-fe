@@ -1,4 +1,4 @@
-import { Candidate } from './Candidate';
+import { Candidate } from './candidate';
 
 export interface Contact {
   id: string;

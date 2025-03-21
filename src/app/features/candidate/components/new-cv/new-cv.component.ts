@@ -48,6 +48,7 @@ export class NewCvComponent {
 
 
         this.newService.uploadCv(payload).subscribe(
+
             (response: any) => {
                 alert('CV uploaded successfully!');
                 console.log("Server response type:", typeof response);
@@ -58,6 +59,9 @@ export class NewCvComponent {
                 alert('Error uploading CV.');
                 console.error('Upload error:', error);
               }
+
+
+
         );
       };
 

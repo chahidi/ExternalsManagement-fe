@@ -7,10 +7,17 @@ export const CANDIDATE_FORMS_ROUTES: Routes = [
     component: CandidateFormComponent,
     children: [
       {
-        path: 'new-candidate', loadComponent: () => import('./components/candidate-form/candidate-form.component')
+        path: 'new-candidate',
+        loadComponent: () => import('./components/candidate-form/candidate-form.component')
           .then(m => m.CandidateFormComponent),
-        title: ''
+        title: 'New Candidate'
       }
-
     ],
-  }]
+  },
+  {
+    path: 'new-cv',
+    loadComponent: () => import('./components/new-cv/new-cv.component')
+      .then(m => m.NewCvComponent),
+    title: 'New CV'
+  }
+];

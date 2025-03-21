@@ -11,3 +11,4 @@ export interface Address {
   country: Country; 
   candidate: Candidate; 
 }
+

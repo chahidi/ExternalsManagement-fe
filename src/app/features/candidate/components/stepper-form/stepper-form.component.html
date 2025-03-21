@@ -1,424 +1,290 @@
 <div class="card">
-    <!-- Stepper Component -->
-    <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
-    
-    <div class="p-mt-4">
-      <ng-container [ngSwitch]="activeIndex">
-        
-        <!-- Step 1: General Data -->
-        <div *ngSwitchCase="0">
-          <form [formGroup]="generalDataForm">
-            <div class="p-fluid p-formgrid p-grid">
-              <!-- Full Name -->
-              <div class="p-field p-col-12">
-                <label for="fullName">Full Name</label>
-                <input id="fullName" type="text" pInputText formControlName="fullName">
-                <small *ngIf="generalDataForm.get('fullName')?.touched">
-                  <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('required')">
-                    <i class="pi pi-times-circle"></i> Full Name is required.
-                  </ng-container>
-                  <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('pattern')">
-                    <i class="pi pi-times-circle"></i> Full Name should only contain letters and spaces.
-                  </ng-container>
-                  <ng-container *ngIf="generalDataForm.get('fullName')?.valid">
-                    <i class="pi pi-check-circle"></i> Full Name is valid.
-                  </ng-container>
-                </small>
-              </div>
-  
-              <!-- Birth Date -->
-              <div class="p-field p-col-12">
-                <label for="birthDate">Birth Date</label>
-                <input id="birthDate" type="date" pInputText formControlName="birthDate">
-                <small *ngIf="generalDataForm.get('birthDate')?.touched">
-                  <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('required')">
-                    <i class="pi pi-times-circle"></i> Birth Date is required.
-                  </ng-container>
-                  <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('underAge')">
-                    <i class="pi pi-times-circle"></i> You must be at least 18 years old.
-                  </ng-container>
-                  <ng-container *ngIf="generalDataForm.get('birthDate')?.valid && !generalDataForm.get('birthDate')?.hasError('underAge')">
-                    <i class="pi pi-check-circle"></i> Birth Date is valid.
-                  </ng-container>
-                </small>
-              </div>
-              <!-- Years of Experience -->
-              <div class="p-field p-col-12">
-                <label for="yearsOfExperience">Years of Experience</label>
-                <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience">
-                <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-                  <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid; else expSuccess">
-                    <i class="pi pi-times-circle"></i> Please enter a valid number of years.
-                  </ng-container>
-                  <ng-template #expSuccess>
-                    <i class="pi pi-check-circle"></i> Experience value is valid.
-                  </ng-template>
-                </small>
-                <!-- New error message for invalid experience relative to age -->
-                <small *ngIf="generalDataForm.errors?.['invalidExperience']" class="p-error">
-                  <i class="pi pi-times-circle"></i> Years of experience exceeds what's possible given your birth date.
-                </small>
-              </div>
-              <!-- Gender -->
-              <div class="p-field p-col-12">
-                <label>Gender</label>
-                <div class="p-formgroup-inline">
-                  <div class="gender-group">
-                    <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
-                    <label>Male</label>
-                    <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
-                    <label>Female</label>
-                  </div>
-                </div>
-                <small *ngIf="generalDataForm.get('gender')?.touched">
-                  <ng-container *ngIf="generalDataForm.get('gender')?.invalid; else genderSuccess">
-                    <i class="pi pi-times-circle"></i> Gender is required.
-                  </ng-container>
-                  <ng-template #genderSuccess>
-                    <i class="pi pi-check-circle"></i> Gender is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <div class="p-field p-col-12">
-                <label for="mainTech">Main Technology</label>
-                <input id="mainTech" type="text" pInputText formControlName="mainTech">
-                <small *ngIf="generalDataForm.get('mainTech')?.touched">
-                  <ng-container *ngIf="generalDataForm.get('mainTech')?.invalid; else mainTechSuccess">
-                    <i class="pi pi-times-circle"></i> Main Technology is required.
-                  </ng-container>
-                  <ng-template #mainTechSuccess>
-                    <i class="pi pi-check-circle"></i> Main Technology is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Summary -->
-              <div class="p-field p-col-12">
-                <label for="summary">Summary</label>
-                <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
-                <small *ngIf="generalDataForm.get('summary')?.touched">
-                  <ng-container *ngIf="generalDataForm.get('summary')?.invalid; else summarySuccess">
-                    <i class="pi pi-times-circle"></i> Summary is required.
-                  </ng-container>
-                  <ng-template #summarySuccess>
-                    <i class="pi pi-check-circle"></i> Summary is valid.
-                  </ng-template>
-                </small>
-              </div>
-            </div>
-          </form>
+  <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+
+  <div class="p-mt-4">
+    <ng-container [ngSwitch]="activeIndex">
+      <!-- Step 0: General Data -->
+      <div *ngSwitchCase="0" [formGroup]="generalDataForm">
+        <!-- Full Name -->
+        <div class="p-field">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" type="text" pInputText formControlName="fullName">
+          <small *ngIf="generalDataForm.get('fullName')?.touched">
+            <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('required')">
+              <i class="pi pi-times-circle"></i> Full Name is required.
+            </ng-container>
+            <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('pattern')">
+              <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+            </ng-container>
+          </small>
         </div>
-        
-        <!-- Step 2: Address -->
-        <div *ngSwitchCase="1">
-          <form [formGroup]="addressForm">
-            <div class="p-fluid p-formgrid p-grid">
-              <!-- Street -->
-              <div class="p-field p-col-12">
-                <label for="street">Street</label>
-                <input id="street" type="text" pInputText formControlName="street">
-                <small *ngIf="addressForm.get('street')?.touched">
-                  <ng-container *ngIf="addressForm.get('street')?.invalid; else streetSuccess">
-                    <i class="pi pi-times-circle"></i> Street is required.
-                  </ng-container>
-                  <ng-template #streetSuccess>
-                    <i class="pi pi-check-circle"></i> Street is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Postal Code -->
-              <div class="p-field p-col-12">
-                <label for="postalCode">Postal Code</label>
-                <input id="postalCode" type="text" pInputText formControlName="postalCode">
-                <small *ngIf="addressForm.get('postalCode')?.touched">
-                  <ng-container *ngIf="addressForm.get('postalCode')?.invalid; else postalSuccess">
-                    <i class="pi pi-times-circle"></i>
-                    <ng-container *ngIf="addressForm.get('postalCode')?.hasError('required')">
-                      Postal Code is required.
-                    </ng-container>
-                    <ng-container *ngIf="addressForm.get('postalCode')?.hasError('pattern')">
-                      Postal Code must be between 3 and 10 characters, including letters, numbers, spaces, or hyphens.
-                    </ng-container>
-                  </ng-container>
-                  <ng-template #postalSuccess>
-                    <i class="pi pi-check-circle"></i> Postal Code is valid.
-                  </ng-template>
-                </small>
-              </div>
-              
-              <!-- Full Address -->
-              <div class="p-field p-col-12">
-                <label for="fullAddress">Full Address</label>
-                <input id="fullAddress" type="text" pInputText formControlName="fullAddress">
-                <small *ngIf="addressForm.get('fullAddress')?.touched">
-                  <ng-container *ngIf="addressForm.get('fullAddress')?.invalid; else addressSuccess">
-                    <i class="pi pi-times-circle"></i> Full Address is required.
-                  </ng-container>
-                  <ng-template #addressSuccess>
-                    <i class="pi pi-check-circle"></i> Full Address is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- City -->
-              <div class="p-field p-col-12">
-                <label for="city">City</label>
-                <input id="city" type="text" pInputText formControlName="city">
-                <small *ngIf="addressForm.get('city')?.touched">
-                  <ng-container *ngIf="addressForm.get('city')?.invalid; else citySuccess">
-                    <i class="pi pi-times-circle"></i> City name must contain only letters and spaces.
-                  </ng-container>
-                  <ng-template #citySuccess>
-                    <i class="pi pi-check-circle"></i> City name is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Country -->
-              <div class="p-field p-col-12">
-                <label for="country">Country</label>
-                <input id="country" type="text" pInputText formControlName="country">
-                <small *ngIf="addressForm.get('country')?.touched">
-                  <ng-container *ngIf="addressForm.get('country')?.invalid; else countrySuccess">
-                    <i class="pi pi-times-circle"></i> Country name must contain only letters and spaces.
-                  </ng-container>
-                  <ng-template #countrySuccess>
-                    <i class="pi pi-check-circle"></i> Country name is valid.
-                  </ng-template>
-                </small>
-              </div>
-            </div>
-          </form>
+        <!-- Birth Date -->
+        <div class="p-field">
+          <label for="birthDate">Birth Date</label>
+          <input id="birthDate" type="date" pInputText formControlName="birthDate">
+          <small *ngIf="generalDataForm.get('birthDate')?.touched">
+            <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('required')">
+              <i class="pi pi-times-circle"></i> Birth Date is required.
+            </ng-container>
+            <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('underAge')">
+              <i class="pi pi-times-circle"></i> You must be at least 18 years old.
+            </ng-container>
+            <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('overAge')">
+              <i class="pi pi-times-circle"></i> Age exceeds allowed limit.
+            </ng-container>
+          </small>
         </div>
-        
-        <!-- Step 3: Education -->
-        <div *ngSwitchCase="2">
-          <form [formGroup]="educationForm">
-            <div class="p-fluid p-formgrid p-grid">
-              <!-- Institution -->
-              <div class="p-field p-col-12">
-                <label for="institution">Institution</label>
-                <input id="institution" type="text" pInputText formControlName="institution">
-                <small *ngIf="educationForm.get('institution')?.touched">
-                  <ng-container *ngIf="educationForm.get('institution')?.invalid; else institutionSuccess">
-                    <i class="pi pi-times-circle"></i> Institution is required.
-                  </ng-container>
-                  <ng-template #institutionSuccess>
-                    <i class="pi pi-check-circle"></i> Institution is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Degree -->
-              <div class="p-field p-col-12">
-                <label for="degree">Degree</label>
-                <p-dropdown id="degree" [options]="degrees" formControlName="degree" placeholder="Select Degree"></p-dropdown>
-                <small *ngIf="educationForm.get('degree')?.touched">
-                  <ng-container *ngIf="educationForm.get('degree')?.invalid; else degreeSuccess">
-                    <i class="pi pi-times-circle"></i> Degree is required.
-                  </ng-container>
-                  <ng-template #degreeSuccess>
-                    <i class="pi pi-check-circle"></i> Degree is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Start Date -->
-              <div class="p-field p-col-6">
-                <label for="startDateEdu">Start Date</label>
-                <input id="startDateEdu" type="date" pInputText formControlName="startDate">
-                <small *ngIf="educationForm.get('startDate')?.touched">
-                  <ng-container *ngIf="educationForm.get('startDate')?.invalid; else startDateSuccess">
-                    <i class="pi pi-times-circle"></i> Start Date is required.
-                  </ng-container>
-                  <ng-template #startDateSuccess>
-                    <i class="pi pi-check-circle"></i> Start Date is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- End Date -->
-              <div class="p-field p-col-6">
-                <label for="endDateEdu">End Date</label>
-                <input id="endDateEdu" type="date" pInputText formControlName="endDate">
-                <small *ngIf="educationForm.get('endDate')?.touched">
-                  <ng-container *ngIf="educationForm.get('endDate')?.invalid; else endDateSuccess">
-                    <i class="pi pi-times-circle"></i> End Date is required.
-                  </ng-container>
-                  <ng-template #endDateSuccess>
-                    <i class="pi pi-check-circle"></i> End Date is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Diploma -->
-              <div class="p-field p-col-12">
-                <label for="diploma">Diploma</label>
-                <input id="diploma" type="text" pInputText formControlName="diploma">
-                <small *ngIf="educationForm.get('diploma')?.touched">
-                  <ng-container *ngIf="educationForm.get('diploma')?.invalid; else diplomaSuccess">
-                    <i class="pi pi-times-circle"></i> Diploma is required.
-                  </ng-container>
-                  <ng-template #diplomaSuccess>
-                    <i class="pi pi-check-circle"></i> Diploma is valid.
-                  </ng-template>
-                </small>
-              </div>
-            </div>
-          </form>
+        <!-- Years of Experience -->
+        <div class="p-field">
+          <label for="yearsOfExperience">Years of Experience</label>
+          <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience">
+          <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
+            <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
+              <i class="pi pi-times-circle"></i> Please enter a valid number.
+            </ng-container>
+          </small>
+          <small *ngIf="generalDataForm.hasError('invalidExperience')">
+            <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
+          </small>
         </div>
-        
-        <!-- Step 4: Experiences -->
-        <div *ngSwitchCase="3">
-          <form [formGroup]="experienceForm">
-            <div class="p-fluid p-formgrid p-grid">
-              <!-- Company Name -->
-              <div class="p-field p-col-12">
-                <label for="companyName">Company Name</label>
-                <input id="companyName" type="text" pInputText formControlName="companyName">
-                <small *ngIf="experienceForm.get('companyName')?.touched">
-                  <ng-container *ngIf="experienceForm.get('companyName')?.invalid; else companySuccess">
-                    <i class="pi pi-times-circle"></i> Company Name is required.
-                  </ng-container>
-                  <ng-template #companySuccess>
-                    <i class="pi pi-check-circle"></i> Company Name is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Position -->
-              <div class="p-field p-col-12">
-                <label for="position">Position</label>
-                <input id="position" type="text" pInputText formControlName="position">
-                <small *ngIf="experienceForm.get('position')?.touched">
-                  <ng-container *ngIf="experienceForm.get('position')?.invalid; else positionSuccess">
-                    <i class="pi pi-times-circle"></i> Position is required.
-                  </ng-container>
-                  <ng-template #positionSuccess>
-                    <i class="pi pi-check-circle"></i> Position is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Start Date -->
-              <div class="p-field p-col-6">
-                <label for="startDateExp">Start Date</label>
-                <input id="startDateExp" type="date" pInputText formControlName="startDate">
-                <small *ngIf="experienceForm.get('startDate')?.touched">
-                  <ng-container *ngIf="experienceForm.get('startDate')?.invalid; else startDateExpSuccess">
-                    <i class="pi pi-times-circle"></i> Start Date is required.
-                  </ng-container>
-                  <ng-template #startDateExpSuccess>
-                    <i class="pi pi-check-circle"></i> Start Date is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- End Date -->
-              <div class="p-field p-col-6">
-                <label for="endDateExp">End Date</label>
-                <input id="endDateExp" type="date" pInputText formControlName="endDate">
-                <small *ngIf="experienceForm.get('endDate')?.touched">
-                  <ng-container *ngIf="experienceForm.get('endDate')?.invalid; else endDateExpSuccess">
-                    <i class="pi pi-times-circle"></i> End Date is required.
-                  </ng-container>
-                  <ng-template #endDateExpSuccess>
-                    <i class="pi pi-check-circle"></i> End Date is valid.
-                  </ng-template>
-                </small>
-                <small *ngIf="experienceForm.errors?.['futureEndDate']" class="p-error">
-                  <i class="pi pi-times-circle"></i> End Date cannot be in the future.
-                </small>
-              </div>
-              <!-- Description -->
-              <div class="p-field p-col-12">
-                <label for="descriptionExp">Description</label>
-                <textarea id="descriptionExp" pInputTextarea formControlName="description"></textarea>
-                <small *ngIf="experienceForm.get('description')?.touched">
-                  <ng-container *ngIf="experienceForm.get('description')?.invalid; else descriptionSuccess">
-                    <i class="pi pi-times-circle"></i> Description is required.
-                  </ng-container>
-                  <ng-template #descriptionSuccess>
-                    <i class="pi pi-check-circle"></i> Description is valid.
-                  </ng-template>
-                </small>
-              </div>
-            </div>
-          </form>
+        <!-- Gender -->
+        <div class="p-field">
+          <label>Gender</label>
+          <div class="p-formgroup-inline">
+            <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
+            <label>Male</label>
+            <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
+            <label>Female</label>
+          </div>
+          <small *ngIf="generalDataForm.get('gender')?.touched && generalDataForm.get('gender')?.invalid">
+            <i class="pi pi-times-circle"></i> Gender is required.
+          </small>
         </div>
-        
-        <!-- Step 5: Languages -->
-        <div *ngSwitchCase="4">
-          <form [formGroup]="languageForm">
-            <div class="p-fluid p-formgrid p-grid">
-              <!-- Language -->
-              <div class="p-field p-col-12">
-                <label for="language">Language</label>
-                <input id="language" type="text" pInputText formControlName="language">
-                <small *ngIf="languageForm.get('language')?.touched">
-                  <ng-container *ngIf="languageForm.get('language')?.invalid; else languageSuccess">
-                    <i class="pi pi-times-circle"></i> Language is required.
-                  </ng-container>
-                  <ng-template #languageSuccess>
-                    <i class="pi pi-check-circle"></i> Language is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Level -->
-              <div class="p-field p-col-12">
-                <label for="level">Level</label>
-                <p-dropdown id="level" [options]="languageLevels" formControlName="level" placeholder="Select Level"></p-dropdown>
-                <small *ngIf="languageForm.get('level')?.touched">
-                  <ng-container *ngIf="languageForm.get('level')?.invalid; else levelSuccess">
-                    <i class="pi pi-times-circle"></i> Level is required.
-                  </ng-container>
-                  <ng-template #levelSuccess>
-                    <i class="pi pi-check-circle"></i> Level is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Native Checkbox (no validation message) -->
-              <div class="p-field p-col-12">
-                <label for="isNative">Native?</label>
-                <p-checkbox id="isNative" binary="true" formControlName="isNative"></p-checkbox>
-              </div>
-            </div>
-          </form>
+        <!-- Main Technology -->
+        <div class="p-field">
+          <label for="mainTech">Main Technology</label>
+          <input id="mainTech" type="text" pInputText formControlName="mainTech">
+          <small *ngIf="generalDataForm.get('mainTech')?.touched && generalDataForm.get('mainTech')?.invalid">
+            <i class="pi pi-times-circle"></i> Main Technology is required.
+          </small>
         </div>
-        
-        <!-- Step 6: Skills -->
-        <div *ngSwitchCase="5">
-          <form [formGroup]="skillsForm">
-            <div class="p-fluid p-formgrid p-grid">
-              <!-- Skill Name -->
-              <div class="p-field p-col-12">
-                <label for="skillName">Skill Name</label>
-                <input id="skillName" type="text" pInputText formControlName="skillName">
-                <small *ngIf="skillsForm.get('skillName')?.touched">
-                  <ng-container *ngIf="skillsForm.get('skillName')?.invalid; else skillNameSuccess">
-                    <i class="pi pi-times-circle"></i> Skill Name is required.
-                  </ng-container>
-                  <ng-template #skillNameSuccess>
-                    <i class="pi pi-check-circle"></i> Skill Name is valid.
-                  </ng-template>
-                </small>
-              </div>
-              <!-- Proficiency Level -->
-              <div class="p-field p-col-12">
-                <label for="proficiencyLevel">Proficiency Level</label>
-                <p-dropdown id="proficiencyLevel" [options]="skillProficiencies" formControlName="proficiencyLevel" placeholder="Select Proficiency"></p-dropdown>
-                <small *ngIf="skillsForm.get('proficiencyLevel')?.touched">
-                  <ng-container *ngIf="skillsForm.get('proficiencyLevel')?.invalid; else proficiencySuccess">
-                    <i class="pi pi-times-circle"></i> Proficiency Level is required.
-                  </ng-container>
-                  <ng-template #proficiencySuccess>
-                    <i class="pi pi-check-circle"></i> Proficiency Level is valid.
-                  </ng-template>
-                </small>
-              </div>
-            </div>
-          </form>
+        <!-- Summary -->
+        <div class="p-field">
+          <label for="summary">Summary</label>
+          <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
+          <small *ngIf="generalDataForm.get('summary')?.touched && generalDataForm.get('summary')?.invalid">
+            <i class="pi pi-times-circle"></i> Summary is required.
+          </small>
         </div>
-        
-      </ng-container>
-    </div>
-    
-    <!-- Navigation Buttons -->
-    <div class="p-mt-4">
-      <button pButton label="Previous" (click)="prev()" [disabled]="activeIndex === 0"></button>
-      <button pButton label="Clear" (click)="clearCurrentSection()"></button>
-      <button pButton label="Next" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-      <button pButton label="Save" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-    </div>
+      </div>
+
+      <!-- Step 1: Address -->
+      <div *ngSwitchCase="1" [formGroup]="addressForm">
+        <div class="p-field">
+          <label for="street">Street</label>
+          <input id="street" type="text" pInputText formControlName="street">
+          <small *ngIf="addressForm.get('street')?.touched && addressForm.get('street')?.invalid">
+            <i class="pi pi-times-circle"></i> Street is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="postalCode">Postal Code</label>
+          <input id="postalCode" type="text" pInputText formControlName="postalCode">
+          <small *ngIf="addressForm.get('postalCode')?.touched">
+            <ng-container *ngIf="addressForm.get('postalCode')?.hasError('required')">
+              <i class="pi pi-times-circle"></i> Postal Code is required.
+            </ng-container>
+            <ng-container *ngIf="addressForm.get('postalCode')?.hasError('pattern')">
+              <i class="pi pi-times-circle"></i> 3-10 alphanumeric characters, spaces or hyphens.
+            </ng-container>
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="fullAddress">Full Address</label>
+          <input id="fullAddress" type="text" pInputText formControlName="fullAddress">
+          <small *ngIf="addressForm.get('fullAddress')?.touched && addressForm.get('fullAddress')?.invalid">
+            <i class="pi pi-times-circle"></i> Full Address is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="city">City</label>
+          <input id="city" type="text" pInputText formControlName="city">
+          <small *ngIf="addressForm.get('city')?.touched && addressForm.get('city')?.invalid">
+            <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="country">Country</label>
+          <input id="country" type="text" pInputText formControlName="country">
+          <small *ngIf="addressForm.get('country')?.touched && addressForm.get('country')?.invalid">
+            <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+          </small>
+        </div>
+      </div>
+
+      <!-- Step 2: Education -->
+      <div *ngSwitchCase="2" [formGroup]="educationForm">
+        <div class="p-field">
+          <label for="institution">Institution</label>
+          <input id="institution" type="text" pInputText formControlName="institution">
+          <small *ngIf="educationForm.get('institution')?.touched && educationForm.get('institution')?.invalid">
+            <i class="pi pi-times-circle"></i> Institution is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="degree">Degree</label>
+          <p-dropdown id="degree" [options]="degrees" formControlName="degree" placeholder="Select Degree" optionLabel="label" optionValue="value"></p-dropdown>
+          <small *ngIf="educationForm.get('degree')?.touched && educationForm.get('degree')?.invalid">
+            <i class="pi pi-times-circle"></i> Degree is required.
+          </small>
+        </div>
+        <div class="p-field p-grid">
+          <div class="p-col-6">
+            <label for="startDateEdu">Start Date</label>
+            <input id="startDateEdu" type="date" pInputText formControlName="startDate">
+            <small *ngIf="educationForm.get('startDate')?.touched && educationForm.get('startDate')?.invalid">
+              <i class="pi pi-times-circle"></i> Start Date is required.
+            </small>
+          </div>
+          <div class="p-col-6">
+            <label for="endDateEdu">End Date</label>
+            <input id="endDateEdu" type="date" pInputText formControlName="endDate">
+            <small *ngIf="educationForm.get('endDate')?.touched && educationForm.get('endDate')?.invalid">
+              <i class="pi pi-times-circle"></i> End Date is required.
+            </small>
+          </div>
+        </div>
+        <div class="p-field">
+          <label for="diploma">Diploma</label>
+          <input id="diploma" type="text" pInputText formControlName="diploma">
+          <small *ngIf="educationForm.get('diploma')?.touched && educationForm.get('diploma')?.invalid">
+            <i class="pi pi-times-circle"></i> Diploma is required.
+          </small>
+        </div>
+      </div>
+
+      <!-- Step 3: Experience -->
+      <div *ngSwitchCase="3" [formGroup]="experienceForm">
+        <div class="p-field">
+          <label for="companyName">Company Name</label>
+          <input id="companyName" type="text" pInputText formControlName="companyName">
+          <small *ngIf="experienceForm.get('companyName')?.touched && experienceForm.get('companyName')?.invalid">
+            <i class="pi pi-times-circle"></i> Company Name is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="position">Position</label>
+          <input id="position" type="text" pInputText formControlName="position">
+          <small *ngIf="experienceForm.get('position')?.touched && experienceForm.get('position')?.invalid">
+            <i class="pi pi-times-circle"></i> Position is required.
+          </small>
+        </div>
+        <div class="p-field p-grid">
+          <div class="p-col-6">
+            <label for="startDateExp">Start Date</label>
+            <input id="startDateExp" type="date" pInputText formControlName="startDate">
+            <small *ngIf="experienceForm.get('startDate')?.touched && experienceForm.get('startDate')?.invalid">
+              <i class="pi pi-times-circle"></i> Start Date is required.
+            </small>
+          </div>
+          <div class="p-col-6">
+            <label for="endDateExp">End Date</label>
+            <input id="endDateExp" type="date" pInputText formControlName="endDate">
+            <small *ngIf="experienceForm.get('endDate')?.touched && experienceForm.get('endDate')?.invalid">
+              <i class="pi pi-times-circle"></i> End Date is required.
+            </small>
+            <small *ngIf="experienceForm.hasError('futureEndDate')">
+              <i class="pi pi-times-circle"></i> End Date cannot be in the future.
+            </small>
+            <small *ngIf="experienceForm.hasError('invalidDateRange')">
+              <i class="pi pi-times-circle"></i> Start Date must come before End Date.
+            </small>
+          </div>
+        </div>
+        <div class="p-field">
+          <label for="descriptionExp">Description</label>
+          <textarea id="descriptionExp" pInputTextarea formControlName="description"></textarea>
+          <small *ngIf="experienceForm.get('description')?.touched && experienceForm.get('description')?.invalid">
+            <i class="pi pi-times-circle"></i> Description is required.
+          </small>
+        </div>
+      </div>
+
+      <!-- Step 4: Languages -->
+      <div *ngSwitchCase="4" [formGroup]="languageForm">
+        <div class="p-field">
+          <label for="language">Language</label>
+          <input id="language" type="text" pInputText formControlName="language">
+          <small *ngIf="languageForm.get('language')?.touched && languageForm.get('language')?.invalid">
+            <i class="pi pi-times-circle"></i> Language is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="level">Level</label>
+          <p-dropdown id="level" [options]="languageLevels" formControlName="level" placeholder="Select Level" optionLabel="label" optionValue="value"></p-dropdown>
+          <small *ngIf="languageForm.get('level')?.touched && languageForm.get('level')?.invalid">
+            <i class="pi pi-times-circle"></i> Level is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="isNative">Native?</label>
+          <p-checkbox id="isNative" binary="true" formControlName="isNative"></p-checkbox>
+        </div>
+      </div>
+
+      <!-- Step 5: Skills -->
+      <div *ngSwitchCase="5" [formGroup]="skillsForm">
+        <div class="p-field">
+          <label for="skillName">Skill Name</label>
+          <input id="skillName" type="text" pInputText formControlName="skillName">
+          <small *ngIf="skillsForm.get('skillName')?.touched && skillsForm.get('skillName')?.invalid">
+            <i class="pi pi-times-circle"></i> Skill Name is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="proficiencyLevel">Proficiency Level</label>
+          <p-dropdown id="proficiencyLevel" [options]="skillProficiencies" formControlName="proficiencyLevel" placeholder="Select Proficiency" optionLabel="label" optionValue="value"></p-dropdown>
+          <small *ngIf="skillsForm.get('proficiencyLevel')?.touched && skillsForm.get('proficiencyLevel')?.invalid">
+            <i class="pi pi-times-circle"></i> Proficiency Level is required.
+          </small>
+        </div>
+      </div>
+
+      <!-- Step 6: Contact -->
+      <div *ngSwitchCase="6" [formGroup]="contactForm">
+        <div class="p-field">
+          <label for="contactType">Contact Type</label>
+          <p-dropdown
+            id="contactType"
+            [options]="[{ label: 'Email', value: 'Email' }, { label: 'Phone', value: 'Phone' }, { label: 'LinkedIn', value: 'LinkedIn' }]"
+            formControlName="contactType"
+            placeholder="Select Contact Type"
+          ></p-dropdown>
+          <small *ngIf="contactForm.get('contactType')?.touched && contactForm.get('contactType')?.invalid">
+            <i class="pi pi-times-circle"></i> Contact Type is required.
+          </small>
+        </div>
+        <div class="p-field">
+          <label for="contactValue">Contact Value</label>
+          <input id="contactValue" type="text" pInputText formControlName="contactValue">
+          <small *ngIf="contactForm.get('contactValue')?.touched && contactForm.get('contactValue')?.invalid">
+            <ng-container *ngIf="contactForm.get('contactValue')?.hasError('required')">
+              <i class="pi pi-times-circle"></i> Contact Value is required.
+            </ng-container>
+            <ng-container *ngIf="contactForm.get('contactValue')?.hasError('pattern')">
+              <i class="pi pi-times-circle"></i> Please enter a valid email or phone number.
+            </ng-container>
+          </small>
+        </div>
+      </div>
+    </ng-container>
   </div>
-  
+
+  <!-- Navigation Buttons -->
+  <div class="p-mt-4">
+    <button pButton label="Previous" (click)="prev()" [disabled]="activeIndex === 0"></button>
+    <button pButton label="Clear" (click)="clearCurrentSection()"></button>
+    <button pButton label="Next" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
+    <button pButton label="Save" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
+  </div>
+</div>

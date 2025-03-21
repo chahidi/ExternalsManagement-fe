@@ -53,7 +53,7 @@ export class NewCvComponent {
                 alert('CV uploaded successfully!');
                 console.log("Server response type:", typeof response);
                 console.log("Server response:", response);
-                this.extractedData = JSON.stringify(response); // Convert to string for better visibility
+                this.extractedData = JSON.stringify(response);
               },
               error => {
                 alert('Error uploading CV.');

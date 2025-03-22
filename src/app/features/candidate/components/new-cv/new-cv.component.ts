@@ -48,15 +48,20 @@ export class NewCvComponent {
 
 
         this.newService.uploadCv(payload).subscribe(
-          response => {
-            alert('CV uploaded successfully!');
-            console.log("Server response:", response);
-            this.extractedData = response;
-          },
-          error => {
-            alert('Error uploading CV.');
-            console.error('Upload error:', error);
-          }
+
+            (response: any) => {
+                alert('CV uploaded successfully!');
+                console.log("Server response type:", typeof response);
+                console.log("Server response:", response);
+                this.extractedData = JSON.stringify(response);
+              },
+              error => {
+                alert('Error uploading CV.');
+                console.error('Upload error:', error);
+              }
+
+
+
         );
       };
 

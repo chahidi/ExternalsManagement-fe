@@ -282,9 +282,9 @@
 
   <!-- Navigation Buttons -->
   <div class="p-mt-4">
-    <button pButton label="Previous" (click)="prev()" [disabled]="activeIndex === 0"></button>
-    <button pButton label="Clear" (click)="clearCurrentSection()"></button>
-    <button pButton label="Next" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-    <button pButton label="Save" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
+    <button  type="button" pButton label="Previous" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
+    <button type="button" pButton label="Clear" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
+    <button type="button" pButton label="Next" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
+    <button type="submit" pButton label="Save" title="Save and submit the form" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
   </div>
 </div>

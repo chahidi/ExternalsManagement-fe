@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { CandidateFormComponent } from './components/candidate-form/candidate-form.component';
-import { NewCvComponent } from './components/new-cv/new-cv.component';  // تأكد من استيراد NewCvComponent
 
 export const CANDIDATE_FORMS_ROUTES: Routes = [
   {
@@ -17,7 +16,8 @@ export const CANDIDATE_FORMS_ROUTES: Routes = [
   },
   {
     path: 'new-cv',
-    component: NewCvComponent,
+    loadComponent: () => import('./components/new-cv/new-cv.component')
+      .then(m => m.NewCvComponent),
     title: 'New CV'
   }
 ];

@@ -8,7 +8,7 @@ import {
   AbstractControl,
   ValidationErrors
 } from '@angular/forms';
-
+import { ActivatedRoute } from '@angular/router';
 import { PanelModule } from 'primeng/panel';
 import { StepsModule } from 'primeng/steps';
 import { InputTextModule } from 'primeng/inputtext';
@@ -38,11 +38,10 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./stepper-form.component.scss']
 })
 export class StepperFormComponent implements OnInit {
-  // Steps for the stepper, including the new Contact step.
   steps: MenuItem[] = [];
   activeIndex: number = 0;
+  extractedData: any;
 
-  // Dropdown options.
   degrees = [
     { label: 'Bachelor', value: 'Bachelor' },
     { label: 'Master', value: 'Master' },
@@ -50,23 +49,22 @@ export class StepperFormComponent implements OnInit {
     { label: 'Associate', value: 'Associate' }
   ];
 
+  // Updated to match JSON values (e.g., "ADVANCED", "INTERMEDIATE")
   languageLevels = [
-    { label: 'A1', value: 'A1' },
-    { label: 'A2', value: 'A2' },
-    { label: 'B1', value: 'B1' },
-    { label: 'B2', value: 'B2' },
-    { label: 'C1', value: 'C1' },
-    { label: 'C2', value: 'C2' }
+    { label: 'Advanced', value: 'ADVANCED' },
+    { label: 'Intermediate', value: 'INTERMEDIATE' },
+    { label: 'Basic', value: 'BASIC' },
+    { label: 'Native', value: 'NATIVE' }
   ];
 
+  // Updated to match potential JSON values (e.g., "EXPERT", "INTERMEDIATE")
   skillProficiencies = [
-    { label: 'Beginner', value: 'Beginner' },
-    { label: 'Intermediate', value: 'Intermediate' },
-    { label: 'Advanced', value: 'Advanced' },
-    { label: 'Expert', value: 'Expert' }
+    { label: 'Beginner', value: 'BEGINNER' },
+    { label: 'Intermediate', value: 'INTERMEDIATE' },
+    { label: 'Advanced', value: 'ADVANCED' },
+    { label: 'Expert', value: 'EXPERT' }
   ];
 
-  // Form groups.
   generalDataForm!: FormGroup;
   addressForm!: FormGroup;
   educationForm!: FormGroup;
@@ -75,10 +73,9 @@ export class StepperFormComponent implements OnInit {
   skillsForm!: FormGroup;
   contactForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    // Define the steps.
     this.steps = [
       { label: 'General Data' },
       { label: 'Address' },
@@ -89,7 +86,7 @@ export class StepperFormComponent implements OnInit {
       { label: 'Contact' }
     ];
 
-    // GENERAL DATA: fullName, birthDate, yearsOfExperience, gender, mainTech, summary.
+    // General Data Form with gender fix
     this.generalDataForm = this.fb.group(
       {
         fullName: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
@@ -105,7 +102,6 @@ export class StepperFormComponent implements OnInit {
       { validators: this.experienceAgeValidator }
     );
 
-    // ADDRESS: street, postalCode, fullAddress, city, country.
     this.addressForm = this.fb.group({
       street: ['', Validators.required],
       postalCode: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9\\s-]{3,10}$')]],
@@ -114,16 +110,13 @@ export class StepperFormComponent implements OnInit {
       country: ['', [Validators.required, Validators.pattern('^[a-zA-Z\\s-]+$')]]
     });
 
-    // EDUCATION: institution, degree, startDate, endDate, diploma.
     this.educationForm = this.fb.group({
       institution: ['', Validators.required],
-      degree: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       diploma: ['', Validators.required]
     });
 
-    // EXPERIENCE: companyName, position, startDate, endDate, description.
     this.experienceForm = this.fb.group(
       {
         companyName: ['', Validators.required],
@@ -135,36 +128,122 @@ export class StepperFormComponent implements OnInit {
       { validators: this.experienceDateValidator }
     );
 
-    // LANGUAGE: language, level, isNative.
+    // Added pattern validator for language field
     this.languageForm = this.fb.group({
-      language: ['', Validators.required],
+      language: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
       level: ['', Validators.required],
       isNative: [false]
     });
 
-    // SKILLS: skillName, proficiencyLevel.
     this.skillsForm = this.fb.group({
       skillName: ['', Validators.required],
       proficiencyLevel: ['', Validators.required]
     });
 
-    // CONTACT: phone, email, contactType (could be used to differentiate types), etc.
     this.contactForm = this.fb.group({
-      contactType: ['Email', Validators.required], // example: Email, Phone, LinkedIn, etc.
+      contactType: ['Email', Validators.required],
       contactValue: ['', [Validators.required, Validators.pattern(/^(?:\+?\d{10,15}|[^@]+@[^@]+\.[^@]+)$/)]]
     });
+
+    this.route.paramMap.subscribe(params => {
+      const navigationData = history.state.extractedData;
+      if (navigationData) {
+        this.extractedData = navigationData;
+        console.log('Extracted Data:', this.extractedData);
+        this.populateForms();
+      }
+    });
+  }
+
+  private populateForms() {
+    if (!this.extractedData) return;
+
+    // Fix gender mapping: "M" -> "Male", "F" -> "Female"
+    this.generalDataForm.patchValue({
+      fullName: this.extractedData.fullName || '',
+      birthDate: this.extractedData.birthDate || '',
+      yearsOfExperience: this.extractedData.yearsOfExperience || null,
+      gender: this.extractedData.gender === 'M' ? 'Male' : this.extractedData.gender === 'F' ? 'Female' : '',
+      mainTech: this.extractedData.mainTech || '',
+      summary: this.extractedData.summary || ''
+    });
+
+    if (this.extractedData.address) {
+      this.addressForm.patchValue({
+        street: this.extractedData.address.street || '',
+        postalCode: this.extractedData.address.postalCode || '',
+        fullAddress: this.extractedData.address.fullAddress || '',
+        city: this.extractedData.address.city?.name || this.extractedData.address.city || '',
+        country: this.extractedData.address.country?.name || this.extractedData.address.country || ''
+      });
+    }
+
+    if (this.extractedData.educations && this.extractedData.educations.length > 0) {
+      this.educationForm.patchValue({
+        institution: this.extractedData.educations[0].institution || '',
+        degree: this.extractedData.educations[0].degree || this.extractedData.educations[0].diploma || '',
+        startDate: this.extractedData.educations[0].startDate || '',
+        endDate: this.extractedData.educations[0].endDate || '',
+        diploma: this.extractedData.educations[0].diploma || ''
+      });
+    }
+
+    if (this.extractedData.experiences && this.extractedData.experiences.length > 0) {
+      this.experienceForm.patchValue({
+        companyName: this.extractedData.experiences[0].companyName || '',
+        position: this.extractedData.experiences[0].position || '',
+        startDate: this.extractedData.experiences[0].startDate || '',
+        endDate: this.extractedData.experiences[0].endDate || '',
+        description: this.extractedData.experiences[0].description || ''
+      });
+    }
+
+    // Handle both naturalLanguages and languages, map level to match languageLevels
+    if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
+      this.languageForm.patchValue({
+        language: this.extractedData.naturalLanguages[0].language || '',
+        level: this.extractedData.naturalLanguages[0].level || '',
+        isNative: this.extractedData.naturalLanguages[0].isNative || this.extractedData.naturalLanguages[0].description === 'Native' || false
+      });
+    } else if (this.extractedData.languages && this.extractedData.languages.length > 0) {
+      this.languageForm.patchValue({
+        language: this.extractedData.languages[0].language || '',
+        level: this.extractedData.languages[0].level || '',
+        isNative: this.extractedData.languages[0].isNative || false
+      });
+    }
+
+    if (this.extractedData.skills && this.extractedData.skills.length > 0) {
+      this.skillsForm.patchValue({
+        skillName: this.extractedData.skills[0].skillName || '',
+        proficiencyLevel: this.extractedData.skills[0].proficiencyLevel || ''
+      });
+    }
+
+    if (this.extractedData.contacts && this.extractedData.contacts.length > 0) {
+      // Normalize contactType to match dropdown options
+      const contactType = this.extractedData.contacts[0].contactType
+        ? this.extractedData.contacts[0].contactType.charAt(0).toUpperCase() + this.extractedData.contacts[0].contactType.slice(1).toLowerCase()
+        : 'Email';
+      this.contactForm.patchValue({
+        contactType: ['Email', 'Phone', 'LinkedIn'].includes(contactType) ? contactType : 'Email',
+        contactValue: this.extractedData.contacts[0].contactValue || ''
+      });
+    }
   }
 
   /*** Custom Validators ***/
 
-  // Age validator: ensures the candidate is at least 18 and not over 80.
   ageValidator(control: AbstractControl): ValidationErrors | null {
     const birthDate = control.value;
     if (birthDate) {
       const today = new Date();
-      const birth = new Date(birthDate);
-      let age = today.getFullYear() - birth.getFullYear();
-      if (today.getMonth() < birth.getMonth() || (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) {
+      const birthDateObj = new Date(birthDate);
+      let age = today.getFullYear() - birthDateObj.getFullYear();
+      if (
+        today.getMonth() < birthDateObj.getMonth() ||
+        (today.getMonth() === birthDateObj.getMonth() && today.getDate() < birthDateObj.getDate())
+      ) {
         age--;
       }
       if (age < 18) return { underAge: true };
@@ -173,7 +252,6 @@ export class StepperFormComponent implements OnInit {
     return null;
   }
 
-  // Validator to ensure years of experience do not exceed what is possible from age.
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
     const yearsControl = control.get('yearsOfExperience');
@@ -184,11 +262,13 @@ export class StepperFormComponent implements OnInit {
       const today = new Date();
 
       let age = today.getFullYear() - birthDate.getFullYear();
-      if (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+      if (
+        today.getMonth() < birthDate.getMonth() ||
+        (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
+      ) {
         age--;
       }
 
-      // Assume working starts at age 16.
       const maxExperience = age - 16;
       if (yearsOfExperience > maxExperience) {
         return { invalidExperience: true };
@@ -197,7 +277,6 @@ export class StepperFormComponent implements OnInit {
     return null;
   }
 
-  // Validator to check that the experience dates are valid.
   experienceDateValidator(control: AbstractControl): ValidationErrors | null {
     const startDate = control.get('startDate')?.value;
     const endDate = control.get('endDate')?.value;
@@ -217,7 +296,6 @@ export class StepperFormComponent implements OnInit {
 
   /*** Helper Functions ***/
 
-  // Return the current form group based on the active step.
   getCurrentForm(): FormGroup {
     switch (this.activeIndex) {
       case 0:
@@ -239,7 +317,6 @@ export class StepperFormComponent implements OnInit {
     }
   }
 
-  // Check if every form in the stepper is valid.
   areAllFormsValid(): boolean {
     return [
       this.generalDataForm,
@@ -252,7 +329,6 @@ export class StepperFormComponent implements OnInit {
     ].every(form => form.valid);
   }
 
-  // Mark all forms as touched.
   markAllFormsTouched(): void {
     [
       this.generalDataForm,
@@ -265,7 +341,6 @@ export class StepperFormComponent implements OnInit {
     ].forEach(form => form.markAllAsTouched());
   }
 
-  // Navigation methods.
   next(): void {
     const currentForm = this.getCurrentForm();
     if (currentForm.valid && this.activeIndex < this.steps.length - 1) {
@@ -285,10 +360,8 @@ export class StepperFormComponent implements OnInit {
     this.getCurrentForm().reset();
   }
 
-  // Final submission.
   onSubmit(): void {
     if (this.areAllFormsValid()) {
-      // Build the candidate object following your model interfaces.
       const candidateData = {
         fullName: this.generalDataForm.value.fullName,
         birthDate: this.generalDataForm.value.birthDate,

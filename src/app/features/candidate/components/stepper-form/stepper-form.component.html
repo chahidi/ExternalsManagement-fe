@@ -44,7 +44,7 @@
             </ng-container>
           </small>
           <small *ngIf="generalDataForm.hasError('invalidExperience')">
-            <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
+            <i class="pi pi-times-circle"></i> Experience exceeds what  what is possible given your birth date.
           </small>
         </div>
         <!-- Gender -->
@@ -131,13 +131,13 @@
             <i class="pi pi-times-circle"></i> Institution is required.
           </small>
         </div>
-        <div class="p-field">
+        <!-- <div class="p-field">
           <label for="degree">Degree</label>
           <p-dropdown id="degree" [options]="degrees" formControlName="degree" placeholder="Select Degree" optionLabel="label" optionValue="value"></p-dropdown>
           <small *ngIf="educationForm.get('degree')?.touched && educationForm.get('degree')?.invalid">
             <i class="pi pi-times-circle"></i> Degree is required.
           </small>
-        </div>
+        </div> -->
         <div class="p-field p-grid">
           <div class="p-col-6">
             <label for="startDateEdu">Start Date</label>
@@ -215,8 +215,13 @@
         <div class="p-field">
           <label for="language">Language</label>
           <input id="language" type="text" pInputText formControlName="language">
-          <small *ngIf="languageForm.get('language')?.touched && languageForm.get('language')?.invalid">
-            <i class="pi pi-times-circle"></i> Language is required.
+          <small *ngIf="languageForm.get('language')?.touched">
+            <ng-container *ngIf="languageForm.get('language')?.hasError('required')">
+              <i class="pi pi-times-circle"></i> Language is required.
+            </ng-container>
+            <ng-container *ngIf="languageForm.get('language')?.hasError('pattern')">
+              <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+            </ng-container>
           </small>
         </div>
         <div class="p-field">
@@ -259,6 +264,8 @@
             [options]="[{ label: 'Email', value: 'Email' }, { label: 'Phone', value: 'Phone' }, { label: 'LinkedIn', value: 'LinkedIn' }]"
             formControlName="contactType"
             placeholder="Select Contact Type"
+            optionLabel="label"
+            optionValue="value"
           ></p-dropdown>
           <small *ngIf="contactForm.get('contactType')?.touched && contactForm.get('contactType')?.invalid">
             <i class="pi pi-times-circle"></i> Contact Type is required.
@@ -267,7 +274,7 @@
         <div class="p-field">
           <label for="contactValue">Contact Value</label>
           <input id="contactValue" type="text" pInputText formControlName="contactValue">
-          <small *ngIf="contactForm.get('contactValue')?.touched && contactForm.get('contactValue')?.invalid">
+          <small *ngIf="contactForm.get('contactValue')?.touched">
             <ng-container *ngIf="contactForm.get('contactValue')?.hasError('required')">
               <i class="pi pi-times-circle"></i> Contact Value is required.
             </ng-container>
@@ -282,9 +289,9 @@
 
   <!-- Navigation Buttons -->
   <div class="p-mt-4">
-    <button  type="button" pButton label="Previous" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
+    <button type="button" pButton label="Previous" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
     <button type="button" pButton label="Clear" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
     <button type="button" pButton label="Next" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-    <button type="submit" pButton label="Save" title="Save and submit the form" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
+    <button type="submit" pButton label="Save" title="Save and submit the form" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
   </div>
 </div>

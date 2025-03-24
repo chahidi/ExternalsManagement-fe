@@ -1,153 +1,258 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { debounceTime, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
-import { FluidModule } from 'primeng/fluid';
-import { PanelModule } from 'primeng/panel';
-import { TabsModule } from 'primeng/tabs';
-import { LayoutService } from '../../../../shared/layout/service/layout.service';
-
+import { TabViewModule } from 'primeng/tabview';
 
 @Component({
-    standalone: true,
-    selector: 'app-stats-widget',
-    imports: [CommonModule,ChartModule,PanelModule,TabsModule,FluidModule],
-    templateUrl: './stats-widget.component.html'
+  selector: 'app-stats-widget',
+  standalone: true,
+  imports: [CardModule, ChartModule, TabViewModule],
+  templateUrl: './stats-widget.component.html',
+  styleUrls: ['./stats-widget.component.scss']
 })
-export class StatsWidgetComponent {
-    lineData: any;
+export class StatsWidgetComponent implements OnInit {
+  private apiUrl = 'http://localhost:8080/api/candidates/charts';
+  public languageChartData: any = {
+    labels: ['Loading...'],
+    datasets: [{
+      label: 'Candidates by Language',
+      backgroundColor: '#42A5F5',
+      borderColor: '#1E88E5',
+      data: [0],
+      borderWidth: 1
+    }]
+  };
+  public skillsChartData: any = {
+    labels: ['Loading...'],
+    datasets: [{
+      data: [1],
+      backgroundColor: ['#E0E0E0'],
+      hoverBackgroundColor: ['#E0E0E0'],
+      borderWidth: 1,
+      borderColor: '#d1d1d1'
+    }]
+  };
+  public chartOptions: any;
+  public totalCandidates: number = 0;
+  private languages: string[] = [];
+  private skills: string[] = [];
 
-    barData: any;
+  constructor(private http: HttpClient) {}
 
-    lineOptions: any;
+  ngOnInit(): void {
+    console.log('StatsWidgetComponent initialized');
+    // Restore API calls to fetch data from the database
+    this.loadTotalCandidates();
+    this.loadAllLanguages();
+    this.loadAllSkills();
+    this.initChartOptions();
+  }
 
-    barOptions: any;
+  loadTotalCandidates(): void {
+    console.log('Loading total candidates...');
+    this.http.get<number>(`${this.apiUrl}/candidates/total`).subscribe({
+      next: (total) => {
+        this.totalCandidates = total;
+        console.log('Total candidates loaded:', total);
+      },
+      error: (err) => {
+        console.error('Error loading total candidates:', err);
+        this.totalCandidates = 0;
+      }
+    });
+  }
 
-    subscription: Subscription;
+  loadAllLanguages(): void {
+    console.log('Loading languages...');
+    this.http.get<string[]>(`${this.apiUrl}/languages`).subscribe({
+      next: (languages) => {
+        this.languages = languages.length ? languages : ['No Languages'];
+        console.log('Languages loaded:', this.languages);
+        this.loadLanguagesChart();
+      },
+      error: (err) => {
+        console.error('Error loading languages:', err);
+        this.languages = ['No Languages'];
+        this.loadLanguagesChart();
+      }
+    });
+  }
 
-    constructor(private layoutService: LayoutService) {
-        this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe(() => {
-            this.initCharts();
-        });
-    }
-    ngOnInit() {
-        this.initCharts();
-    }
-    initCharts() {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+  loadAllSkills(): void {
+    console.log('Loading skills...');
+    this.http.get<string[]>(`${this.apiUrl}/technologies`).subscribe({
+      next: (skills) => {
+        this.skills = skills.length ? skills : ['No Skills'];
+        console.log('Skills loaded:', this.skills);
+        this.loadSkillsChart();
+      },
+      error: (err) => {
+        console.error('Error loading skills:', err);
+        this.skills = ['No Skills'];
+        this.loadSkillsChart();
+      }
+    });
+  }
 
-        this.barData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'My First dataset',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: 'My Second dataset',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
+  loadLanguagesChart(): void {
+    if (!this.languages.length) return;
 
-        this.barOptions = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
+    console.log('Loading language chart data for:', this.languages);
+    Promise.all(
+      this.languages.map(lang => 
+        this.http.get<any[]>(`${this.apiUrl}/candidates/language/${lang}`).toPromise()
+          .then(candidates => candidates?.length || 0)
+          .catch(() => 0)
+      )
+    ).then(counts => {
+      this.languageChartData = {
+        labels: this.languages,
+        datasets: [{
+          label: 'Candidates by Language',
+          backgroundColor: '#42A5F5',
+          borderColor: '#1E88E5',
+          data: counts[0] === 0 && this.languages[0] === 'No Languages' ? [0] : counts,
+          borderWidth: 1
+        }]
+      };
+      console.log('Language chart data loaded:', this.languageChartData);
+    }).catch(err => {
+      console.error('Error loading language chart data:', err);
+      this.languageChartData = {
+        labels: ['Error'],
+        datasets: [{
+          label: 'Candidates by Language',
+          backgroundColor: '#42A5F5',
+          borderColor: '#1E88E5',
+          data: [0],
+          borderWidth: 1
+        }]
+      };
+    });
+  }
+
+  loadSkillsChart(): void {
+    if (!this.skills.length) return;
+
+    console.log('Loading skills chart data for:', this.skills);
+    Promise.all(
+      this.skills.map(skill => 
+        this.http.get<any[]>(`${this.apiUrl}/candidates/technology/${skill}`).toPromise()
+          .then(candidates => candidates?.length || 0)
+          .catch(() => 0)
+      )
+    ).then(counts => {
+      const isEmptyData = counts.every(count => count === 0) || this.skills[0] === 'No Skills';
+      this.skillsChartData = {
+        labels: isEmptyData ? ['No Data'] : this.skills,
+        datasets: [{
+          data: isEmptyData ? [1] : counts,
+          backgroundColor: isEmptyData 
+            ? ['#E0E0E0'] 
+            : this.generateColors(counts.length),
+          hoverBackgroundColor: isEmptyData 
+            ? ['#E0E0E0'] 
+            : this.generateColors(counts.length),
+          borderWidth: 1,
+          borderColor: isEmptyData ? '#d1d1d1' : '#ffffff'
+        }]
+      };
+      console.log('Skills chart data loaded:', this.skillsChartData);
+    }).catch(err => {
+      console.error('Error loading skills chart data:', err);
+      this.skillsChartData = {
+        labels: ['Error'],
+        datasets: [{ 
+          data: [1], 
+          backgroundColor: ['#E0E0E0'], 
+          hoverBackgroundColor: ['#E0E0E0'],
+          borderWidth: 1,
+          borderColor: '#d1d1d1'
+        }]
+      };
+    });
+  }
+
+  initChartOptions(): void {
+    this.chartOptions = {
+      plugins: {
+        legend: {
+          labels: {
+            color: '#495057',
+            font: {
+              size: 12,
+              weight: '500'
             },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                        font: {
-                            weight: 500
-                        }
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
-
-
-
-        this.lineData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    tension: 0.4
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    tension: 0.4
-                }
-            ]
-        };
-
-        this.lineOptions = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
+            padding: 10
+          },
+          position: 'top'
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          titleFont: {
+            size: 12,
+            weight: '500'
+          },
+          bodyFont: {
+            size: 11
+          },
+          padding: 8,
+          cornerRadius: 4
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: '#495057',
+            font: {
+              size: 11
             },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
+            padding: 5
+          },
+          grid: {
+            color: '#ebedef',
+            drawBorder: false
+          },
+          title: {
+            display: true,
+            text: 'Number of Candidates',
+            color: '#495057',
+            font: {
+              size: 12,
+              weight: '500'
+            },
+            padding: 5
+          }
+        },
+        x: {
+          ticks: {
+            color: '#495057',
+            font: {
+              size: 11
+            },
+            padding: 5
+          },
+          grid: {
+            display: false
+          }
+        }
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    };
+    console.log('Chart options initialized:', this.chartOptions);
+  }
 
-
-    }
+  private generateColors(count: number): string[] {
+    const colors = [
+      '#42A5F5', '#66BB6A', '#FFCA28', '#EF5350', '#AB47BC',
+      '#26C6DA', '#D4E157', '#FF7043', '#8D6E63', '#B0BEC5'
+    ];
+    return Array.from(
+      { length: count }, 
+      (_, i) => colors[i % colors.length]
+    );
+  }
 }

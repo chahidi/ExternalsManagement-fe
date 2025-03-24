@@ -42,14 +42,7 @@ export class StepperFormComponent implements OnInit {
   activeIndex: number = 0;
   extractedData: any;
 
-  degrees = [
-    { label: 'Bachelor', value: 'Bachelor' },
-    { label: 'Master', value: 'Master' },
-    { label: 'PhD', value: 'PhD' },
-    { label: 'Associate', value: 'Associate' }
-  ];
-
-  // Updated to match JSON values (e.g., "ADVANCED", "INTERMEDIATE")
+  
   languageLevels = [
     { label: 'Advanced', value: 'ADVANCED' },
     { label: 'Intermediate', value: 'INTERMEDIATE' },
@@ -57,7 +50,6 @@ export class StepperFormComponent implements OnInit {
     { label: 'Native', value: 'NATIVE' }
   ];
 
-  // Updated to match potential JSON values (e.g., "EXPERT", "INTERMEDIATE")
   skillProficiencies = [
     { label: 'Beginner', value: 'BEGINNER' },
     { label: 'Intermediate', value: 'INTERMEDIATE' },
@@ -86,7 +78,7 @@ export class StepperFormComponent implements OnInit {
       { label: 'Contact' }
     ];
 
-    // General Data Form with gender fix
+    // General Data Form 
     this.generalDataForm = this.fb.group(
       {
         fullName: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
@@ -128,7 +120,7 @@ export class StepperFormComponent implements OnInit {
       { validators: this.experienceDateValidator }
     );
 
-    // Added pattern validator for language field
+    // validator for language 
     this.languageForm = this.fb.group({
       language: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
       level: ['', Validators.required],
@@ -158,7 +150,6 @@ export class StepperFormComponent implements OnInit {
   private populateForms() {
     if (!this.extractedData) return;
 
-    // Fix gender mapping: "M" -> "Male", "F" -> "Female"
     this.generalDataForm.patchValue({
       fullName: this.extractedData.fullName || '',
       birthDate: this.extractedData.birthDate || '',
@@ -198,7 +189,7 @@ export class StepperFormComponent implements OnInit {
       });
     }
 
-    // Handle both naturalLanguages and languages, map level to match languageLevels
+    // ;anguage map
     if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
       this.languageForm.patchValue({
         language: this.extractedData.naturalLanguages[0].language || '',
@@ -221,7 +212,6 @@ export class StepperFormComponent implements OnInit {
     }
 
     if (this.extractedData.contacts && this.extractedData.contacts.length > 0) {
-      // Normalize contactType to match dropdown options
       const contactType = this.extractedData.contacts[0].contactType
         ? this.extractedData.contacts[0].contactType.charAt(0).toUpperCase() + this.extractedData.contacts[0].contactType.slice(1).toLowerCase()
         : 'Email';
@@ -232,7 +222,7 @@ export class StepperFormComponent implements OnInit {
     }
   }
 
-  /*** Custom Validators ***/
+  // age validator
 
   ageValidator(control: AbstractControl): ValidationErrors | null {
     const birthDate = control.value;
@@ -251,7 +241,7 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
-
+  // experince validator matches the age 
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
     const yearsControl = control.get('yearsOfExperience');
@@ -293,8 +283,6 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
-
-  /*** Helper Functions ***/
 
   getCurrentForm(): FormGroup {
     switch (this.activeIndex) {
@@ -378,7 +366,6 @@ export class StepperFormComponent implements OnInit {
       };
 
       console.log('Candidate Data: ', candidateData);
-      // TODO: Inject and call your CandidateService here to persist the candidateData.
     } else {
       this.markAllFormsTouched();
     }

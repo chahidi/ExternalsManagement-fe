@@ -1,89 +1,72 @@
-$primary-green: #28a745;
-$primary-green-hover: #218838;
-$background-light: #f7f9fc;
-$border-color: #ccc;
-$text-color: #333;
-$secondary-text-color: #666;
-$white: #ffffff;
-
 .upload-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: $background-light;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
 
-  h3 {
-    font-size: 24px;
-    font-weight: bold;
-    color: $text-color;
-    margin-bottom: 20px;
-  }
-}
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+    }
 
-:host {
-  ::ng-deep {
-    .p-fileupload {
-      .p-fileupload-buttonbar {
+    p-fileUpload {
+      display: block;
+
+      ::ng-deep .p-fileupload-buttonbar {
         display: flex;
-        justify-content: center;
         gap: 10px;
-        padding: 10px;
-        border: none;
-        background: none;
+        margin-bottom: 15px;
 
-        .p-button.p-fileupload-choose {
-          background-color: $primary-green;
-          border: none;
-          color: $white;
-          padding: 8px 16px;
-          border-radius: 5px;
-
-          &:hover {
-            background-color: $primary-green-hover;
+        .p-button {
+          &.p-fileupload-choose {
+            background-color: #007bff;
+            border: none;
+            &:hover {
+              background-color: #0056b3;
+            }
           }
-        }
 
-        .p-button.p-button-icon-only.pi.pi-upload {
-          background-color: $white;
-          border: 1px solid $border-color;
-          color: $secondary-text-color;
-          padding: 8px;
-          border-radius: 5px;
-
-          &:hover {
-            background-color: darken($white, 5%);
+          &.p-fileupload-upload {
+            background-color: #6c757d;
+            border: none;
+            &:hover {
+              background-color: #5a6268;
+            }
           }
-        }
 
-        .p-button.p-button-icon-only.pi.pi-times {
-          background-color: $white;
-          border: 1px solid $border-color;
-          color: $secondary-text-color;
-          padding: 8px;
-          border-radius: 5px;
+          &.p-fileupload-cancel {
+            background-color: #6c757d;
+            border: none;
+            &:hover {
+              background-color: #5a6268;
+            }
+          }
 
-          &:hover {
-            background-color: darken($white, 5%);
+          .p-button-label {
+            font-size: 14px;
+            font-weight: 500;
           }
         }
       }
 
-      .p-fileupload-content {
-        border: 2px dashed $border-color;
-        border-radius: 5px;
-        padding: 20px;
-        background-color: $white;
-        color: $secondary-text-color;
-        font-size: 14px;
+      ::ng-deep .p-fileupload-content {
+        border: 2px dashed #d3d3d3;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+        padding: 30px;
+        text-align: center;
+        min-height: 100px;
+
+        .drag-drop-message {
+          color: #6c757d;
+          font-size: 16px;
+          font-weight: 400;
+        }
       }
     }
   }
-}
-
-.drag-drop-message {
-  text-align: center;
-  color: $text-color;
-}

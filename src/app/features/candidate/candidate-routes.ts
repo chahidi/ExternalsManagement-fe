@@ -13,6 +13,7 @@ export const CANDIDATE_FORMS_ROUTES: Routes = [
         title: 'Candidate List'
       },
     ],
+
   },
   {
     path: 'new-cv',

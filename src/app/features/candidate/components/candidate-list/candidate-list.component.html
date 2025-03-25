@@ -1,0 +1,176 @@
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4">Candidate List</h2>
+
+    <div class="card mb-4">
+        <h3 class="text-lg font-semibold mb-3">Filter Candidates</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="field">
+                <label for="skills" class="block mb-2">Skills</label>
+                <p-multiSelect id="skills" [options]="skillOptions" [(ngModel)]="filters.skills" optionLabel="name" placeholder="Select Skills" [style]="{ width: '100%' }"></p-multiSelect>
+            </div>
+            <div class="field">
+                <label for="language" class="block mb-2">Language</label>
+                <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language" optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"></p-dropdown>
+            </div>
+            <div class="field">
+                <label for="yearsOfExperience" class="block mb-2">Years of Experience</label>
+                <div class="flex align-items-center">
+                    <p-inputNumber id="yearsOfExperience" [(ngModel)]="filters.yearsOfExperience" [min]="0" [max]="20" placeholder="Enter years" [style]="{ width: '100%' }"></p-inputNumber>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end mt-4">
+            <p-button label="Reset" icon="pi pi-times" styleClass="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
+            <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
+        </div>
+    </div>
+
+    <p-table
+        #dt1
+        [value]="candidates"
+        dataKey="id"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="loading"
+        [paginator]="true"
+        [globalFilterFields]="['fullName', 'address.city.name', 'educations.degree', 'experiences.companyName', 'skills.skillName', 'mainTech']"
+        responsiveLayout="scroll"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onFilterInput($event, dt1)" placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center">
+                        Full Name
+                        <p-columnFilter type="text" field="fullName" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th style="min-width: 10rem">
+                    <div class="flex items-center">
+                        Main Tech
+                        <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center">
+                        Location
+                        <p-columnFilter type="text" field="address.city.name" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center">
+                        Education
+                        <p-columnFilter type="text" field="educations.degree" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center">
+                        Experience
+                        <p-columnFilter type="text" field="experiences.companyName" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center">
+                        Skills
+                        <p-columnFilter type="text" field="skills.skillName" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th style="min-width: 10rem">
+                    <div class="flex items-center">Contact</div>
+                </th>
+                <th style="min-width: 10rem">
+                    <div class="flex items-center">Actions</div>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-candidate>
+            <tr>
+                <td>{{ candidate.fullName }}</td>
+                <td>{{ candidate.mainTech }}</td>
+                <td>{{ candidate.address?.city?.name }}, {{ candidate.address?.country?.name }}</td>
+                <td>
+                    <ul class="list-none p-0 m-0">
+                        <li *ngFor="let education of candidate.educations">{{ education.degree }} - {{ education.institution }}</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="list-none p-0 m-0">
+                        <li *ngFor="let experience of candidate.experiences">{{ experience.position }} at {{ experience.companyName }}</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="list-none p-0 m-0">
+                        <li *ngFor="let skill of candidate.skills">
+                            <span
+                                class="inline-block mr-2 p-1 text-xs rounded"
+                                [ngClass]="{
+                                    'bg-blue-100': skill.proficiencyLevel === 'BEGINNER',
+                                    'bg-blue-200': skill.proficiencyLevel === 'INTERMEDIATE',
+                                    'bg-blue-300': skill.proficiencyLevel === 'ADVANCED',
+                                    'bg-blue-400': skill.proficiencyLevel === 'EXPERT'
+                                }"
+                            >
+                                {{ skill.skillName }}
+                            </span>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <div *ngFor="let contact of candidate.contacts">
+                        <span *ngIf="contact.contactType === 'Email'"> <i class="pi pi-envelope mr-1"></i>{{ contact.contactValue }} </span>
+                        <span *ngIf="contact.contactType === 'Phone'"> <i class="pi pi-phone mr-1"></i>{{ contact.contactValue }} </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex">
+                        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editCandidate(candidate)"></button>
+                        <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="confirmDelete(candidate)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">No candidates found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-confirmDialog [style]="{ width: '450px' }" header="Confirm" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+<p-dialog [(visible)]="displayEditDialog" [style]="{ width: '70%' }" [modal]="true" [draggable]="false" [resizable]="false" header="Edit Candidate">
+    <div *ngIf="selectedCandidate" class="p-fluid">
+        <div class="field">
+            <label for="name">Full Name</label>
+            <input id="name" type="text" pInputText [(ngModel)]="selectedCandidate.fullName" required />
+        </div>
+        <div class="field">
+            <label for="mainTech">Main Technology</label>
+            <input id="mainTech" type="text" pInputText [(ngModel)]="selectedCandidate.mainTech" />
+        </div>
+        <div class="field">
+            <label for="yearsExp">Years of Experience</label>
+            <p-inputNumber id="yearsExp" [(ngModel)]="selectedCandidate.yearsOfExperience" [min]="0" [max]="50"></p-inputNumber>
+        </div>
+        <div class="field">
+            <label for="summary">Summary</label>
+            <textarea id="summary" pInputTextarea [(ngModel)]="selectedCandidate.summary" rows="5"></textarea>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-times" label="Cancel" (click)="displayEditDialog = false" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-check" label="Save" (click)="saveCandidate()" [disabled]="!selectedCandidate?.fullName"></p-button>
+    </ng-template>
+</p-dialog>

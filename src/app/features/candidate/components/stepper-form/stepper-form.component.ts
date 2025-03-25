@@ -50,13 +50,13 @@ export class StepperFormComponent implements OnInit {
   ];
 
 
+
   languageLevels = [
     { label: 'Advanced', value: 'ADVANCED' },
     { label: 'Intermediate', value: 'INTERMEDIATE' },
     { label: 'Basic', value: 'BASIC' },
     { label: 'Native', value: 'NATIVE' }
   ];
-
 
   skillProficiencies = [
     { label: 'Beginner', value: 'BEGINNER' },
@@ -86,6 +86,7 @@ export class StepperFormComponent implements OnInit {
       { label: 'Contact' }
     ];
 
+    // General Data Form 
 
     this.generalDataForm = this.fb.group(
       {
@@ -128,7 +129,6 @@ export class StepperFormComponent implements OnInit {
       { validators: this.experienceDateValidator }
     );
 
-
     this.languageForm = this.fb.group({
       language: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
       level: ['', Validators.required],
@@ -157,7 +157,6 @@ export class StepperFormComponent implements OnInit {
 
   private populateForms() {
     if (!this.extractedData) return;
-
 
     this.generalDataForm.patchValue({
       fullName: this.extractedData.fullName || '',
@@ -198,6 +197,7 @@ export class StepperFormComponent implements OnInit {
       });
     }
 
+    // ;anguage map
 
     if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
       this.languageForm.patchValue({
@@ -221,7 +221,6 @@ export class StepperFormComponent implements OnInit {
     }
 
     if (this.extractedData.contacts && this.extractedData.contacts.length > 0) {
-
       const contactType = this.extractedData.contacts[0].contactType
         ? this.extractedData.contacts[0].contactType.charAt(0).toUpperCase() + this.extractedData.contacts[0].contactType.slice(1).toLowerCase()
         : 'Email';
@@ -233,6 +232,7 @@ export class StepperFormComponent implements OnInit {
   }
 
 
+  // age validator
 
   ageValidator(control: AbstractControl): ValidationErrors | null {
     const birthDate = control.value;
@@ -251,6 +251,8 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
+
+  // experince validator matches the age 
 
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
@@ -377,9 +379,10 @@ export class StepperFormComponent implements OnInit {
       };
 
       console.log('Candidate Data: ', candidateData);
-
     } else {
       this.markAllFormsTouched();
     }
   }
+
 }
+

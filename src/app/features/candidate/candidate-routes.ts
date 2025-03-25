@@ -1,29 +1,35 @@
 import { Routes } from '@angular/router';
-import { CandidateFormComponent } from './components/candidate-form/candidate-form.component';
+import { CandidateListComponent } from './components/candidate-list/candidate-list.component';
 
 export const CANDIDATE_FORMS_ROUTES: Routes = [
   {
     path: '',
-    component: CandidateFormComponent,
+    component: CandidateListComponent,
     children: [
       {
-        path: 'new-candidate',
-        loadComponent: () => import('./components/candidate-form/candidate-form.component')
-          .then(m => m.CandidateFormComponent),
-        title: 'New Candidate'
+        path: 'candidate-list', 
+        loadComponent: () => import('./components/candidate-list/candidate-list.component')
+          .then(m => m.CandidateListComponent),
+        title: 'Candidate List'
+      },
+      {
+        path: 'stepper',
+        loadComponent: () => import('./components/stepper-form/stepper-form.component')
+          .then(m => m.StepperFormComponent),
+        title: 'Candidate Stepper'
+      },
+      {
+        path: 'new-cv',
+        loadComponent: () => import('./components/new-cv/new-cv.component')
+          .then(m => m.NewCvComponent),
+        title: 'New CV'
+      },
+      {
+        path: '',
+        redirectTo: 'stepper',
+        pathMatch: 'full'
       }
     ],
-  },
-  {
-    path: 'new-cv',
-    loadComponent: () => import('./components/new-cv/new-cv.component')
-      .then(m => m.NewCvComponent),
-    title: 'New CV'
-  },
-  {
-    path: 'stepper',
-    loadComponent: () => import('./components/stepper-form/stepper-form.component')
-      .then(m => m.StepperFormComponent),
-    title: 'Stepper Form'
+ 
   }
 ];

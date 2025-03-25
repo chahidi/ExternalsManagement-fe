@@ -9,8 +9,8 @@ import { environment } from '../../../environments/environment';
 })
 export class CandidateService {
 
-  readonly baseUrl = `${environment.apiUrl}/v1/candidates'`;
-  
+  readonly baseUrl = `${environment.apiUrl}/v1/candidates`;
+
 
   constructor(private http: HttpClient) { }
 

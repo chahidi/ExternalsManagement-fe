@@ -8,13 +8,13 @@ import { Candidate } from '../models/candidate';
 })
 export class CandidateService {
 
-  private baseUrl = 'http://localhost:8080/api/v1/candidates';
-
+  private baseUrl = 'http://localhost:8080/candidates';
+  private all = 'all';
   constructor(private http: HttpClient) { }
 
 
   getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.baseUrl}`);
+    return this.http.get<Candidate[]>(`${this.baseUrl}/${this.all}`);
   }
 
   getCandidateById(id: string): Observable<Candidate> {
@@ -29,7 +29,12 @@ export class CandidateService {
     return this.http.put<Candidate>(`${this.baseUrl}/${id}`, candidate);
   }
 
-  deleteCandidate(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  patchCandidate(id: string, candidate: Partial<Candidate>): Observable<Candidate> {
+    return this.http.patch<Candidate>(`${this.baseUrl}/${id}`, candidate);
   }
+  
+  deleteCandidate(id: string): Observable<string> {
+    return this.http.delete<string>(`${this.baseUrl}/${id}`);
+  }
+  
 }

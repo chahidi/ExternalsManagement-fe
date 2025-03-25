@@ -1,17 +1,17 @@
 import { Routes } from '@angular/router';
-import { CandidateFormComponent } from './components/candidate-form/candidate-form.component';
+import { CandidateListComponent } from './components/candidate-list/candidate-list.component';
 
 export const CANDIDATE_FORMS_ROUTES: Routes = [
   {
     path: '',
-    component: CandidateFormComponent,
+    component: CandidateListComponent,
     children: [
       {
-        path: 'new-candidate',
-        loadComponent: () => import('./components/candidate-form/candidate-form.component')
-          .then(m => m.CandidateFormComponent),
-        title: 'New Candidate'
-      }
+        path: 'candidate-list',
+        loadComponent: () => import('./components/candidate-list/candidate-list.component')
+          .then(m => m.CandidateListComponent),
+        title: 'Candidate List'
+      },
     ],
   },
   {

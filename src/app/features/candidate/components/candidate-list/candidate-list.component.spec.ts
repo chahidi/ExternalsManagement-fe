@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewCvComponent } from './new-cv.component';
+import { CandidateListComponent } from './candidate-list.component';
 
-describe('NewCvComponent', () => {
-  let component: NewCvComponent;
-  let fixture: ComponentFixture<NewCvComponent>;
+describe('CandidateListComponent', () => {
+  let component: CandidateListComponent;
+  let fixture: ComponentFixture<CandidateListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewCvComponent]
+      imports: [CandidateListComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NewCvComponent);
+    fixture = TestBed.createComponent(CandidateListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

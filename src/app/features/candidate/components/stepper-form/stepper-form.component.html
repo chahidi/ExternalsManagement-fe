@@ -3,7 +3,7 @@
 
     <div class="p-mt-4">
       <ng-container [ngSwitch]="activeIndex">
-        <!-- Step 0: General Data -->
+        <!--  General Data -->
         <div *ngSwitchCase="0" [formGroup]="generalDataForm">
           <!-- Full Name -->
           <div class="p-field">
@@ -78,7 +78,7 @@
           </div>
         </div>
 
-        <!-- Step 1: Address -->
+        <!--  Address -->
         <div *ngSwitchCase="1" [formGroup]="addressForm">
           <div class="p-field">
             <label for="street">Street</label>
@@ -122,7 +122,7 @@
           </div>
         </div>
 
-        <!-- Step 2: Education -->
+        <!--  Education -->
         <div *ngSwitchCase="2" [formGroup]="educationForm">
           <div class="p-field">
             <label for="institution">Institution</label>
@@ -157,7 +157,7 @@
           </div>
         </div>
 
-        <!-- Step 3: Experience -->
+        <!--  Experience -->
         <div *ngSwitchCase="3" [formGroup]="experienceForm">
           <div class="p-field">
             <label for="companyName">Company Name</label>
@@ -204,7 +204,7 @@
           </div>
         </div>
 
-        <!-- Step 4: Languages -->
+        <!--  Languages -->
         <div *ngSwitchCase="4" [formGroup]="languageForm">
           <div class="p-field">
             <label for="language">Language</label>
@@ -231,7 +231,7 @@
           </div>
         </div>
 
-        <!-- Step 5: Skills -->
+        <!-- Skills -->
         <div *ngSwitchCase="5" [formGroup]="skillsForm">
           <div class="p-field">
             <label for="skillName">Skill Name</label>
@@ -249,7 +249,7 @@
           </div>
         </div>
 
-        <!-- Step 6: Contact -->
+        <!--  Contact -->
         <div *ngSwitchCase="6" [formGroup]="contactForm">
           <div class="p-field">
             <label for="contactType">Contact Type</label>
@@ -281,7 +281,7 @@
       </ng-container>
     </div>
 
-    <!-- Navigation Buttons -->
+    <!-- Buttons -->
     <div class="p-mt-4">
       <button type="button" pButton label="Previous" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
       <button type="button" pButton label="Clear" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>

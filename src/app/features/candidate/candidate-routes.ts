@@ -11,6 +11,12 @@ export const CANDIDATE_FORMS_ROUTES: Routes = [
           .then(m => m.CandidateListComponent),
         title: ''
       }
-
     ],
-  }]
+  },
+  {
+    path: 'new-cv',
+    loadComponent: () => import('./components/new-cv/new-cv.component')
+      .then(m => m.NewCvComponent),
+    title: 'New CV'
+  }
+];

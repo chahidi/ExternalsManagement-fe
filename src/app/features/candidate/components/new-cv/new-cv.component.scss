@@ -1,0 +1,89 @@
+$primary-green: #28a745;
+$primary-green-hover: #218838;
+$background-light: #f7f9fc;
+$border-color: #ccc;
+$text-color: #333;
+$secondary-text-color: #666;
+$white: #ffffff;
+
+.upload-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: $background-light;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+  h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: $text-color;
+    margin-bottom: 20px;
+  }
+}
+
+:host {
+  ::ng-deep {
+    .p-fileupload {
+      .p-fileupload-buttonbar {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px;
+        border: none;
+        background: none;
+
+        .p-button.p-fileupload-choose {
+          background-color: $primary-green;
+          border: none;
+          color: $white;
+          padding: 8px 16px;
+          border-radius: 5px;
+
+          &:hover {
+            background-color: $primary-green-hover;
+          }
+        }
+
+        .p-button.p-button-icon-only.pi.pi-upload {
+          background-color: $white;
+          border: 1px solid $border-color;
+          color: $secondary-text-color;
+          padding: 8px;
+          border-radius: 5px;
+
+          &:hover {
+            background-color: darken($white, 5%);
+          }
+        }
+
+        .p-button.p-button-icon-only.pi.pi-times {
+          background-color: $white;
+          border: 1px solid $border-color;
+          color: $secondary-text-color;
+          padding: 8px;
+          border-radius: 5px;
+
+          &:hover {
+            background-color: darken($white, 5%);
+          }
+        }
+      }
+
+      .p-fileupload-content {
+        border: 2px dashed $border-color;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: $white;
+        color: $secondary-text-color;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.drag-drop-message {
+  text-align: center;
+  color: $text-color;
+}

@@ -10,7 +10,7 @@ export const appRoutes: Routes = [
             { path: '', component: DashboardComponent },
             { path: 'features', loadChildren: () => import('./app/features/features.routes') }
         ]
-    }, 
+    },
     {
         path: 'candidates',
         component: LayoutComponent,

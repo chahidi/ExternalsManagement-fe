@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewCvComponent } from './new-cv.component';
+import { StepperFormComponent } from './stepper-form.component';
 
-describe('NewCvComponent', () => {
-  let component: NewCvComponent;
-  let fixture: ComponentFixture<NewCvComponent>;
+describe('StepperFormComponent', () => {
+  let component: StepperFormComponent;
+  let fixture: ComponentFixture<StepperFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewCvComponent]
+      imports: [StepperFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NewCvComponent);
+    fixture = TestBed.createComponent(StepperFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

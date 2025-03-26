@@ -1,0 +1,21 @@
+<div class="upload-container">
+    <h3>Advanced New Curriculum Vitae</h3>
+    <p-fileUpload
+      name="cv"
+      customUpload="true"
+      accept=".pdf,.doc,.docx"
+      maxFileSize="5000000"
+      chooseLabel="Choose"
+      uploadLabel="Upload"
+      cancelLabel="Cancel"
+      (onSelect)="onFileSelected($event)"
+      (uploadHandler)="uploadCv()"
+      [auto]="false"
+    >
+      <ng-template pTemplate="content">
+        <div class="drag-drop-message">
+          Drag and drop files here to upload.
+        </div>
+      </ng-template>
+    </p-fileUpload>
+  </div>

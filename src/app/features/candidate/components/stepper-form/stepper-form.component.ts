@@ -42,7 +42,7 @@ export class StepperFormComponent implements OnInit {
   activeIndex: number = 0;
   extractedData: any;
 
-  
+
   languageLevels = [
     { label: 'Advanced', value: 'ADVANCED' },
     { label: 'Intermediate', value: 'INTERMEDIATE' },
@@ -78,7 +78,7 @@ export class StepperFormComponent implements OnInit {
       { label: 'Contact' }
     ];
 
-    // General Data Form 
+    // General Data Form
     this.generalDataForm = this.fb.group(
       {
         fullName: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
@@ -120,7 +120,7 @@ export class StepperFormComponent implements OnInit {
       { validators: this.experienceDateValidator }
     );
 
-    // validator for language 
+    // validator for language
     this.languageForm = this.fb.group({
       language: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
       level: ['', Validators.required],
@@ -241,7 +241,7 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
-  // experince validator matches the age 
+  // experince validator matches the age
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
     const yearsControl = control.get('yearsOfExperience');

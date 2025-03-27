@@ -1,153 +1,134 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { debounceTime, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
-import { FluidModule } from 'primeng/fluid';
-import { PanelModule } from 'primeng/panel';
-import { TabsModule } from 'primeng/tabs';
-import { LayoutService } from '../../../../shared/layout/service/layout.service';
-
+import { TabViewModule } from 'primeng/tabview';
+import { StatsService } from '../../../../core/services/stats.service'; // Import the service
 
 @Component({
-    standalone: true,
-    selector: 'app-stats-widget',
-    imports: [CommonModule,ChartModule,PanelModule,TabsModule,FluidModule],
-    templateUrl: './stats-widget.component.html'
+  selector: 'app-stats-widget',
+  standalone: true,
+  imports: [CardModule, ChartModule, TabViewModule],
+  templateUrl: './stats-widget.component.html',
+  styleUrls: ['./stats-widget.component.scss']
 })
-export class StatsWidgetComponent {
-    lineData: any;
+export class StatsWidgetComponent implements OnInit {
+  public languageChartData: any;
+  public skillsChartData: any;
+  public chartOptions: any;
+  public totalCandidates: number = 0;
+  private languages: string[] = [];
+  private skills: string[] = [];
 
-    barData: any;
+  constructor(private statsService: StatsService) {}
 
-    lineOptions: any;
+  ngOnInit(): void {
+    console.log('StatsWidgetComponent initialized');
+    this.loadTotalCandidates();
+    this.loadAllLanguages();
+    this.loadAllSkills();
+    this.initChartOptions();
+  }
 
-    barOptions: any;
+  loadTotalCandidates(): void {
+    this.statsService.getTotalCandidates().subscribe({
+      next: (total) => {
+        this.totalCandidates = total;
+      },
+      error: () => {
+        this.totalCandidates = 0;
+      }
+    });
+  }
 
-    subscription: Subscription;
+  loadAllLanguages(): void {
+    this.statsService.getLanguages().subscribe({
+      next: (languages) => {
+        this.languages = languages.length ? languages : ['No Languages'];
+        this.loadLanguagesChart();
+      },
+      error: () => {
+        this.languages = ['No Languages'];
+        this.loadLanguagesChart();
+      }
+    });
+  }
 
-    constructor(private layoutService: LayoutService) {
-        this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe(() => {
-            this.initCharts();
-        });
-    }
-    ngOnInit() {
-        this.initCharts();
-    }
-    initCharts() {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+  loadAllSkills(): void {
+    this.statsService.getSkills().subscribe({
+      next: (skills) => {
+        this.skills = skills.length ? skills : ['No Skills'];
+        this.loadSkillsChart();
+      },
+      error: () => {
+        this.skills = ['No Skills'];
+        this.loadSkillsChart();
+      }
+    });
+  }
 
-        this.barData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'My First dataset',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: 'My Second dataset',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
+  loadLanguagesChart(): void {
+    if (!this.languages.length) return;
 
-        this.barOptions = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                        font: {
-                            weight: 500
-                        }
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
+    Promise.all(
+      this.languages.map(lang =>
+        this.statsService.getCandidatesByLanguage(lang).toPromise()
+          .then(candidates => candidates?.length || 0)
+          .catch(() => 0)
+      )
+    ).then(counts => {
+      this.languageChartData = {
+        labels: this.languages,
+        datasets: [{
+          label: 'Candidates by Language',
+          backgroundColor: '#42A5F5',
+          borderColor: '#1E88E5',
+          data: counts[0] === 0 && this.languages[0] === 'No Languages' ? [0] : counts,
+          borderWidth: 1
+        }]
+      };
+    }).catch(() => {
+      this.languageChartData = { labels: ['Error'], datasets: [{ data: [0] }] };
+    });
+  }
 
+  loadSkillsChart(): void {
+    if (!this.skills.length) return;
 
+    Promise.all(
+      this.skills.map(skill =>
+        this.statsService.getCandidatesBySkill(skill).toPromise()
+          .then(candidates => candidates?.length || 0)
+          .catch(() => 0)
+      )
+    ).then(counts => {
+      const isEmptyData = counts.every(count => count === 0) || this.skills[0] === 'No Skills';
+      this.skillsChartData = {
+        labels: isEmptyData ? ['No Data'] : this.skills,
+        datasets: [{
+          data: isEmptyData ? [1] : counts,
+          backgroundColor: isEmptyData ? ['#E0E0E0'] : this.generateColors(counts.length),
+          hoverBackgroundColor: isEmptyData ? ['#E0E0E0'] : this.generateColors(counts.length),
+          borderWidth: 1,
+          borderColor: isEmptyData ? '#d1d1d1' : '#ffffff'
+        }]
+      };
+    }).catch(() => {
+      this.skillsChartData = { labels: ['Error'], datasets: [{ data: [1] }] };
+    });
+  }
 
-        this.lineData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    tension: 0.4
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    tension: 0.4
-                }
-            ]
-        };
+  initChartOptions(): void {
+    this.chartOptions = {
+      plugins: { legend: { labels: { color: '#495057' } }, tooltip: {} },
+      scales: { y: { beginAtZero: true }, x: {} },
+      responsive: true,
+      maintainAspectRatio: false
+    };
+  }
 
-        this.lineOptions = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
-
-
-    }
+  private generateColors(count: number): string[] {
+    const colors = ['#42A5F5', '#66BB6A', '#FFCA28', '#EF5350'];
+    return Array.from({ length: count }, (_, i) => colors[i % colors.length]);
+  }
 }

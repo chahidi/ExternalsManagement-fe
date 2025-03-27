@@ -1,0 +1,122 @@
+:host {
+  display: block; /* Ensure the component is a block element */
+}
+
+/* Add more specificity to prevent global style overrides */
+:host .stats-container {
+  width: 100%;
+  min-height: 400px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+:host .stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Clean and minimalistic styling for the title */
+:host .stats-title {
+  font-size: 26px !important; /* Slightly larger for emphasis */
+  font-weight: 600 !important; /* Lighter than 700 for a more elegant look */
+  color: #333 !important; /* Neutral dark grey for a clean look */
+  letter-spacing: 0.5px; /* Subtle spacing for elegance */
+  line-height: 1.2 !important; /* Improve readability */
+  margin-bottom: 10px; /* Space below the title */
+}
+
+/* Total Candidates Card */
+:host .total-card {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+:host .total-candidates {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #495057;
+}
+
+:host .total-label {
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+:host .candidate-count {
+  font-weight: 700;
+  color: #007bff;
+}
+
+/* Chart Cards */
+:host .chart-card {
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+:host .chart-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+:host p-chart {
+  display: block;
+  width: 100%;
+}
+
+/* TabView Styling */
+:host ::ng-deep .p-tabview .p-tabview-nav {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  gap: 10px;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li {
+  margin-right: 0;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background-color: #e9ecef;
+  color: #495057;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+  background-color: #d1e7ff;
+  color: #007bff;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Chart Styling */
+:host ::ng-deep .p-chart {
+  position: relative;
+}
+
+:host ::ng-deep .p-chart canvas {
+  max-width: 100%;
+}

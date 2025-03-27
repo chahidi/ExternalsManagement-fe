@@ -1,0 +1,19 @@
+:host {
+    display: block; /* Ensure the component is a block element */
+  }
+  
+  .dashboard {
+    padding: 20px;
+    background-color: #f5f7fa; /* Light background to match SAKAI's theme */
+    min-height: 100vh; /* Ensure the dashboard takes up the full viewport height */
+  }
+  
+  /* Styling for the Dashboard title */
+  .dashboard-title {
+    font-size: 32px; /* Larger for the main page heading */
+    font-weight: 700; /* Bolder to make it stand out */
+    color: #1a3c34 !important; /* Dark teal to match SAKAI's theme */
+    margin-bottom: 30px; /* More space below the title for hierarchy */
+    line-height: 1.2; /* Improve readability */
+    letter-spacing: 0.5px; /* Subtle spacing for elegance */
+  }

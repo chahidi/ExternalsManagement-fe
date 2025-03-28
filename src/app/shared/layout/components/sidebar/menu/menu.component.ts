@@ -34,9 +34,9 @@ export class MenuComponent {
             {
                 label: 'Prompt Management',
                 items: [
-                    { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
-                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
-                ]
+                    { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/features/prompts/new-prompt'] }, // Corrected routerLink
+                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/features/prompts/prompt-list'] }, // Corrected routerLink
+                  ]
             }
         ];
     }

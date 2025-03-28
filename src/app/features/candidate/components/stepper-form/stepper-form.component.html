@@ -1,5 +1,5 @@
 <div class="card">
-    <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+    <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="true"></p-steps>
 
     <div class="p-mt-4">
       <ng-container [ngSwitch]="activeIndex">
@@ -282,10 +282,10 @@
     </div>
 
     <!-- Buttons -->
-    <div class="p-mt-4">
-      <button type="button" pButton label="Previous" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
-      <button type="button" pButton label="Clear" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
-      <button type="button" pButton label="Next" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-      <button type="submit" pButton label="Save" title="Save and submit the form" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
-    </div>
+    <div class="p-mt-4 button-group">
+    <button type="button" pButton label="Previous" icon="pi pi-arrow-left" iconPos="left" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
+    <button type="button" pButton label="Clear" icon="pi pi-trash" iconPos="left" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
+    <button type="button" pButton label="Next" icon="pi pi-arrow-right" iconPos="right" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
+    <button type="submit" pButton label="Save" icon="pi pi-check" iconPos="right" title="Save and submit the form" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
+  </div>
   </div>

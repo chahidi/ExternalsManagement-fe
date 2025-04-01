@@ -1,14 +1,14 @@
-// prompt.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Prompt } from '../models/prompt'; 
 
 @Injectable({
   providedIn: 'root',
 })
 export class PromptService {
-  private apiUrl = '/api/v1/prompts';
+  private apiUrl = `${environment.apiUrl}/v1/prompts`;
 
   constructor(private http: HttpClient) {}
 
@@ -43,4 +43,4 @@ export class PromptService {
   deletePrompt(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-}
+      }

@@ -1,100 +1,88 @@
 <div class="card">
-  <!-- Stepper -->
-  <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="true" [styleClass]="'custom-steps'">
-    <ng-template let-step pTemplate="step">
-      <span class="step-label" [title]="step.label">
-        {{ step.label }}
-        <i *ngIf="step.icon" [class]="step.icon"></i>
-      </span>
-    </ng-template>
-  </p-steps>
-  
-  
-  
-  
+    <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="true"></p-steps>
 
-  <!-- Form Content -->
-  <div class="p-mt-4">
-    <ng-container [ngSwitch]="activeIndex">
-      <!-- ========== GENERAL DATA SECTION ========== -->
-      <div *ngSwitchCase="0" [formGroup]="generalDataForm" class="form-section">
-        <!-- Full Name -->
-        <div class="p-field">
-          <label for="fullName">{{ 'general.fullName' | translate }}</label>
-          <input id="fullName" type="text" pInputText formControlName="fullName">
-          <small *ngIf="generalDataForm.get('fullName')?.touched">
-            <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('required')">
-              <i class="pi pi-times-circle"></i> {{ 'general.fullNameRequired' | translate }}
-            </ng-container>
-            <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('pattern')">
-              <i class="pi pi-times-circle"></i> {{ 'general.onlyLettersAllowed' | translate }}
-            </ng-container>
-          </small>
-        </div>
-
-        <!-- Birth Date -->
-        <div class="p-field">
-          <label for="birthDate">{{ 'general.birthDate' | translate }}</label>
-          <input id="birthDate" type="date" pInputText formControlName="birthDate">
-          <small *ngIf="generalDataForm.get('birthDate')?.touched">
-            <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('required')">
-              <i class="pi pi-times-circle"></i> {{ 'general.birthDateRequired' | translate }}
-            </ng-container>
-            <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('underAge')">
-              <i class="pi pi-times-circle"></i> {{ 'general.underAge' | translate }}
-            </ng-container>
-            <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('overAge')">
-              <i class="pi pi-times-circle"></i> {{ 'general.overAge' | translate }}
-            </ng-container>
-          </small>
-        </div>
-
-        <!-- Years of Experience -->
-        <div class="p-field">
-          <label for="yearsOfExperience">{{ 'general.yearsOfExperience' | translate }}</label>
-          <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience">
-          <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-            <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
-              <i class="pi pi-times-circle"></i> {{ 'general.validNumber' | translate }}
-            </ng-container>
-          </small>
-          <small *ngIf="generalDataForm.hasError('invalidExperience')">
-            <i class="pi pi-times-circle"></i> {{ 'general.invalidExperience' | translate }}
-          </small>
-        </div>
-
-        <!-- Gender -->
-        <div class="p-field">
-          <label>{{ 'general.gender' | translate }}</label>
-          <div class="p-formgroup-inline">
-            <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
-            <label>{{ 'general.male' | translate }}</label>
-            <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
-            <label>{{ 'general.female' | translate }}</label>
+    <div class="p-mt-4">
+      <ng-container [ngSwitch]="activeIndex">
+        <!--  General Data -->
+        <div *ngSwitchCase="0" [formGroup]="generalDataForm">
+          <!-- Full Name -->
+          <div class="p-field">
+            <label for="fullName">Full Name</label>
+            <input id="fullName" type="text" pInputText formControlName="fullName">
+            <small *ngIf="generalDataForm.get('fullName')?.touched">
+              <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('required')">
+                <i class="pi pi-times-circle"></i> Full Name is required.
+              </ng-container>
+              <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('pattern')">
+                <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+              </ng-container>
+            </small>
           </div>
-          <small *ngIf="generalDataForm.get('gender')?.touched && generalDataForm.get('gender')?.invalid">
-            <i class="pi pi-times-circle"></i> {{ 'general.genderRequired' | translate }}
-          </small>
+          <!-- Birth Date -->
+          <div class="p-field">
+            <label for="birthDate">Birth Date</label>
+            <input id="birthDate" type="date" pInputText formControlName="birthDate">
+            <small *ngIf="generalDataForm.get('birthDate')?.touched">
+              <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('required')">
+                <i class="pi pi-times-circle"></i> Birth Date is required.
+              </ng-container>
+              <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('underAge')">
+                <i class="pi pi-times-circle"></i> You must be at least 18 years old.
+              </ng-container>
+              <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('overAge')">
+                <i class="pi pi-times-circle"></i> Age exceeds allowed limit.
+              </ng-container>
+            </small>
+          </div>
+          <!-- Years of Experience -->
+            <div class="p-field">
+                <label for="yearsOfExperience">Years of Experience</label>
+                <input
+                id="yearsOfExperience"
+                type="number"
+                pInputText
+                formControlName="yearsOfExperience"
+                [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null"
+                >
+                <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
+                <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
+                    <i class="pi pi-times-circle"></i> Please enter a valid number.
+                </ng-container>
+                </small>
+                <small *ngIf="generalDataForm.hasError('invalidExperience')">
+                <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
+                </small>
+            </div>
+          <!-- Gender -->
+          <div class="p-field">
+            <label>Gender</label>
+            <div class="p-formgroup-inline">
+              <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
+              <label>Male</label>
+              <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
+              <label>Female</label>
+            </div>
+            <small *ngIf="generalDataForm.get('gender')?.touched && generalDataForm.get('gender')?.invalid">
+              <i class="pi pi-times-circle"></i> Gender is required.
+            </small>
+          </div>
+          <!-- Main Technology -->
+          <div class="p-field">
+            <label for="mainTech">Main Technology</label>
+            <input id="mainTech" type="text" pInputText formControlName="mainTech">
+            <small *ngIf="generalDataForm.get('mainTech')?.touched && generalDataForm.get('mainTech')?.invalid">
+              <i class="pi pi-times-circle"></i> Main Technology is required.
+            </small>
+          </div>
+          <!-- Summary -->
+          <div class="p-field">
+            <label for="summary">Summary</label>
+            <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
+            <small *ngIf="generalDataForm.get('summary')?.touched && generalDataForm.get('summary')?.invalid">
+              <i class="pi pi-times-circle"></i> Summary is required.
+            </small>
+          </div>
         </div>
-
-        <!-- Main Technology -->
-        <div class="p-field">
-          <label for="mainTech">{{ 'general.mainTechnology' | translate }}</label>
-          <input id="mainTech" type="text" pInputText formControlName="mainTech">
-          <small *ngIf="generalDataForm.get('mainTech')?.touched && generalDataForm.get('mainTech')?.invalid">
-            <i class="pi pi-times-circle"></i> {{ 'general.mainTechnologyRequired' | translate }}
-          </small>
-        </div>
-
-        <!-- Summary -->
-        <div class="p-field">
-          <label for="summary">{{ 'general.summary' | translate }}</label>
-          <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
-          <small *ngIf="generalDataForm.get('summary')?.touched && generalDataForm.get('summary')?.invalid">
-            <i class="pi pi-times-circle"></i> {{ 'general.summaryRequired' | translate }}
-          </small>
-        </div>
-      </div>
 
       <!-- ========== ADDRESS SECTION ========== -->
       <div *ngSwitchCase="1" [formGroup]="addressForm" class="form-section">

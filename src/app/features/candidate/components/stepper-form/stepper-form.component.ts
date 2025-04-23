@@ -129,15 +129,15 @@ export class StepperFormComponent implements OnInit {
     });
 
     this.experienceForm = this.fb.group(
-      {
-        companyName: ['', Validators.required],
-        position: ['', Validators.required],
-        startDate: ['', Validators.required],
-        endDate: ['', Validators.required],
-        description: ['', Validators.required]
-      },
-      { validators: this.experienceDateValidator }
-    );
+        {
+          companyName: ['', Validators.pattern('^[A-Za-z0-9\\s]+$')],
+          position: ['', Validators.pattern('^[A-Za-z\\s]+$')],
+          startDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+          endDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+          description: ['', Validators.pattern('^[A-Za-z0-9\\s,.!?]+$')]
+        },
+        { validators: this.experienceDateValidator }
+      );
 
     // validator for language
     this.languageForm = this.fb.group({
@@ -198,15 +198,14 @@ export class StepperFormComponent implements OnInit {
       });
     }
 
-    if (this.extractedData.experiences && this.extractedData.experiences.length > 0) {
-      this.experienceForm.patchValue({
-        companyName: this.extractedData.experiences[0].companyName || '',
-        position: this.extractedData.experiences[0].position || '',
-        startDate: this.extractedData.experiences[0].startDate || '',
-        endDate: this.extractedData.experiences[0].endDate || '',
-        description: this.extractedData.experiences[0].description || ''
-      });
-    }
+        const experience = this.extractedData.experiences?.[0] || {};
+    this.experienceForm.patchValue({
+    companyName: experience.companyName || '',
+    position: experience.position || '',
+    startDate: experience.startDate || '',
+    endDate: experience.endDate || '',
+    description: experience.description || ''
+    });
 
     // ;anguage map
     if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
@@ -378,7 +377,7 @@ export class StepperFormComponent implements OnInit {
         summary: this.generalDataForm.value.summary,
         address: this.addressForm.value,
         educations: [this.educationForm.value],
-        experiences: [this.experienceForm.value],
+        experiences: this.experienceForm.valid && this.experienceForm.value.companyName ? [this.experienceForm.value] : [],
         languages: [this.languageForm.value],
         skills: [this.skillsForm.value],
         contacts: [this.contactForm.value]

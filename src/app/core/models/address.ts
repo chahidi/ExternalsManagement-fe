@@ -9,6 +9,5 @@ export interface Address {
   fullAddress: string;
   city: City; 
   country: Country; 
-  candidate: Candidate; 
 }
 

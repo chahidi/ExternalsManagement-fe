@@ -18,7 +18,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem } from 'primeng/api';
-import { TranslateModule , TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-candidate-form',
@@ -43,64 +43,34 @@ export class StepperFormComponent implements OnInit {
   steps: MenuItem[] = [];
   activeIndex: number = 0;
   extractedData: any;
-  
-    languageLevels: { label: string; value: string }[] = [];
-    skillProficiencies: { label: string; value: string }[] = [];
-  
-    generalDataForm!: FormGroup;
-    addressForm!: FormGroup;
-    educationForm!: FormGroup;
-    experienceForm!: FormGroup;
-    languageForm!: FormGroup;
-    skillsForm!: FormGroup;
-    contactForm!: FormGroup;
-  
-    constructor(
-      private fb: FormBuilder,
-      private route: ActivatedRoute,
-      private translate: TranslateService
-    ) {}
-  
-    ngOnInit() {
-      this.updateDropdownOptions();
-      this.setSteps();
-  
-      this.translate.onLangChange.subscribe(() => {
-        this.updateDropdownOptions();
+
+  languageLevels: any[] = [];
+  skillProficiencies: any[] = [];
+
+  generalDataForm!: FormGroup;
+  addressForm!: FormGroup;
+  educationForm!: FormGroup;
+  experienceForm!: FormGroup;
+  languageForm!: FormGroup;
+  skillsForm!: FormGroup;
+  contactForm!: FormGroup;
+
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private translate: TranslateService) {}
+
+  ngOnInit() {
+    this.setSteps();
+    this.setLanguageLevels();
+    this.setSkillProficiencies();
+
+    this.translate.onLangChange.subscribe(() => {
+      // Petit délai pour s'assurer que les traductions sont prêtes
+      setTimeout(() => {
         this.setSteps();
-      });
-    }
-  
-    updateDropdownOptions() {
-      this.languageLevels = [
-        { label: this.translate.instant('candidateLanguage.levels.advanced'), value: 'ADVANCED' },
-        { label: this.translate.instant('candidateLanguage.levels.intermediate'), value: 'INTERMEDIATE' },
-        { label: this.translate.instant('candidateLanguage.levels.basic'), value: 'BASIC' },
-        { label: this.translate.instant('candidateLanguage.levels.native'), value: 'NATIVE' }
-      ];
-  
-      this.skillProficiencies = [
-        { label: this.translate.instant('skills.levels.beginner'), value: 'BEGINNER' },
-        { label: this.translate.instant('skills.levels.intermediate'), value: 'INTERMEDIATE' },
-        { label: this.translate.instant('skills.levels.advanced'), value: 'ADVANCED' },
-        { label: this.translate.instant('skills.levels.expert'), value: 'EXPERT' }
-      ];
-    }
-  
-    setSteps() {
-      this.steps = [
-        { label: this.translate.instant('steps.generalData') },
-        { label: this.translate.instant('steps.address') },
-        { label: this.translate.instant('steps.education') },
-        { label: this.translate.instant('steps.experience') },
-        { label: this.translate.instant('steps.languages') },
-        { label: this.translate.instant('steps.skills') },
-        { label: this.translate.instant('steps.contact') }
-      ];
-    
-  
-    
-    
+        this.setLanguageLevels();
+        this.setSkillProficiencies();
+      }, 0);
+    });
+
     // General Data Form
     this.generalDataForm = this.fb.group(
       {
@@ -205,6 +175,36 @@ export class StepperFormComponent implements OnInit {
     });
   }
 
+  setSteps() {
+    this.steps = [
+      { label: this.translate.instant('steps.generalData') },
+      { label: this.translate.instant('steps.address') },
+      { label: this.translate.instant('steps.education') },
+      { label: this.translate.instant('steps.experience') },
+      { label: this.translate.instant('steps.languages') },
+      { label: this.translate.instant('steps.skills') },
+      { label: this.translate.instant('steps.contact') }
+    ];
+  }
+
+  setLanguageLevels() {
+    this.languageLevels = [
+      { label: this.translate.instant('candidateLanguage.levels.advanced'), value: 'ADVANCED' },
+      { label: this.translate.instant('candidateLanguage.levels.intermediate'), value: 'INTERMEDIATE' },
+      { label: this.translate.instant('candidateLanguage.levels.basic'), value: 'BASIC' },
+      { label: this.translate.instant('candidateLanguage.levels.native'), value: 'NATIVE' }
+    ];
+  }
+
+  setSkillProficiencies() {
+    this.skillProficiencies = [
+      { label: this.translate.instant('skills.levels.beginner'), value: 'BEGINNER' },
+      { label: this.translate.instant('skills.levels.intermediate'), value: 'INTERMEDIATE' },
+      { label: this.translate.instant('skills.levels.advanced'), value: 'ADVANCED' },
+      { label: this.translate.instant('skills.levels.expert'), value: 'EXPERT' }
+    ];
+  }
+
   private populateForms() {
     if (!this.extractedData) return;
 
@@ -246,7 +246,7 @@ export class StepperFormComponent implements OnInit {
     description: experience.description || ''
     });
 
-    // ;anguage map
+    // language map
     if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
       this.languageForm.patchValue({
         language: this.extractedData.naturalLanguages[0].language || '',
@@ -282,7 +282,6 @@ export class StepperFormComponent implements OnInit {
   }
 
   // age validator
-
   ageValidator(control: AbstractControl): ValidationErrors | null {
     const birthDate = control.value;
     if (birthDate) {
@@ -300,26 +299,8 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
-  // Custom validator for startDate < endDate
-  dateRangeValidator(control: AbstractControl): ValidationErrors | null {
-    const startDate = control.get('startDate')?.value;
-    const endDate = control.get('endDate')?.value;
 
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      console.log('Start Date:', start);
-      console.log('End Date:', end);
-
-      // Check if the start date is after the end date
-      if (start > end) {
-        return { invalidDateRange: true };
-      }
-    }
-    return null;
-  }
-  // experince validator matches the age
+  // experience validator matches the age
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
     const yearsControl = control.get('yearsOfExperience');

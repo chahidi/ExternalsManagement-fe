@@ -86,109 +86,110 @@
 
   
   
-    "general": {
-      "fullName": "Nombre completo",
-      "fullNameRequired": "El nombre completo es requerido.",
-      "onlyLettersAllowed": "Solo se permiten letras y espacios.",
-      "birthDate": "Fecha de nacimiento",
-      "birthDateRequired": "La fecha de nacimiento es requerida.",
-      "underAge": "Debes tener al menos 18 años.",
-      "overAge": "La edad excede el límite permitido.",
-      "yearsOfExperience": "Años de experiencia",
-      "validNumber": "Por favor, introduce un número válido.",
-      "invalidExperience": "La experiencia excede lo posible dado tu fecha de nacimiento.",
-      "gender": "Género",
-      "male": "Hombre",
-      "female": "Mujer",
-      "genderRequired": "El género es requerido.",
-      "mainTechnology": "Tecnología principal",
-      "mainTechnologyRequired": "La tecnología principal es requerida.",
-      "summary": "Resumen",
-      "summaryRequired": "El resumen es requerido."
-    },
-    "address": {
-      "street": "Calle",
-      "streetRequired": "La calle es requerida.",
-      "postalCode": "Código postal",
-      "postalCodeRequired": "El código postal es requerido.",
-      "postalCodePattern": "3-10 caracteres: solo letras, dígitos, espacios o guiones.",
-      "fullAddress": "Dirección completa",
-      "fullAddressRequired": "La dirección completa es requerida.",
-      "city": "Ciudad",
-      "country": "País",
-      "onlyLettersAllowed": "Solo se permiten letras, espacios, apóstrofes, puntos y guiones."
-    },
-    "education": {
-      "institution": "Institución",
-      "institutionRequired": "La institución es requerida.",
-      "startDate": "Fecha de inicio",
-      "startDateRequired": "La fecha de inicio es requerida.",
-      "endDate": "Fecha de fin",
-      "endDateRequired": "La fecha de fin es requerida.",
-      "invalidDateRange": "La fecha de fin no puede ser anterior a la fecha de inicio.",
-      "diploma": "Diploma",
-      "diplomaRequired": "El diploma es requerido."
-    },
-    "experience": {
-      "companyName": "Nombre de la empresa",
-      "companyNameRequired": "El nombre de la empresa es requerido.",
-      "position": "Puesto",
-      "positionRequired": "El puesto es requerido.",
-      "startDate": "Fecha de inicio",
-      "startDateRequired": "La fecha de inicio es requerida.",
-      "endDate": "Fecha de fin",
-      "endDateRequired": "La fecha de fin es requerida.",
-      "invalidDateRange": "La fecha de inicio debe ser anterior a la fecha de fin.",
-      "description": "Descripción",
-      "descriptionRequired": "La descripción es requerida."
-    },
-    "candidateLanguage": {
-      "languages": "Idioma",
-      "languagesRequired": "El idioma es requerido.",
-      "level": "Nivel",
-      "levelRequired": "El nivel es requerido.",
-      "isNative": "¿Nativo?",
-      "selectLevel": "Seleccionar nivel",
-      "levels": {
+   "general": {
+    "fullName": "Nombre completo",
+    "fullNameRequired": "El nombre completo es obligatorio",
+    "onlyLettersAllowed": "Solo se permiten letras y espacios",
+    "birthDate": "Fecha de nacimiento",
+    "birthDateRequired": "La fecha de nacimiento es obligatoria",
+    "underAge": "Debes tener al menos 18 años",
+    "overAge": "La edad no puede superar los 80 años",
+    "yearsOfExperience": "Años de experiencia",
+    "validNumber": "Por favor, introduce un número válido",
+    "invalidExperience": "Los años de experiencia no pueden superar tu edad menos 16",
+    "gender": "Género",
+    "male": "Hombre",
+    "female": "Mujer",
+    "genderRequired": "El género es obligatorio",
+    "mainTechnology": "Tecnología principal",
+    "mainTechnologyRequired": "La tecnología principal es obligatoria",
+    "summary": "Resumen",
+    "summaryRequired": "El resumen es obligatorio"
+  },
+  "address": {
+    "street": "Calle",
+    "streetRequired": "La calle es obligatoria",
+    "postalCode": "Código postal",
+    "postalCodeRequired": "El código postal es obligatorio",
+    "postalCodePattern": "El código postal debe tener entre 3 y 10 caracteres (letras, números, espacios o guiones)",
+    "fullAddress": "Dirección completa",
+    "fullAddressRequired": "La dirección completa es obligatoria",
+    "city": "Ciudad",
+    "onlyLettersAllowed": "Solo se permiten letras, espacios y guiones",
+    "country": "País"
+  },
+  "education": {
+    "institution": "Institución",
+    "institutionRequired": "La institución es obligatoria",
+    "startDate": "Fecha de inicio",
+    "startDateRequired": "La fecha de inicio es obligatoria",
+    "endDate": "Fecha de fin",
+    "endDateRequired": "La fecha de fin es obligatoria",
+    "invalidDateRange": "La fecha de fin debe ser posterior a la fecha de inicio",
+    "diploma": "Diploma",
+    "diplomaRequired": "El diploma es obligatorio"
+  },
+  "experience": {
+    "companyName": "Nombre de la empresa",
+    "companyNameRequired": "El nombre de la empresa es obligatorio",
+    "position": "Puesto",
+    "positionRequired": "El puesto es obligatorio",
+    "startDate": "Fecha de inicio",
+    "startDateRequired": "La fecha de inicio es obligatoria",
+    "endDate": "Fecha de fin",
+    "endDateRequired": "La fecha de fin es obligatoria",
+    "invalidDateRange": "La fecha de fin debe ser posterior a la fecha de inicio",
+    "description": "Descripción",
+    "descriptionRequired": "La descripción es obligatoria"
+  },
+  "candidateLanguage": {
+    "languages": "Idioma",
+    "languagesRequired": "El idioma es obligatorio",
+    "level": "Nivel",
+    "selectLevel": "Selecciona un nivel",
+    "levelRequired": "El nivel es obligatorio",
+    "isNative": "Es nativo",
+    "levels": {
       "advanced": "Avanzado",
       "intermediate": "Intermedio",
       "basic": "Básico",
-      "native":  "Nativo"
+      "native": "Nativo"
+    
     }
-    },
-    "skills": {
-      "skillName": "Nombre de la habilidad",
-      "skillNameRequired": "El nombre de la habilidad es requerido.",
-      "proficiencyLevel": "Nivel de competencia",
-      "proficiencyRequired": "El nivel de competencia es requerido.",
-      "selectProficiency": "Seleccionar nivel de competencia",
-      "levels": {
+  },
+  "skills": {
+    "skillName": "Nombre de la habilidad",
+    "skillNameRequired": "El nombre de la habilidad es obligatorio",
+    "proficiencyLevel": "Nivel de competencia",
+    "selectProficiency": "Selecciona un nivel de competencia",
+    "proficiencyRequired": "El nivel de competencia es obligatorio",
+    "levels": {
       "beginner": "Principiante",
       "intermediate": "Intermedio",
       "advanced": "Avanzado",
       "expert": "Experto"
     }
-    },
-    "contact": {
-      "contactType": "Tipo de contacto",
-      "contactTypeRequired": "El tipo de contacto es requerido.",
-      "contactValue": "Valor del contacto",
-      "contactValueRequired": "El valor del contacto es requerido.",
-      "invalidEmail": "Por favor, introduce una dirección de correo válida.",
-      "invalidPhone": "Por favor, introduce un número de teléfono válido.",
-      "invalidLinkedIn": "Por favor, introduce una URL de perfil de LinkedIn válida.",
-      "selectContactType": "Seleccionar tipo de contacto"
-    },
-    "navigation": {
-      "previous": "Anterior",
-      "previousTitle": "Ir al paso anterior del formulario",
-      "clear": "Borrar",
-      "clearTitle": "Borrar la sección actual del formulario",
-      "next": "Siguiente",
-      "nextTitle": "Ir al siguiente paso del formulario",
-      "save": "Guardar",
-      "saveTitle": "Guardar y enviar el formulario"
-    }
+  },
+  "contact": {
+    "contactType": "Tipo de contacto",
+    "selectContactType": "Selecciona un tipo de contacto",
+    "contactTypeRequired": "El tipo de contacto es obligatorio",
+    "contactValue": "Valor de contacto",
+    "contactValueRequired": "El valor de contacto es obligatorio",
+    "invalidEmail": "Formato de correo electrónico inválido",
+    "invalidPhone": "Formato de número de teléfono inválido",
+    "invalidLinkedIn": "Formato de URL de LinkedIn inválido"
+  },
+  "navigation": {
+    "previous": "Anterior",
+    "previousTitle": "Ir al paso anterior",
+    "clear": "Limpiar",
+    "clearTitle": "Limpiar la sección actual",
+    "next": "Siguiente",
+    "nextTitle": "Ir al siguiente paso",
+    "save": "Guardar",
+    "saveTitle": "Guardar el formulario"
+  }
   
   
   

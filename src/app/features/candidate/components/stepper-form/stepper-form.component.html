@@ -35,18 +35,24 @@
             </small>
           </div>
           <!-- Years of Experience -->
-          <div class="p-field">
-            <label for="yearsOfExperience">Years of Experience</label>
-            <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience">
-            <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-              <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
-                <i class="pi pi-times-circle"></i> Please enter a valid number.
-              </ng-container>
-            </small>
-            <small *ngIf="generalDataForm.hasError('invalidExperience')">
-              <i class="pi pi-times-circle"></i> Experience exceeds what  what is possible given your birth date.
-            </small>
-          </div>
+            <div class="p-field">
+                <label for="yearsOfExperience">Years of Experience</label>
+                <input
+                id="yearsOfExperience"
+                type="number"
+                pInputText
+                formControlName="yearsOfExperience"
+                [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null"
+                >
+                <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
+                <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
+                    <i class="pi pi-times-circle"></i> Please enter a valid number.
+                </ng-container>
+                </small>
+                <small *ngIf="generalDataForm.hasError('invalidExperience')">
+                <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
+                </small>
+            </div>
           <!-- Gender -->
           <div class="p-field">
             <label>Gender</label>

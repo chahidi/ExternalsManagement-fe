@@ -35,7 +35,7 @@ export class CandidateService {
   }
   
   deleteCandidate(id: string): Observable<string> {
-    return this.http.delete<string>(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
   }
   
   

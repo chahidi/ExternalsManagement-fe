@@ -218,6 +218,7 @@ export class CandidateListComponent implements OnInit {
   }
 
   deleteCandidate(candidate: Candidate): void {
+    console.log('Deleting candidate with ID:', candidate.id);
     this.loading = true;
     this.candidateService.deleteCandidate(candidate.id).subscribe({
       next: () => {

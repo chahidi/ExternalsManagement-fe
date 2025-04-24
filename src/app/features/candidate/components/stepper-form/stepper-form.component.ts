@@ -299,8 +299,26 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
+  // Custom validator for startDate < endDate
+  dateRangeValidator(control: AbstractControl): ValidationErrors | null {
+    const startDate = control.get('startDate')?.value;
+    const endDate = control.get('endDate')?.value;
 
-  // experience validator matches the age
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      console.log('Start Date:', start);
+      console.log('End Date:', end);
+
+      // Check if the start date is after the end date
+      if (start > end) {
+        return { invalidDateRange: true };
+      }
+    }
+    return null;
+  }
+  // experince validator matches the age
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
     const yearsControl = control.get('yearsOfExperience');

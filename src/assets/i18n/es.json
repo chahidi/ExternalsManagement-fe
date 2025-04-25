@@ -1,0 +1,151 @@
+{
+    "auth": {
+      "access": {
+        "Access Denied": "Acceso Denegado",
+        "Permission Message": "No tienes permiso para acceder a este recurso.",
+        "Go to Dashboard": "Ir al Dashboard"
+      },
+      "error": {
+        "error_occurred": "Ocurrió un error",
+        "resource_not_available": "El recurso solicitado no está disponible.",
+        "go_to_dashboard": "Ir al panel de control"
+      },
+      "login": {
+        "welcome": "¡Bienvenido a PrimeLand!",
+        "sign_in": "Inicia sesión para continuar",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "remember_me": "Recuérdame",
+        "forgot_password": "¿Olvidaste tu contraseña?",
+        "sign_in_button": "Iniciar sesión"
+      }
+    }
+  ,
+  
+           
+    "candidate": {
+      "list": {
+        "TITLE": "Lista de candidatos",
+        "FILTER_TITLE": "Filtrar candidatos",
+        "FILTER_SKILLS": "Habilidades",
+        "FILTER_LANGUAGE": "Idioma",
+        "FILTER_YEARS": "Años de experiencia",
+        "PLACEHOLDER_SKILLS": "Seleccionar habilidades",
+        "PLACEHOLDER_LANGUAGE": "Seleccionar idioma",
+        "PLACEHOLDER_YEARS": "Introducir años",
+        "RESET": "Restablecer",
+        "APPLY": "Aplicar filtros",
+        "CLEAR": "Limpiar",
+        "SEARCH": "Buscar palabra clave",
+        "COL_NAME": "Nombre completo",
+        "COL_MAIN_TECH": "Tecnología principal",
+        "COL_LOCATION": "Ubicación",
+        "COL_EDUCATION": "Educación",
+        "COL_EXPERIENCE": "Experiencia",
+        "COL_SKILLS": "Habilidades",
+        "COL_CONTACT": "Contacto",
+        "COL_ACTIONS": "Acciones",
+        "EMPTY": "No se encontraron candidatos."
+      }
+    }
+  
+
+,
+
+    "tabs": {
+      "header1": "Encabezado I",
+      "header2": "Encabezado II",
+      "header3": "Encabezado III",
+      "content1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "content2": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.",
+      "content3": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus."
+    }
+  ,
+    "upload": {
+      "title": "Curriculum Vitae Avanzado Nuevo",
+      "choose": "Elegir",
+      "upload": "Subir",
+      "cancel": "Cancelar",
+      "dragDropMessage": "Arrastra y suelta los archivos aquí para subir."
+    }
+  ,
+
+    "generalData": {
+      "fullName": "Nombre completo",
+      "birthDate": "Fecha de nacimiento",
+      "yearsOfExperience": "Años de experiencia",
+      "gender": "Género",
+      "mainTech": "Tecnología principal",
+      "summary": "Resumen",
+      "required": "Este campo es obligatorio."
+    },
+    "address": {
+      "street": "Calle",
+      "postalCode": "Código postal",
+      "fullAddress": "Dirección completa",
+      "city": "Ciudad",
+      "country": "País"
+    },
+    "education": {
+      "institution": "Institución",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de finalización",
+      "diploma": "Diploma"
+    },
+    "experience": {
+      "companyName": "Nombre de la empresa",
+      "position": "Puesto",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de finalización",
+      "description": "Descripción"
+    },
+    "languages": {
+      "language": "Idioma",
+      "level": "Nivel",
+      "native": "¿Es nativo?"
+    },
+    "skills": {
+      "skillName": "Nombre de la habilidad",
+      "proficiencyLevel": "Nivel de competencia"
+    },
+    "contact": {
+      "contactType": "Tipo de contacto",
+      "contactValue": "Valor del contacto"
+    },
+    "buttons": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "clear": "Limpiar",
+      "save": "Guardar"
+    }
+   ,
+
+ 
+  "Candidate Statistics": "Estadísticas de Candidatos",
+  "Total Candidates": "Total de Candidatos",
+  "Candidates by Language": "Candidatos por Idioma",
+  "Candidates by Skill": "Candidatos por Habilidad",
+  "Languages": "Idiomas",
+  "Skills": "Habilidades"
+
+ ,
+ 
+ 
+ 
+ "topbar": {
+    "calendar": "Calendario",
+    "messages": "Mensajes",
+    "profile": "Perfil"
+  },
+  "language": {
+    "english": "Inglés",
+    "french": "Francés",
+    "spanish": "Español"
+  }
+  
+  ,
+  
+  "footer": {
+    "copyright": "© 2025 NTT DATA Marruecos"
+  }
+}

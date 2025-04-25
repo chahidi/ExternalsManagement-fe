@@ -65,5 +65,14 @@
                 </button>
             </div>
         </div>
+
+        <button class="layout-topbar-action language-switcher" (click)="toggleLanguageMenu()">
+            <i class="pi pi-globe"></i>
+        </button>
+        <div class="language-menu" [class.hidden]="!showLanguageMenu" (clickOutside)="showLanguageMenu = false">
+            <button (click)="changeLanguage('en')" [class.active]="currentLang === 'en'">English</button>
+            <button (click)="changeLanguage('fr')" [class.active]="currentLang === 'fr'">Français</button>
+            <button (click)="changeLanguage('es')" [class.active]="currentLang === 'es'">Español</button>
+        </div>
     </div>
 </div>

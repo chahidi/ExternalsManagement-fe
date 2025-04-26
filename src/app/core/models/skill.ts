@@ -1,8 +1,7 @@
 import { Candidate } from './candidate';
 
 export interface Skill {
-  id: string; 
-  candidate: Candidate; 
+  id: string;
   skillName: string;
-  proficiencyLevel: string; 
+  proficiencyLevel: string;
 }

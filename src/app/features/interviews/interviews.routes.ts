@@ -1,15 +1,23 @@
 import { Routes } from '@angular/router';
-import { LayoutComponent } from '../../shared/layout/layout.component'; // important!
-import { InterviewListComponent } from './interview-list/interview-list.component';
-import { InterviewsResultComponent } from './interviews-result/interviews-result.component';
+import { LayoutComponent } from '../../shared/layout/layout.component'; // Keep LayoutComponent
 
 export const INTERVIEWS_ROUTES: Routes = [
   {
     path: '',
-    component: LayoutComponent,     
+    component: LayoutComponent,
     children: [
-      { path: 'list', component: InterviewListComponent },
-      { path: 'result', component: InterviewsResultComponent }
+      {
+        path: 'list',
+        loadComponent: () =>
+          import('./interview-list/interview-list.component').then(m => m.InterviewListComponent),
+        title: 'List of Interviews'
+      },
+      {
+        path: 'result',
+        loadComponent: () =>
+          import('./interviews-result/interviews-result.component').then(m => m.InterviewsResultComponent),
+        title: 'Interview Results'
+      }
     ]
   }
 ];

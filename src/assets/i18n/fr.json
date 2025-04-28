@@ -35,7 +35,7 @@
         "PLACEHOLDER_LANGUAGE": "Sélectionnez une langue",
         "PLACEHOLDER_YEARS": "Entrez le nombre d'années",
         "RESET": "Réinitialiser",
-        "APPLY": "Appliquer les filtres",
+        "APPLY": "Appliquer ",
         "CLEAR": "Effacer",
         "SEARCH": "Mot-clé de recherche",
         "COL_NAME": "Nom complet",
@@ -138,7 +138,20 @@
     "spanish": "Espagnol"
   }
   ,
-
+  
+    "menu": {
+      "dashboard": "Tableau de bord",
+      "externalsManagement": "Gestion des externes",
+      "cardsView": "Vue par cartes",
+      "listView": "Vue en liste",
+      "candidates": "Candidats",
+      "newCV": "Nouveau CV",
+      "candidateList": "Liste des candidats",
+      "promptManagement": "Gestion des prompts",
+      "newPrompt": "Nouveau prompt",
+      "promptList": "Liste des prompts"
+    }
+  ,  
   
     "footer": {
         "copyright": "© 2025 NTT DATA Maroc"

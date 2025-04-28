@@ -4,11 +4,12 @@ import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
 import { StatsService } from '../../../../core/services/stats.service'; // Import the service
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-stats-widget',
   standalone: true,
-  imports: [CardModule, ChartModule, TabViewModule],
+  imports: [CardModule, ChartModule, TabViewModule, TranslateModule],
   templateUrl: './stats-widget.component.html',
   styleUrls: ['./stats-widget.component.scss']
 })

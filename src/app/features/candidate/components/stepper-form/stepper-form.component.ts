@@ -18,6 +18,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-candidate-form',
@@ -32,7 +33,8 @@ import { MenuItem } from 'primeng/api';
     CheckboxModule,
     ReactiveFormsModule,
     DropdownModule,
-    RadioButtonModule
+    RadioButtonModule,
+    TranslateModule
   ],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']

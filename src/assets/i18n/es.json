@@ -34,7 +34,7 @@
         "PLACEHOLDER_LANGUAGE": "Seleccionar idioma",
         "PLACEHOLDER_YEARS": "Introducir años",
         "RESET": "Restablecer",
-        "APPLY": "Aplicar filtros",
+        "APPLY": "Aplicar",
         "CLEAR": "Limpiar",
         "SEARCH": "Buscar palabra clave",
         "COL_NAME": "Nombre completo",
@@ -144,6 +144,20 @@
   }
   
   ,
+  
+    "menu": {
+      "dashboard": "Tablero",
+      "externalsManagement": "Gestión de externos",
+      "cardsView": "Vista de tarjetas",
+      "listView": "Vista de lista",
+      "candidates": "Candidatos",
+      "newCV": "Nuevo CV",
+      "candidateList": "Lista de candidatos",
+      "promptManagement": "Gestión de prompts",
+      "newPrompt": "Nuevo prompt",
+      "promptList": "Lista de prompts"
+    }
+  ,  
   
   "footer": {
     "copyright": "© 2025 NTT DATA Marruecos"

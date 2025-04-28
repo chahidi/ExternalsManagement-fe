@@ -6,11 +6,12 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { LayoutService } from '../../service/layout.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, FormsModule],
+    imports: [RouterModule, CommonModule, StyleClassModule, FormsModule,TranslateModule],
     styleUrl: './topbar.component.scss',
     templateUrl: './topbar.component.html'
 })

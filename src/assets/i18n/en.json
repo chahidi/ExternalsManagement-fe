@@ -32,7 +32,7 @@
         "PLACEHOLDER_LANGUAGE": "Select Language",
         "PLACEHOLDER_YEARS": "Enter years",
         "RESET": "Reset",
-        "APPLY": "Apply Filters",
+        "APPLY": "Apply",
         "CLEAR": "Clear",
         "SEARCH": "Search keyword",
         "COL_NAME": "Full Name",
@@ -134,17 +134,33 @@
   },
   "language": {
     "english": "English",
-    "french": "Français",
-    "spanish": "Español"
+    "french": "French",
+    "spanish": "Spanish"
   }
   ,
 
 
   
+    "menu": {
+      "dashboard": "Dashboard",
+      "externalsManagement": "Externals Management",
+      "cardsView": "Cards View",
+      "listView": "List View",
+      "candidates": "Candidates",
+      "newCV": "New CV",
+      "candidateList": "Candidate List",
+      "promptManagement": "Prompt Management",
+      "newPrompt": "New Prompt",
+      "promptList": "Prompt List"
+    }
+  
+,
+   
         "footer": {
             "copyright": "© 2025 NTT DATA Morocco"
           }
       }
+    
 
       
   

@@ -18,12 +18,13 @@
             </div>
         </div>
         <div class="flex justify-end mt-4">
-            <p-button [label]="'candidate.list.RESET'" icon="pi pi-times" styleClass="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
-            <p-button [label]="'candidate.list.APPLY'" icon="pi pi-search" (click)="applyFilters()"></p-button>
+            <p-button [label]="'candidate.list.RESET' | translate " icon="pi pi-times" styleClass="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
+            <p-button [label]="'candidate.list.APPLY'| translate" icon="pi pi-search" (click)="applyFilters()"></p-button>
         </div>
     </div>
 
     <p-table
+        #dt1
         [value]="candidates"
         dataKey="id"
         [rows]="10"
@@ -35,10 +36,10 @@
     >
         <ng-template pTemplate="caption">
             <div class="flex">
-                <p-button [label]="'candidate.list.CLEAR'" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                <p-button [label]="'candidate.list.CLEAR'| translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
                 <span class="p-input-icon-left ml-auto">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="onFilterInput($event, dt1)" [placeholder]="'candidate.list.SEARCH'" />
+                    <input pInputText type="text" (input)="onFilterInput($event, dt1)" [placeholder]="'candidate.list.SEARCH'| translate" />
                 </span>
             </div>
         </ng-template>

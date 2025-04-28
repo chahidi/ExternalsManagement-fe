@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Candidate } from '../models/candidate';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CandidateService {
 
-  private baseUrl = 'http://localhost:8080/candidates';
+  private baseUrl = `${environment.apiUrl}/v1/candidates`;
   private all = 'all';
   constructor(private http: HttpClient) { }
 
@@ -34,7 +35,7 @@ export class CandidateService {
   }
   
   deleteCandidate(id: string): Observable<string> {
-    return this.http.delete<string>(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
   }
   
   

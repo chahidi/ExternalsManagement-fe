@@ -36,18 +36,24 @@
             </small>
           </div>
           <!-- Years of Experience -->
-          <div class="p-field">
-            <label for="yearsOfExperience">Years of Experience</label>
-            <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience">
-            <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-              <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
-                <i class="pi pi-times-circle"></i> Please enter a valid number.
-              </ng-container>
-            </small>
-            <small *ngIf="generalDataForm.hasError('invalidExperience')">
-              <i class="pi pi-times-circle"></i> Experience exceeds what  what is possible given your birth date.
-            </small>
-          </div>
+            <div class="p-field">
+                <label for="yearsOfExperience">Years of Experience</label>
+                <input
+                id="yearsOfExperience"
+                type="number"
+                pInputText
+                formControlName="yearsOfExperience"
+                [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null"
+                >
+                <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
+                <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
+                    <i class="pi pi-times-circle"></i> Please enter a valid number.
+                </ng-container>
+                </small>
+                <small *ngIf="generalDataForm.hasError('invalidExperience')">
+                <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
+                </small>
+            </div>
           <!-- Gender -->
           <div class="p-field">
             <label>Gender</label>
@@ -90,13 +96,22 @@
           </div>
           <div class="p-field">
             <label for="postalCode">Postal Code</label>
-            <input id="postalCode" type="text" pInputText formControlName="postalCode">
+            <input
+              id="postalCode"
+              type="text"
+              pInputText
+              formControlName="postalCode"
+              maxlength="10"
+            />
             <small *ngIf="addressForm.get('postalCode')?.touched">
               <ng-container *ngIf="addressForm.get('postalCode')?.hasError('required')">
                 <i class="pi pi-times-circle"></i> Postal Code is required.
               </ng-container>
               <ng-container *ngIf="addressForm.get('postalCode')?.hasError('pattern')">
-                <i class="pi pi-times-circle"></i> 3-10 alphanumeric characters, spaces or hyphens.
+                <i class="pi pi-times-circle"></i> 3-10 characters: letters, digits, spaces or hyphens only.
+              </ng-container>
+              <ng-container *ngIf="addressForm.get('postalCode')?.hasError('minlength')">
+                <i class="pi pi-times-circle"></i> Must be at least 3 characters.
               </ng-container>
             </small>
           </div>
@@ -111,14 +126,14 @@
             <label for="city">City</label>
             <input id="city" type="text" pInputText formControlName="city">
             <small *ngIf="addressForm.get('city')?.touched && addressForm.get('city')?.invalid">
-              <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+              <i class="pi pi-times-circle"></i> Only letters, spaces, apostrophes, dots, and hyphens are allowed.
             </small>
           </div>
           <div class="p-field">
             <label for="country">Country</label>
             <input id="country" type="text" pInputText formControlName="country">
             <small *ngIf="addressForm.get('country')?.touched && addressForm.get('country')?.invalid">
-              <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+              <i class="pi pi-times-circle"></i> Only letters, spaces, apostrophes, dots, and hyphens are allowed.
             </small>
           </div>
         </div>
@@ -129,7 +144,13 @@
             <label for="institution">Institution</label>
             <input id="institution" type="text" pInputText formControlName="institution">
             <small *ngIf="educationForm.get('institution')?.touched && educationForm.get('institution')?.invalid">
-              <i class="pi pi-times-circle"></i> Institution is required.
+                <i class="pi pi-times-circle"></i>
+                <ng-container *ngIf="educationForm.get('institution')?.hasError('required')">
+                    Institution is required.
+                  </ng-container>
+                  <ng-container *ngIf="educationForm.get('institution')?.hasError('pattern')">
+                    Only letters, numbers, spaces, hyphens, dots, ampersands, commas, and apostrophes are allowed.
+                  </ng-container>
             </small>
           </div>
 
@@ -138,72 +159,93 @@
               <label for="startDateEdu">Start Date</label>
               <input id="startDateEdu" type="date" pInputText formControlName="startDate">
               <small *ngIf="educationForm.get('startDate')?.touched && educationForm.get('startDate')?.invalid">
-                <i class="pi pi-times-circle"></i> Start Date is required.
+                <i class="pi pi-times-circle"></i>
+                <ng-container *ngIf="educationForm.get('startDate')?.hasError('required')">
+                  Start date is required.
+                </ng-container>
               </small>
             </div>
+
             <div class="p-col-6">
               <label for="endDateEdu">End Date</label>
               <input id="endDateEdu" type="date" pInputText formControlName="endDate">
               <small *ngIf="educationForm.get('endDate')?.touched && educationForm.get('endDate')?.invalid">
-                <i class="pi pi-times-circle"></i> End Date is required.
+                <i class="pi pi-times-circle"></i>
+                <ng-container *ngIf="educationForm.get('endDate')?.hasError('required')">
+                  End date is required.
+                </ng-container>
               </small>
             </div>
+
+            <!-- Displaying form-level error (for invalid date range) -->
+            <small *ngIf="educationForm.hasError('invalidDateRange') && educationForm.touched">
+              <i class="pi pi-times-circle"></i> End date cannot be earlier than start date.
+            </small>
           </div>
           <div class="p-field">
             <label for="diploma">Diploma</label>
             <input id="diploma" type="text" pInputText formControlName="diploma">
             <small *ngIf="educationForm.get('diploma')?.touched && educationForm.get('diploma')?.invalid">
-              <i class="pi pi-times-circle"></i> Diploma is required.
+                <i class="pi pi-times-circle"></i>
+                <ng-container *ngIf="educationForm.get('diploma')?.hasError('required')">
+                  Diploma is required.
+                </ng-container>
+                <ng-container *ngIf="educationForm.get('diploma')?.hasError('pattern')">
+                  Diploma can only include letters, numbers, and common symbols (like ., +, #, etc.).
+                </ng-container>
             </small>
           </div>
         </div>
 
         <!--  Experience -->
         <div *ngSwitchCase="3" [formGroup]="experienceForm">
-          <div class="p-field">
-            <label for="companyName">Company Name</label>
-            <input id="companyName" type="text" pInputText formControlName="companyName">
-            <small *ngIf="experienceForm.get('companyName')?.touched && experienceForm.get('companyName')?.invalid">
-              <i class="pi pi-times-circle"></i> Company Name is required.
-            </small>
-          </div>
-          <div class="p-field">
-            <label for="position">Position</label>
-            <input id="position" type="text" pInputText formControlName="position">
-            <small *ngIf="experienceForm.get('position')?.touched && experienceForm.get('position')?.invalid">
-              <i class="pi pi-times-circle"></i> Position is required.
-            </small>
-          </div>
-          <div class="p-field p-grid">
-            <div class="p-col-6">
-              <label for="startDateExp">Start Date</label>
-              <input id="startDateExp" type="date" pInputText formControlName="startDate">
-              <small *ngIf="experienceForm.get('startDate')?.touched && experienceForm.get('startDate')?.invalid">
-                <i class="pi pi-times-circle"></i> Start Date is required.
+            <div class="p-field">
+              <label for="companyName">Company Name</label>
+              <input id="companyName" type="text" pInputText formControlName="companyName">
+              <small *ngIf="experienceForm.get('companyName')?.touched && experienceForm.get('companyName')?.invalid">
+                <i class="pi pi-times-circle"></i> Only letters, numbers, spaces, &, ', +, ., and - are allowed.
               </small>
             </div>
-            <div class="p-col-6">
-              <label for="endDateExp">End Date</label>
-              <input id="endDateExp" type="date" pInputText formControlName="endDate">
-              <small *ngIf="experienceForm.get('endDate')?.touched && experienceForm.get('endDate')?.invalid">
-                <i class="pi pi-times-circle"></i> End Date is required.
+
+            <div class="p-field">
+              <label for="position">Position</label>
+              <input id="position" type="text" pInputText formControlName="position">
+              <small *ngIf="experienceForm.get('position')?.touched && experienceForm.get('position')?.invalid">
+                <i class="pi pi-times-circle"></i> Only letters, spaces, slashes (/) and dashes (-) are allowed.
               </small>
-              <small *ngIf="experienceForm.hasError('futureEndDate')">
-                <i class="pi pi-times-circle"></i> End Date cannot be in the future.
-              </small>
-              <small *ngIf="experienceForm.hasError('invalidDateRange')">
-                <i class="pi pi-times-circle"></i> Start Date must come before End Date.
+            </div>
+
+            <div class="p-field p-grid">
+              <div class="p-col-6">
+                <label for="startDateExp">Start Date</label>
+                <input id="startDateExp" type="date" pInputText formControlName="startDate">
+                <small *ngIf="experienceForm.get('startDate')?.touched && experienceForm.get('startDate')?.invalid">
+                  <i class="pi pi-times-circle"></i> Must be in DD-MM-YYYY format.
+                </small>
+              </div>
+              <div class="p-col-6">
+                <label for="endDateExp">End Date</label>
+                <input id="endDateExp" type="date" pInputText formControlName="endDate">
+                <small *ngIf="experienceForm.get('endDate')?.touched && experienceForm.get('endDate')?.invalid">
+                  <i class="pi pi-times-circle"></i> Must be in DD-MM-YYYY  format.
+                </small>
+                <small *ngIf="experienceForm.hasError('futureEndDate')">
+                  <i class="pi pi-times-circle"></i> End Date cannot be in the future.
+                </small>
+                <small *ngIf="experienceForm.hasError('invalidDateRange')">
+                  <i class="pi pi-times-circle"></i> Start Date must come before End Date.
+                </small>
+              </div>
+            </div>
+
+            <div class="p-field">
+              <label for="descriptionExp">Description</label>
+              <textarea id="descriptionExp" pInputTextarea formControlName="description"></textarea>
+              <small *ngIf="experienceForm.get('description')?.touched && experienceForm.get('description')?.invalid">
+                <i class="pi pi-times-circle"></i> Allowed: letters, numbers, punctuation like . , ! ? () - : ; / ' " #
               </small>
             </div>
           </div>
-          <div class="p-field">
-            <label for="descriptionExp">Description</label>
-            <textarea id="descriptionExp" pInputTextarea formControlName="description"></textarea>
-            <small *ngIf="experienceForm.get('description')?.touched && experienceForm.get('description')?.invalid">
-              <i class="pi pi-times-circle"></i> Description is required.
-            </small>
-          </div>
-        </div>
 
         <!--  Languages -->
         <div *ngSwitchCase="4" [formGroup]="languageForm">
@@ -281,7 +323,13 @@
                 <i class="pi pi-times-circle"></i> Contact Value is required.
               </ng-container>
               <ng-container *ngIf="contactForm.get('contactValue')?.hasError('pattern')">
-                <i class="pi pi-times-circle"></i> Please enter a valid email or phone number.
+                <i class="pi pi-times-circle"></i> {{
+                    contactForm.get('contactType')?.value === 'Email'
+                      ? 'Please enter a valid email address.'
+                      : contactForm.get('contactType')?.value === 'Phone'
+                      ? 'Please enter a valid phone number.'
+                      : 'Please enter a valid LinkedIn profile URL.'
+                  }}
               </ng-container>
             </small>
           </div>

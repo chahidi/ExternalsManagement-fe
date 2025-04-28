@@ -29,4 +29,8 @@ export class StatsService {
   getCandidatesBySkill(skill: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/candidates/technology/${skill}`);
   }
+
+  getExperienceDistribution(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/candidates/experience`);
+  }
 }

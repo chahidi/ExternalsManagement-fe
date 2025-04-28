@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Candidate } from '../models/candidate';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,11 @@ export class CandidateService {
   private apiUrl = 'http://localhost:8080/candidates';
 
   constructor(private http: HttpClient) {}
+
+  private baseUrl = `${environment.apiUrl}/v1/candidates`;
+  private all = 'all';
+  constructor(private http: HttpClient) { }
+
 
   // Récupérer tous les candidats
   getCandidates(): Observable<Candidate[]> {
@@ -124,4 +130,12 @@ export class CandidateService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+}
+
+  
+  deleteCandidate(id: string): Observable<string> {
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
+  }
+  
+  
 }

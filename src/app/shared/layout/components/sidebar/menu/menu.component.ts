@@ -37,6 +37,13 @@ export class MenuComponent {
                     { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
                     { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
                 ]
+            },
+            {
+                label: 'Interviews Management',
+                items: [
+                    { label: 'Interview List', icon: 'pi pi-fw pi-list', routerLink: ['/interviews/interview-list'] },
+                    { label: 'Interviews Result', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/interview/interview-result'] }
+                ]
             }
         ];
     }

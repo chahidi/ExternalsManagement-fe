@@ -1,44 +1,21 @@
-// import { Routes } from '@angular/router';
-// import { LayoutComponent } from '../../shared/layout/layout.component'; // Keep LayoutComponent
-
-// export const INTERVIEWS_ROUTES: Routes = [
-//   {
-//     path: '',
-//     component: LayoutComponent,
-//     children: [
-//       {
-//         path: 'list',
-//         loadComponent: () =>
-//           import('./interview-list/interview-list.component').then(m => m.InterviewListComponent),
-//         title: 'List of Interviews'
-//       },
-//       {
-//         path: 'result',
-//         loadComponent: () =>
-//           import('./interviews-result/interviews-result.component').then(m => m.InterviewsResultComponent),
-//         title: 'Interview Results'
-//       }
-//     ]
-//   }
-// ];
 import { Routes } from '@angular/router';
+import { InterviewListComponent } from './interview-list/interview-list.component';
 
 export const INTERVIEWS_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./interviews-home/interviews-home.component').then(m => m.InterviewsHomeComponent),
+    component: InterviewListComponent,
     children: [
       {
-        path: 'list',
+        path: 'interview-list',
         loadComponent: () =>
           import('./interview-list/interview-list.component').then(m => m.InterviewListComponent),
         title: 'List of Interviews'
       },
       {
-        path: 'result',
+        path: 'interview-result',
         loadComponent: () =>
-          import('./interviews-result/interviews-result.component').then(m => m.InterviewsResultComponent),
+          import('./interview-result/interview-result.component').then(m => m.InterviewResultComponent),
         title: 'Interview Results'
       }
     ]

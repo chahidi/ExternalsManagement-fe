@@ -3,14 +3,13 @@ import { NewCvService } from '../../../../core/services/new-cv.service';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-new-cv',
     standalone: true,
     templateUrl: './new-cv.component.html',
     styleUrls: ['./new-cv.component.scss'],
-    imports: [ButtonModule, FileUploadModule, TranslateModule]
+    imports: [ButtonModule, FileUploadModule]
 })
 export class NewCvComponent {
     selectedFile: File | null = null;

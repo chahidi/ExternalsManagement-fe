@@ -1,9 +1,9 @@
 <div class="stats-container">
   <div class="stats-header">
-    <h2 class="stats-title">{{ 'stats.title' | translate }}</h2>
+    <h2 class="stats-title">Candidate Statistics</h2>
     <p-card class="total-card">
       <div class="total-candidates">
-        <span class="total-label">{{ 'stats.totalCandidates' | translate }}</span>
+        <span class="total-label">Total Candidates:</span>
         <span class="candidate-count">{{ totalCandidates }}</span>
       </div>
     </p-card>
@@ -11,44 +11,42 @@
 
   <p-tabView>
     <!-- Languages Tab -->
-    <p-tabPanel [header]="'stats.languagesTab' | translate">
+    <p-tabPanel header="Languages">
       <p-card class="chart-card">
-        <h3>{{ 'stats.candidatesByLanguage' | translate }}</h3>
+        <h3>Candidates by Language</h3>
         <p-chart
           type="bar"
           [data]="languageChartData"
           [options]="chartOptions"
-          [style.height]="'300px'">
+          height="300px">
         </p-chart>
       </p-card>
     </p-tabPanel>
 
     <!-- Skills Tab -->
-    <p-tabPanel [header]="'stats.skillsTab' | translate">
+    <p-tabPanel header="Skills">
       <p-card class="chart-card">
-        <h3>{{ 'stats.candidatesBySkill' | translate }}</h3>
+        <h3>Candidates by Skill</h3>
         <p-chart
           type="pie"
           [data]="skillsChartData"
           [options]="chartOptions"
-          [style.height]="'300px'">
+          height="300px">
         </p-chart>
       </p-card>
     </p-tabPanel>
 
-   <!-- Experience Tab -->
-<p-tabPanel [header]="'stats.experienceTab' | translate">
-  <p-card class="chart-card">
-    <h3>{{ 'stats.candidatesByExperience' | translate }}</h3>
-    <p-chart
-      type="bar"
-      [data]="experienceChartData"
-      [options]="chartOptions"
-      height="300px">
-    </p-chart>
-  </p-card>
-</p-tabPanel>
-
-      
+    <!-- Experience Tab -->
+    <p-tabPanel header="Experience">
+      <p-card class="chart-card">
+        <h3>Candidates by years of experience</h3>
+        <p-chart
+          type="bar"
+          [data]="experienceChartData"
+          [options]="chartOptions"
+          height="300px">
+        </p-chart>
+      </p-card>
+    </p-tabPanel>
   </p-tabView>
 </div>

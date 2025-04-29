@@ -18,7 +18,6 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem } from 'primeng/api';
-import { TranslateModule , TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-candidate-form',
@@ -33,8 +32,7 @@ import { TranslateModule , TranslateService } from '@ngx-translate/core';
     CheckboxModule,
     ReactiveFormsModule,
     DropdownModule,
-    RadioButtonModule,
-    TranslateModule
+    RadioButtonModule
   ],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']
@@ -67,36 +65,19 @@ export class StepperFormComponent implements OnInit {
   skillsForm!: FormGroup;
   contactForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute,private translate: TranslateService) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
 
+  ngOnInit() {
+    this.steps = [
+      { label: 'General Data' },
+      { label: 'Address' },
+      { label: 'Education' },
+      { label: 'Experience' },
+      { label: 'Languages' },
+      { label: 'Skills' },
+      { label: 'Contact' }
+    ];
 
-    
-    
-    ngOnInit() {
-      
-      this.setSteps();
-
-      this.translate.onLangChange.subscribe(() => {
-        // Petit délai pour s'assurer que les traductions sont prêtes
-        setTimeout(() => {
-          this.setSteps();
-        }, 0);
-      });
-    }
-  
-    setSteps() {
-      this.steps = [
-        { label: this.translate.instant('steps.generalData') },
-        { label: this.translate.instant('steps.address') },
-        { label: this.translate.instant('steps.education') },
-        { label: this.translate.instant('steps.experience') },
-        { label: this.translate.instant('steps.languages') },
-        { label: this.translate.instant('steps.skills') },
-        { label: this.translate.instant('steps.contact') }
-      ];
-    
-    
-    
     // General Data Form
     this.generalDataForm = this.fb.group(
       {

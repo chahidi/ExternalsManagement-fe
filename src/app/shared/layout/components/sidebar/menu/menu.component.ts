@@ -44,6 +44,13 @@ export class MenuComponent {
                     { label: 'Interview List', icon: 'pi pi-fw pi-list', routerLink: ['/interviews/interview-list'] },
                     { label: 'Interviews Result', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/interview/interview-result'] }
                 ]
+            },
+            {
+                label: 'Test Test',
+                items: [
+                    { label: 'Interview List', icon: 'pi pi-fw pi-list', routerLink: ['/interviews/interview-list'] },
+                    { label: 'Interviews Result', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/interview/interview-result'] }
+                ]
             }
         ];
     }

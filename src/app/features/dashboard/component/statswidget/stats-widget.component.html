@@ -36,17 +36,19 @@
       </p-card>
     </p-tabPanel>
 
-    <!-- Experience Tab -->
-    <p-tabPanel header="Experience">
-      <p-card class="chart-card">
-        <h3>Candidates by years of experience</h3>
-        <p-chart
-          type="bar"
-          [data]="experienceChartData"
-          [options]="chartOptions"
-          height="300px">
-        </p-chart>
-      </p-card>
-    </p-tabPanel>
+   <!-- Experience Tab -->
+<p-tabPanel [header]="'stats.experienceTab' | translate">
+  <p-card class="chart-card">
+    <h3>{{ 'stats.candidatesByExperience' | translate }}</h3>
+    <p-chart
+      type="bar"
+      [data]="experienceChartData"
+      [options]="chartOptions"
+      height="300px">
+    </p-chart>
+  </p-card>
+</p-tabPanel>
+
+      
   </p-tabView>
 </div>

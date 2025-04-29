@@ -69,62 +69,118 @@
     }
   ,  
 
-    "generalData": {
+  
+
+  
+    "steps.generalData": "Données Générales",
+    "steps.address": "Adresse",
+    "steps.education": "Éducation",
+    "steps.experience": "Expérience",
+    "steps.languages": "Langues",
+    "steps.skills": "Compétences",
+    "steps.contact": "Contact"
+  
+
+
+  ,
+    "general": {
       "fullName": "Nom complet",
+      "fullNameRequired": "Le nom complet est obligatoire.",
       "birthDate": "Date de naissance",
+      "birthDateRequired": "La date de naissance est obligatoire.",
+      "underAge": "Vous devez avoir au moins 18 ans.",
+      "overAge": "Vous devez avoir moins de 65 ans.",
       "yearsOfExperience": "Années d'expérience",
+      "validNumber": "Veuillez saisir un nombre valide.",
+      "invalidExperience": "Les années d'expérience ne correspondent pas à l'âge.",
       "gender": "Genre",
-      "mainTech": "Technologie principale",
+      "male": "Homme",
+      "female": "Femme",
+      "genderRequired": "Le genre est obligatoire.",
+      "mainTechnology": "Technologie principale",
+      "mainTechnologyRequired": "La technologie principale est obligatoire.",
       "summary": "Résumé",
-      "required": "Ce champ est obligatoire."
+      "summaryRequired": "Le résumé est obligatoire.",
+      "onlyLettersAllowed": "Seules les lettres sont autorisées."
     },
     "address": {
       "street": "Rue",
+      "streetRequired": "La rue est obligatoire.",
       "postalCode": "Code postal",
+      "postalCodeRequired": "Le code postal est obligatoire.",
+      "postalCodePattern": "Le code postal doit contenir uniquement des chiffres.",
+      "postalCodeMinLength": "Le code postal doit contenir au moins 4 chiffres.",
       "fullAddress": "Adresse complète",
+      "fullAddressRequired": "L'adresse complète est obligatoire.",
       "city": "Ville",
-      "country": "Pays"
+      "country": "Pays",
+      "onlyLettersAllowed": "Seules les lettres sont autorisées."
     },
     "education": {
       "institution": "Institution",
+      "institutionRequired": "L'institution est obligatoire.",
       "startDate": "Date de début",
       "endDate": "Date de fin",
-      "diploma": "Diplôme"
+      "startDateRequired": "La date de début est obligatoire.",
+      "endDateRequired": "La date de fin est obligatoire.",
+      "invalidDateRange": "La date de début doit être antérieure à la date de fin.",
+      "diploma": "Diplôme",
+      "diplomaRequired": "Le diplôme est obligatoire."
     },
     "experience": {
       "companyName": "Nom de l'entreprise",
+      "companyNameRequired": "Le nom de l'entreprise est obligatoire.",
       "position": "Poste",
+      "positionRequired": "Le poste est obligatoire.",
       "startDate": "Date de début",
       "endDate": "Date de fin",
       "description": "Description"
     },
-    "languages": {
+    "candidateLanguage": {
       "language": "Langue",
       "level": "Niveau",
-      "native": "Est-ce natif ?"
+      "selectLevel": "Sélectionner un niveau",
+      "add": "Ajouter"
     },
     "skills": {
       "skillName": "Nom de la compétence",
       "proficiencyLevel": "Niveau de compétence"
     },
     "contact": {
-      "contactType": "Type de contact",
-      "contactValue": "Valeur du contact"
+      "type": "Type de contact",
+      "selectType": "Sélectionner un type",
+      "value": "Valeur du contact"
     },
     "buttons": {
       "previous": "Précédent",
       "next": "Suivant",
       "clear": "Effacer",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "add": "Ajouter"
     }
+  
+  
   ,
-    "Candidate Statistics": "Statistiques des Candidats",
-    "Total Candidates": "Total des Candidats",
-    "Candidates by Language": "Candidats par Langue",
-    "Candidates by Skill": "Candidats par Compétence",
-    "Languages": "Langues",
-    "Skills": "Compétences"
-
+  
+  
+  
+  
+    "stats": {
+      "title": "Statistiques des Candidats",
+      "totalCandidates": "Total des Candidats :",
+      "languagesTab": "Langues",
+      "candidatesByLanguage": "Candidats par Langue",
+      "skillsTab": "Compétences",
+      "candidatesBySkill": "Candidats par Compétence",
+      "noLanguages": "Aucune Langue",
+      "noSkills": "Aucune Compétence",
+      "noData": "Aucune Donnée"
+    }
+  
+  
+    
+  
+  
 ,
 
 "topbar": {

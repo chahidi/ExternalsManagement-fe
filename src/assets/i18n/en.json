@@ -66,65 +66,115 @@
     }
   ,
 
-    "generalData": {
+ 
+
+  "steps.generalData": "General Data",
+  "steps.address": "Address",
+  "steps.education": "Education",
+  "steps.experience": "Experience",
+  "steps.languages": "Languages",
+  "steps.skills": "Skills",
+  "steps.contact": "Contact"
+
+
+,
+  
+    "general": {
       "fullName": "Full Name",
+      "fullNameRequired": "Full name is required.",
       "birthDate": "Birth Date",
+      "birthDateRequired": "Birth date is required.",
+      "underAge": "You must be at least 18 years old.",
+      "overAge": "You must be under 65 years old.",
       "yearsOfExperience": "Years of Experience",
+      "validNumber": "Please enter a valid number.",
+      "invalidExperience": "The years of experience do not match the age.",
       "gender": "Gender",
-      "mainTech": "Main Technology",
+      "male": "Male",
+      "female": "Female",
+      "genderRequired": "Gender is required.",
+      "mainTechnology": "Main Technology",
+      "mainTechnologyRequired": "Main technology is required.",
       "summary": "Summary",
-      "required": "This field is required."
+      "summaryRequired": "Summary is required.",
+      "onlyLettersAllowed": "Only letters are allowed."
     },
     "address": {
       "street": "Street",
+      "streetRequired": "Street is required.",
       "postalCode": "Postal Code",
+      "postalCodeRequired": "Postal code is required.",
+      "postalCodePattern": "Postal code must contain only digits.",
+      "postalCodeMinLength": "Postal code must contain at least 4 digits.",
       "fullAddress": "Full Address",
+      "fullAddressRequired": "Full address is required.",
       "city": "City",
-      "country": "Country"
+      "country": "Country",
+      "onlyLettersAllowed": "Only letters are allowed."
     },
     "education": {
       "institution": "Institution",
+      "institutionRequired": "Institution is required.",
       "startDate": "Start Date",
       "endDate": "End Date",
-      "diploma": "Diploma"
+      "startDateRequired": "Start date is required.",
+      "endDateRequired": "End date is required.",
+      "invalidDateRange": "Start date must be before end date.",
+      "diploma": "Diploma",
+      "diplomaRequired": "Diploma is required."
     },
     "experience": {
       "companyName": "Company Name",
+      "companyNameRequired": "Company name is required.",
       "position": "Position",
+      "positionRequired": "Position is required.",
       "startDate": "Start Date",
       "endDate": "End Date",
       "description": "Description"
     },
-    "languages": {
-      "language": "Language",
-      "level": "Level",
-      "native": "Is Native?"
+    "candidateLanguage": {
+      "language": "Idioma",
+      "level": "Nivel",
+      "selectLevel": "Seleccionar un nivel",
+      "add": "Añadir"
     },
     "skills": {
       "skillName": "Skill Name",
       "proficiencyLevel": "Proficiency Level"
     },
     "contact": {
-      "contactType": "Contact Type",
-      "contactValue": "Contact Value"
+      "type": "Contact Type",
+      "selectType": "Select a type",
+      "value": "Contact Value"
     },
     "buttons": {
       "previous": "Previous",
       "next": "Next",
       "clear": "Clear",
-      "save": "Save"
+      "save": "Save",
+      "add": "Add"
     }
+  
   
 
     ,
     
-        "Candidate Statistics": "Candidate Statistics",
-        "Total Candidates": "Total Candidates",
-        "Candidates by Language": "Candidates by Language",
-        "Candidates by Skill": "Candidates by Skill",
-        "Languages": "Languages",
-        "Skills": "Skills"
-
+    
+    
+      "stats": {
+        "title": "Statistics",
+        "totalCandidates": "Total Candidates:",
+        "languagesTab": "Languages",
+        "candidatesByLanguage": "Candidates by Language",
+        "skillsTab": "Skills",
+        "candidatesBySkill": "Candidates by Skill",
+        "noLanguages": "No Languages",
+        "noSkills": "No Skills",
+        "noData": "No Data"
+      }
+    
+    
+    
 ,
 
 "topbar": {
@@ -158,8 +208,8 @@
    
         "footer": {
             "copyright": "© 2025 NTT DATA Morocco"
-          }
-      }
+          }}
+      
     
 
       

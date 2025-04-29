@@ -1,9 +1,9 @@
 <div class="stats-container">
   <div class="stats-header">
-    <h2 class="stats-title" translate>Candidate Statistics</h2>
+    <h2 class="stats-title">{{ 'stats.title' | translate }}</h2>
     <p-card class="total-card">
       <div class="total-candidates">
-        <span class="total-label" translate>Total Candidates:</span>
+        <span class="total-label">{{ 'stats.totalCandidates' | translate }}</span>
         <span class="candidate-count">{{ totalCandidates }}</span>
       </div>
     </p-card>
@@ -11,27 +11,27 @@
 
   <p-tabView>
     <!-- Languages Tab -->
-    <p-tabPanel [header]="'Languages' | translate">
+    <p-tabPanel [header]="'stats.languagesTab' | translate">
       <p-card class="chart-card">
-        <h3 translate>Candidates by Language</h3>
+        <h3>{{ 'stats.candidatesByLanguage' | translate }}</h3>
         <p-chart
           type="bar"
           [data]="languageChartData"
           [options]="chartOptions"
-          height="300px">
+          [style.height]="'300px'">
         </p-chart>
       </p-card>
     </p-tabPanel>
 
     <!-- Skills Tab -->
-    <p-tabPanel [header]="'Skills' | translate">
+    <p-tabPanel [header]="'stats.skillsTab' | translate">
       <p-card class="chart-card">
-        <h3 translate>Candidates by Skill</h3>
+        <h3>{{ 'stats.candidatesBySkill' | translate }}</h3>
         <p-chart
           type="pie"
           [data]="skillsChartData"
           [options]="chartOptions"
-          height="300px">
+          [style.height]="'300px'">
         </p-chart>
       </p-card>
     </p-tabPanel>

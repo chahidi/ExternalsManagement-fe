@@ -1,12 +1,12 @@
-import { Candidate } from './candidate'; 
+import { Candidate } from './candidate';
 
 export interface InterviewInstance {
   id: number;
   candidate: Candidate;
   mainTech: string;
-  started_at: string;
-  submitted_at: string | null;
-  status: 'passed' | 'notYet';
-  expires_at: string;
+  startedAt: Date;
+  submittedAt: Date | null;
+  isPassed: boolean;
+  expiresAt: Date;
   token: string;
 }

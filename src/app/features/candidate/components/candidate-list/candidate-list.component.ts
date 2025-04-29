@@ -18,7 +18,6 @@ import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { TranslateModule } from '@ngx-translate/core';
 
 interface FilterCriteria {
   skills: any[];
@@ -44,8 +43,7 @@ interface FilterCriteria {
     ConfirmDialogModule,
     DialogModule,
     TextareaModule,
-    ToastModule,
-    TranslateModule
+    ToastModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',

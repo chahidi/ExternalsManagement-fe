@@ -168,17 +168,20 @@
 
    
    
-    "stats": {
-      "title": "Estadísticas de Candidatos",
-      "totalCandidates": "Total de Candidatos:",
-      "languagesTab": "Idiomas",
-      "candidatesByLanguage": "Candidatos por Idioma",
-      "skillsTab": "Habilidades",
-      "candidatesBySkill": "Candidatos por Habilidad",
-      "noLanguages": "No hay Idiomas",
-      "noSkills": "No hay Habilidades",
-      "noData": "Sin Datos"
-    }
+   "stats": {
+  "title": "Estadísticas de los Candidatos",
+  "totalCandidates": "Total de Candidatos:",
+  "languagesTab": "Idiomas",
+  "candidatesByLanguage": "Candidatos por Idioma",
+  "skillsTab": "Competencias",
+  "candidatesBySkill": "Candidatos por Competencia",
+  "experienceTab": "Experiencia",
+  "candidatesByExperience": "Candidatos por Años de Experiencia",
+  "noLanguages": "Ningún Idioma",
+  "noSkills": "Ninguna Competencia",
+  "noData": "Sin Datos"
+}
+
   
   
   

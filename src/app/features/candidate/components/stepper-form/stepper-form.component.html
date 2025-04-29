@@ -8,20 +8,13 @@
       </span>
     </ng-template>
   </p-steps>
-  
-  
-  
-  
 
   <!-- Form Content -->
   <div class="p-mt-4">
     <ng-container [ngSwitch]="activeIndex">
-      <!-- ========== GENERAL DATA SECTION ========== -->
+
+      <!-- GENERAL DATA -->
       <div *ngSwitchCase="0" [formGroup]="generalDataForm" class="form-section">
-        <!-- Full Name -->
-      <!-- ========== GENERAL DATA SECTION ========== -->
-      <div *ngSwitchCase="0" [formGroup]="generalDataForm" class="form-section">
-        <!-- Full Name -->
         <div class="p-field">
           <label for="fullName">{{ 'general.fullName' | translate }}</label>
           <input id="fullName" type="text" pInputText formControlName="fullName">
@@ -35,8 +28,6 @@
           </small>
         </div>
 
-        <!-- Birth Date -->
-        <!-- Birth Date -->
         <div class="p-field">
           <label for="birthDate">{{ 'general.birthDate' | translate }}</label>
           <input id="birthDate" type="date" pInputText formControlName="birthDate">
@@ -53,23 +44,17 @@
           </small>
         </div>
 
-        <!-- Years of Experience -->
-        <!-- Years of Experience -->
         <div class="p-field">
           <label for="yearsOfExperience">{{ 'general.yearsOfExperience' | translate }}</label>
           <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience">
-          <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-            <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
-              <i class="pi pi-times-circle"></i> {{ 'general.validNumber' | translate }}
-            </ng-container>
+          <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched && generalDataForm.get('yearsOfExperience')?.invalid">
+            <i class="pi pi-times-circle"></i> {{ 'general.validNumber' | translate }}
           </small>
           <small *ngIf="generalDataForm.hasError('invalidExperience')">
             <i class="pi pi-times-circle"></i> {{ 'general.invalidExperience' | translate }}
           </small>
         </div>
 
-        <!-- Gender -->
-        <!-- Gender -->
         <div class="p-field">
           <label>{{ 'general.gender' | translate }}</label>
           <div class="p-formgroup-inline">
@@ -83,8 +68,6 @@
           </small>
         </div>
 
-        <!-- Main Technology -->
-        <!-- Main Technology -->
         <div class="p-field">
           <label for="mainTech">{{ 'general.mainTechnology' | translate }}</label>
           <input id="mainTech" type="text" pInputText formControlName="mainTech">
@@ -93,8 +76,6 @@
           </small>
         </div>
 
-        <!-- Summary -->
-        <!-- Summary -->
         <div class="p-field">
           <label for="summary">{{ 'general.summary' | translate }}</label>
           <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
@@ -104,12 +85,8 @@
         </div>
       </div>
 
-      <!-- ========== ADDRESS SECTION ========== -->
+      <!-- ADDRESS -->
       <div *ngSwitchCase="1" [formGroup]="addressForm" class="form-section">
-        <!-- Street -->
-      <!-- ========== ADDRESS SECTION ========== -->
-      <div *ngSwitchCase="1" [formGroup]="addressForm" class="form-section">
-        <!-- Street -->
         <div class="p-field">
           <label for="street">{{ 'address.street' | translate }}</label>
           <input id="street" type="text" pInputText formControlName="street">
@@ -118,8 +95,6 @@
           </small>
         </div>
 
-        <!-- Postal Code -->
-        <!-- Postal Code -->
         <div class="p-field">
           <label for="postalCode">{{ 'address.postalCode' | translate }}</label>
           <input id="postalCode" type="text" pInputText formControlName="postalCode">
@@ -133,8 +108,6 @@
           </small>
         </div>
 
-        <!-- Full Address -->
-        <!-- Full Address -->
         <div class="p-field">
           <label for="fullAddress">{{ 'address.fullAddress' | translate }}</label>
           <input id="fullAddress" type="text" pInputText formControlName="fullAddress">
@@ -143,8 +116,6 @@
           </small>
         </div>
 
-        <!-- City -->
-        <!-- City -->
         <div class="p-field">
           <label for="city">{{ 'address.city' | translate }}</label>
           <input id="city" type="text" pInputText formControlName="city">
@@ -153,8 +124,6 @@
           </small>
         </div>
 
-        <!-- Country -->
-        <!-- Country -->
         <div class="p-field">
           <label for="country">{{ 'address.country' | translate }}</label>
           <input id="country" type="text" pInputText formControlName="country">
@@ -164,12 +133,8 @@
         </div>
       </div>
 
-      <!-- ========== EDUCATION SECTION ========== -->
+      <!-- EDUCATION -->
       <div *ngSwitchCase="2" [formGroup]="educationForm" class="form-section">
-        <!-- Institution -->
-      <!-- ========== EDUCATION SECTION ========== -->
-      <div *ngSwitchCase="2" [formGroup]="educationForm" class="form-section">
-        <!-- Institution -->
         <div class="p-field">
           <label for="institution">{{ 'education.institution' | translate }}</label>
           <input id="institution" type="text" pInputText formControlName="institution">
@@ -178,8 +143,6 @@
           </small>
         </div>
 
-        <!-- Dates -->
-        <!-- Dates -->
         <div class="p-field p-grid">
           <div class="p-col-6">
             <label for="startDateEdu">{{ 'education.startDate' | translate }}</label>
@@ -196,18 +159,12 @@
               <i class="pi pi-times-circle"></i> {{ 'education.endDateRequired' | translate }}
             </small>
           </div>
-
-          <small *ngIf="educationForm.hasError('invalidDateRange') && educationForm.touched">
-            <i class="pi pi-times-circle"></i> {{ 'education.invalidDateRange' | translate }}
-          </small>
-
-          <small *ngIf="educationForm.hasError('invalidDateRange') && educationForm.touched">
-            <i class="pi pi-times-circle"></i> {{ 'education.invalidDateRange' | translate }}
-          </small>
         </div>
 
-        <!-- Diploma -->
-        <!-- Diploma -->
+        <small *ngIf="educationForm.hasError('invalidDateRange') && educationForm.touched">
+          <i class="pi pi-times-circle"></i> {{ 'education.invalidDateRange' | translate }}
+        </small>
+
         <div class="p-field">
           <label for="diploma">{{ 'education.diploma' | translate }}</label>
           <input id="diploma" type="text" pInputText formControlName="diploma">
@@ -217,12 +174,8 @@
         </div>
       </div>
 
-      <!-- ========== EXPERIENCE SECTION ========== -->
+      <!-- EXPERIENCE -->
       <div *ngSwitchCase="3" [formGroup]="experienceForm" class="form-section">
-        <!-- Company Name -->
-      <!-- ========== EXPERIENCE SECTION ========== -->
-      <div *ngSwitchCase="3" [formGroup]="experienceForm" class="form-section">
-        <!-- Company Name -->
         <div class="p-field">
           <label for="companyName">{{ 'experience.companyName' | translate }}</label>
           <input id="companyName" type="text" pInputText formControlName="companyName">
@@ -231,8 +184,6 @@
           </small>
         </div>
 
-        <!-- Position -->
-        <!-- Position -->
         <div class="p-field">
           <label for="position">{{ 'experience.position' | translate }}</label>
           <input id="position" type="text" pInputText formControlName="position">
@@ -241,8 +192,6 @@
           </small>
         </div>
 
-        <!-- Dates -->
-        <!-- Dates -->
         <div class="p-field p-grid">
           <div class="p-col-6">
             <label for="startDateExp">{{ 'experience.startDate' | translate }}</label>
@@ -259,21 +208,13 @@
               <i class="pi pi-times-circle"></i> {{ 'experience.endDateRequired' | translate }}
             </small>
           </div>
-
-          <small *ngIf="experienceForm.hasError('invalidDateRange') && experienceForm.touched">
-            <i class="pi pi-times-circle"></i> {{ 'experience.invalidDateRange' | translate }}
-          </small>
-
-          <small *ngIf="experienceForm.hasError('invalidDateRange') && experienceForm.touched">
-            <i class="pi pi-times-circle"></i> {{ 'experience.invalidDateRange' | translate }}
-          </small>
         </div>
 
-        <!-- Description -->
-        <!-- Description -->
+        <small *ngIf="experienceForm.hasError('invalidDateRange') && experienceForm.touched">
+          <i class="pi pi-times-circle"></i> {{ 'experience.invalidDateRange' | translate }}
+        </small>
+
         <div class="p-field">
-          <label for="description">{{ 'experience.description' | translate }}</label>
-          <textarea id="description" pInputTextarea formControlName="description"></textarea>
           <label for="description">{{ 'experience.description' | translate }}</label>
           <textarea id="description" pInputTextarea formControlName="description"></textarea>
           <small *ngIf="experienceForm.get('description')?.touched && experienceForm.get('description')?.invalid">
@@ -282,15 +223,9 @@
         </div>
       </div>
 
-      <!-- ========== LANGUAGES SECTION ========== -->
-      <div *ngSwitchCase="4" [formGroup]="languageForm" class="form-section">
-      <!-- ========== LANGUAGES SECTION ========== -->
+      <!-- LANGUAGES -->
       <div *ngSwitchCase="4" [formGroup]="languageForm" class="form-section">
         <div class="p-field">
-          <label for="languages">{{ 'candidateLanguage.languages' | translate }}</label>
-          <input id="languages" type="text" pInputText formControlName="languages">
-          <small *ngIf="languageForm.get('languages')?.touched && languageForm.get('languages')?.invalid">
-            <i class="pi pi-times-circle"></i> {{ 'candidateLanguage.languagesRequired' | translate }}
           <label for="languages">{{ 'candidateLanguage.languages' | translate }}</label>
           <input id="languages" type="text" pInputText formControlName="languages">
           <small *ngIf="languageForm.get('languages')?.touched && languageForm.get('languages')?.invalid">
@@ -298,18 +233,10 @@
           </small>
         </div>
       </div>
-        </div>
-      </div>
 
-      <!-- ========== CONTACT SECTION ========== -->
-      <div *ngSwitchCase="6" [formGroup]="contactForm" class="form-section">
-      <!-- ========== CONTACT SECTION ========== -->
+      <!-- CONTACT -->
       <div *ngSwitchCase="6" [formGroup]="contactForm" class="form-section">
         <div class="p-field">
-          <label for="phone">{{ 'contact.phone' | translate }}</label>
-          <input id="phone" type="text" pInputText formControlName="phone">
-          <small *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid">
-            <i class="pi pi-times-circle"></i> {{ 'contact.phoneRequired' | translate }}
           <label for="phone">{{ 'contact.phone' | translate }}</label>
           <input id="phone" type="text" pInputText formControlName="phone">
           <small *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid">
@@ -318,20 +245,14 @@
         </div>
       </div>
 
-      <!-- Submit Button -->
-      <div class="p-field">
-        <button pButton type="button" 
-                [label]="'candidateLanguage.add' | translate" 
-                icon="pi pi-plus" 
-                (click)="onSubmit()"></button>
-      </div>
-      <!-- Submit Button -->
-      <div class="p-field">
-        <button pButton type="button" 
-                [label]="'candidateLanguage.add' | translate" 
-                icon="pi pi-plus" 
-                (click)="onSubmit()"></button>
-      </div>
     </ng-container>
+
+    <!-- Submit Button -->
+    <div class="p-field">
+      <button pButton type="button" 
+              [label]="'candidateLanguage.add' | translate" 
+              icon="pi pi-plus" 
+              (click)="onSubmit()"></button>
+    </div>
   </div>
 </div>

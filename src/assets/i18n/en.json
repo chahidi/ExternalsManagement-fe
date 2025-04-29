@@ -1,0 +1,221 @@
+{
+    "auth": {
+      "access": {
+        "Access Denied": "Access Denied",
+        "Permission Message": "You do not have the necessary permissions. Please contact admins.",
+        "Go to Dashboard": "Go to Dashboard"
+      }, "error": {
+        "error_occurred": "Error Occurred",
+        "resource_not_available": "Requested resource is not available.",
+        "go_to_dashboard": "Go to Dashboard"
+      },
+      "login": {
+        "welcome": "Welcome to PrimeLand!",
+        "sign_in": "Sign in to continue",
+        "email": "Email",
+        "password": "Password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "sign_in_button": "Sign In"
+      }
+    }
+  ,
+  
+    "candidate": {
+      "list": {
+        "TITLE": "Candidate List",
+        "FILTER_TITLE": "Filter Candidates",
+        "FILTER_SKILLS": "Skills",
+        "FILTER_LANGUAGE": "Language",
+        "FILTER_YEARS": "Years of Experience",
+        "PLACEHOLDER_SKILLS": "Select Skills",
+        "PLACEHOLDER_LANGUAGE": "Select Language",
+        "PLACEHOLDER_YEARS": "Enter years",
+        "RESET": "Reset",
+        "APPLY": "Apply",
+        "CLEAR": "Clear",
+        "SEARCH": "Search keyword",
+        "COL_NAME": "Full Name",
+        "COL_MAIN_TECH": "Main Tech",
+        "COL_LOCATION": "Location",
+        "COL_EDUCATION": "Education",
+        "COL_EXPERIENCE": "Experience",
+        "COL_SKILLS": "Skills",
+        "COL_CONTACT": "Contact",
+        "COL_ACTIONS": "Actions",
+        "EMPTY": "No candidates found."
+      }
+    }
+  ,
+
+    "tabs": {
+      "header1": "Header I",
+      "header2": "Header II",
+      "header3": "Header III",
+      "content1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "content2": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.",
+      "content3": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus."
+    }
+  ,
+    "upload": {
+      "title": "Advanced New Curriculum Vitae",
+      "choose": "Choose",
+      "upload": "Upload",
+      "cancel": "Cancel",
+      "dragDropMessage": "Drag and drop files here to upload."
+    }
+  ,
+
+ 
+
+  "steps.generalData": "General Data",
+  "steps.address": "Address",
+  "steps.education": "Education",
+  "steps.experience": "Experience",
+  "steps.languages": "Languages",
+  "steps.skills": "Skills",
+  "steps.contact": "Contact"
+
+
+,
+  
+    "general": {
+      "fullName": "Full Name",
+      "fullNameRequired": "Full name is required.",
+      "birthDate": "Birth Date",
+      "birthDateRequired": "Birth date is required.",
+      "underAge": "You must be at least 18 years old.",
+      "overAge": "You must be under 65 years old.",
+      "yearsOfExperience": "Years of Experience",
+      "validNumber": "Please enter a valid number.",
+      "invalidExperience": "The years of experience do not match the age.",
+      "gender": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "genderRequired": "Gender is required.",
+      "mainTechnology": "Main Technology",
+      "mainTechnologyRequired": "Main technology is required.",
+      "summary": "Summary",
+      "summaryRequired": "Summary is required.",
+      "onlyLettersAllowed": "Only letters are allowed."
+    },
+    "address": {
+      "street": "Street",
+      "streetRequired": "Street is required.",
+      "postalCode": "Postal Code",
+      "postalCodeRequired": "Postal code is required.",
+      "postalCodePattern": "Postal code must contain only digits.",
+      "postalCodeMinLength": "Postal code must contain at least 4 digits.",
+      "fullAddress": "Full Address",
+      "fullAddressRequired": "Full address is required.",
+      "city": "City",
+      "country": "Country",
+      "onlyLettersAllowed": "Only letters are allowed."
+    },
+    "education": {
+      "institution": "Institution",
+      "institutionRequired": "Institution is required.",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "startDateRequired": "Start date is required.",
+      "endDateRequired": "End date is required.",
+      "invalidDateRange": "Start date must be before end date.",
+      "diploma": "Diploma",
+      "diplomaRequired": "Diploma is required."
+    },
+    "experience": {
+      "companyName": "Company Name",
+      "companyNameRequired": "Company name is required.",
+      "position": "Position",
+      "positionRequired": "Position is required.",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "description": "Description"
+    },
+    "candidateLanguage": {
+      "language": "Idioma",
+      "level": "Nivel",
+      "selectLevel": "Seleccionar un nivel",
+      "add": "Añadir"
+    },
+    "skills": {
+      "skillName": "Skill Name",
+      "proficiencyLevel": "Proficiency Level"
+    },
+    "contact": {
+      "type": "Contact Type",
+      "selectType": "Select a type",
+      "value": "Contact Value"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "next": "Next",
+      "clear": "Clear",
+      "save": "Save",
+      "add": "Add"
+    }
+  
+  
+
+    ,
+    
+    
+    
+     "stats": {
+  "title": "Candidate Statistics",
+  "totalCandidates": "Total Candidates:",
+  "languagesTab": "Languages",
+  "candidatesByLanguage": "Candidates by Language",
+  "skillsTab": "Skills",
+  "candidatesBySkill": "Candidates by Skill",
+  "experienceTab": "Experience",
+  "candidatesByExperience": "Candidates by Years of Experience",
+  "noLanguages": "No Languages",
+  "noSkills": "No Skills",
+  "noData": "No Data"
+}
+
+    
+    
+    
+,
+
+"topbar": {
+    "calendar": "Calendar",
+    "messages": "Messages",
+    "profile": "Profile"
+  },
+  "language": {
+    "english": "English",
+    "french": "French",
+    "spanish": "Spanish"
+  }
+  ,
+
+
+  
+    "menu": {
+      "dashboard": "Dashboard",
+      "externalsManagement": "Externals Management",
+      "cardsView": "Cards View",
+      "listView": "List View",
+      "candidates": "Candidates",
+      "newCV": "New CV",
+      "candidateList": "Candidate List",
+      "promptManagement": "Prompt Management",
+      "newPrompt": "New Prompt",
+      "promptList": "Prompt List"
+    }
+  
+,
+   
+        "footer": {
+            "copyright": "© 2025 NTT DATA Morocco"
+          }}
+      
+    
+
+      
+  
+  
+  

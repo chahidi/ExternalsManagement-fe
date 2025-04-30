@@ -79,81 +79,111 @@
 
 ,
   
-    "general": {
-      "fullName": "Full Name",
-      "fullNameRequired": "Full name is required.",
-      "birthDate": "Birth Date",
-      "birthDateRequired": "Birth date is required.",
-      "underAge": "You must be at least 18 years old.",
-      "overAge": "You must be under 65 years old.",
-      "yearsOfExperience": "Years of Experience",
-      "validNumber": "Please enter a valid number.",
-      "invalidExperience": "The years of experience do not match the age.",
-      "gender": "Gender",
-      "male": "Male",
-      "female": "Female",
-      "genderRequired": "Gender is required.",
-      "mainTechnology": "Main Technology",
-      "mainTechnologyRequired": "Main technology is required.",
-      "summary": "Summary",
-      "summaryRequired": "Summary is required.",
-      "onlyLettersAllowed": "Only letters are allowed."
-    },
-    "address": {
-      "street": "Street",
-      "streetRequired": "Street is required.",
-      "postalCode": "Postal Code",
-      "postalCodeRequired": "Postal code is required.",
-      "postalCodePattern": "Postal code must contain only digits.",
-      "postalCodeMinLength": "Postal code must contain at least 4 digits.",
-      "fullAddress": "Full Address",
-      "fullAddressRequired": "Full address is required.",
-      "city": "City",
-      "country": "Country",
-      "onlyLettersAllowed": "Only letters are allowed."
-    },
-    "education": {
-      "institution": "Institution",
-      "institutionRequired": "Institution is required.",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "startDateRequired": "Start date is required.",
-      "endDateRequired": "End date is required.",
-      "invalidDateRange": "Start date must be before end date.",
-      "diploma": "Diploma",
-      "diplomaRequired": "Diploma is required."
-    },
-    "experience": {
-      "companyName": "Company Name",
-      "companyNameRequired": "Company name is required.",
-      "position": "Position",
-      "positionRequired": "Position is required.",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "description": "Description"
-    },
-    "candidateLanguage": {
-      "language": "Idioma",
-      "level": "Nivel",
-      "selectLevel": "Seleccionar un nivel",
-      "add": "Añadir"
-    },
-    "skills": {
-      "skillName": "Skill Name",
-      "proficiencyLevel": "Proficiency Level"
-    },
-    "contact": {
-      "type": "Contact Type",
-      "selectType": "Select a type",
-      "value": "Contact Value"
-    },
-    "buttons": {
-      "previous": "Previous",
-      "next": "Next",
-      "clear": "Clear",
-      "save": "Save",
-      "add": "Add"
+
+  "general": {
+    "fullName": "Full Name",
+    "fullNameRequired": "Full Name is required.",
+    "onlyLettersAllowed": "Only letters and spaces are allowed.",
+    "birthDate": "Birth Date",
+    "birthDateRequired": "Birth Date is required.",
+    "underAge": "You must be at least 18 years old.",
+    "overAge": "Age exceeds allowed limit.",
+    "yearsOfExperience": "Years of Experience",
+    "validNumber": "Please enter a valid number.",
+    "invalidExperience": "Experience exceeds what is possible given your birth date.",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "genderRequired": "Gender is required.",
+    "mainTechnology": "Main Technology",
+    "mainTechnologyRequired": "Main Technology is required.",
+    "summary": "Summary",
+    "summaryRequired": "Summary is required."
+  },
+  "address": {
+    "street": "Street",
+    "streetRequired": "Street is required.",
+    "postalCode": "Postal Code",
+    "postalCodeRequired": "Postal Code is required.",
+    "postalCodePattern": "3-10 characters: letters, digits, spaces or hyphens only.",
+    "fullAddress": "Full Address",
+    "fullAddressRequired": "Full Address is required.",
+    "city": "City",
+    "country": "Country",
+    "onlyLettersAllowed": "Only letters, spaces, apostrophes, dots, and hyphens are allowed."
+  },
+  "education": {
+    "institution": "Institution",
+    "institutionRequired": "Institution is required.",
+    "startDate": "Start Date",
+    "startDateRequired": "Start date is required.",
+    "endDate": "End Date",
+    "endDateRequired": "End date is required.",
+    "invalidDateRange": "End date cannot be earlier than start date.",
+    "diploma": "Diploma",
+    "diplomaRequired": "Diploma is required."
+  },
+  "experience": {
+    "companyName": "Company Name",
+    "companyNameRequired": "Company Name is required.",
+    "position": "Position",
+    "positionRequired": "Position is required.",
+    "startDate": "Start Date",
+    "startDateRequired": "Start Date is required.",
+    "endDate": "End Date",
+    "endDateRequired": "End Date is required.",
+    "invalidDateRange": "Start Date must come before End Date.",
+    "description": "Description",
+    "descriptionRequired": "Description is required."
+  },
+  "candidateLanguage": {
+    "languages": "Language",
+    "languagesRequired": "Language is required.",
+    "level": "Level",
+    "levelRequired": "Level is required.",
+    "isNative": "Native?",
+    "selectLevel": "Select Level",
+    "levels": {
+      "advanced": "Advanced",
+      "intermediate": "Intermediate",
+      "basic": "Basic",
+      "native": "Native"
     }
+  },
+  "skills": {
+    "skillName": "Skill Name",
+    "skillNameRequired": "Skill Name is required.",
+    "proficiencyLevel": "Proficiency Level",
+    "proficiencyRequired": "Proficiency Level is required.",
+    "selectProficiency": "Select Proficiency",
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    }
+  },
+  "contact": {
+    "contactType": "Contact Type",
+    "contactTypeRequired": "Contact Type is required.",
+    "contactValue": "Contact Value",
+    "contactValueRequired": "Contact Value is required.",
+    "invalidEmail": "Please enter a valid email address.",
+    "invalidPhone": "Please enter a valid phone number.",
+    "invalidLinkedIn": "Please enter a valid LinkedIn profile URL.",
+    "selectContactType": "Select Contact Type"
+  },
+  "navigation": {
+    "previous": "Previous",
+    "previousTitle": "Go to the previous step in the form",
+    "clear": "Clear",
+    "clearTitle": "Clear the current section of the form",
+    "next": "Next",
+    "nextTitle": "Go to the next step in the form",
+    "save": "Save",
+    "saveTitle": "Save and submit the form"
+  }
+
   
   
 

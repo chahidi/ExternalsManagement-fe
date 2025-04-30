@@ -79,87 +79,83 @@
 
 ,
   
-    "general": {
+
+  "general": {
     "fullName": "Full Name",
-    "fullNameRequired": "Full name is required",
-    "onlyLettersAllowed": "Only letters and spaces are allowed",
+    "fullNameRequired": "Full Name is required.",
+    "onlyLettersAllowed": "Only letters and spaces are allowed.",
     "birthDate": "Birth Date",
-    "birthDateRequired": "Birth date is required",
-    "underAge": "You must be at least 18 years old",
-    "overAge": "Age cannot exceed 80 years",
+    "birthDateRequired": "Birth Date is required.",
+    "underAge": "You must be at least 18 years old.",
+    "overAge": "Age exceeds allowed limit.",
     "yearsOfExperience": "Years of Experience",
-    "validNumber": "Please enter a valid number",
-    "invalidExperience": "Years of experience cannot exceed your age minus 16",
+    "validNumber": "Please enter a valid number.",
+    "invalidExperience": "Experience exceeds what is possible given your birth date.",
     "gender": "Gender",
     "male": "Male",
     "female": "Female",
-    "genderRequired": "Gender is required",
+    "genderRequired": "Gender is required.",
     "mainTechnology": "Main Technology",
-    "mainTechnologyRequired": "Main technology is required",
+    "mainTechnologyRequired": "Main Technology is required.",
     "summary": "Summary",
-    "summaryRequired": "Summary is required"
+    "summaryRequired": "Summary is required."
   },
   "address": {
     "street": "Street",
-    "streetRequired": "Street is required",
+    "streetRequired": "Street is required.",
     "postalCode": "Postal Code",
-    "postalCodeRequired": "Postal code is required",
-    "postalCodePattern": "Postal code must be 3-10 characters (letters, numbers, spaces, or hyphens)",
+    "postalCodeRequired": "Postal Code is required.",
+    "postalCodePattern": "3-10 characters: letters, digits, spaces or hyphens only.",
     "fullAddress": "Full Address",
-    "fullAddressRequired": "Full address is required",
+    "fullAddressRequired": "Full Address is required.",
     "city": "City",
-    "onlyLettersAllowed": "Only letters, spaces, and hyphens are allowed",
-    "country": "Country"
+    "country": "Country",
+    "onlyLettersAllowed": "Only letters, spaces, apostrophes, dots, and hyphens are allowed."
   },
   "education": {
     "institution": "Institution",
-    "institutionRequired": "Institution is required",
+    "institutionRequired": "Institution is required.",
     "startDate": "Start Date",
-    "startDateRequired": "Start date is required",
+    "startDateRequired": "Start date is required.",
     "endDate": "End Date",
-    "endDateRequired": "End date is required",
-    "invalidDateRange": "End date must be after start date",
+    "endDateRequired": "End date is required.",
+    "invalidDateRange": "End date cannot be earlier than start date.",
     "diploma": "Diploma",
-    "diplomaRequired": "Diploma is required"
+    "diplomaRequired": "Diploma is required."
   },
   "experience": {
     "companyName": "Company Name",
-    "companyNameRequired": "Company name is required",
+    "companyNameRequired": "Company Name is required.",
     "position": "Position",
-    "positionRequired": "Position is required",
+    "positionRequired": "Position is required.",
     "startDate": "Start Date",
-    "startDateRequired": "Start date is required",
+    "startDateRequired": "Start Date is required.",
     "endDate": "End Date",
-    "endDateRequired": "End date is required",
-    "invalidDateRange": "End date must be after start date",
+    "endDateRequired": "End Date is required.",
+    "invalidDateRange": "Start Date must come before End Date.",
     "description": "Description",
-    "descriptionRequired": "Description is required"
+    "descriptionRequired": "Description is required."
   },
   "candidateLanguage": {
     "languages": "Language",
-    "languagesRequired": "Language is required",
+    "languagesRequired": "Language is required.",
     "level": "Level",
-    "selectLevel": "Select a level",
-    "levelRequired": "Level is required",
-    "isNative": "Is Native",
+    "levelRequired": "Level is required.",
+    "isNative": "Native?",
+    "selectLevel": "Select Level",
     "levels": {
       "advanced": "Advanced",
       "intermediate": "Intermediate",
       "basic": "Basic",
       "native": "Native"
-  }
-}
-
-  ,
-    
-    
-  
+    }
+  },
   "skills": {
     "skillName": "Skill Name",
-    "skillNameRequired": "Skill name is required",
+    "skillNameRequired": "Skill Name is required.",
     "proficiencyLevel": "Proficiency Level",
-    "selectProficiency": "Select proficiency level",
-    "proficiencyRequired": "Proficiency level is required",
+    "proficiencyRequired": "Proficiency Level is required.",
+    "selectProficiency": "Select Proficiency",
     "levels": {
       "beginner": "Beginner",
       "intermediate": "Intermediate",
@@ -169,24 +165,26 @@
   },
   "contact": {
     "contactType": "Contact Type",
-    "selectContactType": "Select contact type",
-    "contactTypeRequired": "Contact type is required",
+    "contactTypeRequired": "Contact Type is required.",
     "contactValue": "Contact Value",
-    "contactValueRequired": "Contact value is required",
-    "invalidEmail": "Invalid email format",
-    "invalidPhone": "Invalid phone number format",
-    "invalidLinkedIn": "Invalid LinkedIn URL format"
+    "contactValueRequired": "Contact Value is required.",
+    "invalidEmail": "Please enter a valid email address.",
+    "invalidPhone": "Please enter a valid phone number.",
+    "invalidLinkedIn": "Please enter a valid LinkedIn profile URL.",
+    "selectContactType": "Select Contact Type"
   },
   "navigation": {
     "previous": "Previous",
-    "previousTitle": "Go to the previous step",
+    "previousTitle": "Go to the previous step in the form",
     "clear": "Clear",
-    "clearTitle": "Clear the current section",
+    "clearTitle": "Clear the current section of the form",
     "next": "Next",
-    "nextTitle": "Go to the next step",
+    "nextTitle": "Go to the next step in the form",
     "save": "Save",
-    "saveTitle": "Save the form"
+    "saveTitle": "Save and submit the form"
   }
+
+  
   
 
     ,

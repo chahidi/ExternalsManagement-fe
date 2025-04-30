@@ -86,112 +86,110 @@
   
 
     "general": {
-    "fullName": "Nom complet",
-    "fullNameRequired": "Le nom complet est requis",
-    "onlyLettersAllowed": "Seuls les lettres et les espaces sont autorisés",
-    "birthDate": "Date de naissance",
-    "birthDateRequired": "La date de naissance est requise",
-    "underAge": "Vous devez avoir au moins 18 ans",
-    "overAge": "L'âge ne peut pas dépasser 80 ans",
-    "yearsOfExperience": "Années d'expérience",
-    "validNumber": "Veuillez entrer un nombre valide",
-    "invalidExperience": "Les années d'expérience ne peuvent pas dépasser votre âge moins 16 ans",
-    "gender": "Genre",
-    "male": "Homme",
-    "female": "Femme",
-    "genderRequired": "Le genre est requis",
-    "mainTechnology": "Technologie principale",
-    "mainTechnologyRequired": "La technologie principale est requise",
-    "summary": "Résumé",
-    "summaryRequired": "Le résumé est requis"
-  },
-  "address": {
-    "street": "Rue",
-    "streetRequired": "La rue est requise",
-    "postalCode": "Code postal",
-    "postalCodeRequired": "Le code postal est requis",
-    "postalCodePattern": "Le code postal doit contenir entre 3 et 10 caractères (lettres, chiffres, espaces ou tirets)",
-    "fullAddress": "Adresse complète",
-    "fullAddressRequired": "L'adresse complète est requise",
-    "city": "Ville",
-    "onlyLettersAllowed": "Seuls les lettres, les espaces et les tirets sont autorisés",
-    "country": "Pays"
-  },
-  "education": {
-    "institution": "Établissement",
-    "institutionRequired": "L'établissement est requis",
-    "startDate": "Date de début",
-    "startDateRequired": "La date de début est requise",
-    "endDate": "Date de fin",
-    "endDateRequired": "La date de fin est requise",
-    "invalidDateRange": "La date de fin doit être postérieure à la date de début",
-    "diploma": "Diplôme",
-    "diplomaRequired": "Le diplôme est requis"
-  },
-  "experience": {
-    "companyName": "Nom de l'entreprise",
-    "companyNameRequired": "Le nom de l'entreprise est requis",
-    "position": "Poste",
-    "positionRequired": "Le poste est requis",
-    "startDate": "Date de début",
-    "startDateRequired": "La date de début est requise",
-    "endDate": "Date de fin",
-    "endDateRequired": "La date de fin est requise",
-    "invalidDateRange": "La date de fin doit être postérieure à la date de début",
-    "description": "Description",
-    "descriptionRequired": "La description est requise"
-  },
-  "candidateLanguage": {
-    "languages": "Langue",
-    "languagesRequired": "La langue est requise",
-    "level": "Niveau",
-    "selectLevel": "Sélectionnez un niveau",
-    "levelRequired": "Le niveau est requis",
-    "isNative": "Est natif",
-    "levels": {
+      "fullName": "Nom complet",
+      "fullNameRequired": "Le nom complet est requis.",
+      "onlyLettersAllowed": "Seules les lettres et les espaces sont autorisés.",
+      "birthDate": "Date de naissance",
+      "birthDateRequired": "La date de naissance est requise.",
+      "underAge": "Vous devez avoir au moins 18 ans.",
+      "overAge": "L'âge dépasse la limite autorisée.",
+      "yearsOfExperience": "Années d'expérience",
+      "validNumber": "Veuillez entrer un numéro valide.",
+      "invalidExperience": "L'expérience dépasse ce qui est possible compte tenu de votre date de naissance.",
+      "gender": "Genre",
+      "male": "Homme",
+      "female": "Femme",
+      "genderRequired": "Le genre est requis.",
+      "mainTechnology": "Technologie principale",
+      "mainTechnologyRequired": "La technologie principale est requise.",
+      "summary": "Résumé",
+      "summaryRequired": "Le résumé est requis."
+    },
+    "address": {
+      "street": "Rue",
+      "streetRequired": "La rue est requise.",
+      "postalCode": "Code postal",
+      "postalCodeRequired": "Le code postal est requis.",
+      "postalCodePattern": "3-10 caractères : lettres, chiffres, espaces ou tirets uniquement.",
+      "fullAddress": "Adresse complète",
+      "fullAddressRequired": "L'adresse complète est requise.",
+      "city": "Ville",
+      "country": "Pays",
+      "onlyLettersAllowed": "Seules les lettres, espaces, apostrophes, points et tirets sont autorisés."
+    },
+    "education": {
+      "institution": "Institution",
+      "institutionRequired": "L'institution est requise.",
+      "startDate": "Date de début",
+      "startDateRequired": "La date de début est requise.",
+      "endDate": "Date de fin",
+      "endDateRequired": "La date de fin est requise.",
+      "invalidDateRange": "La date de fin ne peut pas être antérieure à la date de début.",
+      "diploma": "Diplôme",
+      "diplomaRequired": "Le diplôme est requis."
+    },
+    "experience": {
+      "companyName": "Nom de l'entreprise",
+      "companyNameRequired": "Le nom de l'entreprise est requis.",
+      "position": "Poste",
+      "positionRequired": "Le poste est requis.",
+      "startDate": "Date de début",
+      "startDateRequired": "La date de début est requise.",
+      "endDate": "Date de fin",
+      "endDateRequired": "La date de fin est requise.",
+      "invalidDateRange": "La date de début doit précéder la date de fin.",
+      "description": "Description",
+      "descriptionRequired": "La description est requise."
+    },
+    "candidateLanguage": {
+      "languages": "Langue",
+      "languagesRequired": "La langue est requise.",
+      "level": "Niveau",
+      "levelRequired": "Le niveau est requis.",
+      "isNative": "Natif ?",
+      "selectLevel": "Sélectionner le niveau",
+      "levels": {
       "advanced": "Avancé",
       "intermediate": "Intermédiaire",
       "basic": "Basique",
       "native": "Natif"
     }
-  
-    
-  },
-
-  
-  "skills": {
-    "skillName": "Nom de la compétence",
-    "skillNameRequired": "Le nom de la compétence est requis",
-    "proficiencyLevel": "Niveau de compétence",
-    "selectProficiency": "Sélectionnez un niveau de compétence",
-    "proficiencyRequired": "Le niveau de compétence est requis",
-    "levels": {
+    },
+    "skills": {
+      "skillName": "Nom de la compétence",
+      "skillNameRequired": "Le nom de la compétence est requis.",
+      "proficiencyLevel": "Niveau de compétence",
+      "proficiencyRequired": "Le niveau de compétence est requis.",
+      "selectProficiency": "Sélectionner le niveau de compétence",
+      "levels": {
       "beginner": "Débutant",
       "intermediate": "Intermédiaire",
       "advanced": "Avancé",
       "expert": "Expert"
     }
-  },
-  "contact": {
-    "contactType": "Type de contact",
-    "selectContactType": "Sélectionnez un type de contact",
-    "contactTypeRequired": "Le type de contact est requis",
-    "contactValue": "Valeur de contact",
-    "contactValueRequired": "La valeur de contact est requise",
-    "invalidEmail": "Format d'email invalide",
-    "invalidPhone": "Format de numéro de téléphone invalide",
-    "invalidLinkedIn": "Format d'URL LinkedIn invalide"
-  },
-  "navigation": {
-    "previous": "Précédent",
-    "previousTitle": "Aller à l'étape précédente",
-    "clear": "Effacer",
-    "clearTitle": "Effacer la section actuelle",
-    "next": "Suivant",
-    "nextTitle": "Aller à l'étape suivante",
-    "save": "Enregistrer",
-    "saveTitle": "Enregistrer le formulaire"
-  }
+    },
+    "contact": {
+      "contactType": "Type de contact",
+      "contactTypeRequired": "Le type de contact est requis.",
+      "contactValue": "Valeur du contact",
+      "contactValueRequired": "La valeur du contact est requise.",
+      "invalidEmail": "Veuillez entrer une adresse email valide.",
+      "invalidPhone": "Veuillez entrer un numéro de téléphone valide.",
+      "invalidLinkedIn": "Veuillez entrer une URL de profil LinkedIn valide.",
+      "selectContactType": "Sélectionner le type de contact"
+    },
+    "navigation": {
+      "previous": "Précédent",
+      "previousTitle": "Aller à l'étape précédente du formulaire",
+      "clear": "Effacer",
+      "clearTitle": "Effacer la section actuelle du formulaire",
+      "next": "Suivant",
+      "nextTitle": "Aller à l'étape suivante du formulaire",
+      "save": "Sauvegarder",
+      "saveTitle": "Sauvegarder et soumettre le formulaire"
+    }
+  
+  
   
   ,
   

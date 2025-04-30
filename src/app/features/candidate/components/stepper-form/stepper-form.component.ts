@@ -43,45 +43,48 @@ export class StepperFormComponent implements OnInit {
   steps: MenuItem[] = [];
   activeIndex: number = 0;
   extractedData: any;
-
-
-  languageLevels = [
-    { label: 'Advanced', value: 'ADVANCED' },
-    { label: 'Intermediate', value: 'INTERMEDIATE' },
-    { label: 'Basic', value: 'BASIC' },
-    { label: 'Native', value: 'NATIVE' }
-  ];
-
-  skillProficiencies = [
-    { label: 'Beginner', value: 'BEGINNER' },
-    { label: 'Intermediate', value: 'INTERMEDIATE' },
-    { label: 'Advanced', value: 'ADVANCED' },
-    { label: 'Expert', value: 'EXPERT' }
-  ];
-
-  generalDataForm!: FormGroup;
-  addressForm!: FormGroup;
-  educationForm!: FormGroup;
-  experienceForm!: FormGroup;
-  languageForm!: FormGroup;
-  skillsForm!: FormGroup;
-  contactForm!: FormGroup;
-
-  constructor(private fb: FormBuilder, private route: ActivatedRoute,private translate: TranslateService) {}
-
-
-    
-    
+  
+    languageLevels: { label: string; value: string }[] = [];
+    skillProficiencies: { label: string; value: string }[] = [];
+  
+    generalDataForm!: FormGroup;
+    addressForm!: FormGroup;
+    educationForm!: FormGroup;
+    experienceForm!: FormGroup;
+    languageForm!: FormGroup;
+    skillsForm!: FormGroup;
+    contactForm!: FormGroup;
+  
+    constructor(
+      private fb: FormBuilder,
+      private route: ActivatedRoute,
+      private translate: TranslateService
+    ) {}
+  
     ngOnInit() {
-      
+      this.updateDropdownOptions();
       this.setSteps();
-
+  
       this.translate.onLangChange.subscribe(() => {
-        // Petit délai pour s'assurer que les traductions sont prêtes
-        setTimeout(() => {
-          this.setSteps();
-        }, 0);
+        this.updateDropdownOptions();
+        this.setSteps();
       });
+    }
+  
+    updateDropdownOptions() {
+      this.languageLevels = [
+        { label: this.translate.instant('candidateLanguage.levels.advanced'), value: 'ADVANCED' },
+        { label: this.translate.instant('candidateLanguage.levels.intermediate'), value: 'INTERMEDIATE' },
+        { label: this.translate.instant('candidateLanguage.levels.basic'), value: 'BASIC' },
+        { label: this.translate.instant('candidateLanguage.levels.native'), value: 'NATIVE' }
+      ];
+  
+      this.skillProficiencies = [
+        { label: this.translate.instant('skills.levels.beginner'), value: 'BEGINNER' },
+        { label: this.translate.instant('skills.levels.intermediate'), value: 'INTERMEDIATE' },
+        { label: this.translate.instant('skills.levels.advanced'), value: 'ADVANCED' },
+        { label: this.translate.instant('skills.levels.expert'), value: 'EXPERT' }
+      ];
     }
   
     setSteps() {
@@ -95,6 +98,7 @@ export class StepperFormComponent implements OnInit {
         { label: this.translate.instant('steps.contact') }
       ];
     
+  
     
     
     // General Data Form

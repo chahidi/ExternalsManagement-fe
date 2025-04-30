@@ -1,5 +1,5 @@
 <div class="card">
-  <!-- Stepper -->
+  <!-- Stepper (single instance) -->
   <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="true" [styleClass]="'custom-steps'">
     <ng-template let-step pTemplate="step">
       <span class="step-label" [title]="step.label">
@@ -9,11 +9,9 @@
     </ng-template>
   </p-steps>
 
-  <!-- Form Content -->
   <div class="p-mt-4">
     <ng-container [ngSwitch]="activeIndex">
-
-      <!-- GENERAL DATA -->
+      <!-- General Data -->
       <div *ngSwitchCase="0" [formGroup]="generalDataForm" class="form-section">
         <div class="p-field">
           <label for="fullName">{{ 'general.fullName' | translate }}</label>
@@ -85,7 +83,7 @@
         </div>
       </div>
 
-      <!-- ADDRESS -->
+      <!-- Address -->
       <div *ngSwitchCase="1" [formGroup]="addressForm" class="form-section">
         <div class="p-field">
           <label for="street">{{ 'address.street' | translate }}</label>
@@ -97,7 +95,7 @@
 
         <div class="p-field">
           <label for="postalCode">{{ 'address.postalCode' | translate }}</label>
-          <input id="postalCode" type="text" pInputText formControlName="postalCode">
+          <input id="postalCode" type="text" pInputText formControlName="postalCode" maxlength="10">
           <small *ngIf="addressForm.get('postalCode')?.touched">
             <ng-container *ngIf="addressForm.get('postalCode')?.hasError('required')">
               <i class="pi pi-times-circle"></i> {{ 'address.postalCodeRequired' | translate }}
@@ -133,7 +131,7 @@
         </div>
       </div>
 
-      <!-- EDUCATION -->
+      <!-- Education -->
       <div *ngSwitchCase="2" [formGroup]="educationForm" class="form-section">
         <div class="p-field">
           <label for="institution">{{ 'education.institution' | translate }}</label>
@@ -151,7 +149,6 @@
               <i class="pi pi-times-circle"></i> {{ 'education.startDateRequired' | translate }}
             </small>
           </div>
-
           <div class="p-col-6">
             <label for="endDateEdu">{{ 'education.endDate' | translate }}</label>
             <input id="endDateEdu" type="date" pInputText formControlName="endDate">
@@ -174,7 +171,7 @@
         </div>
       </div>
 
-      <!-- EXPERIENCE -->
+      <!-- Experience -->
       <div *ngSwitchCase="3" [formGroup]="experienceForm" class="form-section">
         <div class="p-field">
           <label for="companyName">{{ 'experience.companyName' | translate }}</label>
@@ -200,7 +197,6 @@
               <i class="pi pi-times-circle"></i> {{ 'experience.startDateRequired' | translate }}
             </small>
           </div>
-
           <div class="p-col-6">
             <label for="endDateExp">{{ 'experience.endDate' | translate }}</label>
             <input id="endDateExp" type="date" pInputText formControlName="endDate">
@@ -223,36 +219,104 @@
         </div>
       </div>
 
-      <!-- LANGUAGES -->
+      <!-- Languages -->
       <div *ngSwitchCase="4" [formGroup]="languageForm" class="form-section">
         <div class="p-field">
-          <label for="languages">{{ 'candidateLanguage.languages' | translate }}</label>
-          <input id="languages" type="text" pInputText formControlName="languages">
-          <small *ngIf="languageForm.get('languages')?.touched && languageForm.get('languages')?.invalid">
+          <label for="language">{{ 'candidateLanguage.languages' | translate }}</label>
+          <input id="language" type="text" pInputText formControlName="language">
+          <small *ngIf="languageForm.get('language')?.touched && languageForm.get('language')?.invalid">
             <i class="pi pi-times-circle"></i> {{ 'candidateLanguage.languagesRequired' | translate }}
           </small>
         </div>
+
+        <div class="p-field">
+          <label for="level">{{ 'candidateLanguage.level' | translate }}</label>
+          <p-dropdown id="level" [options]="languageLevels" formControlName="level" 
+                     placeholder="{{ 'candidateLanguage.selectLevel' | translate }}" 
+                     optionLabel="label" optionValue="value"></p-dropdown>
+          <small *ngIf="languageForm.get('level')?.touched && languageForm.get('level')?.invalid">
+            <i class="pi pi-times-circle"></i> {{ 'candidateLanguage.levelRequired' | translate }}
+          </small>
+        </div>
+
+        <div class="p-field">
+          <label for="isNative">{{ 'candidateLanguage.isNative' | translate }}</label>
+          <p-checkbox id="isNative" binary="true" formControlName="isNative"></p-checkbox>
+        </div>
       </div>
 
-      <!-- CONTACT -->
-      <div *ngSwitchCase="6" [formGroup]="contactForm" class="form-section">
+      <!-- Skills -->
+      <div *ngSwitchCase="5" [formGroup]="skillsForm" class="form-section">
         <div class="p-field">
-          <label for="phone">{{ 'contact.phone' | translate }}</label>
-          <input id="phone" type="text" pInputText formControlName="phone">
-          <small *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid">
-            <i class="pi pi-times-circle"></i> {{ 'contact.phoneRequired' | translate }}
+          <label for="skillName">{{ 'skills.skillName' | translate }}</label>
+          <input id="skillName" type="text" pInputText formControlName="skillName">
+          <small *ngIf="skillsForm.get('skillName')?.touched && skillsForm.get('skillName')?.invalid">
+            <i class="pi pi-times-circle"></i> {{ 'skills.skillNameRequired' | translate }}
+          </small>
+        </div>
+
+        <div class="p-field">
+          <label for="proficiencyLevel">{{ 'skills.proficiencyLevel' | translate }}</label>
+          <p-dropdown id="proficiencyLevel" [options]="skillProficiencies" formControlName="proficiencyLevel" 
+                     placeholder="{{ 'skills.selectProficiency' | translate }}" 
+                     optionLabel="label" optionValue="value"></p-dropdown>
+          <small *ngIf="skillsForm.get('proficiencyLevel')?.touched && skillsForm.get('proficiencyLevel')?.invalid">
+            <i class="pi pi-times-circle"></i> {{ 'skills.proficiencyRequired' | translate }}
           </small>
         </div>
       </div>
 
-    </ng-container>
+      <!-- Contact -->
+      <div *ngSwitchCase="6" [formGroup]="contactForm" class="form-section">
+        <div class="p-field">
+          <label for="contactType">{{ 'contact.contactType' | translate }}</label>
+          <p-dropdown id="contactType" [options]="[{ label: 'Email', value: 'Email' }, { label: 'Phone', value: 'Phone' }, { label: 'LinkedIn', value: 'LinkedIn' }]" formControlName="contactType" 
+                     placeholder="{{ 'contact.selectContactType' | translate }}" 
+                     optionLabel="label" optionValue="value"></p-dropdown>
+          <small *ngIf="contactForm.get('contactType')?.touched && contactForm.get('contactType')?.invalid">
+            <i class="pi pi-times-circle"></i> {{ 'contact.contactTypeRequired' | translate }}
+          </small>
+        </div>
 
-    <!-- Submit Button -->
-    <div class="p-field">
-      <button pButton type="button" 
-              [label]="'candidateLanguage.add' | translate" 
-              icon="pi pi-plus" 
-              (click)="onSubmit()"></button>
-    </div>
+        <div class="p-field">
+          <label for="contactValue">{{ 'contact.contactValue' | translate }}</label>
+          <input id="contactValue" type="text" pInputText formControlName="contactValue">
+          <small *ngIf="contactForm.get('contactValue')?.touched">
+            <ng-container *ngIf="contactForm.get('contactValue')?.hasError('required')">
+              <i class="pi pi-times-circle"></i> {{ 'contact.contactValueRequired' | translate }}
+            </ng-container>
+            <ng-container *ngIf="contactForm.get('contactValue')?.hasError('pattern')">
+              <i class="pi pi-times-circle"></i> {{ 
+                contactForm.get('contactType')?.value === 'Email' ? ('contact.invalidEmail' | translate) :
+                contactForm.get('contactType')?.value === 'Phone' ? ('contact.invalidPhone' | translate) :
+                ('contact.invalidLinkedIn' | translate)
+              }}
+            </ng-container>
+          </small>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Buttons -->
+  <div class="p-mt-4 button-group">
+    <button type="button" pButton [label]="'navigation.previous' | translate" 
+            icon="pi pi-arrow-left" iconPos="left" 
+            title="{{ 'navigation.previousTitle' | translate }}" 
+            (click)="prev()" [disabled]="activeIndex === 0"></button>
+    <button type="button" pButton [label]="'navigation.clear' | translate" 
+            icon="pi pi-trash" iconPos="left" 
+            title="{{ 'navigation.clearTitle' | translate }}" 
+            (click)="clearCurrentSection()"></button>
+    <button type="button" pButton [label]="'navigation.next' | translate" 
+            icon="pi pi-arrow-right" iconPos="right" 
+            title="{{ 'navigation.nextTitle' | translate }}" 
+            (click)="next()" *ngIf="activeIndex < steps.length - 1" 
+            [disabled]="!getCurrentForm().valid"></button>
+    <button type="submit" pButton [label]="'navigation.save' | translate" 
+            icon="pi pi-check" iconPos="right" 
+            title="{{ 'navigation.saveTitle' | translate }}" 
+            (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" 
+            [disabled]="!areAllFormsValid()"></button>
   </div>
 </div>

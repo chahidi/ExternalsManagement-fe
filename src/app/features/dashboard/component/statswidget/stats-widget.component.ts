@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
 import { StatsService } from '../../../../core/services/stats.service'; // Import the service
+import { TranslateService, TranslateModule } from '@ngx-translate/core'; // Import TranslateService
 
 @Component({
   selector: 'app-stats-widget',
   standalone: true,
-  imports: [CardModule, ChartModule, TabViewModule],
+  imports: [CardModule, ChartModule, TabViewModule, TranslateModule], // Make sure TranslateModule is included here
   templateUrl: './stats-widget.component.html',
   styleUrls: ['./stats-widget.component.scss']
 })
@@ -22,7 +22,7 @@ export class StatsWidgetComponent implements OnInit {
   private skills: string[] = [];
   private experienceData: any[] = [];
 
-  constructor(private statsService: StatsService) {}
+  constructor(private statsService: StatsService, private translate: TranslateService) {}
 
   ngOnInit(): void {
     console.log('StatsWidgetComponent initialized');
@@ -83,7 +83,7 @@ export class StatsWidgetComponent implements OnInit {
       this.languageChartData = {
         labels: this.languages,
         datasets: [{
-          label: 'Candidates by Language',
+          label: 'Candidates by Language', // Static label, will be translated in the template
           backgroundColor: '#42A5F5',
           borderColor: '#1E88E5',
           data: counts[0] === 0 && this.languages[0] === 'No Languages' ? [0] : counts,

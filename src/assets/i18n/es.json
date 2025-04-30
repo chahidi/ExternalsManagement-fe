@@ -191,31 +191,7 @@
     "saveTitle": "Guardar el formulario"
   }
   
-    },
-    "contact": {
-      "contactType": "Tipo de contacto",
-      "contactTypeRequired": "El tipo de contacto es requerido.",
-      "contactValue": "Valor del contacto",
-      "contactValueRequired": "El valor del contacto es requerido.",
-      "invalidEmail": "Por favor, introduce una dirección de correo válida.",
-      "invalidPhone": "Por favor, introduce un número de teléfono válido.",
-      "invalidLinkedIn": "Por favor, introduce una URL de perfil de LinkedIn válida.",
-      "selectContactType": "Seleccionar tipo de contacto"
-    },
-    "navigation": {
-      "previous": "Anterior",
-      "previousTitle": "Ir al paso anterior del formulario",
-      "clear": "Borrar",
-      "clearTitle": "Borrar la sección actual del formulario",
-      "next": "Siguiente",
-      "nextTitle": "Ir al siguiente paso del formulario",
-      "save": "Guardar",
-      "saveTitle": "Guardar y enviar el formulario"
-    }
-  
-  
-  
-  
+   
   
    ,
 

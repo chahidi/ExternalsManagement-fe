@@ -43,34 +43,64 @@ export class StepperFormComponent implements OnInit {
   steps: MenuItem[] = [];
   activeIndex: number = 0;
   extractedData: any;
-
-  languageLevels: any[] = [];
-  skillProficiencies: any[] = [];
-
-  generalDataForm!: FormGroup;
-  addressForm!: FormGroup;
-  educationForm!: FormGroup;
-  experienceForm!: FormGroup;
-  languageForm!: FormGroup;
-  skillsForm!: FormGroup;
-  contactForm!: FormGroup;
-
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private translate: TranslateService) {}
-
-  ngOnInit() {
-    this.setSteps();
-    this.setLanguageLevels();
-    this.setSkillProficiencies();
-
-    this.translate.onLangChange.subscribe(() => {
-      // Petit délai pour s'assurer que les traductions sont prêtes
-      setTimeout(() => {
+  
+    languageLevels: { label: string; value: string }[] = [];
+    skillProficiencies: { label: string; value: string }[] = [];
+  
+    generalDataForm!: FormGroup;
+    addressForm!: FormGroup;
+    educationForm!: FormGroup;
+    experienceForm!: FormGroup;
+    languageForm!: FormGroup;
+    skillsForm!: FormGroup;
+    contactForm!: FormGroup;
+  
+    constructor(
+      private fb: FormBuilder,
+      private route: ActivatedRoute,
+      private translate: TranslateService
+    ) {}
+  
+    ngOnInit() {
+      this.updateDropdownOptions();
+      this.setSteps();
+  
+      this.translate.onLangChange.subscribe(() => {
+        this.updateDropdownOptions();
         this.setSteps();
-        this.setLanguageLevels();
-        this.setSkillProficiencies();
-      }, 0);
-    });
-
+      });
+    }
+  
+    updateDropdownOptions() {
+      this.languageLevels = [
+        { label: this.translate.instant('candidateLanguage.levels.advanced'), value: 'ADVANCED' },
+        { label: this.translate.instant('candidateLanguage.levels.intermediate'), value: 'INTERMEDIATE' },
+        { label: this.translate.instant('candidateLanguage.levels.basic'), value: 'BASIC' },
+        { label: this.translate.instant('candidateLanguage.levels.native'), value: 'NATIVE' }
+      ];
+  
+      this.skillProficiencies = [
+        { label: this.translate.instant('skills.levels.beginner'), value: 'BEGINNER' },
+        { label: this.translate.instant('skills.levels.intermediate'), value: 'INTERMEDIATE' },
+        { label: this.translate.instant('skills.levels.advanced'), value: 'ADVANCED' },
+        { label: this.translate.instant('skills.levels.expert'), value: 'EXPERT' }
+      ];
+    }
+  
+    setSteps() {
+      this.steps = [
+        { label: this.translate.instant('steps.generalData') },
+        { label: this.translate.instant('steps.address') },
+        { label: this.translate.instant('steps.education') },
+        { label: this.translate.instant('steps.experience') },
+        { label: this.translate.instant('steps.languages') },
+        { label: this.translate.instant('steps.skills') },
+        { label: this.translate.instant('steps.contact') }
+      ];
+    
+  
+    
+    
     // General Data Form
     this.generalDataForm = this.fb.group(
       {
@@ -173,36 +203,6 @@ export class StepperFormComponent implements OnInit {
         this.populateForms();
       }
     });
-  }
-
-  setSteps() {
-    this.steps = [
-      { label: this.translate.instant('steps.generalData') },
-      { label: this.translate.instant('steps.address') },
-      { label: this.translate.instant('steps.education') },
-      { label: this.translate.instant('steps.experience') },
-      { label: this.translate.instant('steps.languages') },
-      { label: this.translate.instant('steps.skills') },
-      { label: this.translate.instant('steps.contact') }
-    ];
-  }
-
-  setLanguageLevels() {
-    this.languageLevels = [
-      { label: this.translate.instant('candidateLanguage.levels.advanced'), value: 'ADVANCED' },
-      { label: this.translate.instant('candidateLanguage.levels.intermediate'), value: 'INTERMEDIATE' },
-      { label: this.translate.instant('candidateLanguage.levels.basic'), value: 'BASIC' },
-      { label: this.translate.instant('candidateLanguage.levels.native'), value: 'NATIVE' }
-    ];
-  }
-
-  setSkillProficiencies() {
-    this.skillProficiencies = [
-      { label: this.translate.instant('skills.levels.beginner'), value: 'BEGINNER' },
-      { label: this.translate.instant('skills.levels.intermediate'), value: 'INTERMEDIATE' },
-      { label: this.translate.instant('skills.levels.advanced'), value: 'ADVANCED' },
-      { label: this.translate.instant('skills.levels.expert'), value: 'EXPERT' }
-    ];
   }
 
   private populateForms() {

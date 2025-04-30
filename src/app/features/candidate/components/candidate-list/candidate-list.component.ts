@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { CandidateFilterService } from '../../../../core/services/candidate-filter.service';
 import { Candidate } from '../../../../core/models/candidate';
+import { Contact} from '../../../../core/models/contact';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
@@ -16,13 +19,19 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 interface FilterCriteria {
   skills: any[];
   language: any;
   yearsOfExperience: number | null;
+}
+
+interface DropdownOption {
+  label: string;
+  value: string;
 }
 
 @Component({
@@ -43,7 +52,9 @@ interface FilterCriteria {
     ConfirmDialogModule,
     DialogModule,
     TextareaModule,
-    ToastModule
+    ToastModule,
+    CalendarModule,
+    CheckboxModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',
@@ -57,6 +68,21 @@ export class CandidateListComponent implements OnInit {
 
   skillOptions: any[] = [];
   languageOptions: any[] = [];
+  proficiencyLevels: string[] = ['BEGINNER', 'INTERMEDIATE', 'EXPERT'];
+  proficiencyLevelOptions: DropdownOption[] = [];
+  languageLevelOptions: DropdownOption[] = [];
+  languageLevels: string[] = ['BEGINNER', 'LOWER_INTERMEDIATE', 'INTERMEDIATE', 'UPPER_INTERMEDIATE', 'ADVANCED' ];
+
+  cities: any[] = [
+    { id: '', name: 'Paris', country: null },
+    { id: '', name: 'London', country: null },
+    { id: '', name: 'New York', country: null }
+  ];
+  countries: any[] = [
+    { id: '', name: 'France' , englishName:'France', cities :null},
+    { id: '', name: 'UK', englishName:'United Kingdom', cities :null },
+    { id: '', name: 'USA' ,  englishName:'United State', cities :null}
+  ];
 
   filters: FilterCriteria = {
     skills: [],
@@ -74,6 +100,21 @@ export class CandidateListComponent implements OnInit {
   ngOnInit(): void {
     this.loadCandidates();
     this.loadFilterOptions();
+
+    this.proficiencyLevelOptions = this.proficiencyLevels.map(level => ({
+      label: level,
+      value: level
+    }));
+    this.languageLevelOptions = this.languageLevels.map(lang => ({
+        label :lang,
+        value: lang
+      }));
+
+
+  }
+
+  isArray(value: any): boolean {
+    return Array.isArray(value);
   }
 
   loadFilterOptions(): void {
@@ -99,7 +140,7 @@ export class CandidateListComponent implements OnInit {
     this.loading = true;
     this.candidateService.getCandidates().subscribe({
       next: (data) => {
-        this.candidates = data;
+        this.candidates = data || [];
         this.loading = false;
       },
       error: (err) => {
@@ -108,7 +149,7 @@ export class CandidateListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load candidates.'
+          detail: err.message || 'Failed to load candidates.'
         });
       },
     });
@@ -133,7 +174,7 @@ export class CandidateListComponent implements OnInit {
 
     this.candidateFilterService.filterCandidates(filterParams).subscribe({
       next: (data) => {
-        this.candidates = data;
+        this.candidates = data || [];
         this.loading = false;
       },
       error: (err) => {
@@ -168,9 +209,156 @@ export class CandidateListComponent implements OnInit {
     table.clear();
   }
 
-  editCandidate(candidate: Candidate): void {
-    this.selectedCandidate = JSON.parse(JSON.stringify(candidate));
-    this.displayEditDialog = true;
+  editCandidate(candidate: Candidate): void {this.selectedCandidate = { ...candidate };
+  this.selectedCandidate.addresses = this.selectedCandidate.addresses || [];
+  this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
+  this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
+  this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+  this.selectedCandidate.educations = this.selectedCandidate.educations || [];
+  this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
+  // Synchroniser city.country pour les adresses existantes
+  this.selectedCandidate.addresses.forEach(addr => this.syncCityCountry(addr));
+  this.displayEditDialog = true;
+}
+addAddress(): void {
+    console.log('Adding new address');
+    if (!this.selectedCandidate) return;
+    const newAddress = {
+      id: '',
+      street: '',
+      postalCode: '',
+      fullAddress: '',
+      city: this.cities[0], // Valeur par défaut : première ville
+      country: this.countries[0] // Valeur par défaut : premier pays
+    };
+    this.syncCityCountry(newAddress); // Synchroniser city.country
+    this.selectedCandidate.addresses.push(newAddress);
+  }
+
+  removeAddress(index: number): void {
+    if (this.selectedCandidate) {
+      this.selectedCandidate.addresses.splice(index, 1);
+    }
+  }
+
+  syncCityCountry(address: any): void {
+    if (address.city && address.country) {
+      // S'assurer que city.country correspond à address.country
+      address.city = {
+        ...address.city,
+        country: address.country,
+        countryId: address.country.id
+      };
+    }
+  }
+
+  onCityChange(address: any): void {
+    if (address.city) {
+      const selectedCity = this.cities.find(city => city.id === address.city.id);
+      if (selectedCity) {
+        const correspondingCountry = this.countries.find(country => country.id === selectedCity.countryId);
+        if (correspondingCountry) {
+          address.country = correspondingCountry;
+          this.syncCityCountry(address);
+        }
+      }
+    }
+  }
+
+  onCountryChange(address: any): void {
+    if (address.country && address.city) {
+      this.syncCityCountry(address);
+    }
+  }
+
+  addContact(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
+    this.selectedCandidate.contacts.push({
+      id: '',
+      candidateId: this.selectedCandidate.id,
+      contactType: '',
+      contactValue: ''
+    });
+  }
+
+  removeContact(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.contacts) return;
+    this.selectedCandidate.contacts.splice(index, 1);
+  }
+
+  addExperience(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
+    this.selectedCandidate.experiences.push({
+      id: '',
+      candidateId: this.selectedCandidate.id,
+      companyName: '',
+      position: '',
+      startDate: '',
+      endDate: null,
+      description: ''
+    });
+  }
+
+  removeExperience(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.experiences) return;
+    this.selectedCandidate.experiences.splice(index, 1);
+  }
+
+  addSkill(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+    this.selectedCandidate.skills.push({
+      id: '',
+      skillName: '',
+      proficiencyLevel: 'BEGINNER',
+    });
+  }
+
+  removeSkill(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.skills) return;
+    this.selectedCandidate.skills.splice(index, 1);
+  }
+
+  addEducation(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.educations = this.selectedCandidate.educations || [];
+    this.selectedCandidate.educations.push({
+      id: '',
+      candidate: this.selectedCandidate,
+      institution: '',
+      degree: '',
+      startDate: '',
+      endDate: '',
+      diploma: ''
+    });
+  }
+
+  removeEducation(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.educations) return;
+    this.selectedCandidate.educations.splice(index, 1);
+  }
+
+  addLanguage(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
+    this.selectedCandidate.naturalLanguages.push({
+      id: '',
+      candidate: this.selectedCandidate,
+      description: '',
+      englishDescription: '',
+      fullDescription: '',
+      language: '',
+      languageInEnglish: '',
+      level: 'BEGINNER',
+      isNative: false
+    });
+  }
+
+  removeLanguage(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.naturalLanguages) return;
+    this.selectedCandidate.naturalLanguages.splice(index, 1);
   }
 
   saveCandidate(): void {
@@ -199,7 +387,7 @@ export class CandidateListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to update candidate.'
+          detail: err.message || 'Failed to update candidate.'
         });
         this.loading = false;
       }
@@ -236,14 +424,14 @@ export class CandidateListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to delete candidate.'
+          detail: err.message || 'Failed to delete candidate.'
         });
         this.loading = false;
       }
     });
   }
 
-  getPrimaryContact(contacts: any[], type: string): string {
+  getPrimaryContact(contacts: Contact[], type: string): string {
     const contact = contacts?.find(c => c.contactType === type);
     return contact ? contact.contactValue : 'N/A';
   }

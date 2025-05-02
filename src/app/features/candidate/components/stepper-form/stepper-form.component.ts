@@ -420,7 +420,10 @@ export class StepperFormComponent implements OnInit {
         address: {
           ...this.addressForm.value,
           city: { name: this.addressForm.value.city },
-          country: { name: this.addressForm.value.country }
+          country: { 
+            name: this.addressForm.value.country,
+            englishName: this.addressForm.value.country
+           }
         },
         educations: [this.educationForm.value],
         experiences: this.experienceForm.valid && this.experienceForm.value.companyName ? [this.experienceForm.value] : [],

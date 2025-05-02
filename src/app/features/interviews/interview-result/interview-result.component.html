@@ -1,1 +1,20 @@
-<p>interview-result works!</p>
+<div class="card">
+    <p-table [value]="dataSource" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header>
+            <tr>
+                <th>Id</th>
+                <th>CandidateName</th>
+                <th>MainTech</th>
+                <th>InterviewDate</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-interview>
+            <tr>
+                <td>{{ interview.id }}</td>
+                <td>{{ interview.candidateName }}</td>
+                <td>{{ interview.mainTech }}</td>
+                <td>{{ interview.interviewDate }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

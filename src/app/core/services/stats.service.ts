@@ -56,4 +56,11 @@ export class StatsService {
       })
     );
   }
+ dashboard-chart
 }
+
+  getExperienceDistribution(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/candidates/experience`);
+  }
+}
+develop

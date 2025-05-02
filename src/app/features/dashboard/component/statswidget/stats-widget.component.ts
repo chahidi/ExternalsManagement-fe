@@ -17,10 +17,12 @@ import { catchError } from 'rxjs/operators';
 export class StatsWidgetComponent implements OnInit {
   public languageChartData: any;
   public skillsChartData: any;
+  public experienceChartData: any;
   public chartOptions: any;
   public totalCandidates: number = 0;
   private languages: string[] = [];
   private skills: string[] = [];
+  private experienceData: any[] = [];
 
   constructor(private statsService: StatsService) {}
 
@@ -29,6 +31,7 @@ export class StatsWidgetComponent implements OnInit {
     this.loadTotalCandidates();
     this.loadAllLanguages();
     this.loadAllSkills();
+    this.loadExperienceData();
     this.initChartOptions();
   }
 
@@ -176,6 +179,64 @@ export class StatsWidgetComponent implements OnInit {
       maintainAspectRatio: false
     };
   }
+
+  loadExperienceData(): void {
+    this.statsService.getExperienceDistribution().subscribe({
+      next: (data) => {
+        this.experienceData = (data as any).experienceDistribution || [];
+        console.log('experienceData: ', this.experienceData);
+        this.totalCandidates = (data as any).totalCandidates ?? 0;
+        this.loadExperienceChart();
+      },
+      error: () => {
+        this.experienceData = [];
+        // this.loadExperienceChart();
+      }
+    });
+  }
+
+  loadExperienceChart(): void {
+    const sorted = Object.entries(this.experienceData)
+                        .sort(([a], [b]) => parseInt(a) - parseInt(b));
+    console.log('sorted: ', sorted);
+  
+    const labels = sorted.map(([label]) => label);
+    console.log('labels: ', labels);
+    const counts = sorted.map(([, count]) => count);
+    console.log('counts: ', counts);
+
+    // Define unique colors for each experience range
+    const uniqueColors = [
+      '#FF6F61', // 0 years
+      '#6B5B95', // 1 year
+      '#88B04B', // 2 years
+      '#F7CAC9', // 3 years
+      '#92A8D1', // 4 years
+      '#955251', // 5 years
+      '#B565A7', // 6 years
+      '#009B77', // 7 years
+      '#DD4124', // 8 years
+      '#45B8AC', // 9 years
+      '#EFC050', // 10+ years
+    ];
+
+    const backgroundColors = labels.map((_, index) => uniqueColors[index % uniqueColors.length]);
+    const borderColors = backgroundColors.map(color => color); // Use same colors for borders
+
+    this.experienceChartData = {
+      labels,
+      datasets: [{
+        label: 'Candidates by experience range',
+        data: counts,
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        borderWidth: 1
+      }]
+    };
+
+    console.log('experienceChartData: ', this.experienceChartData);
+  }
+  
 
   private generateColors(count: number): string[] {
     const colors = ['#42A5F5', '#66BB6A', '#FFCA28', '#EF5350', '#AB47BC', '#EC407A', '#7E57C2', '#26A69A'];

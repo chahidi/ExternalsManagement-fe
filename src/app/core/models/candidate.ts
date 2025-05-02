@@ -6,18 +6,19 @@ import { Address } from './address';
 import { Language } from './language';
 
 export interface Candidate {
-  id: string; 
+  id: string;
   fullName: string;
-  birthDate: string; 
+  birthDate: string;
   yearsOfExperience: number;
-  gender: string; 
+  gender: string;
   mainTech: string;
   summary: string;
   contacts: Contact[];
   experiences: Experience[];
   skills: Skill[];
   educations: Education[];
-  address: Address;
   naturalLanguages: Language[]; 
   cvFiles: any[];
+  addresses: Address[];
+  naturalLanguages: Language[];
 }

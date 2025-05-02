@@ -25,3 +25,4 @@ const ELEMENT_DATA: InterviewScore[] = [
 export class InterviewResultComponent {
     dataSource = ELEMENT_DATA;
 }
+//azerty

@@ -2,5 +2,5 @@
 export interface Skill {
   id: string; 
   skillName: string;
-  proficiencyLevel: string; 
+  proficiencyLevel: string;
 }

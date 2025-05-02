@@ -1,0 +1,61 @@
+/* Styles pour les champs dans le pop-up */
+.field-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr; /* Label prend 150px, input prend le reste */
+    gap: 8px; /* Espacement entre le label et l'input */
+    align-items: center; /* Centre verticalement le label et l'input */
+    margin-bottom: 16px; /* Espacement entre les champs */
+}
+
+/* Style pour les labels */
+.field-label {
+    font-weight: 500;
+    color: #333;
+}
+
+/* Style pour les inputs */
+.field-input {
+    width: 100%; /* Tous les inputs prennent la largeur complète de leur conteneur */
+    max-width: 400px; /* Limite la largeur maximale pour éviter des inputs trop larges */
+}
+
+/* Ajustements pour les composants PrimeNG */
+:host ::ng-deep .field-input.p-calendar,
+:host ::ng-deep .field-input.p-dropdown,
+:host ::ng-deep .field-input.p-inputnumber,
+:host ::ng-deep .field-input.p-checkbox {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Style pour les textareas */
+.field-input.p-inputtextarea {
+    width: 100%;
+    max-width: 400px;
+    resize: vertical; /* Permet de redimensionner verticalement uniquement */
+}
+
+/* Style pour les sections répétables (address-item, contact-item, etc.) */
+.address-item,
+.contact-item,
+.experience-item,
+.skill-item,
+.education-item,
+.language-item {
+    position: relative;
+}
+
+/* Style pour le bouton "Add" */
+.p-button-secondary {
+    margin-top: 8px;
+}
+
+/* Ajustement pour le padding des fieldsets */
+fieldset {
+    padding: 16px;
+}
+
+/* Style pour la légende */
+legend {
+    padding: 0 8px;
+}

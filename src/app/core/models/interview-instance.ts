@@ -3,6 +3,7 @@ import { Candidate } from './candidate';
 export interface InterviewInstance {
   id: number;
   candidate: Candidate;
+  interviewLink: string;
   mainTech: string;
   startedAt: Date;
   submittedAt: Date | null;

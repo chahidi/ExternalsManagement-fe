@@ -1,51 +1,33 @@
-<p-table
-  [value]="interviews"
-  [loading]="loading"
-  [paginator]="true"
-  [rows]="5"
-  [rowsPerPageOptions]="[5, 10, 20]"
-  responsiveLayout="scroll"
-  class="interview-table"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Candidate Name</th>
-      <th>Email</th>
-      <th>Main Tech</th>
-      <th>Interview Link</th>
-      <th>Status</th>
-      <th>Interview Date</th>
-      <th>Expires In</th>
-      <th>Actions</th>
-    </tr>
-  </ng-template>
+<p-table [value]="interviews" [loading]="loading" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" responsiveLayout="scroll" class="interview-table">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Candidate Name</th>
+            <th>Email</th>
+            <th>MainTech</th>
+            <th>Remining Time</th>
+            <th>Status Comment</th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
 
-  <ng-template pTemplate="body" let-interview>
-    <tr>
-      <td>{{ interview.candidate.fullName }}</td>
-      <td>{{ getEmail(interview.candidate) }}</td>
-      <td>{{ interview.mainTech }}</td>
-      <td>
-        <a [href]="interview.interviewLink" target="_blank">
-          {{ interview.interviewLink }}
-        </a>
-      </td>
-      <td>
-        <span
-          [ngClass]="{
-            'status-passed': interview.isPassed,
-            'status-notyet': !interview.isPassed
-          }"
-        >
+    <ng-template pTemplate="body" let-interview>
+        <tr>
+            <td>{{ interview.candidate.fullName }}</td>
+            <td>{{ getEmail(interview.candidate) }}</td>
+            <td>{{ interview.mainTech }}</td>
+            <td>{{ getRemainingHours(interview.expiresAt) }}</td>
+            <td>
+                <span [ngClass]="{
+          'status-passed': interview.isPassed,
+          'status-notyet': !interview.isPassed
+        }">
           {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
         </span>
-      </td>
-      <td>{{ interview.startedAt | date: 'medium' }}</td>
-      <td>{{ getRemainingHours(interview.expiresAt) }}</td>
-      <td>
-        <button pButton icon="pi pi-pencil" class="p-button-sm"></button>
-        <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger"></button>
-      </td>
-    </tr>
-  </ng-template>
+            </td>
+            <td>
+                <button pButton icon="pi pi-pencil" class="p-button-sm"></button>
+                <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger"></button>
+            </td>
+        </tr>
+    </ng-template>
 </p-table>

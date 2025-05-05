@@ -1,4 +1,4 @@
-  <p-table
+<p-table
   [value]="interviews"
   [loading]="loading"
   [paginator]="true"
@@ -36,7 +36,7 @@
           {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
         </span>
       </td>
-      <td class="action-buttons">
+      <td>
         <button
           pButton
           icon="pi pi-eye"
@@ -86,49 +86,64 @@
   </ng-template>
 </p-table>
 
+
 <p-dialog
-  header="📧 Resend Interview Link"
+  header="📧 Send Email"
   [(visible)]="mailDialogVisible"
   [modal]="true"
-  [style]="{ width: '35vw' }"
+  [style]="{ width: '600px' }"
   [closable]="true"
-  [draggable]="false"
-  class="custom-dialog"
+  [dismissableMask]="true"
+  class="email-popup"
 >
-  <div class="p-fluid">
-    <div class="p-field">
-      <label for="to"><strong>To:</strong></label>
-      <p>{{ selectedCandidateEmail }}</p>
+  <div class="p-fluid p-3">
+    <div class="field mb-3">
+      <label class="font-semibold">To:</label>
+      <span class="block text-gray-800 pl-1">{{ selectedCandidateEmail }}</span>
     </div>
-    <div class="p-field">
-      <label for="subject"><strong>Subject:</strong></label>
-      <p>Interview Link</p>
+
+    <div class="field mb-3">
+      <label for="subject" class="font-semibold">Subject:</label>
+      <input
+        id="subject"
+        type="text"
+        pInputText
+        [(ngModel)]="mailSubject"
+        placeholder="e.g., Interview Invitation"
+        class="w-full"
+      />
     </div>
-    <div class="p-field">
-      <label for="message"><strong>Message:</strong></label>
+
+    <div class="field">
+      <label for="message" class="font-semibold mb-1">Message:</label>
       <textarea
         id="message"
-        rows="6"
-        class="p-inputtext p-component"
+        pInputTextarea
         [(ngModel)]="mailContent"
-        style="width: 100%; resize: vertical;"
+        rows="8"
+        autoResize="true"
+        class="w-full"
+        placeholder="Write your email message..."
       ></textarea>
     </div>
-    <div class="p-dialog-footer" style="text-align: right; margin-top: 1rem;">
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2 px-3 pb-2">
       <button
         pButton
-        label="Send"
         icon="pi pi-send"
-        class="p-button-success p-button-sm"
+        label="Send"
+        class="p-button-success"
         (click)="confirmSendMail()"
       ></button>
       <button
         pButton
-        label="Cancel"
         icon="pi pi-times"
-        class="p-button-secondary p-button-sm"
+        label="Cancel"
+        class="p-button-secondary"
         (click)="mailDialogVisible = false"
       ></button>
     </div>
-  </div>
+  </ng-template>
 </p-dialog>

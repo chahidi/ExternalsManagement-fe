@@ -1,101 +1,16 @@
-.table-container {
-    margin: 1rem;
-    overflow-x: auto;
-  }
-
-  .interview-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    min-width: 900px;
-
-    th, td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
+.email-popup {
+    .p-dialog-content {
+      padding-top: 1rem !important;
+      padding-bottom: 0.5rem !important;
     }
 
-    th {
-      background-color: #f8f8f8;
-      font-weight: bold;
-    }
-
-    a {
-      color: #007bff;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .text-muted {
-      color: #999;
-      font-style: italic;
-    }
-
-    .status-passed {
-      color: green;
-      font-weight: bold;
-    }
-
-    .status-notyet {
-      color: orange;
-      font-weight: bold;
-    }
-
-    .btn-action {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 13px;
-
-      &:hover {
-        background-color: #0056b3;
-      }
-    }
-  }
-
-  .interview-table ::ng-deep .status-passed {
-    color: green;
-    font-weight: bold;
-  }
-
-  .interview-table ::ng-deep .status-notyet {
-    color: orange;
-    font-weight: bold;
-  }
-
-  a {
-    color: #007bff;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  .action-buttons button {
-    margin-right: 0.3rem;
-  }
-  ::ng-deep .custom-dialog {
-    .p-dialog-header {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .p-field label {
-      margin-bottom: 0.25rem;
-      color: #555;
+    .field {
+      display: flex;
+      flex-direction: column;
     }
 
     textarea {
+      font-family: inherit;
       font-size: 0.95rem;
-      padding: 0.5rem;
-      border-radius: 4px;
     }
   }

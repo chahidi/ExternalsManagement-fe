@@ -42,10 +42,53 @@
       </td>
       <td>{{ interview.startedAt | date: 'medium' }}</td>
       <td>{{ getRemainingHours(interview.expiresAt) }}</td>
-      <td>
-        <button pButton icon="pi pi-pencil" class="p-button-sm"></button>
-        <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger"></button>
+      <td class="action-buttons">
+        <button
+          pButton
+          icon="pi pi-eye"
+          class="p-button-sm p-button-text"
+          pTooltip="View Details"
+          tooltipPosition="top"
+          (click)="viewDetails(interview)"
+        ></button>
+
+        <button
+          pButton
+          icon="pi pi-envelope"
+          class="p-button-sm p-button-text"
+          pTooltip="Send Mail"
+          tooltipPosition="top"
+          (click)="sendMail(interview)"
+        ></button>
+
+        <button
+          pButton
+          icon="pi pi-refresh"
+          class="p-button-sm p-button-text"
+          pTooltip="Generate New Link"
+          tooltipPosition="top"
+          (click)="generateNewLink(interview)"
+        ></button>
+
+        <button
+          pButton
+          icon="pi pi-pencil"
+          class="p-button-sm p-button-text"
+          pTooltip="Edit"
+          tooltipPosition="top"
+          (click)="editInterview(interview)"
+        ></button>
+
+        <button
+          pButton
+          icon="pi pi-trash"
+          class="p-button-sm p-button-danger p-button-text"
+          pTooltip="Delete"
+          tooltipPosition="top"
+          (click)="deleteInterview(interview)"
+        ></button>
       </td>
+
     </tr>
   </ng-template>
 </p-table>

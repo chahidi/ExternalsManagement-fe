@@ -4,6 +4,8 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InterviewService } from '../../../core/services/interview.service';
 import { InterviewInstance } from '../../../core/models/interview-instance';
+import { TooltipModule } from 'primeng/tooltip';
+
 
 @Component({
   selector: 'app-interview-list',
@@ -11,6 +13,7 @@ import { InterviewInstance } from '../../../core/models/interview-instance';
   imports: [
     CommonModule,
     TableModule,
+    TooltipModule,
     ButtonModule,
     DatePipe
   ],
@@ -21,11 +24,12 @@ export class InterviewListComponent implements OnInit {
   interviews: InterviewInstance[] = [];
   loading = true;
 
-  constructor(private interviewService: InterviewService) {}
+    constructor(private interviewService: InterviewService) { }
+
 
   ngOnInit(): void {
     this.interviewService.getInterviews().subscribe(data => {
-      console.log('Loaded interviews:', data); 
+      console.log('Loaded interviews:', data);
       this.interviews = data;
       this.loading = false;
     });
@@ -42,4 +46,25 @@ export class InterviewListComponent implements OnInit {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
+
+  viewDetails(interview: InterviewInstance): void {
+    console.log('Viewing details for:', interview);
+  }
+
+  sendMail(interview: InterviewInstance): void {
+    console.log('Sending mail to:', this.getEmail(interview.candidate));
+  }
+
+  generateNewLink(interview: InterviewInstance): void {
+    console.log('Generating new link for token:', interview.token);
+  }
+
+  editInterview(interview: InterviewInstance): void {
+    console.log('Edit clicked:', interview);
+  }
+
+  deleteInterview(interview: InterviewInstance): void {
+    console.log('Delete clicked:', interview);
+  }
+
 }

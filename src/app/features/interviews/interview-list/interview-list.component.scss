@@ -81,3 +81,21 @@
   .action-buttons button {
     margin-right: 0.3rem;
   }
+  ::ng-deep .custom-dialog {
+    .p-dialog-header {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .p-field label {
+      margin-bottom: 0.25rem;
+      color: #555;
+    }
+
+    textarea {
+      font-size: 0.95rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+  }

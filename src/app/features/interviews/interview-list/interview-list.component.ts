@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+import { DialogModule } from 'primeng/dialog';
+import { FormsModule } from '@angular/forms';
 import { InterviewService } from '../../../core/services/interview.service';
 import { InterviewInstance } from '../../../core/models/interview-instance';
-import { TooltipModule } from 'primeng/tooltip';
-
 
 @Component({
   selector: 'app-interview-list',
@@ -15,6 +16,8 @@ import { TooltipModule } from 'primeng/tooltip';
     TableModule,
     TooltipModule,
     ButtonModule,
+    DialogModule,
+    FormsModule,
     DatePipe
   ],
   templateUrl: './interview-list.component.html',
@@ -24,12 +27,15 @@ export class InterviewListComponent implements OnInit {
   interviews: InterviewInstance[] = [];
   loading = true;
 
-    constructor(private interviewService: InterviewService) { }
+  mailDialogVisible = false;
+  selectedCandidateEmail = '';
+  selectedCandidateName = '';
+  mailContent = '';
 
+  constructor(private interviewService: InterviewService) {}
 
   ngOnInit(): void {
     this.interviewService.getInterviews().subscribe(data => {
-      console.log('Loaded interviews:', data);
       this.interviews = data;
       this.loading = false;
     });
@@ -52,11 +58,33 @@ export class InterviewListComponent implements OnInit {
   }
 
   sendMail(interview: InterviewInstance): void {
-    console.log('Sending mail to:', this.getEmail(interview.candidate));
+    this.selectedCandidateEmail = this.getEmail(interview.candidate);
+    this.selectedCandidateName = interview.candidate.fullName;
+    this.mailContent = `Dear ${this.selectedCandidateName},
+
+  We hope you're doing well.
+
+  Please find below the link to access your scheduled technical interview:
+
+  🔗 ${interview.interviewLink}
+
+  Make sure to join on time and ensure your microphone and camera are functioning properly.
+
+  If you have any questions, feel free to reach out.
+
+  Best regards,
+  Recruitment Team`;
+    this.mailDialogVisible = true;
+  }
+
+  confirmSendMail(): void {
+    console.log('Mail sent to:', this.selectedCandidateEmail);
+    console.log('Mail content:', this.mailContent);
+    this.mailDialogVisible = false;
   }
 
   generateNewLink(interview: InterviewInstance): void {
-    console.log('Generating new link for token:', interview.token);
+    console.log('Generating new link for:', interview.token);
   }
 
   editInterview(interview: InterviewInstance): void {
@@ -66,5 +94,4 @@ export class InterviewListComponent implements OnInit {
   deleteInterview(interview: InterviewInstance): void {
     console.log('Delete clicked:', interview);
   }
-
 }

@@ -1,33 +1,77 @@
 <p-table [value]="interviews" [loading]="loading" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" responsiveLayout="scroll" class="interview-table">
     <ng-template pTemplate="header">
-        <tr>
-            <th>Candidate Name</th>
-            <th>Email</th>
-            <th>MainTech</th>
-            <th>Remining Time</th>
-            <th>Status Comment</th>
-            <th>Actions</th>
-        </tr>
+      <tr>
+        <th>Candidate Name</th>
+        <th>Email</th>
+        <th>MainTech</th>
+        <th>Started At</th>
+        <th>Remining Time</th>
+        <th>Status Comment</th>
+        <th>Actions</th>
+      </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-interview>
-        <tr>
-            <td>{{ interview.candidate.fullName }}</td>
-            <td>{{ getEmail(interview.candidate) }}</td>
-            <td>{{ interview.mainTech }}</td>
-            <td>{{ getRemainingHours(interview.expiresAt) }}</td>
-            <td>
-                <span [ngClass]="{
-          'status-passed': interview.isPassed,
-          'status-notyet': !interview.isPassed
-        }">
-          {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
-        </span>
-            </td>
-            <td>
-                <button pButton icon="pi pi-pencil" class="p-button-sm"></button>
-                <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger"></button>
-            </td>
-        </tr>
+      <tr>
+        <td>{{ interview.candidate.fullName }}</td>
+        <td>{{ getEmail(interview.candidate) }}</td>
+        <td>{{ interview.mainTech }}</td>
+        <td>{{ interview.startedAt | date: 'medium' }}</td>
+        <td>{{ getRemainingHours(interview.expiresAt) }}</td>
+        <td>
+          <span [ngClass]="{
+            'status-passed': interview.isPassed,
+            'status-notyet': !interview.isPassed
+          }">
+            {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
+          </span>
+        </td>
+        <td class="action-buttons">
+          <button
+            pButton
+            icon="pi pi-eye"
+            class="p-button-sm p-button-text"
+            pTooltip="View Details"
+            tooltipPosition="top"
+            (click)="viewDetails(interview)"
+          ></button>
+
+          <button
+            pButton
+            icon="pi pi-envelope"
+            class="p-button-sm p-button-text"
+            pTooltip="Send Mail"
+            tooltipPosition="top"
+            (click)="sendMail(interview)"
+          ></button>
+
+          <button
+            pButton
+            icon="pi pi-refresh"
+            class="p-button-sm p-button-text"
+            pTooltip="Generate New Link"
+            tooltipPosition="top"
+            (click)="generateNewLink(interview)"
+          ></button>
+
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-sm p-button-text"
+            pTooltip="Edit"
+            tooltipPosition="top"
+            (click)="editInterview(interview)"
+          ></button>
+
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-sm p-button-danger p-button-text"
+            pTooltip="Delete"
+            tooltipPosition="top"
+            (click)="deleteInterview(interview)"
+          ></button>
+        </td>
+      </tr>
     </ng-template>
-</p-table>
+  </p-table>

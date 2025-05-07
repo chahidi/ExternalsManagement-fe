@@ -75,3 +75,19 @@
       </tr>
     </ng-template>
   </p-table>
+<p-dialog header="Détails de l'entretien"
+          [(visible)]="displayEditDialog"
+          modal="modal"
+          [style]="{width: '400px'}">
+
+    <div *ngIf="selectedInterview">
+        <p><strong>Nom du candidate :</strong> {{ selectedInterview.candidate?.fullName }}</p>
+        <p><strong>Email :</strong> {{ getEmail(selectedInterview.candidate) }}</p>
+        <p><strong>Technologies :</strong> {{ selectedInterview.mainTech }}</p>
+        <p><strong>Date de début :</strong> {{ selectedInterview.startedAt | date:'medium' }}</p>
+        <p><strong>Temps restant :</strong> {{ getRemainingHours(selectedInterview.expiresAt) }}</p>
+        <p><strong>Statute :</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
+    </div>
+
+</p-dialog>
+

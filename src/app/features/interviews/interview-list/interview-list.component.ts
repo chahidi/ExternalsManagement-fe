@@ -66,9 +66,27 @@ export class InterviewListComponent implements OnInit {
     this.selectedCandidateEmail = this.getEmail(interview.candidate);
     this.selectedCandidateName = interview.candidate.fullName;
     this.mailSubject = 'Interview Invitation';
-    this.mailContent = `Dear ${this.selectedCandidateName},\n\nWe hope you're doing well.\n\nPlease find the link to access your scheduled interview:\n${interview.interviewLink}\n\nBest regards,\nRecruitment Team`;
+
+    const interviewTime = interview.startedAt
+      ? new Date(interview.startedAt).toLocaleString()
+      : '[Scheduled Time]';
+
+    const link = interview.interviewLink ?? '[Link Not Available]';
+
+    this.mailContent = `Dear,
+
+  We hope this mail finds you well, find below the link to access your interview.
+  The interview is scheduled at ${interviewTime}
+
+  ! Note: the link is valid only 24h, if the link is expired you can't access !
+  ${link}
+
+  Thanks & Best Regards
+  NTT DATA MOROCCO`;
+
     this.mailDialogVisible = true;
   }
+
 
   confirmSendMail(): void {
     console.log('To:', this.selectedCandidateEmail);
@@ -89,3 +107,6 @@ export class InterviewListComponent implements OnInit {
     console.log('Delete clicked:', interview);
   }
 }
+
+
+

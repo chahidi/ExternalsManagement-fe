@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { InterviewService } from '../../../core/services/interview.service';
+import { InterviewInstance } from '../../../core/models/interview-instance';
 import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextarea } from 'primeng/inputtextarea';
-import { InterviewService } from '../../../core/services/interview.service';
-import { InterviewInstance } from '../../../core/models/interview-instance';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-interview-list',
@@ -21,8 +22,10 @@ import { InterviewInstance } from '../../../core/models/interview-instance';
     DialogModule,
     FormsModule,
     InputTextModule,
+    InputTextarea,
     DatePipe
   ],
+  providers: [MessageService],
   templateUrl: './interview-list.component.html',
   styleUrls: ['./interview-list.component.scss']
 })
@@ -75,18 +78,17 @@ export class InterviewListComponent implements OnInit {
 
     this.mailContent = `Dear,
 
-  We hope this mail finds you well, find below the link to access your interview.
-  The interview is scheduled at ${interviewTime}
+We hope this mail finds you well, find below the link to access your interview.
+The interview is scheduled at ${interviewTime}
 
-  ! Note: the link is valid only 24h, if the link is expired you can't access !
-  ${link}
+! Note: the link is valid only 24h, if the link is expired you can't access !
+${link}
 
-  Thanks & Best Regards
-  NTT DATA MOROCCO`;
+Thanks & Best Regards
+NTT DATA MOROCCO`;
 
     this.mailDialogVisible = true;
   }
-
 
   confirmSendMail(): void {
     console.log('To:', this.selectedCandidateEmail);
@@ -107,6 +109,5 @@ export class InterviewListComponent implements OnInit {
     console.log('Delete clicked:', interview);
   }
 }
-
 
 

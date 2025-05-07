@@ -1,12 +1,4 @@
-<p-table
-  [value]="interviews"
-  [loading]="loading"
-  [paginator]="true"
-  [rows]="5"
-  [rowsPerPageOptions]="[5, 10, 20]"
-  responsiveLayout="scroll"
-  class="interview-table"
->
+<p-table [value]="interviews" [loading]="loading" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" responsiveLayout="scroll" class="interview-table">
   <ng-template pTemplate="header">
     <tr>
       <th>Candidate Name</th>
@@ -21,132 +13,69 @@
 
   <ng-template pTemplate="body" let-interview>
     <tr>
-      <td>{{ interview.candidate.fullName }}</td>
-      <td>{{ getEmail(interview.candidate) }}</td>
-      <td>{{ interview.mainTech }}</td>
-      <td>{{ interview.startedAt | date: 'medium' }}</td>
-      <td>{{ getRemainingHours(interview.expiresAt) }}</td>
       <td>
-        <span
-          [ngClass]="{
+        {{ interview.candidate.fullName }}
+      </td>
+      <td>
+        {{ getEmail(interview.candidate) }}
+      </td>
+      <td>
+        {{ interview.mainTech }}
+      </td>
+      <td>
+        {{ interview.startedAt | date: 'medium' }}
+      </td>
+      <td>
+        {{ getRemainingHours(interview.expiresAt) }}
+      </td>
+      <td>
+        <span [ngClass]="{
             'status-passed': interview.isPassed,
             'status-notyet': !interview.isPassed
-          }"
-        >
+          }">
           {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
         </span>
       </td>
       <td>
-        <button
-          pButton
-          icon="pi pi-eye"
-          class="p-button-sm p-button-text"
-          pTooltip="View Details"
-          tooltipPosition="top"
-          (click)="viewDetails(interview)"
-        ></button>
+        <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" tooltipPosition="top" (click)="viewDetails(interview)"></button>
 
-        <button
-          pButton
-          icon="pi pi-envelope"
-          class="p-button-sm p-button-text"
-          pTooltip="Send Mail"
-          tooltipPosition="top"
-          (click)="sendMail(interview)"
-        ></button>
+        <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" tooltipPosition="top" (click)="sendMail(interview)"></button>
 
-        <button
-          pButton
-          icon="pi pi-refresh"
-          class="p-button-sm p-button-text"
-          pTooltip="Generate New Link"
-          tooltipPosition="top"
-          (click)="generateNewLink(interview)"
-        ></button>
+        <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link" tooltipPosition="top" (click)="generateNewLink(interview)"></button>
 
-        <button
-          pButton
-          icon="pi pi-pencil"
-          class="p-button-sm p-button-text"
-          pTooltip="Edit"
-          tooltipPosition="top"
-          (click)="editInterview(interview)"
-        ></button>
+        <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" tooltipPosition="top" (click)="editInterview(interview)"></button>
 
-        <button
-          pButton
-          icon="pi pi-trash"
-          class="p-button-sm p-button-danger p-button-text"
-          pTooltip="Delete"
-          tooltipPosition="top"
-          (click)="deleteInterview(interview)"
-        ></button>
+        <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" tooltipPosition="top" (click)="deleteInterview(interview)"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
 
 
-<p-dialog
-  header="Send Email"
-  [(visible)]="mailDialogVisible"
-  [modal]="true"
-  [style]="{width: '60vw', height: '60vh'}"
-  [closable]="true"
-  [dismissableMask]="true"
-  class="email-popup"
->
+
+<p-dialog header="Send Email" [(visible)]="mailDialogVisible" [modal]="true" [closable]="true" [dismissableMask]="true" [styleClass]="'email-popup-flex-height'" [draggable]="false" [resizable]="false">
   <div class="p-fluid p-3">
     <div class="field mb-3">
       <label class="font-semibold">To:</label>
-      <span class="block text-gray-800 pl-1">{{ selectedCandidateEmail }}</span>
+      <span class="block text-gray-800 pl-1">
+        {{ selectedCandidateEmail }}</span>
     </div>
 
     <div class="field mb-3">
       <label for="subject" class="font-semibold">Subject:</label>
-      <input
-        id="subject"
-        type="text"
-        pInputText
-        [(ngModel)]="mailSubject"
-        placeholder="e.g., Interview Invitation"
-        class="w-full"
-      />
+      <input id="subject" type="text" pInputText [(ngModel)]="mailSubject" placeholder="e.g., Interview Invitation" class="w-full" />
     </div>
 
     <div class="field">
       <label for="message" class="font-semibold mb-1">Message:</label>
-      <textarea
-        id="message"
-        pInputTextarea
-        [(ngModel)]="mailContent"
-        rows="12"
-        autoResize="true"
-        class="w-full"
-        placeholder="Write your email message..."
-      ></textarea>
+      <textarea id="message" pInputTextarea [(ngModel)]="mailContent" autoResize="true" rows="5" class="w-full" placeholder="Write your email message..."></textarea>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2 px-3 pb-2">
-      <button
-        pButton
-        icon="pi pi-send"
-        label="Send"
-        class="p-button-success"
-        (click)="confirmSendMail()"
-      ></button>
-      <button
-        pButton
-        icon="pi pi-times"
-        label="Cancel"
-        class="p-button-secondary"
-        (click)="mailDialogVisible = false"
-      ></button>
+      <button pButton icon="pi pi-send" label="Send" class="p-button-success" (click)="confirmSendMail()"></button>
+      <button pButton icon="pi pi-times" label="Cancel" class="p-button-secondary" (click)="mailDialogVisible = false"></button>
     </div>
   </ng-template>
 </p-dialog>
-
-
-

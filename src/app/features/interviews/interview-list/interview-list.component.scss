@@ -14,3 +14,9 @@
       font-size: 0.95rem;
     }
   }
+
+  ::ng-deep .email-popup-flex-height {
+    width: 60vw !important;
+    max-height: 90vh !important;
+    overflow-y: auto;
+  }

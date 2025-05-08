@@ -10,6 +10,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextarea } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -25,6 +26,7 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     InputTextarea,
     DropdownModule,
+    CalendarModule,
     DatePipe
   ],
   providers: [MessageService],
@@ -47,6 +49,7 @@ export class InterviewListComponent implements OnInit {
 
   mainTechFilter: string | null = null;
   statusFilter: boolean | null = null;
+  startDateFilter: Date | null = null;
 
   techOptions = [
     { label: 'Java', value: 'Java' },
@@ -77,13 +80,16 @@ export class InterviewListComponent implements OnInit {
     this.filteredInterviews = this.interviews.filter(interview => {
       const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
       const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
-      return matchTech && matchStatus;
+      const matchDate = !this.startDateFilter ||
+        new Date(interview.startedAt).toDateString() === this.startDateFilter.toDateString();
+      return matchTech && matchStatus && matchDate;
     });
   }
 
   resetFilters(): void {
     this.mainTechFilter = null;
     this.statusFilter = null;
+    this.startDateFilter = null;
     this.filteredInterviews = this.interviews;
   }
 
@@ -150,10 +156,5 @@ NTT DATA MOROCCO`;
 
   deleteInterview(interview: InterviewInstance): void {
     console.log('Delete clicked:', interview);
-  }
-
-  onGlobalFilter(event: Event, table: any): void {
-    const input = event.target as HTMLInputElement;
-    table.filterGlobal(input.value, 'contains');
   }
 }

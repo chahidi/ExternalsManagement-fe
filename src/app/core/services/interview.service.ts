@@ -7,7 +7,7 @@ import { InterviewInstance } from '../models/interview-instance';
   providedIn: 'root'
 })
 export class InterviewService {
-  private apiUrl = 'http://localhost:3000/interviews';
+  private apiUrl = 'http://localhost:3001/interviews'
 
   constructor(private http: HttpClient) {}
 
@@ -25,7 +25,7 @@ import { InterviewInstance } from '../models/interview-instance';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
-  private apiUrl = 'http://localhost:3000'; 
+  private apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 

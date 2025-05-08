@@ -26,7 +26,10 @@ export class InterviewListComponent implements OnInit {
     ngOnInit(): void {
         this.interviewService.getInterviews().subscribe((data) => {
             console.log('Loaded interviews:', data);
-            this.interviews = data;
+            this.interviews = data.map(interview => ({
+                ...interview,
+                linkGenerationCount: 0
+            }));
             this.loading = false;
         });
     }
@@ -44,6 +47,9 @@ export class InterviewListComponent implements OnInit {
     }
 
     viewDetails(interview: InterviewInstance): void {
+        if (!('linkGenerationCount' in interview)) {
+            (interview as any).linkGenerationCount = 0;
+        }
         this.selectedInterview = interview;
         this.displayEditDialog = true;
     }
@@ -53,8 +59,15 @@ export class InterviewListComponent implements OnInit {
     }
 
     generateNewLink(interview: InterviewInstance): void {
-        console.log('Generating new link for token:', interview.token);
+        if (!('linkGenerationCount' in interview)) {
+            (interview as any).linkGenerationCount = 1;
+        } else {
+            (interview as any).linkGenerationCount++;
+        }
+        console.log(`Generating new link for token: ${interview.token}`);
+        console.log(`Link has been generated ${interview.linkGenerationCount} times.`);
     }
+
 
     editInterview(interview: InterviewInstance): void {
         console.log('Edit clicked:', interview);

@@ -1,124 +1,145 @@
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4">Interview List</h2>
 
-    <div class="p-4">
-        <h2 class="text-xl font-bold mb-4">Interview List</h2>
-
-        <!-- Existing dropdown filters -->
-        <div class="card mb-4">
-          <h3 class="text-lg font-semibold mb-3">Filter Interviews</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="field">
-              <label for="mainTech" class="block mb-2">Main Tech</label>
-              <p-dropdown
-                id="mainTech"
-                [options]="techOptions"
-                [(ngModel)]="mainTechFilter"
-                placeholder="Select Tech"
-                [style]="{ width: '100%' }"
-              ></p-dropdown>
-            </div>
-
-            <div class="field">
-              <label for="status" class="block mb-2">Interview Status</label>
-              <p-dropdown
-                id="status"
-                [options]="statusOptions"
-                [(ngModel)]="statusFilter"
-                placeholder="Select Status"
-                [style]="{ width: '100%' }"
-              ></p-dropdown>
-            </div>
-          </div>
-          <div class="flex justify-end mt-4">
-            <p-button label="Reset" icon="pi pi-times" class="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
-            <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
-          </div>
+    <!-- Filters -->
+    <div class="card mb-4">
+      <h3 class="text-lg font-semibold mb-3">Filter Interviews</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="field">
+          <label for="mainTech" class="block mb-2">Main Tech</label>
+          <p-dropdown
+            id="mainTech"
+            [options]="techOptions"
+            [(ngModel)]="mainTechFilter"
+            placeholder="Select Tech"
+            [style]="{ width: '100%' }"
+          ></p-dropdown>
         </div>
+        <div class="field">
+          <label for="status" class="block mb-2">Interview Status</label>
+          <p-dropdown
+            id="status"
+            [options]="statusOptions"
+            [(ngModel)]="statusFilter"
+            placeholder="Select Status"
+            [style]="{ width: '100%' }"
+          ></p-dropdown>
+        </div>
+      </div>
+      <div class="flex justify-end mt-4">
+        <p-button label="Reset" icon="pi pi-times" class="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
+        <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
+      </div>
+    </div>
 
-        <p-table
-        #dt
-        [value]="filteredInterviews"
-        [loading]="loading"
-        [paginator]="true"
-        [rows]="5"
-        [rowsPerPageOptions]="[5, 10, 20]"
-        responsiveLayout="scroll"
-        class="interview-table"
-      >
+    <!-- Interview Table -->
+    <p-table
+      #dt
+      [value]="filteredInterviews"
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="5"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      responsiveLayout="scroll"
+      class="interview-table"
+    >
+      <!-- Global Search -->
+      <ng-template pTemplate="caption">
+        <div class="flex justify-end">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="onGlobalFilter($event, dt)" placeholder="Global Search" />
+          </span>
+        </div>
+      </ng-template>
 
-          <!-- Global search bar -->
-          <ng-template pTemplate="caption">
-            <div class="flex justify-end">
-              <span class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                pInputText
-                type="text"
-                (input)="onGlobalFilter($event, dt)"
-                placeholder="Global Search"
-              />
-              </span>
-
-
+      <!-- Table Header with Column Filters -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="flex items-center justify-between">
+              Candidate Name
+              <p-columnFilter type="text" field="candidate.fullName" display="menu"></p-columnFilter>
             </div>
-          </ng-template>
+          </th>
+          <th>
+            <div class="flex items-center justify-between">
+              Email
+              <p-columnFilter type="text" field="candidate.contacts.contactValue" display="menu"></p-columnFilter>
+            </div>
+          </th>
+          <th>
+            <div class="flex items-center justify-between">
+              Main Tech
+              <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
+            </div>
+          </th>
+          <th>Started At</th>
+          <th>Remaining Time</th>
+          <th>Status Comment</th>
+          <th>Links Generated</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
 
-          <!-- Table header with column filters -->
-          <ng-template pTemplate="header">
-            <tr>
-              <th>
-                <div class="flex items-center justify-between">
-                  Candidate Name
-                  <p-columnFilter type="text" field="candidate.fullName" display="menu" />
-                </div>
-              </th>
-              <th>
-                <div class="flex items-center justify-between">
-                  Email
-                  <p-columnFilter type="text" field="candidate.contacts.contactValue" display="menu" />
-                </div>
-              </th>
-              <th>
-                <div class="flex items-center justify-between">
-                  MainTech
-                  <p-columnFilter type="text" field="mainTech" display="menu" />
-                </div>
-              </th>
-              <th>Started At</th>
-              <th>Remaining Time</th>
-              <th>Status Comment</th>
-              <th>Actions</th>
-            </tr>
-          </ng-template>
+      <ng-template pTemplate="body" let-interview>
+        <tr>
+          <td>{{ interview.candidate.fullName }}</td>
+          <td>{{ getEmail(interview.candidate) }}</td>
+          <td>{{ interview.mainTech }}</td>
+          <td>{{ interview.startedAt | date: 'medium' }}</td>
+          <td>{{ getRemainingHours(interview.expiresAt) }}</td>
+          <td>
+            <span
+              [ngClass]="{
+                'status-passed': interview.isPassed,
+                'status-notyet': !interview.isPassed
+              }"
+            >
+              {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
+            </span>
+          </td>
+          <td>{{ interview.linkGenerationCount || 0 }}</td>
+          <td>
+            <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
+            <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" (click)="sendMail(interview)"></button>
+            <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link" (click)="generateNewLink(interview)"></button>
+            <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" (click)="editInterview(interview)"></button>
+            <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" (click)="deleteInterview(interview)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
 
-          <ng-template pTemplate="body" let-interview>
-            <tr>
-              <td>{{ interview.candidate.fullName }}</td>
-              <td>{{ getEmail(interview.candidate) }}</td>
-              <td>{{ interview.mainTech }}</td>
-              <td>{{ interview.startedAt | date: 'medium' }}</td>
-              <td>{{ getRemainingHours(interview.expiresAt) }}</td>
-              <td>
-                <span
-                  [ngClass]="{
-                    'status-passed': interview.isPassed,
-                    'status-notyet': !interview.isPassed
-                  }"
-                >
-                  {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
-                </span>
-              </td>
-              <td>
-                <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
-                <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" (click)="sendMail(interview)"></button>
-                <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link" (click)="generateNewLink(interview)"></button>
-                <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" (click)="editInterview(interview)"></button>
-                <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" (click)="deleteInterview(interview)"></button>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
+    <!-- Details Dialog -->
+    <p-dialog
+      header="Interview Details"
+      [(visible)]="displayEditDialog"
+      modal="modal"
+      [style]="{ maxWidth: '90vw' }"
+    >
+      <div *ngIf="selectedInterview">
+        <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate?.fullName }}</p>
+        <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
+        <p><strong>Main Tech:</strong> {{ selectedInterview.mainTech }}</p>
+        <p><strong>Started At:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
+        <p><strong>Remaining Time:</strong> {{ getRemainingHours(selectedInterview.expiresAt) }}</p>
+        <p><strong>Status Comment:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
+        <p><strong>Links Generated:</strong> {{ selectedInterview.linkGenerationCount || 0 }}</p>
+      </div>
+    </p-dialog>
 
-    <p-dialog header="Send Email" [(visible)]="mailDialogVisible" [modal]="true" [closable]="true" [dismissableMask]="true" [styleClass]="'email-popup-flex-height'" [draggable]="false" [resizable]="false">
+    <!-- Mail Dialog -->
+    <p-dialog
+      header="Send Email"
+      [(visible)]="mailDialogVisible"
+      [modal]="true"
+      [closable]="true"
+      [dismissableMask]="true"
+      [styleClass]="'email-popup-flex-height'"
+      [draggable]="false"
+      [resizable]="false"
+    >
       <div class="p-fluid p-3">
         <div class="field mb-3">
           <label class="font-semibold">To:</label>
@@ -127,7 +148,7 @@
 
         <div class="field mb-3">
           <label for="subject" class="font-semibold">Subject:</label>
-          <input id="subject" type="text" pInputText [(ngModel)]="mailSubject" placeholder="e.g., Interview Invitation" class="w-full" />
+          <input id="subject" type="text" pInputText [(ngModel)]="mailSubject" class="w-full" placeholder="e.g., Interview Invitation" />
         </div>
 
         <div class="field">
@@ -144,5 +165,3 @@
       </ng-template>
     </p-dialog>
   </div>
-
-

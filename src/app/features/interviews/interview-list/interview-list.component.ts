@@ -36,6 +36,9 @@ export class InterviewListComponent implements OnInit {
   filteredInterviews: InterviewInstance[] = [];
   loading = true;
 
+  displayEditDialog = false;
+  selectedInterview: InterviewInstance | null = null;
+
   mailDialogVisible = false;
   selectedCandidateEmail = '';
   selectedCandidateName = '';
@@ -60,9 +63,12 @@ export class InterviewListComponent implements OnInit {
   constructor(private interviewService: InterviewService) {}
 
   ngOnInit(): void {
-    this.interviewService.getInterviews().subscribe(data => {
-      this.interviews = data;
-      this.filteredInterviews = data;
+    this.interviewService.getInterviews().subscribe((data) => {
+      this.interviews = data.map(interview => ({
+        ...interview,
+        linkGenerationCount: interview.linkGenerationCount ?? 0
+      }));
+      this.filteredInterviews = this.interviews;
       this.loading = false;
     });
   }
@@ -94,7 +100,11 @@ export class InterviewListComponent implements OnInit {
   }
 
   viewDetails(interview: InterviewInstance): void {
-    console.log('Viewing details for:', interview);
+    if (!('linkGenerationCount' in interview)) {
+      (interview as any).linkGenerationCount = 0;
+    }
+    this.selectedInterview = interview;
+    this.displayEditDialog = true;
   }
 
   sendMail(interview: InterviewInstance): void {
@@ -130,7 +140,8 @@ NTT DATA MOROCCO`;
   }
 
   generateNewLink(interview: InterviewInstance): void {
-    console.log('Generating new link for:', interview.token);
+    interview.linkGenerationCount = (interview.linkGenerationCount ?? 0) + 1;
+    console.log(`Generated new link for token: ${interview.token}`);
   }
 
   editInterview(interview: InterviewInstance): void {

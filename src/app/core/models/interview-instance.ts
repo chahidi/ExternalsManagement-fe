@@ -10,4 +10,5 @@ export interface InterviewInstance {
   isPassed: boolean;
   expiresAt: Date;
   token: string;
+  linkGenerationCount?: number;
 }

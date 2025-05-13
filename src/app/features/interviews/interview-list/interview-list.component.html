@@ -91,7 +91,7 @@
   [style]="{ maxWidth: '90vw' }"
 >
   <div *ngIf="selectedInterview">
-    <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate?.fullName }}</p>
+    <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
     <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
     <p><strong>MainTech:</strong> {{ selectedInterview.mainTech }}</p>
     <p><strong>Started At:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>

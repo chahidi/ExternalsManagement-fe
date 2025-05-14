@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InterviewService } from '../../../core/services/interview.service';
+import { CandidateService } from '../../../core/services/candidate.service';
 import { InterviewInstance } from '../../../core/models/interview-instance';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +15,6 @@ import { CalendarModule } from 'primeng/calendar';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
-
 @Component({
   selector: 'app-interview-list',
   standalone: true,
@@ -28,9 +28,8 @@ import { ToastModule } from 'primeng/toast';
     InputTextModule,
     InputTextarea,
     DropdownModule,
-      CalendarModule,
-      ToastModule, // ✅ <-- this line
-
+    CalendarModule,
+    ToastModule,
     DatePipe
   ],
   providers: [MessageService],
@@ -55,12 +54,7 @@ export class InterviewListComponent implements OnInit {
   statusFilter: boolean | null = null;
   startDateFilter: Date | null = null;
 
-  techOptions = [
-    { label: 'Java', value: 'Java' },
-    { label: 'Python', value: 'Python' },
-    { label: 'Angular', value: 'Angular' },
-    { label: 'React', value: 'React' }
-  ];
+  techOptions: { label: string, value: string }[] = [];
 
   statusOptions = [
     { label: 'Passed', value: true },
@@ -69,10 +63,35 @@ export class InterviewListComponent implements OnInit {
 
   constructor(
     private interviewService: InterviewService,
+    private candidateService: CandidateService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
+    this.loadMainTechOptions();
+    this.loadInterviews();
+  }
+
+  loadMainTechOptions(): void {
+    this.candidateService.getAllMainTech().subscribe({
+      next: (techList) => {
+        this.techOptions = techList.map(tech => ({
+          label: tech,
+          value: tech
+        }));
+      },
+      error: (err) => {
+        console.error('Failed to load tech list', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load Main Tech options'
+        });
+      }
+    });
+  }
+
+  loadInterviews(): void {
     this.interviewService.getInterviews().subscribe((data) => {
       this.interviews = data.map(interview => ({
         ...interview,
@@ -155,7 +174,6 @@ NTT DATA MOROCCO`;
   generateNewLink(interview: InterviewInstance): void {
     this.interviewService.generateNewLink(interview.id.toString()).subscribe({
       next: (response) => {
-        // Update only the correct interview object
         interview.interviewLink = response.newLink;
         interview.linkGenerationCount = (interview.linkGenerationCount ?? 0) + 1;
 
@@ -176,8 +194,6 @@ NTT DATA MOROCCO`;
     });
   }
 
-
-
   editInterview(interview: InterviewInstance): void {
     console.log('Edit clicked:', interview);
   }
@@ -186,4 +202,3 @@ NTT DATA MOROCCO`;
     console.log('Delete clicked:', interview);
   }
 }
-

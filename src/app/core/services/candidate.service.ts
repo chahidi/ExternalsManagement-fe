@@ -33,10 +33,14 @@ export class CandidateService {
   patchCandidate(id: string, candidate: Partial<Candidate>): Observable<Candidate> {
     return this.http.patch<Candidate>(`${this.baseUrl}/${id}`, candidate);
   }
-  
+
   deleteCandidate(id: string): Observable<string> {
     return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
   }
-  
-  
+
+  getAllMainTech(): Observable<string[]> {
+    return this.http.get<string[]>(`http://localhost:3001/v1/candidates/main-techs`);
+  }
 }
+
+

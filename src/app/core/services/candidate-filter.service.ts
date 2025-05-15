@@ -8,12 +8,19 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CandidateFilterService {
-  readonly baseUrl = `${environment.apiUrl}/v1/candidates/filter`;
+  readonly baseUrl = `${environment.apiUrl}/candidates/filter`;
 
   constructor(private http: HttpClient) { }
 
   filterCandidates(filters: any): Observable<Candidate[]> {
     let params = new HttpParams();
+
+
+    ///
+    if (filters.id && filters.id.trim() !== '') {
+        params = params.set('id', filters.id);
+    }
+    ///
 
     if (filters.skills && filters.skills.trim() !== '') {
       params = params.set('skills', filters.skills);

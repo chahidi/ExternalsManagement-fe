@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InterviewService } from '../../../core/services/interview.service';
+import { CandidateService } from '../../../core/services/candidate.service';
 import { InterviewInstance } from '../../../core/models/interview-instance';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +10,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextarea } from 'primeng/inputtextarea';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-interview-list',
@@ -23,6 +27,9 @@ import { MessageService } from 'primeng/api';
     FormsModule,
     InputTextModule,
     InputTextarea,
+    DropdownModule,
+    CalendarModule,
+    ToastModule,
     DatePipe
   ],
   providers: [MessageService],
@@ -31,6 +38,7 @@ import { MessageService } from 'primeng/api';
 })
 export class InterviewListComponent implements OnInit {
   interviews: InterviewInstance[] = [];
+  filteredInterviews: InterviewInstance[] = [];
   loading = true;
 
   displayEditDialog = false;
@@ -42,16 +50,73 @@ export class InterviewListComponent implements OnInit {
   mailSubject = '';
   mailContent = '';
 
-  constructor(private interviewService: InterviewService) {}
+  mainTechFilter: string | null = null;
+  statusFilter: boolean | null = null;
+  startDateFilter: Date | null = null;
+
+  techOptions: { label: string, value: string }[] = [];
+
+  statusOptions = [
+    { label: 'Passed', value: true },
+    { label: 'Not Yet', value: false }
+  ];
+
+  constructor(
+    private interviewService: InterviewService,
+    private candidateService: CandidateService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
+    this.loadMainTechOptions();
+    this.loadInterviews();
+  }
+
+  loadMainTechOptions(): void {
+    this.candidateService.getAllMainTech().subscribe({
+      next: (techList) => {
+        this.techOptions = techList.map(tech => ({
+          label: tech,
+          value: tech
+        }));
+      },
+      error: (err) => {
+        console.error('Failed to load tech list', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load Main Tech options'
+        });
+      }
+    });
+  }
+
+  loadInterviews(): void {
     this.interviewService.getInterviews().subscribe((data) => {
       this.interviews = data.map(interview => ({
         ...interview,
         linkGenerationCount: interview.linkGenerationCount ?? 0
       }));
+      this.filteredInterviews = this.interviews;
       this.loading = false;
     });
+  }
+
+  applyFilters(): void {
+    this.filteredInterviews = this.interviews.filter(interview => {
+      const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
+      const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
+      const matchDate = !this.startDateFilter ||
+        new Date(interview.startedAt).toDateString() === this.startDateFilter.toDateString();
+      return matchTech && matchStatus && matchDate;
+    });
+  }
+
+  resetFilters(): void {
+    this.mainTechFilter = null;
+    this.statusFilter = null;
+    this.startDateFilter = null;
+    this.filteredInterviews = this.interviews;
   }
 
   getEmail(candidate: any): string {
@@ -107,14 +172,26 @@ NTT DATA MOROCCO`;
   }
 
   generateNewLink(interview: InterviewInstance): void {
-    if (!('linkGenerationCount' in interview)) {
-      (interview as any).linkGenerationCount = 1;
-    } else {
-      (interview as any).linkGenerationCount++;
-    }
+    this.interviewService.generateNewLink(interview.id.toString()).subscribe({
+      next: (response) => {
+        interview.interviewLink = response.newLink;
+        interview.linkGenerationCount = (interview.linkGenerationCount ?? 0) + 1;
 
-    console.log(`Generating new link for token: ${interview.token}`);
-    console.log(`Link has been generated ${interview.linkGenerationCount} times.`);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'New link is generated with success'
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to generate new link'
+        });
+        console.error('Link generation failed:', err);
+      }
+    });
   }
 
   editInterview(interview: InterviewInstance): void {

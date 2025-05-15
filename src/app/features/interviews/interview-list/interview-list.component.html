@@ -63,6 +63,7 @@
           (click)="generateNewLink(interview)"
         ></button>
 
+        <!-- ✅ Bouton edit ouvre maintenant le bon formulaire -->
         <button
           pButton
           icon="pi pi-pencil"
@@ -83,83 +84,75 @@
   </ng-template>
 </p-table>
 
-<!-- Detail Dialog -->
+<!-- ✅ Dialog Edit (modification status, comment, email) -->
 <p-dialog
-  header="Interview Details"
+  header="Edit Interview"
   [(visible)]="displayEditDialog"
-  modal="modal"
+  [modal]="true"
+  [closable]="false"
   [style]="{ maxWidth: '90vw' }"
 >
-  <div *ngIf="selectedInterview">
-    <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
-    <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
-    <p><strong>MainTech:</strong> {{ selectedInterview.mainTech }}</p>
-    <p><strong>Started At:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
-    <p><strong>Remaining Time:</strong> {{ getRemainingHours(selectedInterview.expiresAt) }}</p>
-    <p><strong>Status Comment:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
-    <p><strong>Links Generated:</strong> {{ selectedInterview.linkGenerationCount || 0 }}</p>
-  </div>
-</p-dialog>
-
-<!-- Mail Dialog -->
-<p-dialog
-  header="Send Email"
-  [(visible)]="mailDialogVisible"
-  [modal]="true"
-  [closable]="true"
-  [dismissableMask]="true"
-  [styleClass]="'email-popup-flex-height'"
-  [draggable]="false"
-  [resizable]="false"
->
-  <div class="p-fluid p-3">
-    <div class="field mb-3">
-      <label class="font-semibold">To:</label>
-      <span class="block text-gray-800 pl-1">{{ selectedCandidateEmail }}</span>
-    </div>
-
-    <div class="field mb-3">
-      <label for="subject" class="font-semibold">Subject:</label>
+  <div class="p-fluid" *ngIf="selectedInterview">
+    <div class="p-field">
+      <label for="email">Email</label>
       <input
-        id="subject"
+        id="email"
         type="text"
         pInputText
-        [(ngModel)]="mailSubject"
-        placeholder="e.g., Interview Invitation"
-        class="w-full"
+        [(ngModel)]="selectedInterview.candidate.contacts[0].contactValue"
       />
     </div>
 
-    <div class="field">
-      <label for="message" class="font-semibold mb-1">Message:</label>
+    <div class="p-field">
+      <label for="status">Status</label>
+      <input
+        id="status"
+        type="text"
+        pInputText
+        [(ngModel)]="selectedInterview.status"
+        placeholder="e.g., Passed / Not Yet"
+      />
+    </div>
+
+    <div class="p-field">
+      <label for="comment">Comment</label>
       <textarea
-        id="message"
+        id="comment"
         pInputTextarea
-        [(ngModel)]="mailContent"
-        autoResize="true"
-        rows="5"
-        class="w-full"
-        placeholder="Write your email message..."
+        rows="3"
+        [(ngModel)]="selectedInterview.comment"
       ></textarea>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-2 px-3 pb-2">
-      <button
-        pButton
-        icon="pi pi-send"
-        label="Send"
-        class="p-button-success"
-        (click)="confirmSendMail()"
-      ></button>
-      <button
-        pButton
-        icon="pi pi-times"
-        label="Cancel"
-        class="p-button-secondary"
-        (click)="mailDialogVisible = false"
-      ></button>
-    </div>
+    <button
+      pButton
+      label="Cancel"
+      class="p-button-secondary"
+      (click)="displayEditDialog = false"
+    ></button>
+    <button
+      pButton
+      label="Save"
+      class="p-button-success"
+      (click)="saveInterview()"
+    ></button>
   </ng-template>
+</p-dialog>
+<p-dialog
+    header="Interview Details"
+    [(visible)]="displayDetailsDialog"
+    [modal]="true"
+    [style]="{ maxWidth: '90vw' }"
+>
+    <div *ngIf="selectedInterview">
+        <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate?.fullName }}</p>
+        <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
+        <p><strong>MainTech:</strong> {{ selectedInterview.mainTech }}</p>
+        <p><strong>Started At:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
+        <p><strong>Remaining Time:</strong> {{ (selectedInterview.expiresAt) }}</p>
+        <p><strong>Status Comment:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
+        <p><strong>Links Generated:</strong> {{ selectedInterview.linkGenerationCount || 0 }}</p>
+    </div>
 </p-dialog>

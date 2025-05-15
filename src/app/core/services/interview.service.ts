@@ -7,14 +7,19 @@ import { InterviewInstance } from '../models/interview-instance';
   providedIn: 'root'
 })
 export class InterviewService {
-  private apiUrl = 'http://localhost:3001/interviews'
+  private apiUrl = 'http://localhost:3001/interviews';
 
   constructor(private http: HttpClient) {}
 
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl);
   }
+
+  updateInterview(id: number, selectedInterview: InterviewInstance): Observable<InterviewInstance> {
+    return this.http.put<InterviewInstance>(`${this.apiUrl}/${id}`, selectedInterview);
+  }
 }
+
 
 
 /*

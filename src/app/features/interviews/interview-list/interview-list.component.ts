@@ -30,10 +30,13 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./interview-list.component.scss']
 })
 export class InterviewListComponent implements OnInit {
+  
+  
   interviews: InterviewInstance[] = [];
   loading = true;
 
   displayEditDialog = false;
+  displayDetailsDialog = false;
   selectedInterview: InterviewInstance | null = null;
 
   mailDialogVisible = false;
@@ -66,11 +69,8 @@ export class InterviewListComponent implements OnInit {
     return hours > 0 ? `${hours}h` : 'Expired';
   }
 
-  viewDetails(interview: InterviewInstance): void {
-    if (!('linkGenerationCount' in interview)) {
-      (interview as any).linkGenerationCount = 0;
-    }
-    this.selectedInterview = interview;
+  editInterview(interview: InterviewInstance): void {
+    this.selectedInterview = { ...interview };
     this.displayEditDialog = true;
   }
 
@@ -117,11 +117,38 @@ NTT DATA MOROCCO`;
     console.log(`Link has been generated ${interview.linkGenerationCount} times.`);
   }
 
-  editInterview(interview: InterviewInstance): void {
-    console.log('Edit clicked:', interview);
-  }
-
   deleteInterview(interview: InterviewInstance): void {
     console.log('Delete clicked:', interview);
+  }
+
+  saveInterview(): void {
+    if (!this.selectedInterview) return;
+
+    this.interviewService.updateInterview(this.selectedInterview.id, this.selectedInterview)
+      .subscribe({
+        next: () => {
+          const index = this.interviews.findIndex(i => i.id === this.selectedInterview?.id);
+          if (index !== -1) {
+            this.interviews[index] = {
+              ...(this.selectedInterview as InterviewInstance),
+              id: this.selectedInterview!.id!,
+              status: this.selectedInterview!.status ?? 'pending',
+              comment: this.selectedInterview!.comment ?? ''
+            };
+            
+          }
+          this.displayEditDialog = false;
+        },
+        error: (err: any) => {
+          console.error('Failed to update interview:', err);
+        }
+      });
+  }
+  viewDetails(interview: InterviewInstance): void {
+    if (!('linkGenerationCount' in interview)) {
+      (interview as any).linkGenerationCount = 0;
+    }
+    this.selectedInterview = { ...interview };
+    this.displayDetailsDialog = true;
   }
 }

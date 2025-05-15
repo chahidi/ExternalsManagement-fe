@@ -1,14 +1,20 @@
 import { Candidate } from './candidate';
-
 export interface InterviewInstance {
   id: number;
-  candidate: Candidate;
-  interviewLink: string;
-  mainTech: string;
-  startedAt: Date;
-  submittedAt: Date | null;
-  isPassed: boolean;
-  expiresAt: Date;
-  token: string;
+  candidate: {
+    fullName: string;
+    contacts: {
+      contactType: string;
+      contactValue: string;
+    }[];
+  };
+  interviewLink?: string;
+  mainTech?: string;
+  startedAt?: Date;
+  expiresAt?: Date;
+  token?: string;
+  status?: string;
+  comment?: string;
   linkGenerationCount?: number;
+  isPassed?: boolean;
 }

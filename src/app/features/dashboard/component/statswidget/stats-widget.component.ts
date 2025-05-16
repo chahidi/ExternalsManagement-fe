@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
-import { StatsService } from '../../../../core/services/stats.service'; // Import the service
-import { TranslateService, TranslateModule } from '@ngx-translate/core'; // Import TranslateService
+import { StatsService } from '../../../../core/services/stats.service';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-stats-widget',
   standalone: true,
-  imports: [CardModule, ChartModule, TabViewModule, TranslateModule], // Make sure TranslateModule is included here
+  imports: [CardModule, ChartModule, TabViewModule, TranslateModule],
   templateUrl: './stats-widget.component.html',
   styleUrls: ['./stats-widget.component.scss']
 })
@@ -34,9 +34,7 @@ export class StatsWidgetComponent implements OnInit {
     this.initChartOptions();
 
     this.translate.onLangChange.subscribe(() => {
-        // this.loadLanguagesChart();
         this.loadAllLanguages();
-        // this.loadSkillsChart();
         this.loadAllSkills();
         this.loadExperienceChart();
     });
@@ -180,7 +178,7 @@ export class StatsWidgetComponent implements OnInit {
     ];
 
     const backgroundColors = labels.map((_, index) => uniqueColors[index % uniqueColors.length]);
-    const borderColors = backgroundColors.map(color => color); // Use same colors for borders
+    const borderColors = backgroundColors.map(color => color);
 
     this.experienceChartData = {
       labels,

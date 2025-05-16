@@ -107,7 +107,7 @@
         <td>
           <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
           <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" (click)="sendMail(interview)"></button>
-          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link" (click)="generateNewLink(interview)"></button>
+          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [disabled]="!canGenerateLink(interview)" [pTooltip]="getGenerateLinkTooltip(interview)" tooltipPosition="top" (click)="generateNewLink(interview)"></button>
           <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" (click)="editInterview(interview)"></button>
           <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" (click)="deleteInterview(interview)"></button>
         </td>

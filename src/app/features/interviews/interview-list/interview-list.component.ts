@@ -174,15 +174,31 @@ export class InterviewListComponent implements OnInit {
         this.mailDialogVisible = true;
       }
 
-      confirmSendMail(): void {
-        const fullMail = `${this.mailHeader}\n\n${this.mailBody}\n\n${this.mailFooter}`;
+    confirmSendMail(): void {
+        const to = this.selectedCandidateEmail;
+        const subject = this.mailSubject;
+        const body = this.mailBody;  
 
-        console.log('To:', this.selectedCandidateEmail);
-        console.log('Subject:', this.mailSubject);
-        console.log('Message:', fullMail);
-
-        this.mailDialogVisible = false;
+        this.interviewService.sendMail(to, subject, body).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Mail Sent',
+              detail: 'Mail sent successfully!'
+            });
+            this.mailDialogVisible = false;
+          },
+          error: (err) => {
+            const errorMsg = err?.error?.message || 'Unknown error';
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error Sending Mail',
+              detail: `An unexpected error occurred, please try later!\n${errorMsg}`
+            });
+          }
+        });
       }
+
 
     generateNewLink(interview: InterviewInstance): void {
         this.interviewService.generateNewLink(interview.id.toString()).subscribe({
@@ -215,4 +231,5 @@ export class InterviewListComponent implements OnInit {
     deleteInterview(interview: InterviewInstance): void {
         console.log('Delete clicked:', interview);
     }
+
 }

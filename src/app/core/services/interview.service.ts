@@ -25,6 +25,16 @@ export class InterviewService {
       newLink: string;
     }>(`${this.apiUrl}/${interviewId}/generate-link`, {});
   }
+  sendMail(to: string, subject: string, body: string): Observable<any> {
+    const payload = {
+      to: to,
+      subject: subject,
+      body: body
+    };
+
+    return this.http.post(`${this.apiUrl}/send-mail`, payload);
+  }
+
 
 
 }

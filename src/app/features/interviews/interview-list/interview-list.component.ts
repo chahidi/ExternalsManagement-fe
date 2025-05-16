@@ -37,18 +37,25 @@ import { ToastModule } from 'primeng/toast';
   styleUrls: ['./interview-list.component.scss']
 })
 export class InterviewListComponent implements OnInit {
+saveInterviewChanges() {
+throw new Error('Method not implemented.');
+}
   interviews: InterviewInstance[] = [];
   filteredInterviews: InterviewInstance[] = [];
   loading = true;
 
-  displayEditDialog = false;
+  displayDetailsDialog:boolean = false;
+  displayEditFormDialog = false;
+
   selectedInterview: InterviewInstance | null = null;
 
+  isEditMode = false;
   mailDialogVisible = false;
   selectedCandidateEmail = '';
   selectedCandidateName = '';
   mailSubject = '';
   mailContent = '';
+  isPassed = false;
 
   mainTechFilter: string | null = null;
   statusFilter: boolean | null = null;
@@ -135,9 +142,11 @@ export class InterviewListComponent implements OnInit {
     if (!('linkGenerationCount' in interview)) {
       (interview as any).linkGenerationCount = 0;
     }
-    this.selectedInterview = interview;
-    this.displayEditDialog = true;
+    this.displayDetailsDialog = true;
+    this.isEditMode = false; 
+    
   }
+  
 
   sendMail(interview: InterviewInstance): void {
     this.selectedCandidateEmail = this.getEmail(interview.candidate);
@@ -195,7 +204,10 @@ NTT DATA MOROCCO`;
   }
 
   editInterview(interview: InterviewInstance): void {
+    this.selectedInterview = interview; 
+    this.displayEditFormDialog = true;
     console.log('Edit clicked:', interview);
+
   }
 
   deleteInterview(interview: InterviewInstance): void {

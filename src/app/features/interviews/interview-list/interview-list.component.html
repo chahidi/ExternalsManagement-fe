@@ -95,6 +95,7 @@
         <td>{{ interview.mainTech }}</td>
         <td>{{ interview.startedAt | date: 'medium' }}</td>
         <td>{{ getRemainingHours(interview.expiresAt) }}</td>
+        <td>{{ getEmail(interview.isPassed) }}</td>
         <td>
           <span [ngClass]="{
               'status-passed': interview.isPassed,
@@ -118,12 +119,12 @@
   <!-- Details Dialog -->
   <p-dialog
     header="Interview Details"
-    [(visible)]="displayEditDialog"
+    [(visible)]="displayDetailsDialog"
     modal="modal"
     [style]="{ maxWidth: '90vw' }"
   >
     <div *ngIf="selectedInterview">
-      <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate?.fullName }}</p>
+      <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
       <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
       <p><strong>Main Tech:</strong> {{ selectedInterview.mainTech }}</p>
       <p><strong>Started At:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
@@ -132,6 +133,70 @@
       <p><strong>Links Generated:</strong> {{ selectedInterview.linkGenerationCount || 0 }}</p>
     </div>
   </p-dialog>
+
+<p-dialog
+header="Edit Interview"
+[(visible)]="displayEditFormDialog"
+[modal]="true"
+[style]="{ maxWidth: '90vw'  }"
+>
+<div class="flex items-center gap-4 mb-3">
+  <label class="font-semibold w-32">Candidate Name</label>
+  <strong>{{ selectedInterview?.candidate!.fullName }}</strong>
+</div>
+<div class="flex items-center gap-4 mb-3">
+  <label class="font-semibold w-32">Main Tech</label>
+  <strong>{{ selectedInterview?.mainTech }}</strong>
+</div>
+
+<div class="flex items-center gap-4 mb-3">
+  <label class="font-semibold w-32">Started At</label>
+  <strong>{{ selectedInterview?.startedAt | date: 'medium' }}</strong>
+</div>
+
+
+<div class="flex items-center gap-4 mb-3">
+  <label class="font-semibold w-32">Email</label>
+  <input
+    pInputText
+    class="flex-auto"
+    [ngModel]="selectedInterview?.candidate?.contacts?.[0]?.contactValue"
+    placeholder="Enter email"
+  />
+</div>
+
+
+<div class="flex items-center gap-4 mb-3">
+  <label class="font-semibold w-32">Status</label>
+  <select
+    class="p-inputtext flex-auto"
+    [ngModel]="selectedInterview?.isPassed"
+    >
+    <option [ngValue]="true">Passed</option>
+    <option [ngValue]="false">Not Yet</option>
+  </select>
+</div>
+
+
+<!-- <div class="flex items-start gap-4 mb-3">
+  <label class="font-semibold w-32 mt-1">Comment</label>
+  <textarea
+    pInputTextarea
+    rows="3"
+    [(ngModel)]="selectedInterview!.comment"
+
+    class="flex-auto w-full"
+    placeholder="Write a comment..."
+  ></textarea>
+</div> -->
+
+
+<div class="flex justify-end gap-2 mt-4">
+  <p-button label="Cancel" severity="secondary" (click)="displayEditFormDialog = false" />
+  <p-button label="Save" (click)="saveInterviewChanges()" />
+</div>
+
+</p-dialog>
 
   <!-- Send Email Dialog -->
   <p-dialog

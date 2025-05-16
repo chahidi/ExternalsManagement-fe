@@ -19,4 +19,5 @@ export interface Candidate {
   educations: Education[];
   address: Address;
   languages: Language[];
+  isPassed : boolean;
 }

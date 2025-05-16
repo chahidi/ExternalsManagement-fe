@@ -18,7 +18,21 @@ import { ToastModule } from 'primeng/toast';
 @Component({
     selector: 'app-interview-list',
     standalone: true,
-    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, InputTextarea, DropdownModule, CalendarModule, ToastModule, DatePipe],
+    imports: [
+        CommonModule,
+        TableModule,
+        TooltipModule,
+        ButtonModule,
+        DialogModule,
+        FormsModule,
+        InputTextModule,
+        InputTextarea,
+        DropdownModule,
+        CalendarModule,
+        ToastModule,
+        DatePipe
+      ],
+
     providers: [MessageService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
@@ -136,12 +150,11 @@ export class InterviewListComponent implements OnInit {
         this.mailSubject = 'Interview Invitation';
 
         const interviewDate = new Date(interview.startedAt ?? new Date());
-        const formattedDate = interviewDate.toLocaleDateString('en-GB'); // dd-MM-yyyy
+        const formattedDate = interviewDate.toLocaleDateString('en-GB');
         const formattedTime = interviewDate.toLocaleTimeString('en-GB', {
           hour: '2-digit',
           minute: '2-digit'
-        }); // HH:mm
-
+        });
         const link = interview.interviewLink ?? '[Link Not Available]';
 
         this.mailHeader = 'Dear,';
@@ -160,8 +173,6 @@ export class InterviewListComponent implements OnInit {
 
         this.mailDialogVisible = true;
       }
-
-
 
       confirmSendMail(): void {
         const fullMail = `${this.mailHeader}\n\n${this.mailBody}\n\n${this.mailFooter}`;

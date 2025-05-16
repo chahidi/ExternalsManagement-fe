@@ -7,9 +7,8 @@ export interface Address {
   street: string;
   postalCode: string;
   fullAddress: string;
-  city: City; 
-  country: Country; 
-  city: City |null;
-  country: Country|null;
+  city: City;
+  country: Country;
+  candidate?: Candidate;
 }
 

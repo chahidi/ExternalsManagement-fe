@@ -1,3 +1,4 @@
+import { Candidate } from "./candidate";
 
 export interface Education {
   institution: string;
@@ -5,4 +6,6 @@ export interface Education {
   startDate: string;
   endDate: string;
   diploma: string;
+  candidate?: Candidate;
+
 }

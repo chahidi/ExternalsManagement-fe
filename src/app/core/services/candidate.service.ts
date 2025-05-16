@@ -15,8 +15,6 @@ export class CandidateService {
 
   private baseUrl = `${environment.apiUrl}/v1/candidates`;
   private all = 'all';
-  constructor(private http: HttpClient) { }
-
 
   // Récupérer tous les candidats
   getCandidates(): Observable<Candidate[]> {
@@ -132,10 +130,3 @@ export class CandidateService {
   }
 }
 
-  
-  deleteCandidate(id: string): Observable<string> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
-  }
-  
-  
-}

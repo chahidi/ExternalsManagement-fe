@@ -1,5 +1,9 @@
+import { Candidate } from "./candidate";
+
 export interface Contact {
-  id: string; 
+  id: string;
   contactType: string;
   contactValue: string;
+  candidateId: Candidate | string;
+
 }

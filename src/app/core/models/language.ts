@@ -1,7 +1,7 @@
+import { Candidate } from "./candidate";
+
 export interface Language {
-  id: string;  
-  description: string; 
-  englishDescription: string; 
+  id: string;
   description: string;
   englishDescription: string;
   fullDescription: string;
@@ -9,4 +9,5 @@ export interface Language {
   languageInEnglish: string;
   level: string;
   isNative: boolean;
+  candidate ?: Candidate;
 }

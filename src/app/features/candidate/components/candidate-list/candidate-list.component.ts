@@ -84,11 +84,11 @@ export class CandidateListComponent implements OnInit {
     { id: '', name: 'USA' ,  englishName:'United State', cities :null}
   ];
 
-  filters: FilterCriteria = {
-    skills: [],
-    language: null,
-    yearsOfExperience: null
-  };
+    filters: FilterCriteria = {
+      skills: [],
+      language: null,
+      yearsOfExperience: null,
+    };
 
   constructor(
     private candidateService: CandidateService,
@@ -99,7 +99,7 @@ export class CandidateListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCandidates();
-    this.loadFilterOptions();
+    this.initFilterOptions();
 
     this.proficiencyLevelOptions = this.proficiencyLevels.map(level => ({
       label: level,
@@ -109,15 +109,14 @@ export class CandidateListComponent implements OnInit {
         label :lang,
         value: lang
       }));
-
-
   }
 
   isArray(value: any): boolean {
     return Array.isArray(value);
   }
 
-  loadFilterOptions(): void {
+  // Initialize with default values but will be updated with real data after loading candidates
+  initFilterOptions(): void {
     this.skillOptions = [
       { name: 'JavaScript', code: 'JavaScript' },
       { name: 'Java', code: 'Java' },
@@ -136,11 +135,85 @@ export class CandidateListComponent implements OnInit {
     ];
   }
 
+  // Updated method to extract available skills and languages from the loaded candidates
+  loadFilterOptions(): void {
+    // Extract unique skills from candidates
+    const uniqueSkills = new Set<string>();
+    this.candidates.forEach(candidate => {
+      if (candidate.skills && candidate.skills.length) {
+        candidate.skills.forEach(skill => {
+          if (skill.skillName) {
+            uniqueSkills.add(skill.skillName);
+          }
+        });
+      }
+    });
+
+    // Create skill options
+    this.skillOptions = Array.from(uniqueSkills).sort().map(skill => ({
+      name: skill,
+      code: skill
+    }));
+
+    if (this.skillOptions.length === 0) {
+      // If no skills found, use default options
+      this.initFilterOptions();
+    } else {
+      console.log('Loaded actual skills from candidates:', this.skillOptions);
+    }
+
+    // Extract unique languages from candidates
+    const uniqueLanguages = new Set<string>();
+    this.candidates.forEach(candidate => {
+      if (candidate.naturalLanguages && candidate.naturalLanguages.length) {
+        candidate.naturalLanguages.forEach(lang => {
+          // Prioritize language field but fall back to others if needed
+          const languageName = lang.language || lang.languageInEnglish || lang.englishDescription;
+          if (languageName) {
+            uniqueLanguages.add(languageName);
+          }
+        });
+      }
+    });
+
+    // Create language options
+    this.languageOptions = Array.from(uniqueLanguages).sort().map(language => ({
+      name: language,
+      code: language
+    }));
+
+    if (this.languageOptions.length === 0) {
+      // If no languages found, keep default options
+      console.log('No languages found in candidates, using defaults');
+      this.languageOptions = [
+        { name: 'English', code: 'English' },
+        { name: 'French', code: 'French' },
+        { name: 'Spanish', code: 'Spanish' },
+        { name: 'German', code: 'German' },
+        { name: 'Arabic', code: 'Arabic' }
+      ];
+    } else {
+      console.log('Loaded actual languages from candidates:', this.languageOptions);
+    }
+
+    console.log('Available skills:', this.skillOptions);
+    console.log('Available languages:', this.languageOptions);
+  }
+
   loadCandidates(): void {
     this.loading = true;
     this.candidateService.getCandidates().subscribe({
       next: (data) => {
         this.candidates = data || [];
+        console.log('Loaded candidates:', this.candidates.length);
+        // Log a sample candidate to check its structure
+        if (this.candidates.length > 0) {
+          console.log('Sample candidate:', this.candidates[0]);
+        }
+
+        // Load filter options based on real candidate data
+        this.loadFilterOptions();
+
         this.loading = false;
       },
       error: (err) => {
@@ -157,25 +230,59 @@ export class CandidateListComponent implements OnInit {
 
   applyFilters(): void {
     this.loading = true;
+    console.log('Applying filters:', this.filters);
 
-    const filterParams: any = {};
-
+    // Check if filters contain the expected data structure
     if (this.filters.skills && this.filters.skills.length > 0) {
-      filterParams.skills = this.filters.skills.map(skill => skill.code).join(',');
+      console.log('Skills filter:', this.filters.skills);
+      this.filters.skills.forEach((skill: any, index: number) => {
+        console.log(`Skill ${index}:`, skill.name, skill.code);
+      });
     }
 
     if (this.filters.language) {
-      filterParams.language = this.filters.language.code;
+      console.log('Language filter:', this.filters.language.name, this.filters.language.code);
     }
 
     if (this.filters.yearsOfExperience !== null) {
-      filterParams.yearsOfExperience = this.filters.yearsOfExperience;
+      console.log('Years of experience filter:', this.filters.yearsOfExperience);
+    }
+
+    const filterParams: any = {};
+
+    // Clone the filters to ensure we're passing the complete objects
+    if (this.filters.skills && this.filters.skills.length > 0) {
+      filterParams.skills = [...this.filters.skills];
+    }
+
+    if (this.filters.language) {
+      filterParams.language = {...this.filters.language};
+    }
+
+    if (this.filters.yearsOfExperience !== null) {
+      // Ensure we're passing a number value for years of experience
+      filterParams.yearsOfExperience = Number(this.filters.yearsOfExperience);
     }
 
     this.candidateFilterService.filterCandidates(filterParams).subscribe({
       next: (data) => {
+        console.log('Filtered candidates:', data.length);
         this.candidates = data || [];
         this.loading = false;
+
+        if (data.length === 0) {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'No Results',
+            detail: 'No candidates match the selected filters.'
+          });
+        } else {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Filters Applied',
+            detail: `Found ${data.length} candidates matching your criteria.`
+          });
+        }
       },
       error: (err) => {
         console.error('Error filtering candidates:', err);
@@ -193,20 +300,28 @@ export class CandidateListComponent implements OnInit {
     this.filters = {
       skills: [],
       language: null,
-      yearsOfExperience: null
+      yearsOfExperience: null,
     };
     this.loadCandidates();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Filters Reset',
+      detail: 'All filters have been cleared.'
+    });
   }
 
   onFilterInput(event: Event, table: Table): void {
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement) {
-      table.filterGlobal(inputElement.value, 'contains');
-    }
+    const inputValue = (event.target as HTMLInputElement).value;
+    table.filterGlobal(inputValue, 'contains');
   }
 
   clear(table: Table): void {
     table.clear();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Table Cleared',
+      detail: 'All table filters have been cleared.'
+    });
   }
 
   editCandidate(candidate: Candidate): void {this.selectedCandidate = { ...candidate };

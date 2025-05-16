@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CandidateService {
-  private apiUrl = 'http://localhost:8080/api/candidates';
+  private apiUrl = 'http://localhost:8080/candidates';
 
   private baseUrl = `${environment.apiUrl}/candidates`;
 

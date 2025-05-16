@@ -4,7 +4,7 @@ import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
 import { StatsService } from '../../../../core/services/stats.service'; // Import the service
 import { TranslateService, TranslateModule } from '@ngx-translate/core'; // Import TranslateService
-import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-stats-widget',
@@ -23,10 +23,7 @@ export class StatsWidgetComponent implements OnInit {
   private skills: string[] = [];
   private experienceData: any[] = [];
 
-  constructor(private statsService: StatsService,
-    private translate: TranslateService,
-    private cdr: ChangeDetectorRef
-    ) {}
+  constructor(private statsService: StatsService, private translate: TranslateService) {}
 
   ngOnInit(): void {
     console.log('StatsWidgetComponent initialized');
@@ -37,11 +34,12 @@ export class StatsWidgetComponent implements OnInit {
     this.initChartOptions();
 
     this.translate.onLangChange.subscribe(() => {
-        this.loadLanguagesChart();
-        this.loadSkillsChart();
+        // this.loadLanguagesChart();
+        this.loadAllLanguages();
+        // this.loadSkillsChart();
+        this.loadAllSkills();
         this.loadExperienceChart();
     });
-
   }
 
   loadTotalCandidates(): void {
@@ -58,12 +56,10 @@ export class StatsWidgetComponent implements OnInit {
   loadAllLanguages(): void {
     this.statsService.getLanguages().subscribe({
       next: (languages) => {
-        // this.languages = languages.length ? languages : ['No Languages'];
         this.languages = languages.length ? languages : [this.translate.instant('stats.noLanguages')];
         this.loadLanguagesChart();
       },
       error: () => {
-        // this.languages = ['No Languages'];
         this.languages = [this.translate.instant('stats.noLanguages')];
         this.loadLanguagesChart();
       }
@@ -73,12 +69,10 @@ export class StatsWidgetComponent implements OnInit {
   loadAllSkills(): void {
     this.statsService.getSkills().subscribe({
       next: (skills) => {
-        // this.skills = skills.length ? skills : ['No Skills'];
         this.skills = skills.length ? skills : [this.translate.instant('stats.noSkills')];
         this.loadSkillsChart();
       },
       error: () => {
-        // this.skills = ['No Skills'];
         this.skills = [this.translate.instant('stats.noSkills')];
         this.loadSkillsChart();
       }
@@ -98,7 +92,6 @@ export class StatsWidgetComponent implements OnInit {
       this.languageChartData = {
         labels: this.languages,
         datasets: [{
-        //   label: 'Candidates by Language', // Static label, will be translated in the template
           label: this.translate.instant('stats.candidatesByLanguage'),
           backgroundColor: '#42A5F5',
           borderColor: '#1E88E5',
@@ -106,7 +99,6 @@ export class StatsWidgetComponent implements OnInit {
           borderWidth: 1
         }]
       };
-      this.cdr.detectChanges();
     }).catch(() => {
       this.languageChartData = { labels: ['Error'], datasets: [{ data: [0] }] };
     });

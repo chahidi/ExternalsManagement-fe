@@ -11,8 +11,6 @@ import { environment } from '../../../environments/environment';
 export class CandidateService {
   private apiUrl = 'http://localhost:8080/candidates';
 
-  constructor(private http: HttpClient) {}
-
   private baseUrl = `${environment.apiUrl}/v1/candidates`;
   private all = 'all';
   constructor(private http: HttpClient) { }
@@ -38,7 +36,7 @@ export class CandidateService {
   updateCandidate(id: string, candidate: Candidate): Observable<Candidate> {
     const cleanedCandidate = this.cleanCandidate(candidate);
     console.log('data sent to backend:', cleanedCandidate); // Log pour vérifier les données envoyées
-    return this.http.put<Candidate>(`${this.apiUrl}/${id}`, cleanedCandidate).pipe(
+    return this.http.put<Candidate>(`${this.baseUrl}/${id}`, cleanedCandidate).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
@@ -46,7 +44,7 @@ export class CandidateService {
 
   // Supprimer un candidat
   deleteCandidate(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
@@ -133,9 +131,3 @@ export class CandidateService {
 }
 
   
-  deleteCandidate(id: string): Observable<string> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
-  }
-  
-  
-}

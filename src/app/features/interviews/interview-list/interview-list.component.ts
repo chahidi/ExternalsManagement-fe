@@ -130,30 +130,6 @@ export class InterviewListComponent implements OnInit {
         this.displayEditDialog = true;
     }
 
-    //   sendMail(interview: InterviewInstance): void {
-    //     this.selectedCandidateEmail = this.getEmail(interview.candidate);
-    //     this.selectedCandidateName = interview.candidate.fullName;
-    //     this.mailSubject = 'Interview Invitation';
-
-    //     const interviewTime = interview.startedAt
-    //       ? new Date(interview.startedAt).toLocaleString()
-    //       : '[Scheduled Time]';
-
-    //     const link = interview.interviewLink ?? '[Link Not Available]';
-
-    //     this.mailContent = `Dear,
-
-    // We hope this mail finds you well, find below the link to access your interview.
-    // The interview is scheduled at ${interviewTime}
-
-    // ! Note: the link is valid only 24h, if the link is expired you can't access !
-    // ${link}
-
-    // Thanks & Best Regards
-    // NTT DATA MOROCCO`;
-
-    //     this.mailDialogVisible = true;
-    //   }
     sendMail(interview: InterviewInstance): void {
         this.selectedCandidateEmail = this.getEmail(interview.candidate);
         this.selectedCandidateName = interview.candidate.fullName;

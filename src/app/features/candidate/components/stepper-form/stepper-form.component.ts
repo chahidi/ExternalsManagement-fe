@@ -438,16 +438,16 @@ export class StepperFormComponent implements OnInit {
         }]
       };
       console.log(candidateData);
-    //  this.candidateService.addCandidate(candidateData).subscribe({
-    //     next:()=>{
-    //         alert('Candidate added successfully');
-    //         this.router.navigate(['/candidates/candidate-list']);
-    //     },
-    //     error:(err)=>{
-    //         console.error('Error adding candidate:', err);
-    //         alert('Failed to add the Candidate. Please try again.');
-    //   }
-    //   });
+     this.candidateService.addCandidate(candidateData).subscribe({
+        next:()=>{
+            alert('Candidate added successfully');
+            this.router.navigate(['/candidates/candidate-list']);
+        },
+        error:(err)=>{
+            console.error('Error adding candidate:', err);
+            alert('Failed to add the Candidate. Please try again.');
+      }
+      });
     } else {
       this.markAllFormsTouched();
       this.messageService.add({

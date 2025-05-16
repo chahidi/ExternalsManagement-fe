@@ -78,20 +78,20 @@ export class CandidateService {
       ...candidate,
       id: candidate.id.toString(),
      addresses: candidate.address ? [{
-  id: candidate.address.id?.toString() || '',
-  street: candidate.address.street || '',
-  postalCode: candidate.address.postalCode || '',
-  fullAddress: candidate.address.fullAddress || '',
-  city: candidate.address.city ? {
-    id: candidate.address.city.id?.toString() || '',
-    name: candidate.address.city.name || '',
-    countryId: candidate.address.city.countryId || ''
-  } : null,
-  country: candidate.address.country ? {
-    id: candidate.address.country.id?.toString() || '',
-    name: candidate.address.country.name || '',
-    englishName: candidate.address.country.englishName || ''
-  } : null
+      id: candidate.address.id?.toString() || '',
+      street: candidate.address.street || '',
+      postalCode: candidate.address.postalCode || '',
+      fullAddress: candidate.address.fullAddress || '',
+      city: candidate.address.city ? {
+        id: candidate.address.city.id?.toString() || '',
+        name: candidate.address.city.name || '',
+        countryId: candidate.address.city.countryId || ''
+      } : null,
+      country: candidate.address.country ? {
+        id: candidate.address.country.id?.toString() || '',
+        name: candidate.address.country.name || '',
+        englishName: candidate.address.country.englishName || ''
+      } : null
 }] : []
 ,
       contacts: candidate.contacts || [],

@@ -80,7 +80,7 @@
             <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
           </div>
         </th>
-        <th>Started At</th>
+        <th>Planned On</th>
         <th>Remaining Time</th>
         <th>Status Comment</th>
         <th>Links Generated</th>
@@ -93,7 +93,7 @@
         <td>{{ interview.candidate.fullName }}</td>
         <td>{{ getEmail(interview.candidate) }}</td>
         <td>{{ interview.mainTech }}</td>
-        <td>{{ interview.startedAt | date: 'medium' }}</td>
+        <td>{{ interview.startedAt | date: 'dd-MM-yyyy' }}</td>
         <td>{{ getRemainingHours(interview.expiresAt) }}</td>
         <td>
           <span [ngClass]="{
@@ -157,7 +157,23 @@
 
       <div class="field">
         <label for="message" class="font-semibold mb-1">Message:</label>
-        <textarea id="message" pInputTextarea [(ngModel)]="mailContent" autoResize="true" rows="5" class="w-full" placeholder="Write your email message..."></textarea>
+        <div class="field mb-3">
+            <label class="font-semibold"></label>
+            <div class="p-2 border rounded bg-gray-100 mb-2 whitespace-pre-line">{{ mailHeader }}</div>
+
+            <textarea
+              id="message"
+              pInputTextarea
+              [(ngModel)]="mailBody"
+              autoResize="true"
+              rows="5"
+              class="w-full"
+              placeholder="Write the main content..."
+            ></textarea>
+
+            <div class="p-2 border rounded bg-gray-100 mt-2 whitespace-pre-line">{{ mailFooter }}</div>
+          </div>
+
       </div>
     </div>
 

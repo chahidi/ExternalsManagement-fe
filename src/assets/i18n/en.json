@@ -20,7 +20,7 @@
       }
     }
   ,
-  
+
     "candidate": {
       "list": {
         "TITLE": "Candidate List",
@@ -66,7 +66,7 @@
     }
   ,
 
- 
+
 
   "steps.generalData": "General Data",
   "steps.address": "Address",
@@ -78,7 +78,7 @@
 
 
 ,
-  
+
 
   "general": {
     "fullName": "Full Name",
@@ -184,68 +184,62 @@
     "saveTitle": "Save and submit the form"
   }
 
-  
-  
+
+
 
     ,
-    
-    
-    
-     "stats": {
-  "title": "Candidate Statistics",
-  "totalCandidates": "Total Candidates:",
-  "languagesTab": "Languages",
-  "candidatesByLanguage": "Candidates by Language",
-  "skillsTab": "Skills",
-  "candidatesBySkill": "Candidates by Skill",
-  "experienceTab": "Experience",
-  "candidatesByExperience": "Candidates by Years of Experience",
-  "noLanguages": "No Languages",
-  "noSkills": "No Skills",
-  "noData": "No Data"
-}
-
-    
-    
-    
-,
-
-"topbar": {
-    "calendar": "Calendar",
-    "messages": "Messages",
-    "profile": "Profile"
-  },
-  "language": {
-    "english": "English",
-    "french": "French",
-    "spanish": "Spanish"
-  }
-  ,
 
 
-  
-    "menu": {
-      "dashboard": "Dashboard",
-      "externalsManagement": "Externals Management",
-      "cardsView": "Cards View",
-      "listView": "List View",
-      "candidates": "Candidates",
-      "newCV": "New CV",
-      "candidateList": "Candidate List",
-      "promptManagement": "Prompt Management",
-      "newPrompt": "New Prompt",
-      "promptList": "Prompt List"
+
+    "stats": {
+        "title": "Candidate Statistics",
+        "totalCandidates": "Total Candidates:",
+        "languagesTab": "Languages",
+        "candidatesByLanguage": "Candidates by Language",
+        "skillsTab": "Skills",
+        "candidatesBySkill": "Candidates by Skill",
+        "experienceTab": "Experience",
+        "candidatesByExperience": "Candidates by Years of Experience",
+        "candidatesByExperienceRange": "Candidates by Experience Range",
+        "noLanguages": "No Languages",
+        "noSkills": "No Skills",
+        "noData": "No Data"
     }
-  
-,
-   
-        "footer": {
-            "copyright": "© 2025 NTT DATA Morocco"
-          }
-      
-    
-        }
-      
-  
-  
-  
+
+    ,
+
+    "topbar": {
+        "calendar": "Calendar",
+        "messages": "Messages",
+        "profile": "Profile"
+    }
+    ,
+
+    "language": {
+        "english": "English",
+        "french": "French",
+        "spanish": "Spanish"
+    }
+
+    ,
+
+    "menu": {
+        "dashboard": "Dashboard",
+        "externalsManagement": "Externals Management",
+        "cardsView": "Cards View",
+        "listView": "List View",
+        "candidates": "Candidates",
+        "newCV": "New CV",
+        "candidateList": "Candidate List",
+        "promptManagement": "Prompt Management",
+        "newPrompt": "New Prompt",
+        "promptList": "Prompt List"
+    }
+
+    ,
+
+    "footer": {
+        "copyright": "© 2025 NTT DATA Morocco"
+    }
+
+}

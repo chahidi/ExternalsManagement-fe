@@ -4,6 +4,7 @@ import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
 import { StatsService } from '../../../../core/services/stats.service'; // Import the service
 import { TranslateService, TranslateModule } from '@ngx-translate/core'; // Import TranslateService
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-stats-widget',
@@ -22,7 +23,10 @@ export class StatsWidgetComponent implements OnInit {
   private skills: string[] = [];
   private experienceData: any[] = [];
 
-  constructor(private statsService: StatsService, private translate: TranslateService) {}
+  constructor(private statsService: StatsService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+    ) {}
 
   ngOnInit(): void {
     console.log('StatsWidgetComponent initialized');
@@ -31,6 +35,13 @@ export class StatsWidgetComponent implements OnInit {
     this.loadAllSkills();
     this.loadExperienceData();
     this.initChartOptions();
+
+    this.translate.onLangChange.subscribe(() => {
+        this.loadLanguagesChart();
+        this.loadSkillsChart();
+        this.loadExperienceChart();
+    });
+
   }
 
   loadTotalCandidates(): void {
@@ -47,11 +58,13 @@ export class StatsWidgetComponent implements OnInit {
   loadAllLanguages(): void {
     this.statsService.getLanguages().subscribe({
       next: (languages) => {
-        this.languages = languages.length ? languages : ['No Languages'];
+        // this.languages = languages.length ? languages : ['No Languages'];
+        this.languages = languages.length ? languages : [this.translate.instant('stats.noLanguages')];
         this.loadLanguagesChart();
       },
       error: () => {
-        this.languages = ['No Languages'];
+        // this.languages = ['No Languages'];
+        this.languages = [this.translate.instant('stats.noLanguages')];
         this.loadLanguagesChart();
       }
     });
@@ -60,11 +73,13 @@ export class StatsWidgetComponent implements OnInit {
   loadAllSkills(): void {
     this.statsService.getSkills().subscribe({
       next: (skills) => {
-        this.skills = skills.length ? skills : ['No Skills'];
+        // this.skills = skills.length ? skills : ['No Skills'];
+        this.skills = skills.length ? skills : [this.translate.instant('stats.noSkills')];
         this.loadSkillsChart();
       },
       error: () => {
-        this.skills = ['No Skills'];
+        // this.skills = ['No Skills'];
+        this.skills = [this.translate.instant('stats.noSkills')];
         this.loadSkillsChart();
       }
     });
@@ -83,13 +98,15 @@ export class StatsWidgetComponent implements OnInit {
       this.languageChartData = {
         labels: this.languages,
         datasets: [{
-          label: 'Candidates by Language', // Static label, will be translated in the template
+        //   label: 'Candidates by Language', // Static label, will be translated in the template
+          label: this.translate.instant('stats.candidatesByLanguage'),
           backgroundColor: '#42A5F5',
           borderColor: '#1E88E5',
-          data: counts[0] === 0 && this.languages[0] === 'No Languages' ? [0] : counts,
+          data: counts[0] === 0 && this.languages[0] === this.translate.instant('stats.noLanguages') ? [0] : counts,
           borderWidth: 1
         }]
       };
+      this.cdr.detectChanges();
     }).catch(() => {
       this.languageChartData = { labels: ['Error'], datasets: [{ data: [0] }] };
     });
@@ -105,9 +122,9 @@ export class StatsWidgetComponent implements OnInit {
           .catch(() => 0)
       )
     ).then(counts => {
-      const isEmptyData = counts.every(count => count === 0) || this.skills[0] === 'No Skills';
+      const isEmptyData = counts.every(count => count === 0) || this.skills[0] === this.translate.instant('stats.noSkills');
       this.skillsChartData = {
-        labels: isEmptyData ? ['No Data'] : this.skills,
+        labels: isEmptyData ? [this.translate.instant('stats.noData')] : this.skills,
         datasets: [{
           data: isEmptyData ? [1] : counts,
           backgroundColor: isEmptyData ? ['#E0E0E0'] : this.generateColors(counts.length),
@@ -149,7 +166,7 @@ export class StatsWidgetComponent implements OnInit {
     const sorted = Object.entries(this.experienceData)
                         .sort(([a], [b]) => parseInt(a) - parseInt(b));
     console.log('sorted: ', sorted);
-  
+
     const labels = sorted.map(([label]) => label);
     console.log('labels: ', labels);
     const counts = sorted.map(([, count]) => count);
@@ -176,7 +193,7 @@ export class StatsWidgetComponent implements OnInit {
     this.experienceChartData = {
       labels,
       datasets: [{
-        label: 'Candidates by experience range',
+        label: this.translate.instant('stats.candidatesByExperienceRange'),
         data: counts,
         backgroundColor: backgroundColors,
         borderColor: borderColors,
@@ -186,7 +203,7 @@ export class StatsWidgetComponent implements OnInit {
 
     console.log('experienceChartData: ', this.experienceChartData);
   }
-  
+
 
   private generateColors(count: number): string[] {
     const colors = ['#42A5F5', '#66BB6A', '#FFCA28', '#EF5350'];

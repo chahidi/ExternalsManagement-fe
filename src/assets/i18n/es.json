@@ -21,8 +21,8 @@
       }
     }
   ,
-  
-           
+
+
     "candidate": {
       "list": {
         "TITLE": "Lista de candidatos",
@@ -48,7 +48,7 @@
         "EMPTY": "No se encontraron candidatos."
       }
     }
-  
+
 
 ,
 
@@ -70,8 +70,8 @@
     }
   ,
 
-  
- 
+
+
     "steps.generalData": "Datos Generales",
     "steps.address": "Dirección",
     "steps.education": "Educación",
@@ -79,14 +79,14 @@
     "steps.languages": "Idiomas",
     "steps.skills": "Habilidades",
     "steps.contact": "Contacto"
-  
+
   ,
 
 
 
-  
-  
-  
+
+
+
     "general": {
       "fullName": "Nombre completo",
       "fullNameRequired": "El nombre completo es requerido.",
@@ -169,85 +169,86 @@
       "advanced": "Avanzado",
       "expert": "Experto"
     }
-  },
-  "contact": {
-    "contactType": "Tipo de contacto",
-    "selectContactType": "Selecciona un tipo de contacto",
-    "contactTypeRequired": "El tipo de contacto es obligatorio",
-    "contactValue": "Valor de contacto",
-    "contactValueRequired": "El valor de contacto es obligatorio",
-    "invalidEmail": "Formato de correo electrónico inválido",
-    "invalidPhone": "Formato de número de teléfono inválido",
-    "invalidLinkedIn": "Formato de URL de LinkedIn inválido"
-  },
-  "navigation": {
-    "previous": "Anterior",
-    "previousTitle": "Ir al paso anterior",
-    "clear": "Limpiar",
-    "clearTitle": "Limpiar la sección actual",
-    "next": "Siguiente",
-    "nextTitle": "Ir al siguiente paso",
-    "save": "Guardar",
-    "saveTitle": "Guardar el formulario"
   }
-  
-   
-  
+
+  ,
+
+  "contact": {
+        "contactType": "Tipo de contacto",
+        "selectContactType": "Selecciona un tipo de contacto",
+        "contactTypeRequired": "El tipo de contacto es obligatorio",
+        "contactValue": "Valor de contacto",
+        "contactValueRequired": "El valor de contacto es obligatorio",
+        "invalidEmail": "Formato de correo electrónico inválido",
+        "invalidPhone": "Formato de número de teléfono inválido",
+        "invalidLinkedIn": "Formato de URL de LinkedIn inválido"
+    }
+
+  ,
+
+  "navigation": {
+        "previous": "Anterior",
+        "previousTitle": "Ir al paso anterior",
+        "clear": "Limpiar",
+        "clearTitle": "Limpiar la sección actual",
+        "next": "Siguiente",
+        "nextTitle": "Ir al siguiente paso",
+        "save": "Guardar",
+        "saveTitle": "Guardar el formulario"
+    }
+
+
    ,
 
-   
-   
+
    "stats": {
-  "title": "Estadísticas de los Candidatos",
-  "totalCandidates": "Total de Candidatos:",
-  "languagesTab": "Idiomas",
-  "candidatesByLanguage": "Candidatos por Idioma",
-  "skillsTab": "Competencias",
-  "candidatesBySkill": "Candidatos por Competencia",
-  "experienceTab": "Experiencia",
-  "candidatesByExperience": "Candidatos por Años de Experiencia",
-  "noLanguages": "Ningún Idioma",
-  "noSkills": "Ninguna Competencia",
-  "noData": "Sin Datos"
-}
-
-  
-  
-  
-  
-
- ,
- 
- 
- 
- "topbar": {
-    "calendar": "Calendario",
-    "messages": "Mensajes",
-    "profile": "Perfil"
-  },
-  "language": {
-    "english": "Inglés",
-    "french": "Francés",
-    "spanish": "Español"
-  }
-  
-  ,
-  
-    "menu": {
-      "dashboard": "Tablero",
-      "externalsManagement": "Gestión de externos",
-      "cardsView": "Vista de tarjetas",
-      "listView": "Vista de lista",
-      "candidates": "Candidatos",
-      "newCV": "Nuevo CV",
-      "candidateList": "Lista de candidatos",
-      "promptManagement": "Gestión de prompts",
-      "newPrompt": "Nuevo prompt",
-      "promptList": "Lista de prompts"
+        "title": "Estadísticas de los Candidatos",
+        "totalCandidates": "Total de Candidatos:",
+        "languagesTab": "Idiomas",
+        "candidatesByLanguage": "Candidatos por Idioma",
+        "skillsTab": "Competencias",
+        "candidatesBySkill": "Candidatos por Competencia",
+        "experienceTab": "Experiencia",
+        "candidatesByExperience": "Candidatos por Años de Experiencia",
+        "candidatesByExperienceRange": "Candidatos por Rango de Experiencia",
+        "noLanguages": "Ningún Idioma",
+        "noSkills": "Ninguna Competencia",
+        "noData": "Sin Datos"
     }
-  ,  
-  
-  "footer": {
-    "copyright": "© 2025 NTT DATA Marruecos"
-  }
+
+    ,
+
+    "topbar": {
+        "calendar": "Calendario",
+        "messages": "Mensajes",
+        "profile": "Perfil"
+    }
+    ,
+
+    "language": {
+        "english": "Inglés",
+        "french": "Francés",
+        "spanish": "Español"
+    }
+
+    ,
+
+    "menu": {
+        "dashboard": "Tablero",
+        "externalsManagement": "Gestión de externos",
+        "cardsView": "Vista de tarjetas",
+        "listView": "Vista de lista",
+        "candidates": "Candidatos",
+        "newCV": "Nuevo CV",
+        "candidateList": "Lista de candidatos",
+        "promptManagement": "Gestión de prompts",
+        "newPrompt": "Nuevo prompt",
+        "promptList": "Lista de prompts"
+    }
+
+    ,
+
+    "footer": {
+        "copyright": "© 2025 NTT DATA Marruecos"
+    }
 }

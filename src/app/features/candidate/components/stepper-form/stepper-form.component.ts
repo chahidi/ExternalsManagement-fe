@@ -20,7 +20,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Candidate } from '../../../../core/models/candidate';
-import { NewCvService } from '../../../../core/services/new-cv.service';
+import { CandidateService } from '../../../../core/services/candidate.service';
 
 @Component({
   selector: 'app-candidate-form',
@@ -75,7 +75,7 @@ export class StepperFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private newCvService: NewCvService,
+    private candidateService: CandidateService,
     private messageService: MessageService
   ) {}
 
@@ -420,7 +420,7 @@ export class StepperFormComponent implements OnInit {
         address: {
           ...this.addressForm.value,
           city: { name: this.addressForm.value.city },
-          country: { 
+          country: {
             name: this.addressForm.value.country,
             englishName: this.addressForm.value.country
            }
@@ -434,30 +434,20 @@ export class StepperFormComponent implements OnInit {
         skills: [this.skillsForm.value],
         contacts: [{
           ...this.contactForm.value,
-          contactType: this.contactForm.value.contactType.toLowerCase()
+          contactType: this.contactForm.value.contactType
         }]
       };
-
-      this.newCvService.saveCandidate(candidateData).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Candidate added successfully',
-            life: 0,
-            closable: true
-          });
-          setTimeout(() => {
-            this.router.navigate(['/candidates/candidate-list']);
-          }, 2000);
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed to create candidate',
-            life: 3000
-          });
-        }
-      });
+      console.log(candidateData);
+    //  this.candidateService.addCandidate(candidateData).subscribe({
+    //     next:()=>{
+    //         alert('Candidate added successfully');
+    //         this.router.navigate(['/candidates/candidate-list']);
+    //     },
+    //     error:(err)=>{
+    //         console.error('Error adding candidate:', err);
+    //         alert('Failed to add the Candidate. Please try again.');
+    //   }
+    //   });
     } else {
       this.markAllFormsTouched();
       this.messageService.add({

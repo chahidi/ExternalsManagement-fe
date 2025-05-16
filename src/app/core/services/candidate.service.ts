@@ -128,5 +128,12 @@ export class CandidateService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+  //Add a candidate
+  addCandidate(candidate : Candidate):Observable<Candidate>{
+    return this.http.post<Candidate>(this.baseUrl,candidate).pipe(
+        catchError(this.handleError)
+    )
+  }
 }
 

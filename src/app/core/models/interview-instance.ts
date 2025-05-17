@@ -1,8 +1,7 @@
 import { Candidate } from './candidate';
 
 export interface InterviewInstance {
-  isPassed: boolean;
-  comment: string;
+
   id: number;
   candidate: Candidate;
   interviewLink: string;
@@ -11,5 +10,7 @@ export interface InterviewInstance {
   submittedAt: Date | null;
   expiresAt: Date;
   token: string;
+  isPassed: boolean;
   linkGenerationCount?: number;
+  comment: string;
 }

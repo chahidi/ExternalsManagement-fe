@@ -95,7 +95,6 @@
         <td>{{ interview.mainTech }}</td>
         <td>{{ interview.startedAt | date: 'medium' }}</td>
         <td>{{ getRemainingHours(interview.expiresAt) }}</td>
-        <td>{{ getEmail(interview.isPassed) }}</td>
         <td>
           <span [ngClass]="{
               'status-passed': interview.isPassed,
@@ -160,7 +159,7 @@ header="Edit Interview"
   <input
     pInputText
     class="flex-auto"
-    [ngModel]="selectedInterview?.candidate?.contacts?.[0]?.contactValue"
+    [value]="getEmail(selectedInterview?.candidate)"
     placeholder="Enter email"
   />
 </div>
@@ -177,18 +176,17 @@ header="Edit Interview"
   </select>
 </div>
 
-
-<!-- <div class="flex items-start gap-4 mb-3">
+<div class="flex items-start gap-4 mb-3">
   <label class="font-semibold w-32 mt-1">Comment</label>
   <textarea
     pInputTextarea
     rows="3"
-    [(ngModel)]="selectedInterview!.comment"
-
-    class="flex-auto w-full"
+    [ngModel]="selectedInterview?.comment"
     placeholder="Write a comment..."
   ></textarea>
-</div> -->
+</div>
+
+
 
 
 <div class="flex justify-end gap-2 mt-4">

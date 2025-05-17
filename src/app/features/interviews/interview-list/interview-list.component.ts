@@ -37,9 +37,7 @@ import { ToastModule } from 'primeng/toast';
   styleUrls: ['./interview-list.component.scss']
 })
 export class InterviewListComponent implements OnInit {
-saveInterviewChanges() {
-throw new Error('Method not implemented.');
-}
+
   interviews: InterviewInstance[] = [];
   filteredInterviews: InterviewInstance[] = [];
   loading = true;
@@ -127,8 +125,7 @@ throw new Error('Method not implemented.');
   }
 
   getEmail(candidate: any): string {
-    const email = candidate.contacts?.find((c: any) => c.contactType === 'Email');
-    return email ? email.contactValue : 'N/A';
+    return candidate?.contacts?.[0]?.contactValue || '';
   }
 
   getRemainingHours(expiryDate: Date): string {
@@ -213,4 +210,8 @@ NTT DATA MOROCCO`;
   deleteInterview(interview: InterviewInstance): void {
     console.log('Delete clicked:', interview);
   }
+
+  saveInterviewChanges() {
+    throw new Error('Method not implemented.');
+    }
 }

@@ -9,13 +9,14 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CandidateService {
-  private apiUrl = 'http://localhost:8080/candidates';
+
+  // private apiUrl = 'http://localhost:8080/candidates';
 
   private baseUrl = `${environment.apiUrl}/candidates`;
 
   constructor(private http: HttpClient) { }
 
-  // Récupérer tous les candidats
+  // recuper tous les candidats
   getCandidates(): Observable<Candidate[]> {
     return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
       map(candidates => candidates.map(this.transformCandidate)),
@@ -23,9 +24,9 @@ export class CandidateService {
     );
   }
 
-  // Récupérer un candidat par ID
+  // recuper un candidat par ID - Updated to use baseUrl
   getCandidate(id: string): Observable<Candidate> {
-    return this.http.get<Candidate>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<Candidate>(`${this.baseUrl}/${id}`).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
@@ -41,9 +42,10 @@ export class CandidateService {
     );
   }
 
-  // Supprimer un candidat
+  // Supprimer un candidat - Updated to use baseUrl
   deleteCandidate(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { responseType: 'text' as 'json' }).pipe(
+      map(() => undefined),
       catchError(this.handleError)
     );
   }
@@ -70,8 +72,7 @@ export class CandidateService {
 
   // Transformer les données du backend
   private transformCandidate(candidate: any): Candidate {
-    // console.log('Raw data from backend:', candidate); // Log pour vérifier les données brutes
-    console.log(' data from backend:', candidate); // Log pour vérifier les données brutes
+    console.log(' data from backend:', candidate);
 
     return {
       ...candidate,

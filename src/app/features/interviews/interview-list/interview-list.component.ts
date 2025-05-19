@@ -46,6 +46,7 @@ export class InterviewListComponent implements OnInit {
     selectedInterview: InterviewInstance | null = null;
 
     mailDialogVisible = false;
+    now: Date = new Date();
     selectedCandidateEmail = '';
     selectedCandidateName = '';
     mailSubject = '';
@@ -76,6 +77,9 @@ export class InterviewListComponent implements OnInit {
     ngOnInit(): void {
         this.loadMainTechOptions();
         this.loadInterviews();
+        setInterval(() => {
+            this.now = new Date();
+          }, 60000);
     }
 
     loadMainTechOptions(): void {
@@ -177,7 +181,7 @@ export class InterviewListComponent implements OnInit {
     confirmSendMail(): void {
         const to = this.selectedCandidateEmail;
         const subject = this.mailSubject;
-        const body = this.mailBody;  
+        const body = this.mailBody;
 
         this.interviewService.sendMail(to, subject, body).subscribe({
           next: () => {
@@ -222,7 +226,30 @@ export class InterviewListComponent implements OnInit {
             console.error('Link generation failed:', err);
           }
         });
+    }
+
+    canGenerateLink(interview: InterviewInstance): boolean {
+        const now = new Date();
+        const isExpired = new Date(interview.expiresAt).getTime() <= now.getTime();
+        const linkGenerationCount = interview.linkGenerationCount ?? 0;
+        const generationLimitReached = linkGenerationCount >= 3;
+
+        return isExpired && !generationLimitReached;
+    }
+    getGenerateLinkTooltip(interview: InterviewInstance): string {
+        const now = new Date();
+        if ((interview.linkGenerationCount ?? 0) >= 3) {
+          return 'You’ve reached the maximum of 3 link generations.';
+        }
+
+        if (interview.expiresAt && new Date(interview.expiresAt).getTime() > now.getTime()) {
+          return 'Link is still valid. You can’t generate a new one yet.';
+        }
+
+        return 'Generate New Link';
       }
+
+
 
     editInterview(interview: InterviewInstance): void {
         console.log('Edit clicked:', interview);

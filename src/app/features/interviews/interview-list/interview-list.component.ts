@@ -14,6 +14,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 
 @Component({
     selector: 'app-interview-list',
@@ -30,10 +33,11 @@ import { ToastModule } from 'primeng/toast';
         DropdownModule,
         CalendarModule,
         ToastModule,
-        DatePipe
+        DatePipe,
+        ConfirmDialogModule
       ],
 
-    providers: [MessageService],
+    providers: [MessageService, ConfirmationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
 })
@@ -71,7 +75,8 @@ export class InterviewListComponent implements OnInit {
     constructor(
         private interviewService: InterviewService,
         private candidateService: CandidateService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService
     ) {}
 
     ngOnInit(): void {
@@ -256,7 +261,46 @@ export class InterviewListComponent implements OnInit {
     }
 
     deleteInterview(interview: InterviewInstance): void {
-        console.log('Delete clicked:', interview);
-    }
+        this.interviewService.deleteInterview(interview.id.toString()).subscribe({
+          next: () => {
+            this.interviews = this.interviews.filter(i => i.id !== interview.id);
+            this.filteredInterviews = this.filteredInterviews.filter(i => i.id !== interview.id);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Deleted',
+              detail: 'Interview deleted successfully!'
+            });
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to delete interview'
+            });
+            console.error('Delete failed:', err);
+          }
+        });
+      }
+
+
+    confirmDeleteInterview(interview: InterviewInstance): void {
+        this.confirmationService.confirm({
+          message: 'Are you sure you want to delete this interview?',
+          header: 'Confirm Delete',
+          icon: 'pi pi-exclamation-triangle',
+          acceptLabel: 'Yes',
+            rejectLabel: 'No',
+            acceptButtonStyleClass: 'p-button p-button-success',
+            rejectButtonStyleClass: 'p-button p-button-danger',
+          accept: () => this.deleteInterview(interview),
+          reject: () => {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Cancelled',
+              detail: 'Interview not deleted'
+            });
+          }
+        });
+      }
 
 }

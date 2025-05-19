@@ -34,7 +34,8 @@ export class InterviewService {
 
     return this.http.post(`${this.apiUrl}/send-mail`, payload);
   }
-
-
+  deleteInterview(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+  }
 
 }

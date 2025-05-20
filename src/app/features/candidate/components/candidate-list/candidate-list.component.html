@@ -1,21 +1,31 @@
 <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Candidate List</h2>
 
+    <p-toast></p-toast>
+
     <div class="card mb-4">
         <h3 class="text-lg font-semibold mb-3">Filter Candidates</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="field">
                 <label for="skills" class="block mb-2">Skills</label>
-                <p-multiSelect id="skills" [options]="skillOptions" [(ngModel)]="filters.skills" optionLabel="name" placeholder="Select Skills" [style]="{ width: '100%' }"></p-multiSelect>
+                <p-multiSelect id="skills" [options]="skillOptions" [(ngModel)]="filters.skills"
+                    optionLabel="name" placeholder="Select Skills" [style]="{ width: '100%' }"
+                    [showToggleAll]="true" [showHeader]="true" display="chip"></p-multiSelect>
             </div>
             <div class="field">
                 <label for="language" class="block mb-2">Language</label>
-                <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language" optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"></p-dropdown>
+                <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language"
+                    optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"
+                    [showClear]="true" [filter]="true"></p-dropdown>
             </div>
             <div class="field">
-                <label for="yearsOfExperience" class="block mb-2">Years of Experience</label>
+                <label for="yearsOfExperience" class="block mb-2">Minimum Years of Experience</label>
                 <div class="flex align-items-center">
-                    <p-inputNumber id="yearsOfExperience" [(ngModel)]="filters.yearsOfExperience" [min]="0" [max]="20" placeholder="Enter years" [style]="{ width: '100%' }"></p-inputNumber>
+                    <p-inputNumber id="yearsOfExperience" [(ngModel)]="filters.yearsOfExperience"
+                        [min]="0" [max]="20" placeholder="Enter years" [style]="{ width: '100%' }"
+                        [showButtons]="true" buttonLayout="horizontal"
+                        decrementButtonClass="p-button-secondary"
+                        incrementButtonClass="p-button-secondary"></p-inputNumber>
                 </div>
             </div>
         </div>

@@ -9,24 +9,29 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CandidateService {
-  private apiUrl = 'http://localhost:8080/candidates';
 
   private baseUrl = `${environment.apiUrl}/v1/candidates`;
   private all = 'all';
   constructor(private http: HttpClient) { }
 
+  // private apiUrl = 'http://localhost:8080/candidates';
 
-  // Récupérer tous les candidats
+  private baseUrl = `${environment.apiUrl}/candidates`;
+
+
+  constructor(private http: HttpClient) { }
+
+  // recuper tous les candidats
   getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.apiUrl}/all`).pipe(
+    return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );
   }
 
-  // Récupérer un candidat par ID
+  // recuper un candidat par ID - Updated to use baseUrl
   getCandidate(id: string): Observable<Candidate> {
-    return this.http.get<Candidate>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<Candidate>(`${this.baseUrl}/${id}`).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
@@ -42,9 +47,14 @@ export class CandidateService {
     );
   }
 
-  // Supprimer un candidat
+  // Supprimer un candidat - Updated to use baseUrl
   deleteCandidate(id: string): Observable<void> {
+
     return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(
+
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { responseType: 'text' as 'json' }).pipe(
+      map(() => undefined),
+
       catchError(this.handleError)
     );
   }
@@ -71,8 +81,7 @@ export class CandidateService {
 
   // Transformer les données du backend
   private transformCandidate(candidate: any): Candidate {
-    // console.log('Raw data from backend:', candidate); // Log pour vérifier les données brutes
-    console.log(' data from backend:', candidate); // Log pour vérifier les données brutes
+    console.log(' data from backend:', candidate);
 
     return {
       ...candidate,
@@ -130,4 +139,3 @@ export class CandidateService {
   }
 }
 
-  

@@ -9,26 +9,24 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CandidateService {
-  private apiUrl = 'http://localhost:8080/candidates';
 
-  constructor(private http: HttpClient) {}
+  // private apiUrl = 'http://localhost:8080/candidates';
 
-  private baseUrl = `${environment.apiUrl}/v1/candidates`;
-  private all = 'all';
+  private baseUrl = `${environment.apiUrl}/candidates`;
+
   constructor(private http: HttpClient) { }
 
-
-  // Récupérer tous les candidats
+  // recuper tous les candidats
   getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.apiUrl}/all`).pipe(
+    return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );
   }
 
-  // Récupérer un candidat par ID
+  // recuper un candidat par ID - Updated to use baseUrl
   getCandidate(id: string): Observable<Candidate> {
-    return this.http.get<Candidate>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<Candidate>(`${this.baseUrl}/${id}`).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
@@ -38,15 +36,16 @@ export class CandidateService {
   updateCandidate(id: string, candidate: Candidate): Observable<Candidate> {
     const cleanedCandidate = this.cleanCandidate(candidate);
     console.log('data sent to backend:', cleanedCandidate); // Log pour vérifier les données envoyées
-    return this.http.put<Candidate>(`${this.apiUrl}/${id}`, cleanedCandidate).pipe(
+    return this.http.put<Candidate>(`${this.baseUrl}/${id}`, cleanedCandidate).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
   }
 
-  // Supprimer un candidat
+  // Supprimer un candidat - Updated to use baseUrl
   deleteCandidate(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { responseType: 'text' as 'json' }).pipe(
+      map(() => undefined),
       catchError(this.handleError)
     );
   }
@@ -73,8 +72,7 @@ export class CandidateService {
 
   // Transformer les données du backend
   private transformCandidate(candidate: any): Candidate {
-    // console.log('Raw data from backend:', candidate); // Log pour vérifier les données brutes
-    console.log(' data from backend:', candidate); // Log pour vérifier les données brutes
+    console.log(' data from backend:', candidate);
 
     return {
       ...candidate,
@@ -132,10 +130,5 @@ export class CandidateService {
   }
 }
 
-  
-  deleteCandidate(id: string): Observable<string> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' }) as Observable<string>;
-  }
-  
-  
-}
+
+

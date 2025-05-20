@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './app/shared/layout/layout.component';
 import { DashboardComponent } from './app/features/dashboard/dashboard.component';
+import('./app/features/public-interview/public-interview.component')
 
 export const appRoutes: Routes = [
     {
@@ -21,6 +22,14 @@ export const appRoutes: Routes = [
         component: LayoutComponent,
         loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
     },
+    {
+        path: 'interview/:token',
+        loadComponent: () =>
+          import('./app/features/public-interview/public-interview.component').then(m => m.PublicInterviewComponent),
+        title: 'Interview Page'
+      }
+,
+
     { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }
 ];

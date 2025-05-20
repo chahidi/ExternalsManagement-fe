@@ -1,0 +1,45 @@
+<div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 text-center p-6">
+    <div class="bg-white rounded-2xl shadow-xl p-10 w-full max-w-3xl border border-gray-200">
+      <ng-container *ngIf="!interviewStarted; else inProgress">
+        <h1 class="text-4xl font-extrabold mb-4 text-blue-800 tracking-tight">
+          Welcome to Your Interview
+        </h1>
+
+        <p class="text-gray-700 mb-6 text-lg">
+          This session is monitored and time-limited. Please read the rules carefully before proceeding:
+        </p>
+
+        <ul class="text-left text-gray-800 list-disc pl-6 mb-8 space-y-3 text-base leading-relaxed">
+          <li>Leaving or switching tabs will result in automatic disqualification.</li>
+          <li>The interview is monitored and assisted by our AI system.</li>
+          <li>Each question must be answered within a set time limit.</li>
+          <li>Resizing, minimizing, or closing the window is not permitted during the session.</li>
+          <li>Remain focused throughout the interview for accurate assessment.</li>
+        </ul>
+
+        <button
+          (click)="startInterview()"
+          class="bg-blue-700 hover:bg-blue-800 transition text-white px-10 py-3 rounded-full text-lg font-semibold shadow-md"
+        >
+          Start Interview
+        </button>
+      </ng-container>
+
+      <ng-template #inProgress>
+        <p class="text-green-700 text-xl font-semibold mb-3">
+          Interview in progress...
+        </p>
+
+        <p class="text-blue-600 text-base font-medium mb-6">
+          You are now in the interview. Please stay focused and do not leave this window.
+        </p>
+
+        <button
+          (click)="finishInterview()"
+          class="bg-red-600 hover:bg-red-700 transition text-white px-8 py-2 rounded-full text-md font-medium shadow-sm"
+        >
+          Finish Interview
+        </button>
+      </ng-template>
+    </div>
+  </div>

@@ -16,6 +16,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { RouterModule } from '@angular/router'; 
 
 
 @Component({
@@ -34,7 +35,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
         CalendarModule,
         ToastModule,
         DatePipe,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        RouterModule
+
       ],
 
     providers: [MessageService, ConfirmationService],

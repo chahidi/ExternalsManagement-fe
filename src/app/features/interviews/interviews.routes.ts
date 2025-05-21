@@ -13,12 +13,4 @@ export const INTERVIEWS_ROUTES: Routes = [
       import('./interview-result/interview-result.component').then(m => m.InterviewResultComponent),
     title: 'Interview Results'
   },
-  {
-    path: 'interview/:token',
-    loadComponent: () =>
-      import('../public-interview/public-interview.component').then(m => m.PublicInterviewComponent),
-    title: 'Interview Page'
-  }
-
-
 ];

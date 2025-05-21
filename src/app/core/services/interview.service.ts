@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { InterviewInstance } from '../models/interview-instance';
+import { environment } from '../../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class InterviewService {
-  private apiUrl = 'http://localhost:3001/interviews';
-
+  private apiUrl = `${environment.apiInterviews}/interviews`;
   constructor(private http: HttpClient) {}
 
   getInterviews(): Observable<InterviewInstance[]> {

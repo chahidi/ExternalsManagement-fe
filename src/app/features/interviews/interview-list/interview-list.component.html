@@ -9,54 +9,33 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="field">
         <label for="mainTech" class="block mb-2">Main Tech</label>
-        <p-dropdown
-          id="mainTech"
-          [options]="techOptions"
-          [(ngModel)]="mainTechFilter"
-          placeholder="Select Tech"
-          [style]="{ width: '100%' }"
-        ></p-dropdown>
+        <p-dropdown id="mainTech" [options]="techOptions" [(ngModel)]="mainTechFilter" placeholder="Select Tech"
+          [style]="{ width: '100%' }"></p-dropdown>
       </div>
       <div class="field">
         <label for="status" class="block mb-2">Interview Status</label>
-        <p-dropdown
-          id="status"
-          [options]="statusOptions"
-          [(ngModel)]="statusFilter"
-          placeholder="Select Status"
-          [style]="{ width: '100%' }"
-        ></p-dropdown>
+        <p-dropdown id="status" [options]="statusOptions" [(ngModel)]="statusFilter" placeholder="Select Status"
+          [style]="{ width: '100%' }"></p-dropdown>
       </div>
       <div class="field">
         <label for="startDate" class="block mb-2">Start Date</label>
-        <input
-          id="startDate"
-          type="date"
-          class="p-inputtext p-component w-full"
-          [(ngModel)]="startDateFilter"
-        />
+        <input id="startDate" type="date" class="p-inputtext p-component w-full" [(ngModel)]="startDateFilter" />
       </div>
     </div>
     <div class="flex justify-end mt-4">
-      <p-button label="Reset" icon="pi pi-times" class="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
+      <p-button label="Reset" icon="pi pi-times" class="p-button-outlined p-button-danger mr-2"
+        (click)="resetFilters()"></p-button>
       <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
     </div>
   </div>
 
   <!-- Interview Table -->
-  <p-table
-    #dt
-    [value]="filteredInterviews"
-    [loading]="loading"
-    [paginator]="true"
-    [rows]="5"
-    [rowsPerPageOptions]="[5, 10, 20]"
-    responsiveLayout="scroll"
-    class="interview-table"
-  >
+  <p-table #dt [value]="filteredInterviews" [loading]="loading" [paginator]="true" [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]" responsiveLayout="scroll" class="interview-table">
     <ng-template pTemplate="caption">
       <div class="flex justify-end">
-        <p-button icon="pi pi-filter-slash" class="p-button-sm" label="Clear Column Filters" (click)="dt.clear()"></p-button>
+        <p-button icon="pi pi-filter-slash" class="p-button-sm" label="Clear Column Filters"
+          (click)="dt.clear()"></p-button>
       </div>
     </ng-template>
 
@@ -82,9 +61,10 @@
         </th>
         <th>Started At</th>
         <th>Remaining Time</th>
-        <th>Status Comment</th>
+        <th>Status</th>
         <th>Links Generated</th>
         <th>Actions</th>
+        <th>Comments</th>
       </tr>
     </ng-template>
 
@@ -105,23 +85,26 @@
         </td>
         <td>{{ interview.linkGenerationCount || 0 }}</td>
         <td>
-          <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
-          <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" (click)="sendMail(interview)"></button>
-          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link" (click)="generateNewLink(interview)"></button>
-          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" (click)="editInterview(interview)"></button>
-          <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" (click)="deleteInterview(interview)"></button>
+          <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details"
+            (click)="viewDetails(interview)"></button>
+          <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail"
+            (click)="sendMail(interview)"></button>
+          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link"
+            (click)="generateNewLink(interview)"></button>
+          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit"
+            (click)="editInterview(interview)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete"
+            (click)="deleteInterview(interview)"></button>
         </td>
+
+        <td>{{ interview.comment || "---" }}</td>
+
       </tr>
     </ng-template>
   </p-table>
 
   <!-- Details Dialog -->
-  <p-dialog
-    header="Interview Details"
-    [(visible)]="displayDetailsDialog"
-    modal="modal"
-    [style]="{ maxWidth: '90vw' }"
-  >
+  <p-dialog header="Interview Details" [(visible)]="displayDetailsDialog" modal="modal" [style]="{ maxWidth: '90vw' }">
     <div *ngIf="selectedInterview">
       <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
       <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
@@ -133,80 +116,55 @@
     </div>
   </p-dialog>
 
-<p-dialog
-header="Edit Interview"
-[(visible)]="displayEditFormDialog"
-[modal]="true"
-[style]="{ maxWidth: '90vw'  }"
->
-<div class="flex items-center gap-4 mb-3">
-  <label class="font-semibold w-32">Candidate Name</label>
-  <strong>{{ selectedInterview?.candidate!.fullName }}</strong>
-</div>
-<div class="flex items-center gap-4 mb-3">
-  <label class="font-semibold w-32">Main Tech</label>
-  <strong>{{ selectedInterview?.mainTech }}</strong>
-</div>
+  <p-dialog header="Edit Interview" [(visible)]="displayEditFormDialog" [modal]="true" [style]="{ maxWidth: '90vw'  }">
+    <div class="flex items-center gap-4 mb-3">
+      <label class="font-semibold w-32">Candidate Name</label>
+      <strong>{{ selectedInterview?.candidate!.fullName }}</strong>
+    </div>
+    <div class="flex items-center gap-4 mb-3">
+      <label class="font-semibold w-32">Main Tech</label>
+      <strong>{{ selectedInterview?.mainTech }}</strong>
+    </div>
 
-<div class="flex items-center gap-4 mb-3">
-  <label class="font-semibold w-32">Started At</label>
-  <strong>{{ selectedInterview?.startedAt | date: 'medium' }}</strong>
-</div>
+    <div class="flex items-center gap-4 mb-3">
+      <label class="font-semibold w-32">Started At</label>
+      <strong>{{ selectedInterview?.startedAt | date: 'medium' }}</strong>
+    </div>
 
 
-<div class="flex items-center gap-4 mb-3">
-  <label class="font-semibold w-32">Email</label>
-  <input
-    pInputText
-    class="flex-auto"
-    [value]="getEmail(selectedInterview?.candidate)"
-    placeholder="Enter email"
-  />
-</div>
+    <div class="flex items-center gap-4 mb-3">
+      <label class="font-semibold w-32">Email</label>
+      <input pInputText class="flex-auto" [value]="getEmail(selectedInterview?.candidate)" placeholder="Enter email" />
+    </div>
 
 
-<div class="flex items-center gap-4 mb-3">
-  <label class="font-semibold w-32">Status</label>
-  <select
-    class="p-inputtext flex-auto"
-    [ngModel]="selectedInterview?.isPassed"
-    >
-    <option [ngValue]="true">Passed</option>
-    <option [ngValue]="false">Not Yet</option>
-  </select>
-</div>
+    <div class="flex items-center gap-4 mb-3">
+      <label class="font-semibold w-32">Status</label>
+      <select class="p-inputtext flex-auto" [ngModel]="selectedInterview?.isPassed">
+        <option [ngValue]="true">Passed</option>
+        <option [ngValue]="false">Not Yet</option>
+      </select>
+    </div>
 
-<div class="flex items-start gap-4 mb-3">
-  <label class="font-semibold w-32 mt-1">Comment</label>
-  <textarea
-    pInputTextarea
-    rows="3"
-    [ngModel]="selectedInterview?.comment"
-    placeholder="Write a comment..."
-  ></textarea>
-</div>
+    <div class="flex items-start gap-4 mb-3">
+      <label class="font-semibold w-32 mt-1">Comment</label>
+      <textarea pInputTextarea rows="3" [ngModel]="selectedInterview?.comment"
+        placeholder="Write a comment..."></textarea>
+    </div>
 
 
 
 
-<div class="flex justify-end gap-2 mt-4">
-  <p-button label="Cancel" severity="secondary" (click)="displayEditFormDialog = false" />
-  <p-button label="Save" (click)="saveInterviewChanges()" />
-</div>
+    <div class="flex justify-end gap-2 mt-4">
+      <p-button label="Cancel" severity="secondary" (click)="displayEditFormDialog = false" />
+      <p-button label="Save" (click)="saveInterviewChanges()" />
+    </div>
 
-</p-dialog>
+  </p-dialog>
 
   <!-- Send Email Dialog -->
-  <p-dialog
-    header="Send Email"
-    [(visible)]="mailDialogVisible"
-    [modal]="true"
-    [closable]="true"
-    [dismissableMask]="true"
-    [styleClass]="'email-popup-flex-height'"
-    [draggable]="false"
-    [resizable]="false"
-  >
+  <p-dialog header="Send Email" [(visible)]="mailDialogVisible" [modal]="true" [closable]="true"
+    [dismissableMask]="true" [styleClass]="'email-popup-flex-height'" [draggable]="false" [resizable]="false">
     <div class="p-fluid p-3">
       <div class="field mb-3">
         <label class="font-semibold">To:</label>
@@ -215,19 +173,22 @@ header="Edit Interview"
 
       <div class="field mb-3">
         <label for="subject" class="font-semibold">Subject:</label>
-        <input id="subject" type="text" pInputText [(ngModel)]="mailSubject" class="w-full" placeholder="e.g., Interview Invitation" />
+        <input id="subject" type="text" pInputText [(ngModel)]="mailSubject" class="w-full"
+          placeholder="e.g., Interview Invitation" />
       </div>
 
       <div class="field">
         <label for="message" class="font-semibold mb-1">Message:</label>
-        <textarea id="message" pInputTextarea [(ngModel)]="mailContent" autoResize="true" rows="5" class="w-full" placeholder="Write your email message..."></textarea>
+        <textarea id="message" pInputTextarea [(ngModel)]="mailContent" autoResize="true" rows="5" class="w-full"
+          placeholder="Write your email message..."></textarea>
       </div>
     </div>
 
     <ng-template pTemplate="footer">
       <div class="flex justify-end gap-2 px-3 pb-2">
         <button pButton icon="pi pi-send" label="Send" class="p-button-success" (click)="confirmSendMail()"></button>
-        <button pButton icon="pi pi-times" label="Cancel" class="p-button-secondary" (click)="mailDialogVisible = false"></button>
+        <button pButton icon="pi pi-times" label="Cancel" class="p-button-secondary"
+          (click)="mailDialogVisible = false"></button>
       </div>
     </ng-template>
   </p-dialog>

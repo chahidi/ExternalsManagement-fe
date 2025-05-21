@@ -42,7 +42,7 @@ export class InterviewListComponent implements OnInit {
   filteredInterviews: InterviewInstance[] = [];
   loading = true;
 
-  displayDetailsDialog:boolean = false;
+  displayDetailsDialog: boolean = false;
   displayEditFormDialog = false;
 
   selectedInterview: InterviewInstance | null = null;
@@ -70,7 +70,7 @@ export class InterviewListComponent implements OnInit {
     private interviewService: InterviewService,
     private candidateService: CandidateService,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadMainTechOptions();
@@ -140,10 +140,10 @@ export class InterviewListComponent implements OnInit {
       (interview as any).linkGenerationCount = 0;
     }
     this.displayDetailsDialog = true;
-    this.isEditMode = false; 
-    
+    this.isEditMode = false;
+
   }
-  
+
 
   sendMail(interview: InterviewInstance): void {
     this.selectedCandidateEmail = this.getEmail(interview.candidate);
@@ -201,7 +201,7 @@ NTT DATA MOROCCO`;
   }
 
   editInterview(interview: InterviewInstance): void {
-    this.selectedInterview = interview; 
+    this.selectedInterview = interview;
     this.displayEditFormDialog = true;
     console.log('Edit clicked:', interview);
 
@@ -211,7 +211,46 @@ NTT DATA MOROCCO`;
     console.log('Delete clicked:', interview);
   }
 
-  saveInterviewChanges() {
-    throw new Error('Method not implemented.');
-    }
+  saveInterviewChanges(): void {
+    console.log("enter save method")
+    if (!this.selectedInterview) return;
+    console.log("zvrtbtb")
+    this.loading = true;
+    let interiewInstanceResp = this.interviewService.updateInterview(this.selectedInterview.id!, this.selectedInterview).subscribe({
+      next: (updatedInterview) => {
+        const index = this.interviews.findIndex(i => i.id === updatedInterview.id);
+        if (index !== -1) {
+          console.log("poooool")
+
+          this.interviews[index] = updatedInterview;
+          console.log('Updated Interview Comment:', updatedInterview.comment);
+        }
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Interview updated successfully'
+        });
+
+        this.displayEditFormDialog = false;
+        this.selectedInterview = null;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.log("azert")
+        console.error('Error updating interview:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update interview.'
+        });
+        console.log(interiewInstanceResp)
+
+
+
+        this.loading = false;
+      }
+    });
+  }
+
 }

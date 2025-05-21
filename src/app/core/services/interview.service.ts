@@ -26,5 +26,11 @@ export class InterviewService {
     }>(`${this.apiUrl}/${interviewId}/generate-link`, {});
   }
 
+updateInterview(id: number, updatedInterview: any) {
+  return this.http.put<InterviewInstance>(`http://localhost:3001/interviews/${id}`, updatedInterview);
+}
+
+
+
 
 }

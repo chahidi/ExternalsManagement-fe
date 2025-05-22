@@ -72,7 +72,155 @@
         "loadingLanguageData": "Loading language data...",
         "loadingSkillData": "Loading skill data...",
         "loadingExperienceData": "Loading experience data..."
+    },
 
 
+    "upload": {
+        "title": "Advanced New Curriculum Vitae",
+        "choose": "Choose",
+        "upload": "Upload",
+        "cancel": "Cancel",
+        "dragDropMessage": "Drag and drop files here to upload.",
+        "cvUploadSuccess": "CV uploaded successfully!",
+        "uploadCvError": "Error uploading CV.",
+        "noFileSelected": "No file selected!"
+    },
+
+
+    "candidateLanguage": {
+        "languages": "Language",
+        "languagesRequired": "Language is required.",
+        "languagesPattern": "Only letters and spaces are allowed.",
+        "level": "Level",
+        "levelRequired": "Level is required.",
+        "isNative": "Native?",
+        "selectLevel": "Select Level",
+        "levels": {
+            "advanced": "Advanced",
+            "intermediate": "Intermediate",
+            "basic": "Basic",
+            "native": "Native"
+        }
+    },
+
+
+    "skills": {
+        "skillName": "Skill Name",
+        "skillNameRequired": "Skill Name is required.",
+        "proficiencyLevel": "Proficiency Level",
+        "proficiencyRequired": "Proficiency Level is required.",
+        "selectProficiency": "Select Proficiency",
+        "levels": {
+            "beginner": "Beginner",
+            "intermediate": "Intermediate",
+            "advanced": "Advanced",
+            "expert": "Expert"
+        }
+    },
+
+
+    "steps": {
+        "generalData": "General Data",
+        "address": "Address",
+        "education": "Education",
+        "experience": "Experience",
+        "languages": "Languages",
+        "skills": "Skills",
+        "contact": "Contact"
+    },
+
+
+    "general": {
+        "fullName": "Full Name",
+        "fullNameRequired": "Full Name is required.",
+        "onlyLettersAllowed": "Only letters and spaces are allowed.",
+        "birthDate": "Birth Date",
+        "birthDateRequired": "Birth Date is required.",
+        "underAge": "You must be at least 18 years old.",
+        "overAge": "Age exceeds allowed limit.",
+        "yearsOfExperience": "Years of Experience",
+        "validNumber": "Please enter a valid number.",
+        "invalidExperience": "Experience exceeds what is possible given your birth date.",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "genderRequired": "Gender is required.",
+        "mainTechnology": "Main Technology",
+        "mainTechnologyRequired": "Main Technology is required.",
+        "summary": "Summary",
+        "summaryRequired": "Summary is required."
+    },
+
+
+    "address": {
+        "street": "Street",
+        "streetRequired": "Street is required.",
+        "postalCode": "Postal Code",
+        "postalCodeRequired": "Postal Code is required.",
+        "postalCodePattern": "3-10 characters: letters, digits, spaces or hyphens only.",
+        "minLength3": "Must be at least 3 characters.",
+        "fullAddress": "Full Address",
+        "fullAddressRequired": "Full Address is required.",
+        "city": "City",
+        "country": "Country",
+        "onlyLettersAllowed": "Only letters, spaces, apostrophes, dots, and hyphens are allowed."
+    },
+
+
+    "education": {
+        "institution": "Institution",
+        "institutionRequired": "Institution is required.",
+        "startDate": "Start Date",
+        "startDateRequired": "Start date is required.",
+        "endDate": "End Date",
+        "endDateRequired": "End date is required.",
+        "invalidDateRange": "End date cannot be earlier than start date.",
+        "diploma": "Diploma",
+        "diplomaRequired": "Diploma is required.",
+        "allowedCharacters": "Only letters, numbers, spaces, hyphens, dots, ampersands, commas, and apostrophes are allowed.",
+        "diplomaPattern": "Diploma can only include letters, numbers, and common symbols (like ., +, #, etc.)."
+    },
+
+
+    "experience": {
+        "companyName": "Company Name",
+        "patternCompany": "Only letters, numbers, spaces, &, ', +, ., and - are allowed.",
+        "position": "Position",
+        "patternPosition": "Only letters, spaces, slashes (/) and dashes (-) are allowed.",
+        "startDate": "Start Date",
+        "datePattern": "Must be in DD-MM-YYYY format.",
+        "endDate": "End Date",
+        "endDateFuture": "End Date cannot be in the future.",
+        "invalidDateRange": "Start Date must come before End Date.",
+        "description": "Description",
+        "descriptionPattern": "Allowed: letters, numbers, punctuation like . , ! ? () - : ; / ' \" #"
+    },
+
+
+    "contact": {
+        "contactType": "Contact Type",
+        "contactTypeRequired": "Contact Type is required.",
+        "selectContactType": "Select Contact Type",
+        "contactValue": "Contact Value",
+        "contactValueRequired": "Contact Value is required.",
+        "invalidEmail": "Please enter a valid email address.",
+        "invalidPhone": "Please enter a valid phone number.",
+        "invalidLinkedIn": "Please enter a valid LinkedIn profile URL.",
+        "email": "Email",
+        "phone": "Phone",
+        "linkedIn": "LinkedIn"
+    },
+
+
+    "navigation": {
+        "previous": "Previous",
+        "previousTitle": "Go to the previous step in the form",
+        "clear": "Clear",
+        "clearTitle": "Clear the current section of the form",
+        "next": "Next",
+        "nextTitle": "Go to the next step in the form",
+        "save": "Save",
+        "saveTitle": "Save and submit the form"
     }
+
 }

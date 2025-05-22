@@ -72,7 +72,154 @@
         "loadingLanguageData": "Cargando los datos del idioma...",
         "loadingSkillData": "Cargando los datos de habilidades...",
         "loadingExperienceData": "Cargando los datos de experiencia..."
+    },
 
 
+     "upload": {
+        "title": "Nuevo CV avanzado",
+        "choose": "Elegir",
+        "upload": "Subir",
+        "cancel": "Cancelar",
+        "dragDropMessage": "Arrastra y suelta archivos aquí para subirlos.",
+        "cvUploadSuccess": "¡CV subido con éxito!",
+        "uploadCvError": "Error al subir el CV.",
+        "noFileSelected": "¡Ningún archivo seleccionado!"
+    },
+
+
+    "candidateLanguage": {
+        "languages": "Idioma",
+        "languagesRequired": "El idioma es requerido.",
+        "languagesPattern": "Solo se permiten letras y espacios.",
+        "level": "Nivel",
+        "levelRequired": "El nivel es requerido.",
+        "isNative": "¿Nativo?",
+        "selectLevel": "Seleccionar nivel",
+        "levels": {
+            "advanced": "Avanzado",
+            "intermediate": "Intermedio",
+            "basic": "Básico",
+            "native":  "Nativo"
+        }
+    },
+
+
+    "skills": {
+        "skillName": "Nombre de la habilidad",
+        "skillNameRequired": "El nombre de la habilidad es requerido.",
+        "proficiencyLevel": "Nivel de competencia",
+        "proficiencyRequired": "El nivel de competencia es requerido.",
+        "selectProficiency": "Seleccionar nivel de competencia",
+        "levels": {
+            "beginner": "Principiante",
+            "intermediate": "Intermedio",
+            "advanced": "Avanzado",
+            "expert": "Experto"
+        }
+    },
+
+
+    "steps": {
+        "generalData": "Datos Generales",
+        "address": "Dirección",
+        "education": "Educación",
+        "experience": "Experiencia",
+        "languages": "Idiomas",
+        "skills": "Habilidades",
+        "contact": "Contacto"
+    },
+
+
+    "general": {
+        "fullName": "Nombre completo",
+        "fullNameRequired": "El nombre completo es requerido.",
+        "onlyLettersAllowed": "Solo se permiten letras y espacios.",
+        "birthDate": "Fecha de nacimiento",
+        "birthDateRequired": "La fecha de nacimiento es requerida.",
+        "underAge": "Debes tener al menos 18 años.",
+        "overAge": "La edad excede el límite permitido.",
+        "yearsOfExperience": "Años de experiencia",
+        "validNumber": "Por favor, introduce un número válido.",
+        "invalidExperience": "La experiencia excede lo posible dado tu fecha de nacimiento.",
+        "gender": "Género",
+        "male": "Hombre",
+        "female": "Mujer",
+        "genderRequired": "El género es requerido.",
+        "mainTechnology": "Tecnología principal",
+        "mainTechnologyRequired": "La tecnología principal es requerida.",
+        "summary": "Resumen",
+        "summaryRequired": "El resumen es requerido."
+    },
+
+
+    "address": {
+        "street": "Calle",
+        "streetRequired": "La calle es requerida.",
+        "postalCode": "Código postal",
+        "postalCodeRequired": "El código postal es requerido.",
+        "postalCodePattern": "3-10 caracteres: solo letras, dígitos, espacios o guiones.",
+        "minLength3": "Debe tener al menos 3 caracteres.",
+        "fullAddress": "Dirección completa",
+        "fullAddressRequired": "La dirección completa es requerida.",
+        "city": "Ciudad",
+        "country": "País",
+        "onlyLettersAllowed": "Solo se permiten letras, espacios, apóstrofes, puntos y guiones."
+    },
+
+
+    "education": {
+        "institution": "Institución",
+        "institutionRequired": "La institución es requerida.",
+        "startDate": "Fecha de inicio",
+        "startDateRequired": "La fecha de inicio es requerida.",
+        "endDate": "Fecha de fin",
+        "endDateRequired": "La fecha de fin es requerida.",
+        "invalidDateRange": "La fecha de fin no puede ser anterior a la fecha de inicio.",
+        "diploma": "Diploma",
+        "diplomaRequired": "El diploma es requerido.",
+        "allowedCharacters": "Solo se permiten letras, números, espacios, guiones, puntos, signos &, comas y apóstrofes.",
+        "diplomaPattern": "El diploma solo puede incluir letras, números y símbolos comunes (como ., +, #, etc.)."
+    },
+
+
+    "experience": {
+        "companyName": "Nombre de la empresa",
+        "patternCompany": "Solo se permiten letras, números, espacios, &, ', +, ., y -.",
+        "position": "Puesto",
+        "patternPosition": "Solo se permiten letras, espacios, barras (/) y guiones (-).",
+        "startDate": "Fecha de inicio",
+        "datePattern": "Debe estar en formato DD-MM-AAAA.",
+        "endDate": "Fecha de fin",
+        "endDateFuture": "La fecha de fin no puede estar en el futuro.",
+        "invalidDateRange": "La fecha de inicio debe ser anterior a la fecha de fin.",
+        "description": "Descripción",
+        "descriptionPattern": "Permitido: letras, números, signos de puntuación como . , ! ? () - : ; / ' \" #"
+    },
+
+
+    "contact": {
+        "contactType": "Tipo de contacto",
+        "selectContactType": "Selecciona un tipo de contacto",
+        "contactTypeRequired": "El tipo de contacto es obligatorio",
+        "contactValue": "Valor de contacto",
+        "contactValueRequired": "El valor de contacto es obligatorio",
+        "invalidEmail": "Formato de correo electrónico inválido",
+        "invalidPhone": "Formato de número de teléfono inválido",
+        "invalidLinkedIn": "Formato de URL de LinkedIn inválido",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "linkedIn": "LinkedIn"
+    },
+
+
+    "navigation": {
+        "previous": "Anterior",
+        "previousTitle": "Ir al paso anterior",
+        "clear": "Limpiar",
+        "clearTitle": "Limpiar la sección actual",
+        "next": "Siguiente",
+        "nextTitle": "Ir al siguiente paso",
+        "save": "Guardar",
+        "saveTitle": "Guardar el formulario"
     }
 }

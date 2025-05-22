@@ -72,8 +72,154 @@
         "loadingLanguageData": "Chargement des données linguistiques...",
         "loadingSkillData": "Chargement des données de compétences...",
         "loadingExperienceData": "Chargement des données d’expérience..."
+    },
 
 
+    "upload": {
+        "title": "Nouveau CV avancé",
+        "choose": "Choisir",
+        "upload": "Télécharger",
+        "cancel": "Annuler",
+        "dragDropMessage": "Faites glisser et déposez les fichiers ici pour les télécharger.",
+        "cvUploadSuccess": "CV téléchargé avec succès !",
+        "uploadCvError": "Erreur lors du téléchargement du CV.",
+        "noFileSelected": "Aucun fichier sélectionné !"
+    },
 
+
+    "candidateLanguage": {
+        "languages": "Langue",
+        "languagesRequired": "La langue est requise.",
+        "languagesPattern": "Seules les lettres et les espaces sont autorisés.",
+        "level": "Niveau",
+        "levelRequired": "Le niveau est requis.",
+        "isNative": "Natif?",
+        "selectLevel": "Sélectionner le niveau",
+        "levels": {
+            "advanced": "Avancé",
+            "intermediate": "Intermédiaire",
+            "basic": "Basique",
+            "native": "Natif"
+        }
+    },
+
+
+    "skills": {
+        "skillName": "Nom de la compétence",
+        "skillNameRequired": "Le nom de la compétence est requis.",
+        "proficiencyLevel": "Niveau de compétence",
+        "proficiencyRequired": "Le niveau de compétence est requis.",
+        "selectProficiency": "Sélectionner le niveau de compétence",
+        "levels": {
+            "beginner": "Débutant",
+            "intermediate": "Intermédiaire",
+            "advanced": "Avancé",
+            "expert": "Expert"
+        }
+    },
+
+
+    "steps": {
+        "generalData": "Données Générales",
+        "address": "Adresse",
+        "education": "Éducation",
+        "experience": "Expérience",
+        "languages": "Langues",
+        "skills": "Compétences",
+        "contact": "Contact"
+    },
+
+
+    "general": {
+        "fullName": "Nom complet",
+        "fullNameRequired": "Le nom complet est requis.",
+        "onlyLettersAllowed": "Seules les lettres et les espaces sont autorisés.",
+        "birthDate": "Date de naissance",
+        "birthDateRequired": "La date de naissance est requise.",
+        "underAge": "Vous devez avoir au moins 18 ans.",
+        "overAge": "L'âge dépasse la limite autorisée.",
+        "yearsOfExperience": "Années d'expérience",
+        "validNumber": "Veuillez entrer un numéro valide.",
+        "invalidExperience": "L'expérience dépasse ce qui est possible compte tenu de votre date de naissance.",
+        "gender": "Genre",
+        "male": "Homme",
+        "female": "Femme",
+        "genderRequired": "Le genre est requis.",
+        "mainTechnology": "Technologie principale",
+        "mainTechnologyRequired": "La technologie principale est requise.",
+        "summary": "Résumé",
+        "summaryRequired": "Le résumé est requis."
+    },
+
+
+    "address": {
+        "street": "Rue",
+        "streetRequired": "La rue est requise.",
+        "postalCode": "Code postal",
+        "postalCodeRequired": "Le code postal est requis.",
+        "postalCodePattern": "3-10 caractères : lettres, chiffres, espaces ou tirets uniquement.",
+        "minLength3": "Doit contenir au moins 3 caractères.",
+        "fullAddress": "Adresse complète",
+        "fullAddressRequired": "L'adresse complète est requise.",
+        "city": "Ville",
+        "country": "Pays",
+        "onlyLettersAllowed": "Seules les lettres, espaces, apostrophes, points et tirets sont autorisés."
+    },
+
+
+    "education": {
+        "institution": "Institution",
+        "institutionRequired": "L'institution est requise.",
+        "startDate": "Date de début",
+        "startDateRequired": "La date de début est requise.",
+        "endDate": "Date de fin",
+        "endDateRequired": "La date de fin est requise.",
+        "invalidDateRange": "La date de fin ne peut pas être antérieure à la date de début.",
+        "diploma": "Diplôme",
+        "diplomaRequired": "Le diplôme est requis.",
+        "allowedCharacters": "Seules les lettres, les chiffres, les espaces, les traits d’union, les points, les esperluettes, les virgules et les apostrophes sont autorisés.",
+        "diplomaPattern": "Le diplôme ne peut contenir que des lettres, des chiffres et des symboles courants (comme ., +, #, etc.)."
+    },
+
+
+    "experience": {
+        "companyName": "Nom de l'entreprise",
+        "patternCompany": "Seules les lettres, les chiffres, les espaces, &, ', +, ., et - sont autorisés.",
+        "position": "Poste",
+        "patternPosition": "Seules les lettres, les espaces, les barres obliques (/) et les tirets (-) sont autorisés.",
+        "startDate": "Date de début",
+        "datePattern": "Doit être au format JJ-MM-AAAA.",
+        "endDate": "Date de fin",
+        "endDateFuture": "La date de fin ne peut pas être dans le futur.",
+        "invalidDateRange": "La date de début doit précéder la date de fin.",
+        "description": "Description",
+        "descriptionPattern": "Autorisé : lettres, chiffres, ponctuation comme . , ! ? () - : ; / ' \" #"
+    },
+
+
+    "contact": {
+        "contactType": "Type de contact",
+        "contactTypeRequired": "Le type de contact est requis.",
+        "selectContactType": "Sélectionner le type de contact",
+        "contactValue": "Valeur du contact",
+        "contactValueRequired": "La valeur du contact est requise.",
+        "invalidEmail": "Veuillez entrer une adresse email valide.",
+        "invalidPhone": "Veuillez entrer un numéro de téléphone valide.",
+        "invalidLinkedIn": "Veuillez entrer une URL de profil LinkedIn valide.",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "linkedIn": "LinkedIn"
+    },
+
+
+    "navigation": {
+        "previous": "Précédent",
+        "previousTitle": "Aller à l'étape précédente du formulaire",
+        "clear": "Effacer",
+        "clearTitle": "Effacer la section actuelle du formulaire",
+        "next": "Suivant",
+        "nextTitle": "Aller à l'étape suivante du formulaire",
+        "save": "Sauvegarder",
+        "saveTitle": "Sauvegarder et soumettre le formulaire"
     }
 }

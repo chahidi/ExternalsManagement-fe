@@ -1,0 +1,78 @@
+{
+    "topbar": {
+        "calendar": "Calendar",
+        "messages": "Messages",
+        "profile": "Profile"
+    },
+
+
+    "language": {
+        "english": "English",
+        "french": "French",
+        "spanish": "Spanish"
+    },
+
+
+    "menu": {
+        "dashboard": "Dashboard",
+        "externalsManagement": "Externals Management",
+        "cardsView": "Cards View",
+        "listView": "List View",
+        "candidates": "Candidates",
+        "newCV": "New CV",
+        "candidateList": "Candidate List",
+        "promptManagement": "Prompt Management",
+        "newPrompt": "New Prompt",
+        "promptList": "Prompt List"
+    },
+
+
+    "footer": {
+        "copyright": "© 2025 NTT DATA Morocco"
+    },
+
+
+    "auth": {
+        "access": {
+            "accessDenied": "Access denied",
+            "permissionMessage": "You do not have the necessary permissions. Please contact admins.",
+            "goToDashboard": "Go to dashboard"
+        },
+        "error": {
+            "errorOccured": "Error occurred",
+            "resourceNotAvailable": "Requested resource is not available.",
+            "goToDashboard": "Go to Dashboard"
+        },
+        "login": {
+            "welcome": "Welcome to PrimeLand!",
+            "signInToContinue": "Sign in to continue",
+            "email": "Email",
+            "password": "Password",
+            "rememberMe": "Remember me",
+            "forgotPassword": "Forgot password?",
+            "signIn": "Sign In"
+        }
+    },
+
+
+    "stats": {
+        "title": "Candidate Statistics",
+        "totalCandidates": "Total Candidates:",
+        "languagesTab": "Languages",
+        "candidatesByLanguage": "Candidates by Language",
+        "skillsTab": "Skills",
+        "candidatesBySkill": "Candidates by Skill",
+        "experienceTab": "Experience",
+        "candidatesByExperience": "Candidates by Years of Experience",
+        "candidatesByExperienceRange": "Candidates by Experience Range",
+        "noLanguages": "No Languages",
+        "noSkills": "No Skills",
+        "noData": "No Data",
+        "noDataAvailable": "No data available",
+        "loadingLanguageData": "Loading language data...",
+        "loadingSkillData": "Loading skill data...",
+        "loadingExperienceData": "Loading experience data..."
+
+
+    }
+}

@@ -1,0 +1,79 @@
+{
+    "topbar": {
+        "calendar": "Calendrier",
+        "messages": "Messages",
+        "profile": "Profil"
+    },
+
+
+    "language": {
+        "english": "Anglais",
+        "french": "Français",
+        "spanish": "Espagnol"
+    },
+
+
+    "menu": {
+        "dashboard": "Tableau de bord",
+        "externalsManagement": "Gestion des externes",
+        "cardsView": "Vue par cartes",
+        "listView": "Vue en liste",
+        "candidates": "Candidats",
+        "newCV": "Nouveau CV",
+        "candidateList": "Liste des candidats",
+        "promptManagement": "Gestion des prompts",
+        "newPrompt": "Nouveau prompt",
+        "promptList": "Liste des prompts"
+    },
+
+
+    "footer": {
+        "copyright": "© 2025 NTT DATA Maroc"
+    },
+
+
+    "auth": {
+        "access": {
+            "accessDenied": "Accès refusé",
+            "permissionMessage": "Vous n'avez pas les permissions nécessaires. Veuillez contacter les administrateurs.",
+            "goToDashboard": "Aller au tableau de bord"
+        },
+        "error": {
+            "errorOccured": "Une erreur est survenue",
+            "resourceNotAvailable": "La ressource demandée n'est pas disponible.",
+            "goToDashboard": "Aller au tableau de bord"
+        },
+        "login": {
+            "welcome": "Bienvenue à PrimeLand !",
+            "signInToContinue": "Connectez-vous pour continuer",
+            "email": "Email",
+            "password": "Mot de passe",
+            "rememberMe": "Se souvenir de moi",
+            "forgotPassword": "Mot de passe oublié ?",
+            "signIn": "Se connecter"
+        }
+    },
+
+
+    "stats": {
+        "title": "Statistiques des Candidats",
+        "totalCandidates": "Total des Candidats :",
+        "languagesTab": "Langues",
+        "candidatesByLanguage": "Candidats par Langue",
+        "skillsTab": "Compétences",
+        "candidatesBySkill": "Candidats par Compétence",
+        "experienceTab": "Expérience",
+        "candidatesByExperience": "Candidats par Années d'Expérience",
+        "candidatesByExperienceRange": "Candidats par Tranche d’Expérience",
+        "noLanguages": "Aucune Langue",
+        "noSkills": "Aucune Compétence",
+        "noData": "Aucune Donnée",
+        "noDataAvailable": "Aucune donnée disponible",
+        "loadingLanguageData": "Chargement des données linguistiques...",
+        "loadingSkillData": "Chargement des données de compétences...",
+        "loadingExperienceData": "Chargement des données d’expérience..."
+
+
+
+    }
+}

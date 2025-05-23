@@ -1,28 +1,28 @@
 <div class="p-4">
-    <h2 class="text-xl font-bold mb-4">Candidate List</h2>
+    <h2 class="text-xl font-bold mb-4">{{ 'candidateList.titles.candidate_list' | translate }}</h2>
 
     <p-toast></p-toast>
 
     <div class="card mb-4">
-        <h3 class="text-lg font-semibold mb-3">Filter Candidates</h3>
+        <h3 class="text-lg font-semibold mb-3">{{ 'candidateList.titles.filter_candidates' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="field">
-                <label for="skills" class="block mb-2">Skills</label>
+                <label for="skills" class="block mb-2">{{ 'candidateList.labels.skills' | translate }}</label>
                 <p-multiSelect id="skills" [options]="skillOptions" [(ngModel)]="filters.skills"
-                    optionLabel="name" placeholder="Select Skills" [style]="{ width: '100%' }"
+                    optionLabel="name" [placeholder]="'candidateList.placeholders.select_skills' | translate" [style]="{ width: '100%' }"
                     [showToggleAll]="true" [showHeader]="true" display="chip"></p-multiSelect>
             </div>
             <div class="field">
-                <label for="language" class="block mb-2">Language</label>
+                <label for="language" class="block mb-2">{{ 'candidateList.labels.language' | translate }}</label>
                 <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language"
-                    optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"
+                    optionLabel="name" [placeholder]="'candidateList.placeholders.select_language' | translate" [style]="{ width: '100%' }"
                     [showClear]="true" [filter]="true"></p-dropdown>
             </div>
             <div class="field">
-                <label for="yearsOfExperience" class="block mb-2">Minimum Years of Experience</label>
+                <label for="yearsOfExperience" class="block mb-2">{{ 'candidateList.labels.min_years_experience' | translate }}</label>
                 <div class="flex align-items-center">
                     <p-inputNumber id="yearsOfExperience" [(ngModel)]="filters.yearsOfExperience"
-                        [min]="0" [max]="20" placeholder="Enter years" [style]="{ width: '100%' }"
+                        [min]="0" [max]="20" [placeholder]="'candidateList.placeholders.enter_years' | translate" [style]="{ width: '100%' }"
                         [showButtons]="true" buttonLayout="horizontal"
                         decrementButtonClass="p-button-secondary"
                         incrementButtonClass="p-button-secondary"></p-inputNumber>
@@ -30,8 +30,8 @@
             </div>
         </div>
         <div class="flex justify-end mt-4">
-            <p-button label="Reset" icon="pi pi-times" styleClass="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
-            <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
+            <p-button [label]="'candidateList.buttons.reset' | translate" icon="pi pi-times" styleClass="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
+            <p-button [label]="'candidateList.buttons.apply_filters' | translate" icon="pi pi-search" (click)="applyFilters()"></p-button>
         </div>
     </div>
 
@@ -48,10 +48,10 @@
     >
         <ng-template pTemplate="caption">
             <div class="flex">
-                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                <p-button [label]="'candidateList.buttons.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
                 <span class="p-input-icon-left ml-auto">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="onFilterInput($event, dt1)" placeholder="Search keyword" />
+                    <input pInputText type="text" (input)="onFilterInput($event, dt1)" [placeholder]="'candidateList.placeholders.search_keyword' | translate" />
                 </span>
             </div>
         </ng-template>
@@ -60,62 +60,63 @@
             <tr>
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
-                        Full Name
+                        {{ 'candidateList.tableHeaders.full_name' | translate }}
                         <p-columnFilter type="text" field="fullName" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 10rem">
                     <div class="flex items-center">
-                        Main Tech
+                        {{ 'candidateList.tableHeaders.main_tech' | translate }}
                         <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
-                        Location
+                        {{ 'candidateList.tableHeaders.location' | translate }}
                         <p-columnFilter type="text" field="addresses.city.name" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
-                        Education
+                        {{ 'candidateList.tableHeaders.education' | translate }}
                         <p-columnFilter type="text" field="educations.degree" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
-                        Experience
+                        {{ 'candidateList.tableHeaders.experience' | translate }}
                         <p-columnFilter type="text" field="experiences.companyName" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
-                        Skills
+                        {{ 'candidateList.tableHeaders.skills' | translate }}
                         <p-columnFilter type="text" field="skills.skillName" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 10rem">
-                    <div class="flex items-center">Contact</div>
+                    <div class="flex items-center">{{ 'candidateList.tableHeaders.contact' | translate }}</div>
                 </th>
                 <th style="min-width: 10rem">
-                    <div class="flex items-center">Actions</div>
+                    <div class="flex items-center">{{ 'candidateList.tableHeaders.actions' | translate }}</div>
                 </th>
             </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-candidate>
             <tr>
-                <td>{{ candidate.fullName || 'N/A' }}</td>
-                <td>{{ candidate.mainTech || 'N/A' }}</td>
+                <td>{{ candidate.fullName || ('candidateList.messages.na' | translate) }}</td>
+                <td>{{ candidate.mainTech || ('candidateList.messages.na' | translate) }}</td>
                 <td>
                     <ng-container *ngIf="candidate.addresses && isArray(candidate.addresses) && candidate.addresses.length > 0; else noAddress">
                         <span *ngFor="let address of candidate.addresses; let first=first">
                             {{ first ? '' : ', ' }}
-                            {{ address.city?.name || 'Unknown City' }}, {{ address.country?.name || 'Unknown Country' }}
+                            {{ address.city?.name || ('candidateList.messages.unknown_city' | translate) }},
+                            {{ address.country?.name || ('candidateList.messages.unknown_country' | translate) }}
                         </span>
                     </ng-container>
                     <ng-template #noAddress>
-                        <span>N/A</span>
+                        <span>{{ 'candidateList.messages.na' | translate }}</span>
                     </ng-template>
                 </td>
                 <td>
@@ -161,217 +162,228 @@
 
         <ng-template pTemplate="emptymessage">
             <tr>
-                <td colspan="8">No candidates found.</td>
+                <td colspan="8">{{ 'candidateList.messages.no_candidates_found' | translate }}</td>
             </tr>
         </ng-template>
     </p-table>
 </div>
 
-<p-confirmDialog [style]="{ width: '450px' }" header="Confirm" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog [style]="{ width: '450px' }" [header]="'candidateList.titles.confirm' | translate" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
-<p-dialog [(visible)]="displayEditDialog" [style]="{ width: '70%' }" [modal]="true" [draggable]="false" [resizable]="false" header="Edit Candidate">
+<p-dialog [(visible)]="displayEditDialog" [style]="{ width: '70%' }" [modal]="true" [draggable]="false"
+            [resizable]="false" [header]="'candidateList.titles.edit_candidate' | translate">
     <div *ngIf="selectedCandidate" class="p-fluid">
         <!-- Basic Information -->
         <fieldset class="mb-4 border rounded p-4">
-            <legend class="text-lg font-semibold">Basic Information</legend>
+            <legend class="text-lg font-semibold">{{ 'candidateList.titles.basic_information' | translate }}</legend>
             <div class="field field-grid">
-                <label for="fullName" class="field-label">Full Name</label>
+                <label for="fullName" class="field-label">{{ 'candidateList.labels.full_name' | translate }}</label>
                 <input id="fullName" type="text" pInputText [(ngModel)]="selectedCandidate.fullName" required class="field-input" />
             </div>
             <div class="field field-grid">
-                <label for="birthDate" class="field-label">Birth Date</label>
+                <label for="birthDate" class="field-label">{{ 'candidateList.labels.birth_date' | translate }}</label>
                 <p-calendar id="birthDate" [(ngModel)]="selectedCandidate.birthDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
             </div>
             <div class="field field-grid">
-                <label for="yearsOfExperience" class="field-label">Years of Experience</label>
+                <label for="yearsOfExperience" class="field-label">{{ 'candidateList.labels.years_of_experience' | translate }}</label>
                 <p-inputNumber id="yearsOfExperience" [(ngModel)]="selectedCandidate.yearsOfExperience" [min]="0" [max]="50" class="field-input"></p-inputNumber>
             </div>
             <div class="field field-grid">
-                <label for="gender" class="field-label">Gender</label>
-                <p-dropdown id="gender" [(ngModel)]="selectedCandidate.gender" [options]="[{label: 'Male', value: 'M'}, {label: 'Female', value: 'F'}]" placeholder="Select Gender" class="field-input"></p-dropdown>
+                <label for="gender" class="field-label">{{ 'candidateList.labels.gender' | translate }}</label>
+                <p-dropdown id="gender" [(ngModel)]="selectedCandidate.gender"
+                    [options]="[{label: ('candidateList.options.male' | translate), value: 'M'},
+                                {label: ('candidateList.options.female' | translate), value: 'F'}]"
+                    [placeholder]="'candidateList.placeholders.select_gender' | translate" class="field-input"></p-dropdown>
             </div>
             <div class="field field-grid">
-                <label for="mainTech" class="field-label">Main Technology</label>
+                <label for="mainTech" class="field-label">{{ 'candidateList.labels.main_technology' | translate }}</label>
                 <input id="mainTech" type="text" pInputText [(ngModel)]="selectedCandidate.mainTech" class="field-input" />
             </div>
             <div class="field field-grid">
-                <label for="summary" class="field-label">Summary</label>
+                <label for="summary" class="field-label">{{ 'candidateList.labels.summary' | translate }}</label>
                 <textarea id="summary" pInputTextarea [(ngModel)]="selectedCandidate.summary" rows="5" class="field-input"></textarea>
             </div>
         </fieldset>
 
       <!-- Addresses -->
 <fieldset class="mb-4 border rounded p-4">
-    <legend class="text-lg font-semibold">Addresses</legend>
+    <legend class="text-lg font-semibold">{{ 'candidateList.titles.addresses' | translate }}</legend>
     <div *ngFor="let address of selectedCandidate.addresses; let i=index" class="address-item border-b pb-4 mb-4">
         <div class="field field-grid">
-            <label for="street_{{i}}" class="field-label">Street</label>
+            <label for="street_{{i}}" class="field-label">{{ 'candidateList.labels.street' | translate }}</label>
             <input id="street_{{i}}" type="text" pInputText [(ngModel)]="address.street" class="field-input" />
         </div>
         <div class="field field-grid">
-            <label for="postalCode_{{i}}" class="field-label">Postal Code</label>
+            <label for="postalCode_{{i}}" class="field-label">{{ 'candidateList.labels.postal_code' | translate }}</label>
             <input id="postalCode_{{i}}" type="text" pInputText [(ngModel)]="address.postalCode" class="field-input" />
         </div>
         <div class="field field-grid">
-            <label for="fullAddress_{{i}}" class="field-label">Full Address</label>
+            <label for="fullAddress_{{i}}" class="field-label">{{ 'candidateList.labels.full_address' | translate }}</label>
             <input id="fullAddress_{{i}}" type="text" pInputText [(ngModel)]="address.fullAddress" class="field-input" />
         </div>
         <div class="field field-grid">
-            <label for="city_{{i}}" class="field-label">City</label>
-            <p-dropdown id="city_{{i}}" [(ngModel)]="address.city" [options]="cities" optionLabel="name" placeholder="Select City" class="field-input" (onChange)="onCityChange(address)"></p-dropdown>
+            <label for="city_{{i}}" class="field-label">{{ 'candidateList.labels.city' | translate }}</label>
+            <p-dropdown id="city_{{i}}" [(ngModel)]="address.city" [options]="cities" optionLabel="name"
+            [placeholder]="'candidateList.placeholders.select_city' | translate" class="field-input" (onChange)="onCityChange(address)"></p-dropdown>
         </div>
         <div class="field field-grid">
-            <label for="country_{{i}}" class="field-label">Country</label>
-            <p-dropdown id="country_{{i}}" [(ngModel)]="address.country" [options]="countries" optionLabel="name" placeholder="Select Country" class="field-input" (onChange)="onCountryChange(address)"></p-dropdown>
+            <label for="country_{{i}}" class="field-label">{{ 'candidateList.labels.country' | translate }}</label>
+            <p-dropdown id="country_{{i}}" [(ngModel)]="address.country" [options]="countries" optionLabel="name"
+                [placeholder]="'candidateList.placeholders.select_country' | translate" class="field-input" (onChange)="onCountryChange(address)"></p-dropdown>
         </div>
         <div class="flex justify-end mt-2">
             <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeAddress(i)"></button>
         </div>
     </div>
-    <button pButton type="button" label="Add Address" icon="pi pi-plus" class="p-button-secondary" (click)="addAddress()"></button>
+    <button pButton type="button" [label]="'candidateList.buttons.add_address' | translate" icon="pi pi-plus" class="p-button-secondary" (click)="addAddress()"></button>
 </fieldset>
 
         <!-- Contacts -->
         <fieldset class="mb-4 border rounded p-4">
-            <legend class="text-lg font-semibold">Contacts</legend>
+            <legend class="text-lg font-semibold">{{ 'candidateList.titles.contacts' | translate }}</legend>
             <div *ngFor="let contact of selectedCandidate.contacts; let i=index" class="contact-item border-b pb-4 mb-4">
                 <div class="field field-grid">
-                    <label for="contactType_{{i}}" class="field-label">Contact Type</label>
-                    <p-dropdown id="contactType_{{i}}" [(ngModel)]="contact.contactType" [options]="[{label: 'Email', value: 'Email'}, {label: 'Phone', value: 'Phone'}]" placeholder="Select Contact Type" class="field-input"></p-dropdown>
+                    <label for="contactType_{{i}}" class="field-label">{{ 'candidateList.labels.contact_type' | translate }}</label>
+                    <p-dropdown id="contactType_{{i}}" [(ngModel)]="contact.contactType"
+                        [options]="[{label: ('candidateList.options.email' | translate), value: 'Email'},
+                                    {label: ('candidateList.options.phone' | translate), value: 'Phone'}]"
+                        [placeholder]="'candidateList.placeholders.select_contact_type' | translate" class="field-input"></p-dropdown>
                 </div>
                 <div class="field field-grid">
-                    <label for="contactValue_{{i}}" class="field-label">Contact Value</label>
+                    <label for="contactValue_{{i}}" class="field-label">{{ 'candidateList.labels.contact_value' | translate }}</label>
                     <input id="contactValue_{{i}}" type="text" pInputText [(ngModel)]="contact.contactValue" class="field-input" />
                 </div>
                 <div class="flex justify-end mt-2">
                     <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeContact(i)"></button>
                 </div>
             </div>
-            <button pButton type="button" label="Add Contact" icon="pi pi-plus" class="p-button-secondary" (click)="addContact()"></button>
+            <button pButton type="button" [label]="'candidateList.buttons.add_contact' | translate" icon="pi pi-plus" class="p-button-secondary" (click)="addContact()"></button>
         </fieldset>
 
         <!-- Experiences -->
         <fieldset class="mb-4 border rounded p-4">
-            <legend class="text-lg font-semibold">Experiences</legend>
+            <legend class="text-lg font-semibold">{{ 'candidateList.titles.experiences' | translate }}</legend>
             <div *ngFor="let experience of selectedCandidate.experiences; let i=index" class="experience-item border-b pb-4 mb-4">
                 <div class="field field-grid">
-                    <label for="companyName_{{i}}" class="field-label">Company Name</label>
+                    <label for="companyName_{{i}}" class="field-label">{{ 'candidateList.labels.company_name' | translate }}</label>
                     <input id="companyName_{{i}}" type="text" pInputText [(ngModel)]="experience.companyName" class="field-input" />
                 </div>
                 <div class="field field-grid">
-                    <label for="position_{{i}}" class="field-label">Position</label>
+                    <label for="position_{{i}}" class="field-label">{{ 'candidateList.labels.position' | translate }}</label>
                     <input id="position_{{i}}" type="text" pInputText [(ngModel)]="experience.position" class="field-input" />
                 </div>
                 <div class="field field-grid">
-                    <label for="startDate_{{i}}" class="field-label">Start Date</label>
+                    <label for="startDate_{{i}}" class="field-label">{{ 'candidateList.labels.start_date' | translate }}</label>
                     <p-calendar id="startDate_{{i}}" [(ngModel)]="experience.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
                 </div>
                 <div class="field field-grid">
-                    <label for="endDate_{{i}}" class="field-label">End Date</label>
+                    <label for="endDate_{{i}}" class="field-label">{{ 'candidateList.labels.end_date' | translate }}</label>
                     <p-calendar id="endDate_{{i}}" [(ngModel)]="experience.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
                 </div>
                 <div class="field field-grid">
-                    <label for="description_{{i}}" class="field-label">Description</label>
+                    <label for="description_{{i}}" class="field-label">{{ 'candidateList.labels.description' | translate }}</label>
                     <textarea id="description_{{i}}" pInputTextarea [(ngModel)]="experience.description" rows="3" class="field-input"></textarea>
                 </div>
                 <div class="flex justify-end mt-2">
                     <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeExperience(i)"></button>
                 </div>
             </div>
-            <button pButton type="button" label="Add Experience" icon="pi pi-plus" class="p-button-secondary" (click)="addExperience()"></button>
+            <button pButton type="button" [label]="'candidateList.buttons.add_experience' | translate" icon="pi pi-plus" class="p-button-secondary" (click)="addExperience()"></button>
         </fieldset>
 
         <!-- Skills -->
         <fieldset class="mb-4 border rounded p-4">
-            <legend class="text-lg font-semibold">Skills</legend>
+            <legend class="text-lg font-semibold">{{ 'candidateList.titles.skills' | translate }}</legend>
             <div *ngFor="let skill of selectedCandidate.skills; let i=index" class="skill-item border-b pb-4 mb-4">
                 <div class="field field-grid">
-                    <label for="skillName_{{i}}" class="field-label">Skill Name</label>
+                    <label for="skillName_{{i}}" class="field-label">{{ 'candidateList.labels.skill_name' | translate }}</label>
                     <input id="skillName_{{i}}" type="text" pInputText [(ngModel)]="skill.skillName" class="field-input" />
                 </div>
                 <div class="field field-grid">
-                    <label for="proficiencyLevel_{{i}}" class="field-label">Proficiency Level</label>
-                    <p-dropdown id="proficiencyLevel_{{i}}" [(ngModel)]="skill.proficiencyLevel" [options]="proficiencyLevelOptions" placeholder="Select Proficiency Level" class="field-input"></p-dropdown>
+                    <label for="proficiencyLevel_{{i}}" class="field-label">{{ 'candidateList.labels.proficiency_level' | translate }}</label>
+                    <p-dropdown id="proficiencyLevel_{{i}}" [(ngModel)]="skill.proficiencyLevel" [options]="proficiencyLevelOptions"
+                    [placeholder]="'candidateList.placeholders.select_proficiency_level' | translate" class="field-input"></p-dropdown>
                 </div>
                 <div class="flex justify-end mt-2">
                     <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeSkill(i)"></button>
                 </div>
             </div>
-            <button pButton type="button" label="Add Skill" icon="pi pi-plus" class="p-button-secondary" (click)="addSkill()"></button>
+            <button pButton type="button" [label]="'candidateList.buttons.add_skill' | translate" icon="pi pi-plus" class="p-button-secondary" (click)="addSkill()"></button>
         </fieldset>
 
         <!-- Educations -->
         <fieldset class="mb-4 border rounded p-4">
-            <legend class="text-lg font-semibold">Educations</legend>
+            <legend class="text-lg font-semibold">{{ 'candidateList.titles.educations' | translate }}</legend>
             <div *ngFor="let education of selectedCandidate.educations; let i=index" class="education-item border-b pb-4 mb-4">
                 <div class="field field-grid">
-                    <label for="institution_{{i}}" class="field-label">Institution</label>
+                    <label for="institution_{{i}}" class="field-label">{{ 'candidateList.labels.institution' | translate }}</label>
                     <input id="institution_{{i}}" type="text" pInputText [(ngModel)]="education.institution" class="field-input" />
                 </div>
                 <div class="field field-grid">
-                    <label for="degree_{{i}}" class="field-label">Degree</label>
+                    <label for="degree_{{i}}" class="field-label">{{ 'candidateList.labels.degree' | translate }}</label>
                     <input id="degree_{{i}}" type="text" pInputText [(ngModel)]="education.degree" class="field-input" />
                 </div>
                 <div class="field field-grid">
-                    <label for="startDateEdu_{{i}}" class="field-label">Start Date</label>
+                    <label for="startDateEdu_{{i}}" class="field-label">{{ 'candidateList.labels.start_date' | translate }}</label>
                     <p-calendar id="startDateEdu_{{i}}" [(ngModel)]="education.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
                 </div>
                 <div class="field field-grid">
-                    <label for="endDateEdu_{{i}}" class="field-label">End Date</label>
+                    <label for="endDateEdu_{{i}}" class="field-label">{{ 'candidateList.labels.end_date' | translate }}</label>
                     <p-calendar id="endDateEdu_{{i}}" [(ngModel)]="education.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
                 </div>
                 <div class="field field-grid">
-                    <label for="diploma_{{i}}" class="field-label">Diploma</label>
+                    <label for="diploma_{{i}}" class="field-label">{{ 'candidateList.labels.diploma' | translate }}</label>
                     <input id="diploma_{{i}}" type="text" pInputText [(ngModel)]="education.diploma" class="field-input" />
                 </div>
                 <div class="flex justify-end mt-2">
                     <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeEducation(i)"></button>
                 </div>
             </div>
-            <button pButton type="button" label="Add Education" icon="pi pi-plus" class="p-button-secondary" (click)="addEducation()"></button>
+            <button pButton type="button" [label]="'candidateList.buttons.add_education' | translate" icon="pi pi-plus" class="p-button-secondary" (click)="addEducation()"></button>
         </fieldset>
 
         <!-- Languages -->
 <fieldset class="mb-4 border rounded p-4">
-    <legend class="text-lg font-semibold">Languages</legend>
+    <legend class="text-lg font-semibold">{{ 'candidateList.titles.languages' | translate }}</legend>
     <div *ngFor="let language of selectedCandidate.naturalLanguages; let i=index" class="language-item border-b pb-4 mb-4">
         <div class="field field-grid">
-            <label for="description_{{i}}" class="field-label">Description</label>
+            <label for="description_{{i}}" class="field-label">{{ 'candidateList.labels.description' | translate }}</label>
             <textarea id="description_{{i}}" pInputTextarea [(ngModel)]="language.description" rows="3" class="field-input"></textarea>
         </div>
         <div class="field field-grid">
-            <label for="englishDescription_{{i}}" class="field-label">English Description</label>
+            <label for="englishDescription_{{i}}" class="field-label">{{ 'candidateList.labels.english_description' | translate }}</label>
             <textarea id="englishDescription_{{i}}" pInputTextarea [(ngModel)]="language.englishDescription" rows="3" class="field-input"></textarea>
         </div>
         <div class="field field-grid">
-            <label for="fullDescription_{{i}}" class="field-label">Full Description</label>
+            <label for="fullDescription_{{i}}" class="field-label">{{ 'candidateList.labels.full_description' | translate }}</label>
             <textarea id="fullDescription_{{i}}" pInputTextarea [(ngModel)]="language.fullDescription" rows="3" class="field-input"></textarea>
         </div>
         <div class="field field-grid">
-            <label for="language_{{i}}" class="field-label">Language</label>
+            <label for="language_{{i}}" class="field-label">{{ 'candidateList.labels.language' | translate }}</label>
             <input id="language_{{i}}" type="text" pInputText [(ngModel)]="language.language" class="field-input" />
         </div>
         <div class="field field-grid">
-            <label for="languageInEnglish_{{i}}" class="field-label">Language (English)</label>
+            <label for="languageInEnglish_{{i}}" class="field-label">{{ 'candidateList.labels.language_english' | translate }}</label>
             <input id="languageInEnglish_{{i}}" type="text" pInputText [(ngModel)]="language.languageInEnglish" class="field-input" />
         </div>
         <div class="field field-grid">
-            <label for="level_{{i}}" class="field-label">Level</label>
-            <p-dropdown id="level_{{i}}" [(ngModel)]="language.level" [options]="languageLevelOptions"  placeholder="Select Level" class="field-input"></p-dropdown>
+            <label for="level_{{i}}" class="field-label">{{ 'candidateList.labels.level' | translate }}</label>
+            <p-dropdown id="level_{{i}}" [(ngModel)]="language.level" [options]="languageLevelOptions"
+                [placeholder]="'candidateList.placeholders.select_level' | translate" class="field-input"></p-dropdown>
         </div>
         <div class="field field-grid">
-            <label for="isNative_{{i}}" class="field-label">Native</label>
+            <label for="isNative_{{i}}" class="field-label">{{ 'candidateList.labels.native' | translate }}</label>
             <p-checkbox id="isNative_{{i}}" [(ngModel)]="language.isNative" [binary]="true" class="field-input"></p-checkbox>
         </div>
         <div class="flex justify-end mt-2">
             <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeLanguage(i)"></button>
         </div>
     </div>
-    <button pButton type="button" label="Add Language" icon="pi pi-plus" (click)="addLanguage()" class="p-button-secondary"></button>
+    <button pButton type="button" [label]="'candidateList.buttons.add_language' | translate" icon="pi pi-plus" (click)="addLanguage()" class="p-button-secondary"></button>
 </fieldset>
     </div>
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-times" label="Cancel" (click)="displayEditDialog = false" styleClass="p-button-text"></p-button>
-        <p-button icon="pi pi-check" label="Save" (click)="saveCandidate()" [disabled]="!selectedCandidate?.fullName"></p-button>
+        <p-button icon="pi pi-times" [label]="'candidateList.buttons.cancel' | translate" (click)="displayEditDialog = false" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-check" [label]="'candidateList.buttons.save' | translate" (click)="saveCandidate()" [disabled]="!selectedCandidate?.fullName"></p-button>
     </ng-template>
 </p-dialog>

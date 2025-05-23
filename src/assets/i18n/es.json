@@ -221,5 +221,180 @@
         "nextTitle": "Ir al siguiente paso",
         "save": "Guardar",
         "saveTitle": "Guardar el formulario"
+    },
+
+
+    "cities": {
+        "Paris": "París",
+        "London": "Londres",
+        "NewYork": "Nueva York"
+    },
+
+
+    "countries": {
+        "France": "Francia",
+        "UK": "Reino Unido",
+        "USA": "Estados Unidos"
+    },
+
+
+    "proficiencyLevels": {
+        "BEGINNER": "Principiante",
+        "INTERMEDIATE": "Intermedio",
+        "EXPERT": "Experto"
+    },
+
+
+    "languageLevels": {
+        "BEGINNER": "Principiante",
+        "LOWER_INTERMEDIATE": "Intermedio bajo",
+        "INTERMEDIATE": "Intermedio",
+        "UPPER_INTERMEDIATE": "Intermedio alto",
+        "ADVANCED": "Avanzado"
+    },
+
+
+    "languages": {
+        "english": "Inglés",
+        "french": "Francés",
+        "spanish": "Español",
+        "german": "Alemán",
+        "arabic": "Árabe"
+    },
+
+
+
+    "messages": {
+        "error": "Error",
+        "failedToLoadCandidates": "Error al cargar candidatos.",
+        "noResults": "Sin resultados",
+        "noCandidatesMatch": "Ningún candidato coincide con los filtros seleccionados.",
+        "filtersApplied": "Filtros aplicados",
+        "foundCandidates": "Encontrados {{count}} candidatos que coinciden con sus criterios.",
+        "failedToFilter": "Error al filtrar candidatos.",
+        "filtersReset": "Filtros restablecidos",
+        "allFiltersCleared": "Todos los filtros han sido borrados.",
+        "tableCleared": "Tabla borrada",
+        "allTableFiltersCleared": "Todos los filtros de la tabla han sido borrados.",
+        "success": "Éxito",
+        "candidateUpdated": "Candidato actualizado con éxito",
+        "failedToUpdate": "Error al actualizar el candidato.",
+        "candidateDeleted": "Candidato eliminado con éxito",
+        "failedToDelete": "Error al eliminar el candidato.",
+        "confirmDelete": "Confirmar eliminación",
+        "areYouSureDelete": "¿Está seguro de que desea eliminar a {{name}}?",
+        "na": "No disponible"
+    },
+
+
+    "candidateList": {
+        "titles": {
+            "candidate_list": "Lista de candidatos",
+            "filter_candidates": "Filtrar candidatos",
+            "confirm": "Confirmar",
+            "edit_candidate": "Editar candidato",
+            "basic_information": "Información básica",
+            "addresses": "Direcciones",
+            "contacts": "Contactos",
+            "experiences": "Experiencias",
+            "skills": "Habilidades",
+            "educations": "Formaciones",
+            "languages": "Idiomas"
+
+        },
+
+        "labels": {
+            "skills": "Habilidades",
+            "language": "Idioma",
+            "min_years_experience": "Años mínimos de experiencia",
+            "full_name": "Nombre completo",
+            "birth_date": "Fecha de nacimiento",
+            "years_of_experience": "Años de experiencia",
+            "gender": "Género",
+            "main_technology": "Tecnología principal",
+            "summary": "Resumen",
+            "street": "Calle",
+            "postal_code": "Código postal",
+            "full_address": "Dirección completa",
+            "city": "Ciudad",
+            "country": "País",
+            "contact_type": "Tipo de contacto",
+            "contact_value": "Valor del contacto",
+            "company_name": "Nombre de la empresa",
+            "position": "Puesto",
+            "start_date": "Fecha de inicio",
+            "end_date": "Fecha de fin",
+            "description": "Descripción",
+            "skill_name": "Nombre de la habilidad",
+            "proficiency_level": "Nivel de competencia",
+            "institution": "Institución",
+            "degree": "Título",
+            "diploma": "Diploma",
+            "english_description": "Descripción en inglés",
+            "full_description": "Descripción completa",
+            "language_english": "Idioma (en inglés)",
+            "level": "Nivel",
+            "native": "Nativo"
+
+        },
+
+        "placeholders": {
+            "select_skills": "Seleccionar habilidades",
+            "select_language": "Seleccionar un idioma",
+            "enter_years": "Ingresar años",
+            "search_keyword": "Buscar palabra clave",
+            "select_gender": "Seleccionar género",
+            "select_city": "Seleccionar una ciudad",
+            "select_country": "Seleccionar un país",
+            "select_contact_type": "Seleccionar tipo de contacto",
+            "select_proficiency_level": "Seleccionar nivel de competencia",
+            "select_level": "Seleccionar nivel"
+        },
+
+        "buttons": {
+            "reset": "Restablecer",
+            "apply_filters": "Aplicar filtros",
+            "clear": "Borrar",
+            "add_address": "Agregar dirección",
+            "add_contact": "Agregar contacto",
+            "add_experience": "Agregar experiencia",
+            "add_skill": "Agregar habilidad",
+            "add_education": "Agregar formación",
+            "add_language": "Agregar idioma",
+            "cancel": "Cancelar",
+            "save": "Guardar"
+
+        },
+
+        "tableHeaders": {
+            "full_name": "Nombre completo",
+            "main_tech": "Tecnología principal",
+            "location": "Ubicación",
+            "education": "Formación",
+            "experience": "Experiencia",
+            "skills": "Habilidades",
+            "contact": "Contacto",
+            "actions": "Acciones"
+        },
+
+        "messages": {
+            "na": "No disponible",
+            "unknown_city": "Ciudad desconocida",
+            "unknown_country": "País desconocido",
+            "no_candidates_found": "No se encontraron candidatos"
+
+        },
+
+        "options": {
+            "male": "Hombre",
+            "female": "Mujer",
+            "email": "Correo electrónico",
+            "phone": "Teléfono"
+
+        }
     }
+
+
+
+
 }

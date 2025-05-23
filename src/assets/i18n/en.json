@@ -221,6 +221,178 @@
         "nextTitle": "Go to the next step in the form",
         "save": "Save",
         "saveTitle": "Save and submit the form"
+    },
+
+
+    "cities": {
+        "Paris": "Paris",
+        "London": "London",
+        "NewYork": "New York"
+    },
+
+
+    "countries": {
+        "France": "France",
+        "UK": "United Kingdom",
+        "USA": "United States"
+    },
+
+
+    "proficiencyLevels": {
+        "BEGINNER": "Beginner",
+        "INTERMEDIATE": "Intermediate",
+        "EXPERT": "Expert"
+    },
+
+
+    "languageLevels": {
+        "BEGINNER": "Beginner",
+        "LOWER_INTERMEDIATE": "Lower Intermediate",
+        "INTERMEDIATE": "Intermediate",
+        "UPPER_INTERMEDIATE": "Upper Intermediate",
+        "ADVANCED": "Advanced"
+    },
+
+
+    "languages": {
+        "english": "English",
+        "french": "French",
+        "spanish": "Spanish",
+        "german": "German",
+        "arabic": "Arabic"
+    },
+
+
+
+    "messages": {
+        "error": "Error",
+        "failedToLoadCandidates": "Failed to load candidates.",
+        "noResults": "No results",
+        "noCandidatesMatch": "No candidates match the selected filters.",
+        "filtersApplied": "Filters applied",
+        "foundCandidates": "Found {{count}} candidates matching your criteria.",
+        "failedToFilter": "Failed to filter candidates.",
+        "filtersReset": "Filters reset",
+        "allFiltersCleared": "All filters have been cleared.",
+        "tableCleared": "Table cleared",
+        "allTableFiltersCleared": "All table filters have been cleared.",
+        "success": "Success",
+        "candidateUpdated": "Candidate updated successfully",
+        "failedToUpdate": "Failed to update candidate.",
+        "candidateDeleted": "Candidate deleted successfully",
+        "failedToDelete": "Failed to delete candidate.",
+        "confirmDelete": "Confirm deletion",
+        "areYouSureDelete": "Are you sure you want to delete {{name}}?",
+        "na": "Not available"
+    },
+
+
+    "candidateList": {
+        "titles": {
+           "candidate_list": "Candidate List",
+           "filter_candidates": "Filter Candidates",
+           "confirm": "Confirm",
+           "edit_candidate": "Edit Candidate",
+           "basic_information": "Basic Information",
+            "addresses": "Addresses",
+            "contacts": "Contacts",
+            "experiences": "Experiences",
+            "skills": "Skills",
+            "educations": "Education",
+            "languages": "Languages"
+        },
+
+        "labels": {
+            "skills": "Skills",
+            "language": "Language",
+            "min_years_experience": "Minimum Years Of Experience",
+            "full_name": "Full Name",
+            "birth_date": "Birth Date",
+            "years_of_experience": "Years of Experience",
+            "gender": "Gender",
+            "main_technology": "Main Technology",
+            "summary": "Summary",
+            "street": "Street",
+            "postal_code": "Postal Code",
+            "full_address": "Full Address",
+            "city": "City",
+            "country": "Country",
+            "contact_type": "Contact Type",
+            "contact_value": "Contact Value",
+            "company_name": "Company Name",
+            "position": "Position",
+            "start_date": "Start Date",
+            "end_date": "End Date",
+            "description": "Description",
+            "skill_name": "Skill Name",
+            "proficiency_level": "Proficiency Level",
+            "institution": "Institution",
+            "degree": "Degree",
+            "diploma": "Diploma",
+            "english_description": "Description in English",
+            "full_description": "Full Description",
+            "language_english": "Language (in English)",
+            "level": "Level",
+            "native": "Native"
+        },
+
+        "placeholders": {
+            "select_skills": "Select Skills",
+            "select_language": "Select Language",
+            "enter_years": "Enter years",
+            "search_keyword": "Search keyword",
+            "select_gender": "Select Gender",
+            "select_city": "Select a City",
+            "select_country": "Select a Country",
+            "select_contact_type": "Select Contact Type",
+            "select_proficiency_level": "Select Proficiency Level",
+            "select_level": "Select Level"
+        },
+
+        "buttons": {
+            "reset": "Reset",
+            "apply_filters": "Apply filters",
+            "clear": "Clear",
+            "add_address": "Add Address",
+            "add_contact": "Add Contact",
+            "add_experience": "Add Experience",
+            "add_skill": "Add Skill",
+            "add_education": "Add Education",
+            "add_language": "Add Language",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+
+        "tableHeaders": {
+            "full_name": "Full Name",
+            "main_tech": "Main Technology",
+            "location": "Location",
+            "education": "Education",
+            "experience": "Experience",
+            "skills": "Skills",
+            "contact": "Contact",
+            "actions": "Actions"
+        },
+
+        "messages": {
+            "na": "Not Available",
+            "unknown_city": "Unknown City",
+            "unknown_country": "Unknown Country",
+            "no_candidates_found": "No candidates found"
+
+        },
+
+        "options": {
+            "male": "Male",
+            "female": "Female",
+            "email": "Email",
+            "phone": "Phone"
+        }
     }
+
+
+
+
+
 
 }

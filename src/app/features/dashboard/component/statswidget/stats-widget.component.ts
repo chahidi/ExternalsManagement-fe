@@ -253,7 +253,7 @@ export class StatsWidgetComponent implements OnInit {
         return aVal - bVal;
       });
 
-      const labels = sorted.map(([label]) => label + (label !== '10+' ? ' years' : ' years'));
+      const labels = sorted.map(([label]) => label + (label !== '10+' ? this.translate.instant('stats.years') : this.translate.instant('stats.years')));
       const counts = sorted.map(([, count]) => count);
 
       // Define unique colors for each experience range

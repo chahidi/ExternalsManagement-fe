@@ -71,7 +71,8 @@
         "noDataAvailable": "No data available",
         "loadingLanguageData": "Loading language data...",
         "loadingSkillData": "Loading skill data...",
-        "loadingExperienceData": "Loading experience data..."
+        "loadingExperienceData": "Loading experience data...",
+        "years": " Years"
     },
 
 

@@ -76,14 +76,14 @@ export class CandidateListComponent implements OnInit {
   languageLevels: string[] = ['BEGINNER', 'LOWER_INTERMEDIATE', 'INTERMEDIATE', 'UPPER_INTERMEDIATE', 'ADVANCED' ];
 
   cities: any[] = [
-    { id: '', name: 'cities.Paris', country: null },
-    { id: '', name: 'cities.London', country: null },
-    { id: '', name: 'cities.NewYork', country: null }
+    { id: '', name: 'Paris', country: null },
+    { id: '', name: 'London', country: null },
+    { id: '', name: 'NewYork', country: null }
   ];
   countries: any[] = [
-    { id: '', name: 'countries.France' , englishName:'France', cities :null},
-    { id: '', name: 'countries.UK', englishName:'United Kingdom', cities :null },
-    { id: '', name: 'countries.USA' ,  englishName:'United States', cities :null}
+    { id: '', name: 'France' , englishName:'France', cities :null},
+    { id: '', name: 'UK', englishName:'United Kingdom', cities :null },
+    { id: '', name: 'USA' ,  englishName:'United States', cities :null}
   ];
 
     filters: FilterCriteria = {

@@ -71,7 +71,8 @@
         "noDataAvailable": "No hay datos disponibles",
         "loadingLanguageData": "Cargando los datos del idioma...",
         "loadingSkillData": "Cargando los datos de habilidades...",
-        "loadingExperienceData": "Cargando los datos de experiencia..."
+        "loadingExperienceData": "Cargando los datos de experiencia...",
+        "years": " Años"
     },
 
 

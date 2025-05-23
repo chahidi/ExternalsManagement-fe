@@ -71,7 +71,8 @@
         "noDataAvailable": "Aucune donnée disponible",
         "loadingLanguageData": "Chargement des données linguistiques...",
         "loadingSkillData": "Chargement des données de compétences...",
-        "loadingExperienceData": "Chargement des données d’expérience..."
+        "loadingExperienceData": "Chargement des données d’expérience...",
+        "years": " Années"
     },
 
 
@@ -389,9 +390,6 @@
 
         }
 
-
     }
-
-
 
 }

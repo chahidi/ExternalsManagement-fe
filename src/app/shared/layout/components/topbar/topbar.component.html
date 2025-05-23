@@ -70,9 +70,9 @@
             <i class="pi pi-globe"></i>
         </button>
         <div class="language-menu" [class.hidden]="!showLanguageMenu" (clickOutside)="showLanguageMenu = false">
-            <button (click)="changeLanguage('en')" [class.active]="currentLang === 'en'">{{ 'language.english' | translate }}</button>
-            <button (click)="changeLanguage('fr')" [class.active]="currentLang === 'fr'">{{ 'language.french' | translate }}</button>
-            <button (click)="changeLanguage('es')" [class.active]="currentLang === 'es'">{{ 'language.spanish' | translate }}</button>
+            <button (click)="changeLanguage('en')" [class.active]="currentLang === 'en'">English</button>
+            <button (click)="changeLanguage('es')" [class.active]="currentLang === 'es'">Español</button>
+            <button (click)="changeLanguage('fr')" [class.active]="currentLang === 'fr'">Français</button>
         </div>
     </div>
 </div>

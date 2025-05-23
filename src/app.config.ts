@@ -14,8 +14,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-const defaultLanguage = localStorage.getItem('userLanguage') || 'en';
-
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
@@ -28,7 +26,7 @@ export const appConfig: ApplicationConfig = {
             deps: [HttpClient]
         },
         TranslateModule.forRoot({
-            defaultLanguage: defaultLanguage,
+            defaultLanguage: 'en',
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,

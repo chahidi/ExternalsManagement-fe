@@ -9,47 +9,42 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CandidateService {
-  private apiUrl = 'http://localhost:8080/candidates';
 
   private baseUrl = `${environment.apiUrl}/v1/candidates`;
-  private all = 'all';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
 
-  // Récupérer tous les candidats
   getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.apiUrl}/all`).pipe(
+    return this.http.get<Candidate[]>(`${this.baseUrl}/all`).pipe(
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );
   }
 
-  // Récupérer un candidat par ID
+
   getCandidate(id: string): Observable<Candidate> {
-    return this.http.get<Candidate>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<Candidate>(`${this.baseUrl}/${id}`).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
   }
 
-  // Mettre à jour un candidat
+
   updateCandidate(id: string, candidate: Candidate): Observable<Candidate> {
     const cleanedCandidate = this.cleanCandidate(candidate);
-    console.log('data sent to backend:', cleanedCandidate); // Log pour vérifier les données envoyées
     return this.http.put<Candidate>(`${this.baseUrl}/${id}`, cleanedCandidate).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
   }
 
-  // Supprimer un candidat
+
   deleteCandidate(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Nettoyer les références circulaires avant envoi
   private cleanCandidate(candidate: Candidate): Candidate {
     const cleaned = {
       ...candidate,
@@ -69,15 +64,11 @@ export class CandidateService {
     return cleaned;
   }
 
-  // Transformer les données du backend
   private transformCandidate(candidate: any): Candidate {
-    // console.log('Raw data from backend:', candidate); // Log pour vérifier les données brutes
-    console.log(' data from backend:', candidate); // Log pour vérifier les données brutes
-
     return {
       ...candidate,
       id: candidate.id.toString(),
-     addresses: candidate.address ? [{
+      addresses: candidate.address ? [{
       id: candidate.address.id?.toString() || '',
       street: candidate.address.street || '',
       postalCode: candidate.address.postalCode || '',
@@ -108,14 +99,11 @@ export class CandidateService {
     };
   }
 
-  // Gérer les erreurs HTTP
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
     if (error.error instanceof ErrorEvent) {
-      // Erreur côté client
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Erreur côté serveur
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.error || error.message}`;
       if (error.status === 404) {
         errorMessage = 'Candidate not found';
@@ -125,7 +113,7 @@ export class CandidateService {
         errorMessage = 'Internal server error';
       }
     }
-    console.error(errorMessage);
+   
     return throwError(() => new Error(errorMessage));
   }
 }

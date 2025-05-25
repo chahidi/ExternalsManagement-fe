@@ -10,21 +10,21 @@ import { environment } from '../../../environments/environment';
 })
 export class CandidateService {
 
-  // private apiUrl = 'http://localhost:8080/candidates';
+  private baseUrl = `${environment.apiUrl}/v1/candidates`;
+  constructor(private http: HttpClient) {}
 
-  private baseUrl = `${environment.apiUrl}/candidates`;
 
-  constructor(private http: HttpClient) { }
 
-  // recuper tous les candidats
+
   getCandidates(): Observable<Candidate[]> {
     return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
+
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );
   }
 
-  // recuper un candidat par ID - Updated to use baseUrl
+  // Get candidate By id
   getCandidate(id: string): Observable<Candidate> {
     return this.http.get<Candidate>(`${this.baseUrl}/${id}`).pipe(
       map(this.transformCandidate),
@@ -32,25 +32,26 @@ export class CandidateService {
     );
   }
 
-  // Mettre à jour un candidat
+
   updateCandidate(id: string, candidate: Candidate): Observable<Candidate> {
     const cleanedCandidate = this.cleanCandidate(candidate);
-    console.log('data sent to backend:', cleanedCandidate); // Log pour vérifier les données envoyées
     return this.http.put<Candidate>(`${this.baseUrl}/${id}`, cleanedCandidate).pipe(
       map(this.transformCandidate),
       catchError(this.handleError)
     );
   }
 
-  // Supprimer un candidat - Updated to use baseUrl
+
+
   deleteCandidate(id: string): Observable<void> {
+
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { responseType: 'text' as 'json' }).pipe(
       map(() => undefined),
+
       catchError(this.handleError)
     );
   }
 
-  // Nettoyer les références circulaires avant envoi
   private cleanCandidate(candidate: Candidate): Candidate {
     const cleaned = {
       ...candidate,
@@ -70,28 +71,28 @@ export class CandidateService {
     return cleaned;
   }
 
-  // Transformer les données du backend
+
+  // transform candidate to Backend
   private transformCandidate(candidate: any): Candidate {
-    console.log(' data from backend:', candidate);
 
     return {
       ...candidate,
       id: candidate.id.toString(),
-     addresses: candidate.address ? [{
-  id: candidate.address.id?.toString() || '',
-  street: candidate.address.street || '',
-  postalCode: candidate.address.postalCode || '',
-  fullAddress: candidate.address.fullAddress || '',
-  city: candidate.address.city ? {
-    id: candidate.address.city.id?.toString() || '',
-    name: candidate.address.city.name || '',
-    countryId: candidate.address.city.countryId || ''
-  } : null,
-  country: candidate.address.country ? {
-    id: candidate.address.country.id?.toString() || '',
-    name: candidate.address.country.name || '',
-    englishName: candidate.address.country.englishName || ''
-  } : null
+      addresses: candidate.address ? [{
+      id: candidate.address.id?.toString() || '',
+      street: candidate.address.street || '',
+      postalCode: candidate.address.postalCode || '',
+      fullAddress: candidate.address.fullAddress || '',
+      city: candidate.address.city ? {
+        id: candidate.address.city.id?.toString() || '',
+        name: candidate.address.city.name || '',
+        countryId: candidate.address.city.countryId || ''
+      } : null,
+      country: candidate.address.country ? {
+        id: candidate.address.country.id?.toString() || '',
+        name: candidate.address.country.name || '',
+        englishName: candidate.address.country.englishName || ''
+      } : null
 }] : []
 ,
       contacts: candidate.contacts || [],
@@ -108,14 +109,11 @@ export class CandidateService {
     };
   }
 
-  // Gérer les erreurs HTTP
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
     if (error.error instanceof ErrorEvent) {
-      // Erreur côté client
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Erreur côté serveur
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.error || error.message}`;
       if (error.status === 404) {
         errorMessage = 'Candidate not found';
@@ -125,10 +123,8 @@ export class CandidateService {
         errorMessage = 'Internal server error';
       }
     }
-    console.error(errorMessage);
+   
     return throwError(() => new Error(errorMessage));
   }
 }
-
-
 

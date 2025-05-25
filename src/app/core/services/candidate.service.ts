@@ -14,14 +14,17 @@ export class CandidateService {
   constructor(private http: HttpClient) {}
 
 
+
+
   getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.baseUrl}/all`).pipe(
+    return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
+
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );
   }
 
-
+  // Get candidate By id
   getCandidate(id: string): Observable<Candidate> {
     return this.http.get<Candidate>(`${this.baseUrl}/${id}`).pipe(
       map(this.transformCandidate),
@@ -39,8 +42,12 @@ export class CandidateService {
   }
 
 
+
   deleteCandidate(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(
+
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { responseType: 'text' as 'json' }).pipe(
+      map(() => undefined),
+
       catchError(this.handleError)
     );
   }
@@ -64,7 +71,10 @@ export class CandidateService {
     return cleaned;
   }
 
+
+  // transform candidate to Backend
   private transformCandidate(candidate: any): Candidate {
+
     return {
       ...candidate,
       id: candidate.id.toString(),
@@ -118,4 +128,3 @@ export class CandidateService {
   }
 }
 
-  

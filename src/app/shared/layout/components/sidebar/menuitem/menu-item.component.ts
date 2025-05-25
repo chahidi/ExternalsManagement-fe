@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../../../service/layout.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: '[app-menuitem]',
-    imports: [CommonModule, RouterModule, RippleModule],
+    imports: [CommonModule, RouterModule, RippleModule, TranslateModule],
     templateUrl: './menu-item.component.html',
     animations: [
         trigger('children', [

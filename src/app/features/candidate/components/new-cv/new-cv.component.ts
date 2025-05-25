@@ -3,19 +3,24 @@ import { NewCvService } from '../../../../core/services/new-cv.service';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-new-cv',
     standalone: true,
     templateUrl: './new-cv.component.html',
     styleUrls: ['./new-cv.component.scss'],
-    imports: [ButtonModule, FileUploadModule]
+    imports: [ButtonModule, FileUploadModule, TranslateModule]
 })
 export class NewCvComponent {
     selectedFile: File | null = null;
     extractedData: string | null = null;
 
-    constructor(private newService: NewCvService, private router: Router) {}
+    constructor(
+        private newService: NewCvService,
+        private router: Router,
+        private translate: TranslateService
+    ) {}
 
     onFileSelected(event: any): void {
         if (event?.files?.length) {
@@ -42,7 +47,7 @@ export class NewCvComponent {
 
                 this.newService.uploadCv(payload).subscribe(
                     (response: any) => {
-                        alert('CV uploaded successfully!');
+                        alert(this.translate.instant('upload.cvUploadSuccess'));
                         console.log('Server response:', response);
 
                         this.router.navigate(['/candidates/stepper'], {
@@ -50,7 +55,7 @@ export class NewCvComponent {
                         });
                     },
                     error => {
-                        alert('Error uploading CV.');
+                        alert(this.translate.instant('upload.uploadCvError'));
                         console.error('Upload error:', error);
                     }
                 );
@@ -58,7 +63,7 @@ export class NewCvComponent {
 
             reader.readAsDataURL(this.selectedFile);
         } else {
-            alert('No file selected!');
+            alert(this.translate.instant('upload.noFileSelected'));
         }
     }
 }

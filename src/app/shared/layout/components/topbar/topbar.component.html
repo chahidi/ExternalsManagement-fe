@@ -53,17 +53,26 @@
             <div class="layout-topbar-menu-content">
                 <button type="button" class="layout-topbar-action">
                     <i class="pi pi-calendar"></i>
-                    <span>Calendar</span>
+                    <span>{{ 'topbar.calendar' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action">
                     <i class="pi pi-inbox"></i>
-                    <span>Messages</span>
+                    <span>{{ 'topbar.messages' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action">
                     <i class="pi pi-user"></i>
-                    <span>Profile</span>
+                    <span>{{ 'topbar.profile' | translate }}</span>
                 </button>
             </div>
+        </div>
+
+        <button class="layout-topbar-action language-switcher" (click)="toggleLanguageMenu()">
+            <i class="pi pi-globe"></i>
+        </button>
+        <div class="language-menu" [class.hidden]="!showLanguageMenu" (clickOutside)="showLanguageMenu = false">
+            <button (click)="changeLanguage('en')" [class.active]="currentLang === 'en'">English</button>
+            <button (click)="changeLanguage('es')" [class.active]="currentLang === 'es'">Español</button>
+            <button (click)="changeLanguage('fr')" [class.active]="currentLang === 'fr'">Français</button>
         </div>
     </div>
 </div>

@@ -18,6 +18,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-candidate-form',
@@ -32,7 +33,8 @@ import { MenuItem } from 'primeng/api';
     CheckboxModule,
     ReactiveFormsModule,
     DropdownModule,
-    RadioButtonModule
+    RadioButtonModule,
+    TranslateModule
   ],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']
@@ -43,19 +45,8 @@ export class StepperFormComponent implements OnInit {
   extractedData: any;
 
 
-  languageLevels = [
-    { label: 'Advanced', value: 'ADVANCED' },
-    { label: 'Intermediate', value: 'INTERMEDIATE' },
-    { label: 'Basic', value: 'BASIC' },
-    { label: 'Native', value: 'NATIVE' }
-  ];
-
-  skillProficiencies = [
-    { label: 'Beginner', value: 'BEGINNER' },
-    { label: 'Intermediate', value: 'INTERMEDIATE' },
-    { label: 'Advanced', value: 'ADVANCED' },
-    { label: 'Expert', value: 'EXPERT' }
-  ];
+    languageLevels: { label: string; value: string }[] = [];
+    skillProficiencies: { label: string; value: string }[] = [];
 
   generalDataForm!: FormGroup;
   addressForm!: FormGroup;
@@ -65,18 +56,50 @@ export class StepperFormComponent implements OnInit {
   skillsForm!: FormGroup;
   contactForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
+    constructor(
+        private fb: FormBuilder,
+        private route: ActivatedRoute,
+        private translate: TranslateService
+    ) {}
 
-  ngOnInit() {
-    this.steps = [
-      { label: 'General Data' },
-      { label: 'Address' },
-      { label: 'Education' },
-      { label: 'Experience' },
-      { label: 'Languages' },
-      { label: 'Skills' },
-      { label: 'Contact' }
-    ];
+    ngOnInit() {
+      this.updateDropdownOptions();
+      this.setSteps();
+
+      this.translate.onLangChange.subscribe(() => {
+        this.updateDropdownOptions();
+        this.setSteps();
+      });
+    }
+
+    updateDropdownOptions() {
+        this.languageLevels = [
+            { label: this.translate.instant('candidateLanguage.levels.advanced'), value: 'ADVANCED' },
+            { label: this.translate.instant('candidateLanguage.levels.intermediate'), value: 'INTERMEDIATE' },
+            { label: this.translate.instant('candidateLanguage.levels.basic'), value: 'BASIC' },
+            { label: this.translate.instant('candidateLanguage.levels.native'), value: 'NATIVE' }
+        ];
+
+        this.skillProficiencies = [
+            { label: this.translate.instant('skills.levels.beginner'), value: 'BEGINNER' },
+            { label: this.translate.instant('skills.levels.intermediate'), value: 'INTERMEDIATE' },
+            { label: this.translate.instant('skills.levels.advanced'), value: 'ADVANCED' },
+            { label: this.translate.instant('skills.levels.expert'), value: 'EXPERT' }
+        ];
+    }
+
+
+
+  setSteps() {
+        this.steps = [
+            { label: this.translate.instant('steps.generalData') },
+            { label: this.translate.instant('steps.address') },
+            { label: this.translate.instant('steps.education') },
+            { label: this.translate.instant('steps.experience') },
+            { label: this.translate.instant('steps.languages') },
+            { label: this.translate.instant('steps.skills') },
+            { label: this.translate.instant('steps.contact') }
+        ];
 
     // General Data Form
     this.generalDataForm = this.fb.group(

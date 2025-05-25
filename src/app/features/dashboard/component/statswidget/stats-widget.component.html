@@ -1,9 +1,9 @@
 <div class="stats-container">
   <div class="stats-header">
-    <h2 class="stats-title">Candidate Statistics</h2>
+    <h2 class="stats-title">{{ 'stats.title' | translate }}</h2>
     <p-card class="total-card">
       <div class="total-candidates">
-        <span class="total-label">Total Candidates:</span>
+        <span class="total-label">{{ 'stats.totalCandidates' | translate }}</span>
         <span class="candidate-count">{{ totalCandidates }}</span>
       </div>
     </p-card>
@@ -11,11 +11,11 @@
 
   <p-tabView>
     <!-- Languages Tab -->
-    <p-tabPanel header="Languages">
+    <p-tabPanel [header]="'stats.languagesTab' | translate">
       <p-card class="chart-card">
-        <h3>Candidates by Language</h3>
+        <h3>{{ 'stats.candidatesByLanguage' | translate }}</h3>
         <div *ngIf="!languageChartData" class="loading-indicator">
-          Loading language data...
+          {{ 'stats.loadingLanguageData' | translate }}
         </div>
         <p-chart
           *ngIf="languageChartData"
@@ -29,11 +29,11 @@
     </p-tabPanel>
 
     <!-- Skills Tab -->
-    <p-tabPanel header="Skills">
+    <p-tabPanel [header]="'stats.skillsTab' | translate">
       <p-card class="chart-card">
-        <h3>Candidates by Skill</h3>
+        <h3>{{ 'stats.candidatesBySkill' | translate }}</h3>
         <div *ngIf="!skillsChartData" class="loading-indicator">
-          Loading skill data...
+            {{ 'stats.loadingSkillData' | translate }}
         </div>
         <p-chart
           *ngIf="skillsChartData"
@@ -47,11 +47,11 @@
     </p-tabPanel>
 
     <!-- Experience Tab -->
-    <p-tabPanel header="Experience">
+    <p-tabPanel [header]="'stats.experienceTab' | translate">
       <p-card class="chart-card">
-        <h3>Candidates by years of experience</h3>
+        <h3>{{ 'stats.candidatesByExperience' | translate }}</h3>
         <div *ngIf="!experienceChartData" class="loading-indicator">
-          Loading experience data...
+            {{ 'stats.loadingExperienceData' | translate }}
         </div>
         <p-chart
           *ngIf="experienceChartData"

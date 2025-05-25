@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuItemComponent } from '../menuitem/menu-item.component';
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, MenuItemComponent, RouterModule],
+    imports: [CommonModule, MenuItemComponent, RouterModule, TranslateModule],
     templateUrl: './menu.component.html'
 })
 export class MenuComponent {
@@ -15,29 +17,30 @@ export class MenuComponent {
     ngOnInit() {
         this.model = [
             {
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/'] }]
+                items: [{ label: 'menu.dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/'] }]
             },
             {
-                label: 'Externals Management',
+                label: 'menu.externalsManagement',
                 items: [
-                    { label: 'Cards View', icon: 'pi pi-fw pi-id-card', routerLink: ['/candidates/card-view'] },
-                    { label: 'List View', icon: 'pi pi-fw pi-table', routerLink: ['/candidates/grid-view'] }
+                    { label: 'menu.cardsView', icon: 'pi pi-fw pi-id-card', routerLink: ['/candidates/card-view'] },
+                    { label: 'menu.listView', icon: 'pi pi-fw pi-table', routerLink: ['/candidates/grid-view'] }
                 ]
             },
             {
-                label: 'Candidates',
+                label: 'menu.candidates',
                 items: [
-                    { label: 'New CV', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-cv'] },
-                    { label: 'Candidate List', icon: 'pi pi-fw pi-list', routerLink: ['/candidates/candidate-list'] }
+                    { label: 'menu.newCV', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-cv'] },
+                    { label: 'menu.candidateList', icon: 'pi pi-fw pi-list', routerLink: ['/candidates/candidate-list'] }
                 ]
             },
             {
-                label: 'Prompt Management',
+                label: 'menu.promptManagement',
                 items: [
-                    { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
-                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
+                    { label: 'menu.newPrompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
+                    { label: 'menu.promptList', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
                 ]
             }
         ];
     }
+
 }

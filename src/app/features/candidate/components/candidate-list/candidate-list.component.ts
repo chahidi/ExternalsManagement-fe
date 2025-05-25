@@ -22,6 +22,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface FilterCriteria {
   skills: any[];
@@ -54,7 +55,8 @@ interface DropdownOption {
     TextareaModule,
     ToastModule,
     CalendarModule,
-    CheckboxModule
+    CheckboxModule,
+    TranslateModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',
@@ -76,12 +78,12 @@ export class CandidateListComponent implements OnInit {
   cities: any[] = [
     { id: '', name: 'Paris', country: null },
     { id: '', name: 'London', country: null },
-    { id: '', name: 'New York', country: null }
+    { id: '', name: 'NewYork', country: null }
   ];
   countries: any[] = [
     { id: '', name: 'France' , englishName:'France', cities :null},
     { id: '', name: 'UK', englishName:'United Kingdom', cities :null },
-    { id: '', name: 'USA' ,  englishName:'United State', cities :null}
+    { id: '', name: 'USA' ,  englishName:'United States', cities :null}
   ];
 
     filters: FilterCriteria = {
@@ -94,7 +96,8 @@ export class CandidateListComponent implements OnInit {
     private candidateService: CandidateService,
     private candidateFilterService: CandidateFilterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -102,11 +105,11 @@ export class CandidateListComponent implements OnInit {
     this.initFilterOptions();
 
     this.proficiencyLevelOptions = this.proficiencyLevels.map(level => ({
-      label: level,
+      label: this.translateService.instant(`proficiencyLevels.${level}`),
       value: level
     }));
     this.languageLevelOptions = this.languageLevels.map(lang => ({
-        label :lang,
+        label :this.translateService.instant(`languageLevels.${lang}`),
         value: lang
       }));
   }
@@ -127,11 +130,11 @@ export class CandidateListComponent implements OnInit {
     ];
 
     this.languageOptions = [
-      { name: 'English', code: 'English' },
-      { name: 'French', code: 'French' },
-      { name: 'Spanish', code: 'Spanish' },
-      { name: 'German', code: 'German' },
-      { name: 'Arabic', code: 'Arabic' }
+      { name: this.translateService.instant('languages.english'), code: 'English' },
+      { name: this.translateService.instant('languages.french'), code: 'French' },
+      { name: this.translateService.instant('languages.spanish'), code: 'Spanish' },
+      { name: this.translateService.instant('languages.german'), code: 'German' },
+      { name: this.translateService.instant('languages.arabic'), code: 'Arabic' }
     ];
   }
 
@@ -178,20 +181,14 @@ export class CandidateListComponent implements OnInit {
 
     // Create language options
     this.languageOptions = Array.from(uniqueLanguages).sort().map(language => ({
-      name: language,
+      name: this.translateService.instant(`languages.${language.toLowerCase()}`) || language,
       code: language
     }));
 
     if (this.languageOptions.length === 0) {
       // If no languages found, keep default options
       console.log('No languages found in candidates, using defaults');
-      this.languageOptions = [
-        { name: 'English', code: 'English' },
-        { name: 'French', code: 'French' },
-        { name: 'Spanish', code: 'Spanish' },
-        { name: 'German', code: 'German' },
-        { name: 'Arabic', code: 'Arabic' }
-      ];
+      this.initFilterOptions();
     } else {
       console.log('Loaded actual languages from candidates:', this.languageOptions);
     }
@@ -221,8 +218,8 @@ export class CandidateListComponent implements OnInit {
         this.loading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: err.message || 'Failed to load candidates.'
+          summary: this.translateService.instant('messages.error'),
+          detail: err.message || this.translateService.instant('messages.failedToLoadCandidates')
         });
       },
     });
@@ -273,14 +270,14 @@ export class CandidateListComponent implements OnInit {
         if (data.length === 0) {
           this.messageService.add({
             severity: 'info',
-            summary: 'No Results',
-            detail: 'No candidates match the selected filters.'
+            summary: this.translateService.instant('messages.noResults'),
+            detail: this.translateService.instant('messages.noCandidatesMatch')
           });
         } else {
           this.messageService.add({
             severity: 'success',
-            summary: 'Filters Applied',
-            detail: `Found ${data.length} candidates matching your criteria.`
+            summary: this.translateService.instant('messages.filtersApplied'),
+            detail: this.translateService.instant('messages.foundCandidates', { count: data.length })
           });
         }
       },
@@ -289,8 +286,8 @@ export class CandidateListComponent implements OnInit {
         this.loading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to filter candidates.'
+          summary: this.translateService.instant('messages.error'),
+          detail: this.translateService.instant('messages.failedToFilter')
         });
       }
     });
@@ -305,8 +302,8 @@ export class CandidateListComponent implements OnInit {
     this.loadCandidates();
     this.messageService.add({
       severity: 'info',
-      summary: 'Filters Reset',
-      detail: 'All filters have been cleared.'
+      summary: this.translateService.instant('messages.filtersReset'),
+      detail: this.translateService.instant('messages.allFiltersCleared')
     });
   }
 
@@ -319,8 +316,8 @@ export class CandidateListComponent implements OnInit {
     table.clear();
     this.messageService.add({
       severity: 'info',
-      summary: 'Table Cleared',
-      detail: 'All table filters have been cleared.'
+      summary: this.translateService.instant('messages.tableCleared'),
+      detail: this.translateService.instant('messages.allTableFiltersCleared')
     });
   }
 
@@ -489,8 +486,8 @@ addAddress(): void {
 
         this.messageService.add({
           severity: 'success',
-          summary: 'Success',
-          detail: 'Candidate updated successfully'
+          summary: this.translateService.instant('messages.success'),
+          detail: this.translateService.instant('messages.candidateUpdated')
         });
 
         this.displayEditDialog = false;
@@ -501,8 +498,8 @@ addAddress(): void {
         console.error('Error updating candidate:', err);
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: err.message || 'Failed to update candidate.'
+          summary: this.translateService.instant('messages.error'),
+          detail: err.message || this.translateService.instant('messages.failedToUpdate')
         });
         this.loading = false;
       }
@@ -511,8 +508,8 @@ addAddress(): void {
 
   confirmDelete(candidate: Candidate): void {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${candidate.fullName}?`,
-      header: 'Confirm Delete',
+      message: this.translateService.instant('messages.areYouSureDelete', { name: candidate.fullName }),
+      header: this.translateService.instant('messages.confirmDelete'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteCandidate(candidate);
@@ -528,8 +525,8 @@ addAddress(): void {
 
         this.messageService.add({
           severity: 'success',
-          summary: 'Success',
-          detail: 'Candidate deleted successfully'
+          summary: this.translateService.instant('messages.success'),
+          detail: this.translateService.instant('messages.candidateDeleted')
         });
 
         this.loading = false;
@@ -538,8 +535,8 @@ addAddress(): void {
         console.error('Error deleting candidate:', err);
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: err.message || 'Failed to delete candidate.'
+          summary: this.translateService.instant('messages.error'),
+          detail: err.message || this.translateService.instant('messages.failedToDelete')
         });
         this.loading = false;
       }
@@ -548,6 +545,6 @@ addAddress(): void {
 
   getPrimaryContact(contacts: Contact[], type: string): string {
     const contact = contacts?.find(c => c.contactType === type);
-    return contact ? contact.contactValue : 'N/A';
+    return contact ? contact.contactValue : this.translateService.instant('messages.na');
   }
 }

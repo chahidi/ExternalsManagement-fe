@@ -1,0 +1,401 @@
+{
+    "topbar": {
+        "calendar": "Calendario",
+        "messages": "Mensajes",
+        "profile": "Perfil"
+    },
+
+
+    "language": {
+        "english": "Inglés",
+        "french": "Francés",
+        "spanish": "Español"
+    },
+
+
+    "menu": {
+        "dashboard": "Panel",
+        "externalsManagement": "Gestión de externos",
+        "cardsView": "Vista de tarjetas",
+        "listView": "Vista de lista",
+        "candidates": "Candidatos",
+        "newCV": "Nuevo CV",
+        "candidateList": "Lista de candidatos",
+        "promptManagement": "Gestión de prompts",
+        "newPrompt": "Nuevo prompt",
+        "promptList": "Lista de prompts"
+    },
+
+
+    "footer": {
+        "copyright": "© 2025 NTT DATA Marruecos"
+    },
+
+
+    "auth": {
+        "access": {
+            "accessDenied": "Acceso denegado",
+            "permissionMessage": "No tienes los permisos necesarios. Por favor, contacta con los administradores.",
+            "goToDashboard": "Ir al panel"
+        },
+        "error": {
+            "errorOccured": "Ocurrió un error",
+            "resourceNotAvailable": "El recurso solicitado no está disponible.",
+            "goToDashboard": "Ir al panel"
+        },
+        "login": {
+            "welcome": "¡Bienvenido a PrimeLand!",
+            "signInToContinue": "Inicia sesión para continuar",
+            "email": "Correo electrónico",
+            "password": "Contraseña",
+            "rememberMe": "Recuérdame",
+            "forgotPassword": "¿Olvidaste tu contraseña?",
+            "signIn": "Iniciar sesión"
+        }
+    },
+
+
+    "stats": {
+        "title": "Estadísticas de los Candidatos",
+        "totalCandidates": "Total de Candidatos:",
+        "languagesTab": "Idiomas",
+        "candidatesByLanguage": "Candidatos por Idioma",
+        "skillsTab": "Competencias",
+        "candidatesBySkill": "Candidatos por Competencia",
+        "experienceTab": "Experiencia",
+        "candidatesByExperience": "Candidatos por Años de Experiencia",
+        "candidatesByExperienceRange": "Candidatos por Rango de Experiencia",
+        "noLanguages": "Ningún Idioma",
+        "noSkills": "Ninguna Competencia",
+        "noData": "Sin Datos",
+        "noDataAvailable": "No hay datos disponibles",
+        "loadingLanguageData": "Cargando los datos del idioma...",
+        "loadingSkillData": "Cargando los datos de habilidades...",
+        "loadingExperienceData": "Cargando los datos de experiencia...",
+        "years": " Años"
+    },
+
+
+     "upload": {
+        "title": "Nuevo CV avanzado",
+        "choose": "Elegir",
+        "upload": "Subir",
+        "cancel": "Cancelar",
+        "dragDropMessage": "Arrastra y suelta archivos aquí para subirlos.",
+        "cvUploadSuccess": "¡CV subido con éxito!",
+        "uploadCvError": "Error al subir el CV.",
+        "noFileSelected": "¡Ningún archivo seleccionado!"
+    },
+
+
+    "candidateLanguage": {
+        "languages": "Idioma",
+        "languagesRequired": "El idioma es requerido.",
+        "languagesPattern": "Solo se permiten letras y espacios.",
+        "level": "Nivel",
+        "levelRequired": "El nivel es requerido.",
+        "isNative": "¿Nativo?",
+        "selectLevel": "Seleccionar nivel",
+        "levels": {
+            "advanced": "Avanzado",
+            "intermediate": "Intermedio",
+            "basic": "Básico",
+            "native":  "Nativo"
+        }
+    },
+
+
+    "skills": {
+        "skillName": "Nombre de la habilidad",
+        "skillNameRequired": "El nombre de la habilidad es requerido.",
+        "proficiencyLevel": "Nivel de competencia",
+        "proficiencyRequired": "El nivel de competencia es requerido.",
+        "selectProficiency": "Seleccionar nivel de competencia",
+        "levels": {
+            "beginner": "Principiante",
+            "intermediate": "Intermedio",
+            "advanced": "Avanzado",
+            "expert": "Experto"
+        }
+    },
+
+
+    "steps": {
+        "generalData": "Datos Generales",
+        "address": "Dirección",
+        "education": "Educación",
+        "experience": "Experiencia",
+        "languages": "Idiomas",
+        "skills": "Habilidades",
+        "contact": "Contacto"
+    },
+
+
+    "general": {
+        "fullName": "Nombre completo",
+        "fullNameRequired": "El nombre completo es requerido.",
+        "onlyLettersAllowed": "Solo se permiten letras y espacios.",
+        "birthDate": "Fecha de nacimiento",
+        "birthDateRequired": "La fecha de nacimiento es requerida.",
+        "underAge": "Debes tener al menos 18 años.",
+        "overAge": "La edad excede el límite permitido.",
+        "yearsOfExperience": "Años de experiencia",
+        "validNumber": "Por favor, introduce un número válido.",
+        "invalidExperience": "La experiencia excede lo posible dado tu fecha de nacimiento.",
+        "gender": "Género",
+        "male": "Hombre",
+        "female": "Mujer",
+        "genderRequired": "El género es requerido.",
+        "mainTechnology": "Tecnología principal",
+        "mainTechnologyRequired": "La tecnología principal es requerida.",
+        "summary": "Resumen",
+        "summaryRequired": "El resumen es requerido."
+    },
+
+
+    "address": {
+        "street": "Calle",
+        "streetRequired": "La calle es requerida.",
+        "postalCode": "Código postal",
+        "postalCodeRequired": "El código postal es requerido.",
+        "postalCodePattern": "3-10 caracteres: solo letras, dígitos, espacios o guiones.",
+        "minLength3": "Debe tener al menos 3 caracteres.",
+        "fullAddress": "Dirección completa",
+        "fullAddressRequired": "La dirección completa es requerida.",
+        "city": "Ciudad",
+        "country": "País",
+        "onlyLettersAllowed": "Solo se permiten letras, espacios, apóstrofes, puntos y guiones."
+    },
+
+
+    "education": {
+        "institution": "Institución",
+        "institutionRequired": "La institución es requerida.",
+        "startDate": "Fecha de inicio",
+        "startDateRequired": "La fecha de inicio es requerida.",
+        "endDate": "Fecha de fin",
+        "endDateRequired": "La fecha de fin es requerida.",
+        "invalidDateRange": "La fecha de fin no puede ser anterior a la fecha de inicio.",
+        "diploma": "Diploma",
+        "diplomaRequired": "El diploma es requerido.",
+        "allowedCharacters": "Solo se permiten letras, números, espacios, guiones, puntos, signos &, comas y apóstrofes.",
+        "diplomaPattern": "El diploma solo puede incluir letras, números y símbolos comunes (como ., +, #, etc.)."
+    },
+
+
+    "experience": {
+        "companyName": "Nombre de la empresa",
+        "patternCompany": "Solo se permiten letras, números, espacios, &, ', +, ., y -.",
+        "position": "Puesto",
+        "patternPosition": "Solo se permiten letras, espacios, barras (/) y guiones (-).",
+        "startDate": "Fecha de inicio",
+        "datePattern": "Debe estar en formato DD-MM-AAAA.",
+        "endDate": "Fecha de fin",
+        "endDateFuture": "La fecha de fin no puede estar en el futuro.",
+        "invalidDateRange": "La fecha de inicio debe ser anterior a la fecha de fin.",
+        "description": "Descripción",
+        "descriptionPattern": "Permitido: letras, números, signos de puntuación como . , ! ? () - : ; / ' \" #"
+    },
+
+
+    "contact": {
+        "contactType": "Tipo de contacto",
+        "selectContactType": "Selecciona un tipo de contacto",
+        "contactTypeRequired": "El tipo de contacto es obligatorio",
+        "contactValue": "Valor de contacto",
+        "contactValueRequired": "El valor de contacto es obligatorio",
+        "invalidEmail": "Formato de correo electrónico inválido",
+        "invalidPhone": "Formato de número de teléfono inválido",
+        "invalidLinkedIn": "Formato de URL de LinkedIn inválido",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "linkedIn": "LinkedIn"
+    },
+
+
+    "navigation": {
+        "previous": "Anterior",
+        "previousTitle": "Ir al paso anterior",
+        "clear": "Limpiar",
+        "clearTitle": "Limpiar la sección actual",
+        "next": "Siguiente",
+        "nextTitle": "Ir al siguiente paso",
+        "save": "Guardar",
+        "saveTitle": "Guardar el formulario"
+    },
+
+
+    "cities": {
+        "Paris": "París",
+        "London": "Londres",
+        "NewYork": "Nueva York"
+    },
+
+
+    "countries": {
+        "France": "Francia",
+        "UK": "Reino Unido",
+        "USA": "Estados Unidos"
+    },
+
+
+    "proficiencyLevels": {
+        "BEGINNER": "Principiante",
+        "INTERMEDIATE": "Intermedio",
+        "EXPERT": "Experto"
+    },
+
+
+    "languageLevels": {
+        "BEGINNER": "Principiante",
+        "LOWER_INTERMEDIATE": "Intermedio bajo",
+        "INTERMEDIATE": "Intermedio",
+        "UPPER_INTERMEDIATE": "Intermedio alto",
+        "ADVANCED": "Avanzado"
+    },
+
+
+    "languages": {
+        "english": "Inglés",
+        "french": "Francés",
+        "spanish": "Español",
+        "german": "Alemán",
+        "arabic": "Árabe"
+    },
+
+
+
+    "messages": {
+        "error": "Error",
+        "failedToLoadCandidates": "Error al cargar candidatos.",
+        "noResults": "Sin resultados",
+        "noCandidatesMatch": "Ningún candidato coincide con los filtros seleccionados.",
+        "filtersApplied": "Filtros aplicados",
+        "foundCandidates": "Encontrados {{count}} candidatos que coinciden con sus criterios.",
+        "failedToFilter": "Error al filtrar candidatos.",
+        "filtersReset": "Filtros restablecidos",
+        "allFiltersCleared": "Todos los filtros han sido borrados.",
+        "tableCleared": "Tabla borrada",
+        "allTableFiltersCleared": "Todos los filtros de la tabla han sido borrados.",
+        "success": "Éxito",
+        "candidateUpdated": "Candidato actualizado con éxito",
+        "failedToUpdate": "Error al actualizar el candidato.",
+        "candidateDeleted": "Candidato eliminado con éxito",
+        "failedToDelete": "Error al eliminar el candidato.",
+        "confirmDelete": "Confirmar eliminación",
+        "areYouSureDelete": "¿Está seguro de que desea eliminar a {{name}}?",
+        "na": "No disponible"
+    },
+
+
+    "candidateList": {
+        "titles": {
+            "candidate_list": "Lista de candidatos",
+            "filter_candidates": "Filtrar candidatos",
+            "confirm": "Confirmar",
+            "edit_candidate": "Editar candidato",
+            "basic_information": "Información básica",
+            "addresses": "Direcciones",
+            "contacts": "Contactos",
+            "experiences": "Experiencias",
+            "skills": "Habilidades",
+            "educations": "Formaciones",
+            "languages": "Idiomas"
+
+        },
+
+        "labels": {
+            "skills": "Habilidades",
+            "language": "Idioma",
+            "min_years_experience": "Años mínimos de experiencia",
+            "full_name": "Nombre completo",
+            "birth_date": "Fecha de nacimiento",
+            "years_of_experience": "Años de experiencia",
+            "gender": "Género",
+            "main_technology": "Tecnología principal",
+            "summary": "Resumen",
+            "street": "Calle",
+            "postal_code": "Código postal",
+            "full_address": "Dirección completa",
+            "city": "Ciudad",
+            "country": "País",
+            "contact_type": "Tipo de contacto",
+            "contact_value": "Valor del contacto",
+            "company_name": "Nombre de la empresa",
+            "position": "Puesto",
+            "start_date": "Fecha de inicio",
+            "end_date": "Fecha de fin",
+            "description": "Descripción",
+            "skill_name": "Nombre de la habilidad",
+            "proficiency_level": "Nivel de competencia",
+            "institution": "Institución",
+            "degree": "Título",
+            "diploma": "Diploma",
+            "english_description": "Descripción en inglés",
+            "full_description": "Descripción completa",
+            "language_english": "Idioma (en inglés)",
+            "level": "Nivel",
+            "native": "Nativo"
+
+        },
+
+        "placeholders": {
+            "select_skills": "Seleccionar habilidades",
+            "select_language": "Seleccionar un idioma",
+            "enter_years": "Ingresar años",
+            "search_keyword": "Buscar palabra clave",
+            "select_gender": "Seleccionar género",
+            "select_city": "Seleccionar una ciudad",
+            "select_country": "Seleccionar un país",
+            "select_contact_type": "Seleccionar tipo de contacto",
+            "select_proficiency_level": "Seleccionar nivel de competencia",
+            "select_level": "Seleccionar nivel"
+        },
+
+        "buttons": {
+            "reset": "Restablecer",
+            "apply_filters": "Aplicar filtros",
+            "clear": "Borrar",
+            "add_address": "Agregar dirección",
+            "add_contact": "Agregar contacto",
+            "add_experience": "Agregar experiencia",
+            "add_skill": "Agregar habilidad",
+            "add_education": "Agregar formación",
+            "add_language": "Agregar idioma",
+            "cancel": "Cancelar",
+            "save": "Guardar"
+
+        },
+
+        "tableHeaders": {
+            "full_name": "Nombre completo",
+            "main_tech": "Tecnología principal",
+            "location": "Ubicación",
+            "education": "Formación",
+            "experience": "Experiencia",
+            "skills": "Habilidades",
+            "contact": "Contacto",
+            "actions": "Acciones"
+        },
+
+        "messages": {
+            "na": "No disponible",
+            "unknown_city": "Ciudad desconocida",
+            "unknown_country": "País desconocido",
+            "no_candidates_found": "No se encontraron candidatos"
+
+        },
+
+        "options": {
+            "male": "Hombre",
+            "female": "Mujer",
+            "email": "Correo electrónico",
+            "phone": "Teléfono"
+
+        }
+    }
+
+
+
+
+}

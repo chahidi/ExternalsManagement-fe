@@ -1,0 +1,399 @@
+{
+    "topbar": {
+        "calendar": "Calendar",
+        "messages": "Messages",
+        "profile": "Profile"
+    },
+
+
+    "language": {
+        "english": "English",
+        "french": "French",
+        "spanish": "Spanish"
+    },
+
+
+    "menu": {
+        "dashboard": "Dashboard",
+        "externalsManagement": "Externals Management",
+        "cardsView": "Cards View",
+        "listView": "List View",
+        "candidates": "Candidates",
+        "newCV": "New CV",
+        "candidateList": "Candidate List",
+        "promptManagement": "Prompt Management",
+        "newPrompt": "New Prompt",
+        "promptList": "Prompt List"
+    },
+
+
+    "footer": {
+        "copyright": "© 2025 NTT DATA Morocco"
+    },
+
+
+    "auth": {
+        "access": {
+            "accessDenied": "Access denied",
+            "permissionMessage": "You do not have the necessary permissions. Please contact admins.",
+            "goToDashboard": "Go to dashboard"
+        },
+        "error": {
+            "errorOccured": "Error occurred",
+            "resourceNotAvailable": "Requested resource is not available.",
+            "goToDashboard": "Go to Dashboard"
+        },
+        "login": {
+            "welcome": "Welcome to PrimeLand!",
+            "signInToContinue": "Sign in to continue",
+            "email": "Email",
+            "password": "Password",
+            "rememberMe": "Remember me",
+            "forgotPassword": "Forgot password?",
+            "signIn": "Sign In"
+        }
+    },
+
+
+    "stats": {
+        "title": "Candidate Statistics",
+        "totalCandidates": "Total Candidates:",
+        "languagesTab": "Languages",
+        "candidatesByLanguage": "Candidates by Language",
+        "skillsTab": "Skills",
+        "candidatesBySkill": "Candidates by Skill",
+        "experienceTab": "Experience",
+        "candidatesByExperience": "Candidates by Years of Experience",
+        "candidatesByExperienceRange": "Candidates by Experience Range",
+        "noLanguages": "No Languages",
+        "noSkills": "No Skills",
+        "noData": "No Data",
+        "noDataAvailable": "No data available",
+        "loadingLanguageData": "Loading language data...",
+        "loadingSkillData": "Loading skill data...",
+        "loadingExperienceData": "Loading experience data...",
+        "years": " Years"
+    },
+
+
+    "upload": {
+        "title": "Advanced New Curriculum Vitae",
+        "choose": "Choose",
+        "upload": "Upload",
+        "cancel": "Cancel",
+        "dragDropMessage": "Drag and drop files here to upload.",
+        "cvUploadSuccess": "CV uploaded successfully!",
+        "uploadCvError": "Error uploading CV.",
+        "noFileSelected": "No file selected!"
+    },
+
+
+    "candidateLanguage": {
+        "languages": "Language",
+        "languagesRequired": "Language is required.",
+        "languagesPattern": "Only letters and spaces are allowed.",
+        "level": "Level",
+        "levelRequired": "Level is required.",
+        "isNative": "Native?",
+        "selectLevel": "Select Level",
+        "levels": {
+            "advanced": "Advanced",
+            "intermediate": "Intermediate",
+            "basic": "Basic",
+            "native": "Native"
+        }
+    },
+
+
+    "skills": {
+        "skillName": "Skill Name",
+        "skillNameRequired": "Skill Name is required.",
+        "proficiencyLevel": "Proficiency Level",
+        "proficiencyRequired": "Proficiency Level is required.",
+        "selectProficiency": "Select Proficiency",
+        "levels": {
+            "beginner": "Beginner",
+            "intermediate": "Intermediate",
+            "advanced": "Advanced",
+            "expert": "Expert"
+        }
+    },
+
+
+    "steps": {
+        "generalData": "General Data",
+        "address": "Address",
+        "education": "Education",
+        "experience": "Experience",
+        "languages": "Languages",
+        "skills": "Skills",
+        "contact": "Contact"
+    },
+
+
+    "general": {
+        "fullName": "Full Name",
+        "fullNameRequired": "Full Name is required.",
+        "onlyLettersAllowed": "Only letters and spaces are allowed.",
+        "birthDate": "Birth Date",
+        "birthDateRequired": "Birth Date is required.",
+        "underAge": "You must be at least 18 years old.",
+        "overAge": "Age exceeds allowed limit.",
+        "yearsOfExperience": "Years of Experience",
+        "validNumber": "Please enter a valid number.",
+        "invalidExperience": "Experience exceeds what is possible given your birth date.",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "genderRequired": "Gender is required.",
+        "mainTechnology": "Main Technology",
+        "mainTechnologyRequired": "Main Technology is required.",
+        "summary": "Summary",
+        "summaryRequired": "Summary is required."
+    },
+
+
+    "address": {
+        "street": "Street",
+        "streetRequired": "Street is required.",
+        "postalCode": "Postal Code",
+        "postalCodeRequired": "Postal Code is required.",
+        "postalCodePattern": "3-10 characters: letters, digits, spaces or hyphens only.",
+        "minLength3": "Must be at least 3 characters.",
+        "fullAddress": "Full Address",
+        "fullAddressRequired": "Full Address is required.",
+        "city": "City",
+        "country": "Country",
+        "onlyLettersAllowed": "Only letters, spaces, apostrophes, dots, and hyphens are allowed."
+    },
+
+
+    "education": {
+        "institution": "Institution",
+        "institutionRequired": "Institution is required.",
+        "startDate": "Start Date",
+        "startDateRequired": "Start date is required.",
+        "endDate": "End Date",
+        "endDateRequired": "End date is required.",
+        "invalidDateRange": "End date cannot be earlier than start date.",
+        "diploma": "Diploma",
+        "diplomaRequired": "Diploma is required.",
+        "allowedCharacters": "Only letters, numbers, spaces, hyphens, dots, ampersands, commas, and apostrophes are allowed.",
+        "diplomaPattern": "Diploma can only include letters, numbers, and common symbols (like ., +, #, etc.)."
+    },
+
+
+    "experience": {
+        "companyName": "Company Name",
+        "patternCompany": "Only letters, numbers, spaces, &, ', +, ., and - are allowed.",
+        "position": "Position",
+        "patternPosition": "Only letters, spaces, slashes (/) and dashes (-) are allowed.",
+        "startDate": "Start Date",
+        "datePattern": "Must be in DD-MM-YYYY format.",
+        "endDate": "End Date",
+        "endDateFuture": "End Date cannot be in the future.",
+        "invalidDateRange": "Start Date must come before End Date.",
+        "description": "Description",
+        "descriptionPattern": "Allowed: letters, numbers, punctuation like . , ! ? () - : ; / ' \" #"
+    },
+
+
+    "contact": {
+        "contactType": "Contact Type",
+        "contactTypeRequired": "Contact Type is required.",
+        "selectContactType": "Select Contact Type",
+        "contactValue": "Contact Value",
+        "contactValueRequired": "Contact Value is required.",
+        "invalidEmail": "Please enter a valid email address.",
+        "invalidPhone": "Please enter a valid phone number.",
+        "invalidLinkedIn": "Please enter a valid LinkedIn profile URL.",
+        "email": "Email",
+        "phone": "Phone",
+        "linkedIn": "LinkedIn"
+    },
+
+
+    "navigation": {
+        "previous": "Previous",
+        "previousTitle": "Go to the previous step in the form",
+        "clear": "Clear",
+        "clearTitle": "Clear the current section of the form",
+        "next": "Next",
+        "nextTitle": "Go to the next step in the form",
+        "save": "Save",
+        "saveTitle": "Save and submit the form"
+    },
+
+
+    "cities": {
+        "Paris": "Paris",
+        "London": "London",
+        "NewYork": "New York"
+    },
+
+
+    "countries": {
+        "France": "France",
+        "UK": "United Kingdom",
+        "USA": "United States"
+    },
+
+
+    "proficiencyLevels": {
+        "BEGINNER": "Beginner",
+        "INTERMEDIATE": "Intermediate",
+        "EXPERT": "Expert"
+    },
+
+
+    "languageLevels": {
+        "BEGINNER": "Beginner",
+        "LOWER_INTERMEDIATE": "Lower Intermediate",
+        "INTERMEDIATE": "Intermediate",
+        "UPPER_INTERMEDIATE": "Upper Intermediate",
+        "ADVANCED": "Advanced"
+    },
+
+
+    "languages": {
+        "english": "English",
+        "french": "French",
+        "spanish": "Spanish",
+        "german": "German",
+        "arabic": "Arabic"
+    },
+
+
+
+    "messages": {
+        "error": "Error",
+        "failedToLoadCandidates": "Failed to load candidates.",
+        "noResults": "No results",
+        "noCandidatesMatch": "No candidates match the selected filters.",
+        "filtersApplied": "Filters applied",
+        "foundCandidates": "Found {{count}} candidates matching your criteria.",
+        "failedToFilter": "Failed to filter candidates.",
+        "filtersReset": "Filters reset",
+        "allFiltersCleared": "All filters have been cleared.",
+        "tableCleared": "Table cleared",
+        "allTableFiltersCleared": "All table filters have been cleared.",
+        "success": "Success",
+        "candidateUpdated": "Candidate updated successfully",
+        "failedToUpdate": "Failed to update candidate.",
+        "candidateDeleted": "Candidate deleted successfully",
+        "failedToDelete": "Failed to delete candidate.",
+        "confirmDelete": "Confirm deletion",
+        "areYouSureDelete": "Are you sure you want to delete {{name}}?",
+        "na": "Not available"
+    },
+
+
+    "candidateList": {
+        "titles": {
+           "candidate_list": "Candidate List",
+           "filter_candidates": "Filter Candidates",
+           "confirm": "Confirm",
+           "edit_candidate": "Edit Candidate",
+           "basic_information": "Basic Information",
+            "addresses": "Addresses",
+            "contacts": "Contacts",
+            "experiences": "Experiences",
+            "skills": "Skills",
+            "educations": "Education",
+            "languages": "Languages"
+        },
+
+        "labels": {
+            "skills": "Skills",
+            "language": "Language",
+            "min_years_experience": "Minimum Years Of Experience",
+            "full_name": "Full Name",
+            "birth_date": "Birth Date",
+            "years_of_experience": "Years of Experience",
+            "gender": "Gender",
+            "main_technology": "Main Technology",
+            "summary": "Summary",
+            "street": "Street",
+            "postal_code": "Postal Code",
+            "full_address": "Full Address",
+            "city": "City",
+            "country": "Country",
+            "contact_type": "Contact Type",
+            "contact_value": "Contact Value",
+            "company_name": "Company Name",
+            "position": "Position",
+            "start_date": "Start Date",
+            "end_date": "End Date",
+            "description": "Description",
+            "skill_name": "Skill Name",
+            "proficiency_level": "Proficiency Level",
+            "institution": "Institution",
+            "degree": "Degree",
+            "diploma": "Diploma",
+            "english_description": "Description in English",
+            "full_description": "Full Description",
+            "language_english": "Language (in English)",
+            "level": "Level",
+            "native": "Native"
+        },
+
+        "placeholders": {
+            "select_skills": "Select Skills",
+            "select_language": "Select Language",
+            "enter_years": "Enter years",
+            "search_keyword": "Search keyword",
+            "select_gender": "Select Gender",
+            "select_city": "Select a City",
+            "select_country": "Select a Country",
+            "select_contact_type": "Select Contact Type",
+            "select_proficiency_level": "Select Proficiency Level",
+            "select_level": "Select Level"
+        },
+
+        "buttons": {
+            "reset": "Reset",
+            "apply_filters": "Apply filters",
+            "clear": "Clear",
+            "add_address": "Add Address",
+            "add_contact": "Add Contact",
+            "add_experience": "Add Experience",
+            "add_skill": "Add Skill",
+            "add_education": "Add Education",
+            "add_language": "Add Language",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+
+        "tableHeaders": {
+            "full_name": "Full Name",
+            "main_tech": "Main Technology",
+            "location": "Location",
+            "education": "Education",
+            "experience": "Experience",
+            "skills": "Skills",
+            "contact": "Contact",
+            "actions": "Actions"
+        },
+
+        "messages": {
+            "na": "Not Available",
+            "unknown_city": "Unknown City",
+            "unknown_country": "Unknown Country",
+            "no_candidates_found": "No candidates found"
+
+        },
+
+        "options": {
+            "male": "Male",
+            "female": "Female",
+            "email": "Email",
+            "phone": "Phone"
+        }
+    }
+
+
+
+
+
+
+}

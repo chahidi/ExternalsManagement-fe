@@ -62,9 +62,9 @@
         <th>Started At</th>
         <th>Remaining Time</th>
         <th>Status</th>
+        <th>Comments</th>
         <th>Links Generated</th>
         <th>Actions</th>
-        <th>Comments</th>
       </tr>
     </ng-template>
 
@@ -82,28 +82,30 @@
             }">
             {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
           </span>
-        </td>
-        <td>{{ interview.linkGenerationCount || 0 }}</td>
-        <td>
+
+        <td style="text-align:center"> {{ interview.comment || "---" }}</td>
+
+        <td style="text-align:center">{{ interview.linkGenerationCount || 0 }}</td>
+        <td style="text-align:center">
           <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details"
             (click)="viewDetails(interview)"></button>
           <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail"
             (click)="sendMail(interview)"></button>
           <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" pTooltip="Generate New Link"
             (click)="generateNewLink(interview)"></button>
-          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit"
+          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Add Comment"
             (click)="editInterview(interview)"></button>
           <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete"
             (click)="deleteInterview(interview)"></button>
         </td>
 
-        <td>{{ interview.comment || "---" }}</td>
+
 
       </tr>
     </ng-template>
   </p-table>
 
-  <!-- Details Dialog -->
+  <!-- View Details -->
   <p-dialog header="Interview Details" [(visible)]="displayDetailsDialog" modal="modal" [style]="{ maxWidth: '90vw' }">
     <div *ngIf="selectedInterview">
       <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
@@ -116,44 +118,16 @@
     </div>
   </p-dialog>
 
-  <p-dialog header="Edit Interview" [(visible)]="displayEditFormDialog" [modal]="true" [style]="{ maxWidth: '90vw'  }">
-    <div class="flex items-center gap-4 mb-3">
-      <label class="font-semibold w-32">Candidate Name</label>
-      <strong>{{ selectedInterview?.candidate!.fullName }}</strong>
+  <!-- Add Comment  -->
+
+  <p-dialog header="Comment" [(visible)]="displayEditFormDialog" [modal]="true" [style]="{ maxWidth: '90vw'  }">
+
+    <div class="flex flex-col gap-2 mb-3" style="width: 100%;">
+      <label class="font-semibold">Add Comment</label>
+      <textarea pInputTextarea autoResize style="width: 100%; min-width: 400px;" rows="3" [(ngModel)]="commentText"
+        placeholder="Write a comment...">
+    </textarea>
     </div>
-    <div class="flex items-center gap-4 mb-3">
-      <label class="font-semibold w-32">Main Tech</label>
-      <strong>{{ selectedInterview?.mainTech }}</strong>
-    </div>
-
-    <div class="flex items-center gap-4 mb-3">
-      <label class="font-semibold w-32">Started At</label>
-      <strong>{{ selectedInterview?.startedAt | date: 'medium' }}</strong>
-    </div>
-
-
-    <div class="flex items-center gap-4 mb-3">
-      <label class="font-semibold w-32">Email</label>
-      <input pInputText class="flex-auto" [value]="getEmail(selectedInterview?.candidate)" placeholder="Enter email" />
-    </div>
-
-
-    <div class="flex items-center gap-4 mb-3">
-      <label class="font-semibold w-32">Status</label>
-      <select class="p-inputtext flex-auto" [ngModel]="selectedInterview?.isPassed">
-        <option [ngValue]="true">Passed</option>
-        <option [ngValue]="false">Not Yet</option>
-      </select>
-    </div>
-
-    <div class="flex items-start gap-4 mb-3">
-      <label class="font-semibold w-32 mt-1">Comment</label>
-      <textarea pInputTextarea rows="3" [ngModel]="selectedInterview?.comment"
-        placeholder="Write a comment..."></textarea>
-    </div>
-
-
-
 
     <div class="flex justify-end gap-2 mt-4">
       <p-button label="Cancel" severity="secondary" (click)="displayEditFormDialog = false" />

@@ -46,6 +46,8 @@ export class InterviewListComponent implements OnInit {
   displayEditFormDialog = false;
 
   selectedInterview: InterviewInstance | null = null;
+  commentText: string = '';
+
 
   isEditMode = false;
   mailDialogVisible = false;
@@ -202,6 +204,7 @@ NTT DATA MOROCCO`;
 
   editInterview(interview: InterviewInstance): void {
     this.selectedInterview = interview;
+    this.commentText = interview.comment || '';
     this.displayEditFormDialog = true;
     console.log('Edit clicked:', interview);
 
@@ -214,13 +217,12 @@ NTT DATA MOROCCO`;
   saveInterviewChanges(): void {
     console.log("enter save method")
     if (!this.selectedInterview) return;
-    console.log("zvrtbtb")
+    this.selectedInterview.comment = this.commentText;
     this.loading = true;
     let interiewInstanceResp = this.interviewService.updateInterview(this.selectedInterview.id!, this.selectedInterview).subscribe({
       next: (updatedInterview) => {
         const index = this.interviews.findIndex(i => i.id === updatedInterview.id);
         if (index !== -1) {
-          console.log("poooool")
 
           this.interviews[index] = updatedInterview;
           console.log('Updated Interview Comment:', updatedInterview.comment);
@@ -233,11 +235,10 @@ NTT DATA MOROCCO`;
         });
 
         this.displayEditFormDialog = false;
-        this.selectedInterview = null;
         this.loading = false;
+        this.selectedInterview = null;
       },
       error: (err) => {
-        console.log("azert")
         console.error('Error updating interview:', err);
         this.messageService.add({
           severity: 'error',

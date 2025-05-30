@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="card">
     <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="true"></p-steps>
 
@@ -258,6 +259,13 @@
               <ng-container *ngIf="languageForm.get('language')?.hasError('pattern')">
                 <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
               </ng-container>
+            </small>
+          </div>
+          <div class="p-field">
+            <label for="description">Description</label>
+            <textarea id="description" rows="3" pInputTextarea formControlName="description"></textarea>
+            <small *ngIf="languageForm.get('description')?.touched && languageForm.get('description')?.hasError('maxlength')">
+              <i class="pi pi-times-circle"></i> Description must be at most 500 characters.
             </small>
           </div>
           <div class="p-field">

@@ -1,8 +1,7 @@
-import { Candidate } from './candidate';
-
 export interface Language {
-  id: string;
-  candidate?: Candidate;
+  id: string;  
+  description: string; 
+  englishDescription: string; 
   description: string;
   englishDescription: string;
   fullDescription: string;

@@ -1,8 +1,5 @@
-import { Candidate } from './candidate';
-
 export interface Contact {
-  id: string;
-  candidateId: Candidate | string ;
+  id: string; 
   contactType: string;
   contactValue: string;
 }

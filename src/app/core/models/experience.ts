@@ -1,8 +1,6 @@
-import { Candidate } from './candidate';
 
 export interface Experience {
-  id: string;
-  candidateId: Candidate | string;
+  id: string; 
   companyName: string;
   position: string;
   startDate: string;

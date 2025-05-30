@@ -8,7 +8,7 @@ import {
   AbstractControl,
   ValidationErrors
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PanelModule } from 'primeng/panel';
 import { StepsModule } from 'primeng/steps';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,7 +17,10 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { Candidate } from '../../../../core/models/candidate';
+import { NewCvService } from '../../../../core/services/new-cv.service';
 
 @Component({
   selector: 'app-candidate-form',
@@ -32,21 +35,24 @@ import { MenuItem } from 'primeng/api';
     CheckboxModule,
     ReactiveFormsModule,
     DropdownModule,
-    RadioButtonModule
+    RadioButtonModule,
+    ToastModule
   ],
   templateUrl: './stepper-form.component.html',
-  styleUrls: ['./stepper-form.component.scss']
+  styleUrls: ['./stepper-form.component.scss'],
+  providers: [MessageService]
 })
 export class StepperFormComponent implements OnInit {
   steps: MenuItem[] = [];
   activeIndex: number = 0;
   extractedData: any;
 
-
   languageLevels = [
     { label: 'Advanced', value: 'ADVANCED' },
+    { label: 'Upper Intermediate', value: 'UPPER_INTERMEDIATE' },
     { label: 'Intermediate', value: 'INTERMEDIATE' },
-    { label: 'Basic', value: 'BASIC' },
+    { label: 'Lower Intermediate', value: 'LOWER_INTERMEDIATE' },
+    { label: 'Basic', value: 'BEGINNER' },
     { label: 'Native', value: 'NATIVE' }
   ];
 
@@ -65,7 +71,13 @@ export class StepperFormComponent implements OnInit {
   skillsForm!: FormGroup;
   contactForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private newCvService: NewCvService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.steps = [
@@ -78,60 +90,63 @@ export class StepperFormComponent implements OnInit {
       { label: 'Contact' }
     ];
 
-    // General Data Form
-    this.generalDataForm = this.fb.group(
-      {
-        fullName: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
-        birthDate: ['', [Validators.required, this.ageValidator]],
-        yearsOfExperience: [
-          null,
-          [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0)]
-        ],
-        gender: ['', Validators.required],
-        mainTech: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9+#.\- ]+$/)]],
-        summary: ['', Validators.required]
-      },
-      { validators: this.experienceAgeValidator }
-    );
+    this.generalDataForm = this.fb.group({
+      fullName: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
+      birthDate: ['', [Validators.required, this.ageValidator]],
+      yearsOfExperience: [
+        null,
+        [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0)]
+      ],
+      gender: ['', Validators.required],
+      mainTech: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9+#.\- ]+$/)]],
+      summary: ['', Validators.required]
+    }, { validators: this.experienceAgeValidator });
 
     this.addressForm = this.fb.group({
-        street: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s\-#.,'\/]+$/)]],
-        postalCode: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9\\s-]{3,10}$')]],
+      street: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s\-#.,'\/]+$/)]],
+      postalCode: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9\s-]{3,10}$')]],
       fullAddress: ['', Validators.required],
       city: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
-      country: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
+      country: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]]
     });
 
-    this.educationForm = this.fb.group({
-        institution: ['', [
-          Validators.required,
-          Validators.pattern('^[A-Za-z0-9\\s\\-\\.\\&\\,\'\"]+$')
-        ]],
+    this.educationForm = this.fb.group(
+      {
+        institution: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern('^[A-Za-z0-9\\s\\-\\.\\&\\,\'\"]+$')
+          ]
+        ],
         startDate: ['', Validators.required],
         endDate: ['', Validators.required],
-        diploma: ['', [
-            Validators.required,
-            Validators.pattern(/^[A-Za-z0-9\s,.\-'\+#&()]+$/)
-          ]]
+        diploma: [
+          '',
+          [Validators.required, Validators.pattern(/^[A-Za-z0-9\s,.\-'\+#&()]+$/)]
+        ]
       },
-      { validators: this.dateRangeValidator } );
+      { validators: this.dateRangeValidator }
+    );
 
     this.experienceForm = this.fb.group(
-        {
-          companyName: ['', Validators.pattern("^[A-Za-z0-9&'’+.,\\-\\s]+$")],
-          position: ['',  Validators.pattern('^[A-Za-z\\s/-]+$')],
-          startDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
-          endDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
-          description: ['', Validators.pattern('^[A-Za-z0-9\\s,.!?()\\-:;/\'"#\\n]+$')]
-        },
-        { validators: this.experienceDateValidator }
-      );
+      {
+        companyName: ['', Validators.pattern("^[A-Za-z0-9&'’+.,\\-\\s]+$")],
+        position: ['', Validators.pattern('^[A-Za-z\\s/-]+$')],
+        startDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+        endDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+        description: ['', Validators.pattern('^[A-Za-z0-9\\s,.!?()\\-:;/\'"#\\n]+$')]
+      },
+      { validators: this.experienceDateValidator }
+    );
 
-    // validator for language
     this.languageForm = this.fb.group({
       language: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
       level: ['', Validators.required],
-      isNative: [false]
+      isNative: [false],
+      description: [''],
+      englishDescription: [''],
+      languageInEnglish: ['']
     });
 
     this.skillsForm = this.fb.group({
@@ -141,36 +156,36 @@ export class StepperFormComponent implements OnInit {
 
     this.contactForm = this.fb.group({
       contactType: ['Email', Validators.required],
-      contactValue: ['', [Validators.required,]]
+      contactValue: ['', [Validators.required]]
     });
 
     this.contactForm.get('contactType')?.valueChanges.subscribe((type: string) => {
-        const contactControl = this.contactForm.get('contactValue');
-        if (!contactControl) return;
+      const contactControl = this.contactForm.get('contactValue');
+      if (!contactControl) return;
 
-        contactControl.clearValidators();
+      contactControl.clearValidators();
 
-        if (type === 'Email') {
-          contactControl.setValidators([
-            Validators.required,
-            Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
-          ]);
-        } else if (type === 'Phone') {
-          contactControl.setValidators([
-            Validators.required,
-            Validators.pattern(/^\+?\d{10,15}$/)
-          ]);
-        } else if (type === 'LinkedIn') {
-          contactControl.setValidators([
-            Validators.required,
-            Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)
-          ]);
-        } else {
-          contactControl.setValidators([Validators.required]);
-        }
+      if (type === 'Email') {
+        contactControl.setValidators([
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+        ]);
+      } else if (type === 'Phone') {
+        contactControl.setValidators([
+          Validators.required,
+          Validators.pattern(/^\+?\d{10,15}$/)
+        ]);
+      } else if (type === 'LinkedIn') {
+        contactControl.setValidators([
+          Validators.required,
+          Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)
+        ]);
+      } else {
+        contactControl.setValidators([Validators.required]);
+      }
 
-        contactControl.updateValueAndValidity();
-      });
+      contactControl.updateValueAndValidity();
+    });
 
     this.route.paramMap.subscribe(params => {
       const navigationData = history.state.extractedData;
@@ -214,27 +229,33 @@ export class StepperFormComponent implements OnInit {
       });
     }
 
-        const experience = this.extractedData.experiences?.[0] || {};
-    this.experienceForm.patchValue({
-    companyName: experience.companyName || '',
-    position: experience.position || '',
-    startDate: experience.startDate || '',
-    endDate: experience.endDate || '',
-    description: experience.description || ''
-    });
+    if (this.extractedData.experiences && this.extractedData.experiences.length > 0) {
+      this.experienceForm.patchValue({
+        companyName: this.extractedData.experiences[0].companyName || '',
+        position: this.extractedData.experiences[0].position || '',
+        startDate: this.extractedData.experiences[0].startDate || '',
+        endDate: this.extractedData.experiences[0].endDate || '',
+        description: this.extractedData.experiences[0].description || ''
+      });
+    }
 
-    // ;anguage map
     if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
       this.languageForm.patchValue({
         language: this.extractedData.naturalLanguages[0].language || '',
         level: this.extractedData.naturalLanguages[0].level || '',
-        isNative: this.extractedData.naturalLanguages[0].isNative || this.extractedData.naturalLanguages[0].description === 'Native' || false
+        isNative: this.extractedData.naturalLanguages[0].isNative || this.extractedData.naturalLanguages[0].description === 'Native' || false,
+        description: this.extractedData.naturalLanguages[0].description || '',
+        englishDescription: this.extractedData.naturalLanguages[0].englishDescription || '',
+        languageInEnglish: this.extractedData.naturalLanguages[0].languageInEnglish || ''
       });
     } else if (this.extractedData.languages && this.extractedData.languages.length > 0) {
       this.languageForm.patchValue({
         language: this.extractedData.languages[0].language || '',
         level: this.extractedData.languages[0].level || '',
-        isNative: this.extractedData.languages[0].isNative || false
+        isNative: this.extractedData.languages[0].isNative || false,
+        description: this.extractedData.languages[0].description || '',
+        englishDescription: this.extractedData.languages[0].englishDescription || '',
+        languageInEnglish: this.extractedData.languages[0].languageInEnglish || ''
       });
     }
 
@@ -253,12 +274,9 @@ export class StepperFormComponent implements OnInit {
         contactType: ['Email', 'Phone', 'LinkedIn'].includes(contactType) ? contactType : 'Email',
         contactValue: this.extractedData.contacts[0].contactValue || ''
       });
-      // Trigger the validators after patching the values
-        this.contactForm.get('contactValue')?.updateValueAndValidity();
+      this.contactForm.get('contactValue')?.updateValueAndValidity();
     }
   }
-
-  // age validator
 
   ageValidator(control: AbstractControl): ValidationErrors | null {
     const birthDate = control.value;
@@ -277,35 +295,27 @@ export class StepperFormComponent implements OnInit {
     }
     return null;
   }
-  // Custom validator for startDate < endDate
+
   dateRangeValidator(control: AbstractControl): ValidationErrors | null {
     const startDate = control.get('startDate')?.value;
     const endDate = control.get('endDate')?.value;
-
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-
-      console.log('Start Date:', start);
-      console.log('End Date:', end);
-
-      // Check if the start date is after the end date
       if (start > end) {
         return { invalidDateRange: true };
       }
     }
     return null;
   }
-  // experince validator matches the age
+
   experienceAgeValidator(control: AbstractControl): ValidationErrors | null {
     const birthDateControl = control.get('birthDate');
     const yearsControl = control.get('yearsOfExperience');
-
     if (birthDateControl?.value && yearsControl?.value) {
       const birthDate = new Date(birthDateControl.value);
       const yearsOfExperience = parseInt(yearsControl.value, 10);
       const today = new Date();
-
       let age = today.getFullYear() - birthDate.getFullYear();
       if (
         today.getMonth() < birthDate.getMonth() ||
@@ -313,7 +323,6 @@ export class StepperFormComponent implements OnInit {
       ) {
         age--;
       }
-
       const maxExperience = age - 16;
       if (yearsOfExperience > maxExperience) {
         return { invalidExperience: true };
@@ -405,24 +414,58 @@ export class StepperFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.areAllFormsValid()) {
-      const candidateData = {
-        fullName: this.generalDataForm.value.fullName,
-        birthDate: this.generalDataForm.value.birthDate,
-        yearsOfExperience: this.generalDataForm.value.yearsOfExperience,
-        gender: this.generalDataForm.value.gender,
-        mainTech: this.generalDataForm.value.mainTech,
-        summary: this.generalDataForm.value.summary,
-        address: this.addressForm.value,
+      const candidateData: Candidate = {
+        ...this.generalDataForm.value,
+        gender: this.generalDataForm.value.gender === 'Male' ? 'M' : 'F',
+        address: {
+          ...this.addressForm.value,
+          city: { name: this.addressForm.value.city },
+          country: { 
+            name: this.addressForm.value.country,
+            englishName: this.addressForm.value.country
+           }
+        },
         educations: [this.educationForm.value],
         experiences: this.experienceForm.valid && this.experienceForm.value.companyName ? [this.experienceForm.value] : [],
-        languages: [this.languageForm.value],
+        naturalLanguages: [{
+          ...this.languageForm.value,
+          isNative: this.languageForm.value.isNative
+        }],
         skills: [this.skillsForm.value],
-        contacts: [this.contactForm.value]
+        contacts: [{
+          ...this.contactForm.value,
+          contactType: this.contactForm.value.contactType.toLowerCase()
+        }]
       };
 
-      console.log('Candidate Data: ', candidateData);
+      this.newCvService.saveCandidate(candidateData).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Candidate added successfully',
+            life: 0,
+            closable: true
+          });
+          setTimeout(() => {
+            this.router.navigate(['/candidates/candidate-list']);
+          }, 2000);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Failed to create candidate',
+            life: 3000
+          });
+        }
+      });
     } else {
       this.markAllFormsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please fill out all required fields correctly.',
+        life: 3000
+      });
     }
   }
 }

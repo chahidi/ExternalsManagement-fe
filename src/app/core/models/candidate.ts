@@ -17,6 +17,6 @@ export interface Candidate {
   experiences: Experience[];
   skills: Skill[];
   educations: Education[];
-  addresses: Address[];
+  address: Address;
   naturalLanguages: Language[];
 }

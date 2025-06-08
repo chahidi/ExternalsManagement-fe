@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Candidate } from '../models/candidate';
@@ -54,10 +54,10 @@ export class CandidateService {
   private cleanCandidate(candidate: Candidate): Candidate {
     const cleaned = {
       ...candidate,
-      addresses: candidate.addresses.map(addr => ({
-        ...addr,
-        candidate: undefined
-      })),
+    //   address: candidate.address.map(addr => ({
+    //     ...addr,
+    //     candidate: undefined
+    //   })),
       educations: candidate.educations.map(edu => ({
         ...edu,
         candidate: undefined
@@ -77,23 +77,6 @@ export class CandidateService {
     return {
       ...candidate,
       id: candidate.id.toString(),
-     addresses: candidate.address ? [{
-  id: candidate.address.id?.toString() || '',
-  street: candidate.address.street || '',
-  postalCode: candidate.address.postalCode || '',
-  fullAddress: candidate.address.fullAddress || '',
-  city: candidate.address.city ? {
-    id: candidate.address.city.id?.toString() || '',
-    name: candidate.address.city.name || '',
-    countryId: candidate.address.city.countryId || ''
-  } : null,
-  country: candidate.address.country ? {
-    id: candidate.address.country.id?.toString() || '',
-    name: candidate.address.country.name || '',
-    englishName: candidate.address.country.englishName || ''
-  } : null
-}] : []
-,
       contacts: candidate.contacts || [],
       experiences: candidate.experiences || [],
       skills: candidate.skills || [],
@@ -128,6 +111,14 @@ export class CandidateService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+
+addCandidate(candidate: Omit<Candidate, 'id'>): Observable<any> {
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  return this.http.post<Candidate>(this.baseUrl, candidate, { headers }).pipe(
+    catchError(this.handleError)
+  );
+}
 }
 
 

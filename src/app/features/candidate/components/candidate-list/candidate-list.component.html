@@ -43,7 +43,7 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [loading]="loading"
         [paginator]="true"
-        [globalFilterFields]="['fullName', 'addresses.city.name', 'educations.degree', 'experiences.companyName', 'skills.skillName', 'mainTech']"
+        [globalFilterFields]="['fullName', 'address.city.name', 'educations.degree', 'experiences.companyName', 'skills.skillName', 'mainTech']"
         responsiveLayout="scroll"
     >
         <ng-template pTemplate="caption">
@@ -73,7 +73,7 @@
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
                         Location
-                        <p-columnFilter type="text" field="addresses.city.name" display="menu"></p-columnFilter>
+                        <p-columnFilter type="text" field="address.city.name" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 12rem">
@@ -108,8 +108,8 @@
                 <td>{{ candidate.fullName || 'N/A' }}</td>
                 <td>{{ candidate.mainTech || 'N/A' }}</td>
                 <td>
-                    <ng-container *ngIf="candidate.addresses && isArray(candidate.addresses) && candidate.addresses.length > 0; else noAddress">
-                        <span *ngFor="let address of candidate.addresses; let first=first">
+                    <ng-container *ngIf="candidate.address && isArray(candidate.address) && candidate.address.length > 0; else noAddress">
+                        <span *ngFor="let address of candidate.address; let first=first">
                             {{ first ? '' : ', ' }}
                             {{ address.city?.name || 'Unknown City' }}, {{ address.country?.name || 'Unknown Country' }}
                         </span>
@@ -201,35 +201,31 @@
         </fieldset>
 
       <!-- Addresses -->
-<fieldset class="mb-4 border rounded p-4">
-    <legend class="text-lg font-semibold">Addresses</legend>
-    <div *ngFor="let address of selectedCandidate.addresses; let i=index" class="address-item border-b pb-4 mb-4">
-        <div class="field field-grid">
-            <label for="street_{{i}}" class="field-label">Street</label>
-            <input id="street_{{i}}" type="text" pInputText [(ngModel)]="address.street" class="field-input" />
-        </div>
-        <div class="field field-grid">
-            <label for="postalCode_{{i}}" class="field-label">Postal Code</label>
-            <input id="postalCode_{{i}}" type="text" pInputText [(ngModel)]="address.postalCode" class="field-input" />
-        </div>
-        <div class="field field-grid">
-            <label for="fullAddress_{{i}}" class="field-label">Full Address</label>
-            <input id="fullAddress_{{i}}" type="text" pInputText [(ngModel)]="address.fullAddress" class="field-input" />
-        </div>
-        <div class="field field-grid">
-            <label for="city_{{i}}" class="field-label">City</label>
-            <p-dropdown id="city_{{i}}" [(ngModel)]="address.city" [options]="cities" optionLabel="name" placeholder="Select City" class="field-input" (onChange)="onCityChange(address)"></p-dropdown>
-        </div>
-        <div class="field field-grid">
-            <label for="country_{{i}}" class="field-label">Country</label>
-            <p-dropdown id="country_{{i}}" [(ngModel)]="address.country" [options]="countries" optionLabel="name" placeholder="Select Country" class="field-input" (onChange)="onCountryChange(address)"></p-dropdown>
-        </div>
-        <div class="flex justify-end mt-2">
-            <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeAddress(i)"></button>
-        </div>
-    </div>
-    <button pButton type="button" label="Add Address" icon="pi pi-plus" class="p-button-secondary" (click)="addAddress()"></button>
-</fieldset>
+        <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold">Address</legend>
+            <div class="address-item border-b pb-4 mb-4">
+                <div class="field field-grid">
+                    <label for="street" class="field-label">Street</label>
+                    <input id="street" type="text" pInputText [(ngModel)]="selectedCandidate.address.street" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="postalCode" class="field-label">Postal Code</label>
+                    <input id="postalCode" type="text" pInputText [(ngModel)]="selectedCandidate.address.postalCode" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="fullAddress" class="field-label">Full Address</label>
+                    <input id="fullAddress" type="text" pInputText [(ngModel)]="selectedCandidate.address.fullAddress" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="city" class="field-label">City</label>
+                    <p-dropdown id="city" [(ngModel)]="selectedCandidate.address.city" [options]="cities" optionLabel="name" placeholder="Select City" class="field-input" (onChange)="onCityChange(selectedCandidate.address)"></p-dropdown>
+                </div>
+                <div class="field field-grid">
+                    <label for="country" class="field-label">Country</label>
+                    <p-dropdown id="country" [(ngModel)]="selectedCandidate.address.country" [options]="countries" optionLabel="name" placeholder="Select Country" class="field-input" (onChange)="onCountryChange(selectedCandidate.address)"></p-dropdown>
+                </div>
+            </div>
+        </fieldset>
 
         <!-- Contacts -->
         <fieldset class="mb-4 border rounded p-4">

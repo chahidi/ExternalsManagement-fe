@@ -325,36 +325,22 @@ export class CandidateListComponent implements OnInit {
   }
 
   editCandidate(candidate: Candidate): void {this.selectedCandidate = { ...candidate };
-  this.selectedCandidate.addresses = this.selectedCandidate.addresses || [];
+  this.selectedCandidate.address = this.selectedCandidate.address || {
+    id: '',
+    street: '',
+    postalCode: '',
+    fullAddress: '',
+    city: '',
+    country: ''
+  };
   this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
   this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
   this.selectedCandidate.skills = this.selectedCandidate.skills || [];
   this.selectedCandidate.educations = this.selectedCandidate.educations || [];
   this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
-  // Synchroniser city.country pour les adresses existantes
-  this.selectedCandidate.addresses.forEach(addr => this.syncCityCountry(addr));
+  this.syncCityCountry(this.selectedCandidate.address);
   this.displayEditDialog = true;
 }
-addAddress(): void {
-    console.log('Adding new address');
-    if (!this.selectedCandidate) return;
-    const newAddress = {
-      id: '',
-      street: '',
-      postalCode: '',
-      fullAddress: '',
-      city: this.cities[0], // Valeur par défaut : première ville
-      country: this.countries[0] // Valeur par défaut : premier pays
-    };
-    this.syncCityCountry(newAddress); // Synchroniser city.country
-    this.selectedCandidate.addresses.push(newAddress);
-  }
-
-  removeAddress(index: number): void {
-    if (this.selectedCandidate) {
-      this.selectedCandidate.addresses.splice(index, 1);
-    }
-  }
 
   syncCityCountry(address: any): void {
     if (address.city && address.country) {

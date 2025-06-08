@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   ReactiveFormsModule,
   AbstractControl,
-  ValidationErrors
+  ValidationErrors,FormArray
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { PanelModule } from 'primeng/panel';
 import { StepsModule } from 'primeng/steps';
 import { InputTextModule } from 'primeng/inputtext';
@@ -18,6 +18,9 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
+import { Candidate } from '../../../../core/models/candidate';
+import { CandidateService } from '../../../../core/services/candidate.service';
 
 @Component({
   selector: 'app-candidate-form',
@@ -41,6 +44,7 @@ export class StepperFormComponent implements OnInit {
   steps: MenuItem[] = [];
   activeIndex: number = 0;
   extractedData: any;
+  private destroy$ = new Subject<void>();
 
 
   languageLevels = [
@@ -65,7 +69,10 @@ export class StepperFormComponent implements OnInit {
   skillsForm!: FormGroup;
   contactForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute,
+     private router: Router,
+    private candidateService: CandidateService,
+  ) {}
 
   ngOnInit() {
     this.steps = [
@@ -97,80 +104,35 @@ export class StepperFormComponent implements OnInit {
     this.addressForm = this.fb.group({
         street: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s\-#.,'\/]+$/)]],
         postalCode: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9\\s-]{3,10}$')]],
-      fullAddress: ['', Validators.required],
-      city: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
-      country: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
+        fullAddress: ['', Validators.required],
+        city: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
+        country: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
     });
 
-    this.educationForm = this.fb.group({
-        institution: ['', [
-          Validators.required,
-          Validators.pattern('^[A-Za-z0-9\\s\\-\\.\\&\\,\'\"]+$')
-        ]],
-        startDate: ['', Validators.required],
-        endDate: ['', Validators.required],
-        diploma: ['', [
-            Validators.required,
-            Validators.pattern(/^[A-Za-z0-9\s,.\-'\+#&()]+$/)
-          ]]
-      },
-      { validators: this.dateRangeValidator } );
+   this.educationForm = this.fb.group({
+      educations: this.fb.array([], Validators.required)
+    });
 
-    this.experienceForm = this.fb.group(
-        {
-          companyName: ['', Validators.pattern("^[A-Za-z0-9&'’+.,\\-\\s]+$")],
-          position: ['',  Validators.pattern('^[A-Za-z\\s/-]+$')],
-          startDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
-          endDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
-          description: ['', Validators.pattern('^[A-Za-z0-9\\s,.!?()\\-:;/\'"#\\n]+$')]
-        },
-        { validators: this.experienceDateValidator }
-      );
+    this.experienceForm = this.fb.group({
+      experiences: this.fb.array([])
+    });
 
-    // validator for language
     this.languageForm = this.fb.group({
-      language: ['', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
-      level: ['', Validators.required],
-      isNative: [false]
+      languages: this.fb.array([], Validators.required)
     });
 
     this.skillsForm = this.fb.group({
-      skillName: ['', Validators.required],
-      proficiencyLevel: ['', Validators.required]
+      skills: this.fb.array([], Validators.required)
     });
 
     this.contactForm = this.fb.group({
-      contactType: ['Email', Validators.required],
-      contactValue: ['', [Validators.required,]]
+      contacts: this.fb.array([], Validators.required)
     });
 
-    this.contactForm.get('contactType')?.valueChanges.subscribe((type: string) => {
-        const contactControl = this.contactForm.get('contactValue');
-        if (!contactControl) return;
-
-        contactControl.clearValidators();
-
-        if (type === 'Email') {
-          contactControl.setValidators([
-            Validators.required,
-            Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
-          ]);
-        } else if (type === 'Phone') {
-          contactControl.setValidators([
-            Validators.required,
-            Validators.pattern(/^\+?\d{10,15}$/)
-          ]);
-        } else if (type === 'LinkedIn') {
-          contactControl.setValidators([
-            Validators.required,
-            Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)
-          ]);
-        } else {
-          contactControl.setValidators([Validators.required]);
-        }
-
-        contactControl.updateValueAndValidity();
-      });
+    this.addEducation();
+    this.addLanguage();
+    this.addSkill();
+    this.addContact();
 
     this.route.paramMap.subscribe(params => {
       const navigationData = history.state.extractedData;
@@ -180,6 +142,128 @@ export class StepperFormComponent implements OnInit {
         this.populateForms();
       }
     });
+  }
+
+    get educations(): FormArray {
+        return this.educationForm.get('educations') as FormArray;
+    }
+
+    get experiences(): FormArray {
+        return this.experienceForm.get('experiences') as FormArray;
+    }
+
+    get languages(): FormArray {
+        return this.languageForm.get('languages') as FormArray;
+    }
+
+    get skills(): FormArray {
+        return this.skillsForm.get('skills') as FormArray;
+    }
+
+    get contacts(): FormArray {
+        return this.contactForm.get('contacts') as FormArray;
+    }
+
+    createEducation(education?: any): FormGroup {
+    return this.fb.group(
+      {
+        institution: [education?.institution || '', [Validators.required, Validators.pattern('^[A-Za-z0-9\\s\\-\\.\\&\\,\'\"]+$')]],
+        startDate: [education?.startDate || '', [Validators.required, Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')]],
+        endDate: [education?.endDate || '', [Validators.required, Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')]],
+        diploma: [education?.diploma || '', [Validators.required, Validators.pattern(/^[A-Za-z0-9\s,.\-'\+#&()]+$/)]]
+      },
+      { validators: this.dateRangeValidator }
+    );
+  }
+
+  createExperience(experience?: any): FormGroup {
+    return this.fb.group(
+      {
+        companyName: [experience?.companyName || '', Validators.pattern('^[A-Za-z0-9&\'’+.,\\-\\s]+$')],
+        position: [experience?.position || '', Validators.pattern('^[A-Za-z\\s/-]+$')],
+        startDate: [experience?.startDate || '', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+        endDate: [experience?.endDate || '', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+        description: [experience?.description || '', Validators.pattern('^[A-Za-z0-9\\s,.!?()\\-:;/\'"#\\n]+$')]
+      },
+      { validators: this.experienceDateValidator }
+    );
+  }
+
+  createLanguage(language?: any): FormGroup {
+    return this.fb.group({
+      language: [language?.language || '', [Validators.required, Validators.pattern('^[A-Za-z\\s]+$')]],
+      level: [language?.level || '', Validators.required],
+      isNative: [language?.isNative || language?.description === 'Native' || false],
+      description: [language?.description || ''],
+      englishDescription: [language?.englishDescription || ''],
+      languageInEnglish: [language?.languageInEnglish || '']
+    });
+  }
+
+  createSkill(skill?: any): FormGroup {
+    return this.fb.group({
+      skillName: [skill?.skillName || '', Validators.required],
+      proficiencyLevel: [skill?.proficiencyLevel || '', Validators.required]
+    });
+  }
+
+  createContact(contact?: { contactType: string; contactValue: string }): FormGroup {
+    const contactGroup = this.fb.group({
+      contactType: [contact?.contactType || 'Email', Validators.required],
+      contactValue: [contact?.contactValue || '', Validators.required]
+    });
+
+    contactGroup.get('contactType')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((type: string | null) => {
+      const contactControl = contactGroup.get('contactValue');
+      if (!contactControl) return;
+
+      contactControl.clearValidators();
+
+      if (type === 'Email') {
+        contactControl.setValidators([
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+        ]);
+      } else if (type === 'Phone') {
+        contactControl.setValidators([
+          Validators.required,
+          Validators.pattern(/^\+?\d{10,15}$/)
+        ]);
+      } else if (type === 'LinkedIn') {
+        contactControl.setValidators([
+          Validators.required,
+          Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)
+        ]);
+      } else {
+        contactControl.setValidators([Validators.required]);
+      }
+
+      contactControl.updateValueAndValidity();
+    });
+
+    const initialType = contact?.contactType || 'Email';
+    contactGroup.get('contactType')?.setValue(initialType, { emitEvent: true });
+
+    return contactGroup;
+  }
+   addEducation(education?: any): void {
+    this.educations.push(this.createEducation(education));
+  }
+
+  addExperience(experience?: any): void {
+    this.experiences.push(this.createExperience(experience));
+  }
+
+  addLanguage(language?: any): void {
+    this.languages.push(this.createLanguage(language));
+  }
+
+  addSkill(skill?: any): void {
+    this.skills.push(this.createSkill(skill));
+  }
+
+  addContact(contact?: { contactType: string; contactValue: string }): void {
+    this.contacts.push(this.createContact(contact));
   }
 
   private populateForms() {
@@ -203,58 +287,38 @@ export class StepperFormComponent implements OnInit {
         country: this.extractedData.address.country?.name || this.extractedData.address.country || ''
       });
     }
-
-    if (this.extractedData.educations && this.extractedData.educations.length > 0) {
-      this.educationForm.patchValue({
-        institution: this.extractedData.educations[0].institution || '',
-        degree: this.extractedData.educations[0].degree || this.extractedData.educations[0].diploma || '',
-        startDate: this.extractedData.educations[0].startDate || '',
-        endDate: this.extractedData.educations[0].endDate || '',
-        diploma: this.extractedData.educations[0].diploma || ''
-      });
+    if (this.extractedData.educations?.length) {
+      this.educations.clear();
+      this.extractedData.educations.forEach((edu: any) => this.addEducation(edu));
     }
 
-        const experience = this.extractedData.experiences?.[0] || {};
-    this.experienceForm.patchValue({
-    companyName: experience.companyName || '',
-    position: experience.position || '',
-    startDate: experience.startDate || '',
-    endDate: experience.endDate || '',
-    description: experience.description || ''
-    });
-
-    // ;anguage map
-    if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
-      this.languageForm.patchValue({
-        language: this.extractedData.naturalLanguages[0].language || '',
-        level: this.extractedData.naturalLanguages[0].level || '',
-        isNative: this.extractedData.naturalLanguages[0].isNative || this.extractedData.naturalLanguages[0].description === 'Native' || false
-      });
-    } else if (this.extractedData.languages && this.extractedData.languages.length > 0) {
-      this.languageForm.patchValue({
-        language: this.extractedData.languages[0].language || '',
-        level: this.extractedData.languages[0].level || '',
-        isNative: this.extractedData.languages[0].isNative || false
-      });
+    if (this.extractedData.experiences?.length) {
+      this.experiences.clear();
+      this.extractedData.experiences.forEach((exp: any) => this.addExperience(exp));
     }
 
-    if (this.extractedData.skills && this.extractedData.skills.length > 0) {
-      this.skillsForm.patchValue({
-        skillName: this.extractedData.skills[0].skillName || '',
-        proficiencyLevel: this.extractedData.skills[0].proficiencyLevel || ''
-      });
+    if (this.extractedData.naturalLanguages?.length || this.extractedData.languages?.length) {
+      this.languages.clear();
+      const langs = this.extractedData.naturalLanguages || this.extractedData.languages || [];
+      langs.forEach((lang: any) => this.addLanguage(lang));
     }
 
-    if (this.extractedData.contacts && this.extractedData.contacts.length > 0) {
-      const contactType = this.extractedData.contacts[0].contactType
-        ? this.extractedData.contacts[0].contactType.charAt(0).toUpperCase() + this.extractedData.contacts[0].contactType.slice(1).toLowerCase()
-        : 'Email';
-      this.contactForm.patchValue({
-        contactType: ['Email', 'Phone', 'LinkedIn'].includes(contactType) ? contactType : 'Email',
-        contactValue: this.extractedData.contacts[0].contactValue || ''
+    if (this.extractedData.skills?.length) {
+      this.skills.clear();
+      this.extractedData.skills.forEach((skill: any) => this.addSkill(skill));
+    }
+
+    if (this.extractedData.contacts?.length) {
+      this.contacts.clear();
+      this.extractedData.contacts.forEach((contact: { contactType: string; contactValue: string }) => {
+        const contactType = contact.contactType
+          ? contact.contactType.charAt(0).toUpperCase() + contact.contactType.slice(1).toLowerCase()
+          : 'Email';
+        this.addContact({
+          contactType: ['Email', 'Phone', 'LinkedIn'].includes(contactType) ? contactType : 'LinkedIn',
+          contactValue: contact.contactValue || ''
+        });
       });
-      // Trigger the validators after patching the values
-        this.contactForm.get('contactValue')?.updateValueAndValidity();
     }
   }
 
@@ -285,9 +349,6 @@ export class StepperFormComponent implements OnInit {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-
-      console.log('Start Date:', start);
-      console.log('End Date:', end);
 
       // Check if the start date is after the end date
       if (start > end) {
@@ -405,22 +466,39 @@ export class StepperFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.areAllFormsValid()) {
-      const candidateData = {
+      const candidateData : Omit<Candidate, 'id'>= {
         fullName: this.generalDataForm.value.fullName,
         birthDate: this.generalDataForm.value.birthDate,
+        gender: this.generalDataForm.value.gender === 'Male' ? 'M' : 'F',
+        address: {
+          ...this.addressForm.value,
+          city: { name: this.addressForm.value.city },
+          country: {
+            name: this.addressForm.value.country,
+            englishName: this.addressForm.value.country
+           }
+        },
         yearsOfExperience: this.generalDataForm.value.yearsOfExperience,
-        gender: this.generalDataForm.value.gender,
         mainTech: this.generalDataForm.value.mainTech,
         summary: this.generalDataForm.value.summary,
-        address: this.addressForm.value,
-        educations: [this.educationForm.value],
-        experiences: this.experienceForm.valid && this.experienceForm.value.companyName ? [this.experienceForm.value] : [],
-        languages: [this.languageForm.value],
-        skills: [this.skillsForm.value],
-        contacts: [this.contactForm.value]
+        educations: this.educations.value,
+        experiences: this.experiences.value,
+        naturalLanguages:this.languages.value,
+        skills: this.skills.value,
+        contacts: this.contacts.value,
       };
 
       console.log('Candidate Data: ', candidateData);
+      this.candidateService.addCandidate(candidateData).subscribe({
+        next:()=>{
+            alert('Candidate added successfully');
+            this.router.navigate(['/candidates/candidate-list']);
+        },
+        error:(err)=>{
+            console.error('Error adding candidate:', err);
+            alert('Failed to add the Candidate. Please try again.');
+      }
+      });
     } else {
       this.markAllFormsTouched();
     }

@@ -1,21 +1,31 @@
 <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Candidate List</h2>
 
+    <p-toast></p-toast>
+
     <div class="card mb-4">
         <h3 class="text-lg font-semibold mb-3">Filter Candidates</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="field">
                 <label for="skills" class="block mb-2">Skills</label>
-                <p-multiSelect id="skills" [options]="skillOptions" [(ngModel)]="filters.skills" optionLabel="name" placeholder="Select Skills" [style]="{ width: '100%' }"></p-multiSelect>
+                <p-multiSelect id="skills" [options]="skillOptions" [(ngModel)]="filters.skills"
+                    optionLabel="name" placeholder="Select Skills" [style]="{ width: '100%' }"
+                    [showToggleAll]="true" [showHeader]="true" display="chip"></p-multiSelect>
             </div>
             <div class="field">
                 <label for="language" class="block mb-2">Language</label>
-                <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language" optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"></p-dropdown>
+                <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language"
+                    optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"
+                    [showClear]="true" [filter]="true"></p-dropdown>
             </div>
             <div class="field">
-                <label for="yearsOfExperience" class="block mb-2">Years of Experience</label>
+                <label for="yearsOfExperience" class="block mb-2">Minimum Years of Experience</label>
                 <div class="flex align-items-center">
-                    <p-inputNumber id="yearsOfExperience" [(ngModel)]="filters.yearsOfExperience" [min]="0" [max]="20" placeholder="Enter years" [style]="{ width: '100%' }"></p-inputNumber>
+                    <p-inputNumber id="yearsOfExperience" [(ngModel)]="filters.yearsOfExperience"
+                        [min]="0" [max]="20" placeholder="Enter years" [style]="{ width: '100%' }"
+                        [showButtons]="true" buttonLayout="horizontal"
+                        decrementButtonClass="p-button-secondary"
+                        incrementButtonClass="p-button-secondary"></p-inputNumber>
                 </div>
             </div>
         </div>
@@ -33,7 +43,7 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [loading]="loading"
         [paginator]="true"
-        [globalFilterFields]="['fullName', 'address.city.name', 'educations.degree', 'experiences.companyName', 'skills.skillName', 'mainTech']"
+        [globalFilterFields]="['fullName', 'addresses.city.name', 'educations.degree', 'experiences.companyName', 'skills.skillName', 'mainTech']"
         responsiveLayout="scroll"
     >
         <ng-template pTemplate="caption">
@@ -63,7 +73,7 @@
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
                         Location
-                        <p-columnFilter type="text" field="address.city.name" display="menu"></p-columnFilter>
+                        <p-columnFilter type="text" field="addresses.city.name" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width: 12rem">
@@ -95,9 +105,19 @@
 
         <ng-template pTemplate="body" let-candidate>
             <tr>
-                <td>{{ candidate.fullName }}</td>
-                <td>{{ candidate.mainTech }}</td>
-                <td>{{ candidate.address?.city?.name }}, {{ candidate.address?.country?.name }}</td>
+                <td>{{ candidate.fullName || 'N/A' }}</td>
+                <td>{{ candidate.mainTech || 'N/A' }}</td>
+                <td>
+                    <ng-container *ngIf="candidate.addresses && isArray(candidate.addresses) && candidate.addresses.length > 0; else noAddress">
+                        <span *ngFor="let address of candidate.addresses; let first=first">
+                            {{ first ? '' : ', ' }}
+                            {{ address.city?.name || 'Unknown City' }}, {{ address.country?.name || 'Unknown Country' }}
+                        </span>
+                    </ng-container>
+                    <ng-template #noAddress>
+                        <span>N/A</span>
+                    </ng-template>
+                </td>
                 <td>
                     <ul class="list-none p-0 m-0">
                         <li *ngFor="let education of candidate.educations">{{ education.degree }} - {{ education.institution }}</li>
@@ -116,7 +136,6 @@
                                 [ngClass]="{
                                     'bg-blue-100': skill.proficiencyLevel === 'BEGINNER',
                                     'bg-blue-200': skill.proficiencyLevel === 'INTERMEDIATE',
-                                    'bg-blue-300': skill.proficiencyLevel === 'ADVANCED',
                                     'bg-blue-400': skill.proficiencyLevel === 'EXPERT'
                                 }"
                             >
@@ -152,22 +171,204 @@
 
 <p-dialog [(visible)]="displayEditDialog" [style]="{ width: '70%' }" [modal]="true" [draggable]="false" [resizable]="false" header="Edit Candidate">
     <div *ngIf="selectedCandidate" class="p-fluid">
-        <div class="field">
-            <label for="name">Full Name</label>
-            <input id="name" type="text" pInputText [(ngModel)]="selectedCandidate.fullName" required />
+        <!-- Basic Information -->
+        <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold">Basic Information</legend>
+            <div class="field field-grid">
+                <label for="fullName" class="field-label">Full Name</label>
+                <input id="fullName" type="text" pInputText [(ngModel)]="selectedCandidate.fullName" required class="field-input" />
+            </div>
+            <div class="field field-grid">
+                <label for="birthDate" class="field-label">Birth Date</label>
+                <p-calendar id="birthDate" [(ngModel)]="selectedCandidate.birthDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+            </div>
+            <div class="field field-grid">
+                <label for="yearsOfExperience" class="field-label">Years of Experience</label>
+                <p-inputNumber id="yearsOfExperience" [(ngModel)]="selectedCandidate.yearsOfExperience" [min]="0" [max]="50" class="field-input"></p-inputNumber>
+            </div>
+            <div class="field field-grid">
+                <label for="gender" class="field-label">Gender</label>
+                <p-dropdown id="gender" [(ngModel)]="selectedCandidate.gender" [options]="[{label: 'Male', value: 'M'}, {label: 'Female', value: 'F'}]" placeholder="Select Gender" class="field-input"></p-dropdown>
+            </div>
+            <div class="field field-grid">
+                <label for="mainTech" class="field-label">Main Technology</label>
+                <input id="mainTech" type="text" pInputText [(ngModel)]="selectedCandidate.mainTech" class="field-input" />
+            </div>
+            <div class="field field-grid">
+                <label for="summary" class="field-label">Summary</label>
+                <textarea id="summary" pInputTextarea [(ngModel)]="selectedCandidate.summary" rows="5" class="field-input"></textarea>
+            </div>
+        </fieldset>
+
+      <!-- Addresses -->
+<fieldset class="mb-4 border rounded p-4">
+    <legend class="text-lg font-semibold">Addresses</legend>
+    <div *ngFor="let address of selectedCandidate.addresses; let i=index" class="address-item border-b pb-4 mb-4">
+        <div class="field field-grid">
+            <label for="street_{{i}}" class="field-label">Street</label>
+            <input id="street_{{i}}" type="text" pInputText [(ngModel)]="address.street" class="field-input" />
         </div>
-        <div class="field">
-            <label for="mainTech">Main Technology</label>
-            <input id="mainTech" type="text" pInputText [(ngModel)]="selectedCandidate.mainTech" />
+        <div class="field field-grid">
+            <label for="postalCode_{{i}}" class="field-label">Postal Code</label>
+            <input id="postalCode_{{i}}" type="text" pInputText [(ngModel)]="address.postalCode" class="field-input" />
         </div>
-        <div class="field">
-            <label for="yearsExp">Years of Experience</label>
-            <p-inputNumber id="yearsExp" [(ngModel)]="selectedCandidate.yearsOfExperience" [min]="0" [max]="50"></p-inputNumber>
+        <div class="field field-grid">
+            <label for="fullAddress_{{i}}" class="field-label">Full Address</label>
+            <input id="fullAddress_{{i}}" type="text" pInputText [(ngModel)]="address.fullAddress" class="field-input" />
         </div>
-        <div class="field">
-            <label for="summary">Summary</label>
-            <textarea id="summary" pInputTextarea [(ngModel)]="selectedCandidate.summary" rows="5"></textarea>
+        <div class="field field-grid">
+            <label for="city_{{i}}" class="field-label">City</label>
+            <p-dropdown id="city_{{i}}" [(ngModel)]="address.city" [options]="cities" optionLabel="name" placeholder="Select City" class="field-input" (onChange)="onCityChange(address)"></p-dropdown>
         </div>
+        <div class="field field-grid">
+            <label for="country_{{i}}" class="field-label">Country</label>
+            <p-dropdown id="country_{{i}}" [(ngModel)]="address.country" [options]="countries" optionLabel="name" placeholder="Select Country" class="field-input" (onChange)="onCountryChange(address)"></p-dropdown>
+        </div>
+        <div class="flex justify-end mt-2">
+            <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeAddress(i)"></button>
+        </div>
+    </div>
+    <button pButton type="button" label="Add Address" icon="pi pi-plus" class="p-button-secondary" (click)="addAddress()"></button>
+</fieldset>
+
+        <!-- Contacts -->
+        <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold">Contacts</legend>
+            <div *ngFor="let contact of selectedCandidate.contacts; let i=index" class="contact-item border-b pb-4 mb-4">
+                <div class="field field-grid">
+                    <label for="contactType_{{i}}" class="field-label">Contact Type</label>
+                    <p-dropdown id="contactType_{{i}}" [(ngModel)]="contact.contactType" [options]="[{label: 'Email', value: 'Email'}, {label: 'Phone', value: 'Phone'}]" placeholder="Select Contact Type" class="field-input"></p-dropdown>
+                </div>
+                <div class="field field-grid">
+                    <label for="contactValue_{{i}}" class="field-label">Contact Value</label>
+                    <input id="contactValue_{{i}}" type="text" pInputText [(ngModel)]="contact.contactValue" class="field-input" />
+                </div>
+                <div class="flex justify-end mt-2">
+                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeContact(i)"></button>
+                </div>
+            </div>
+            <button pButton type="button" label="Add Contact" icon="pi pi-plus" class="p-button-secondary" (click)="addContact()"></button>
+        </fieldset>
+
+        <!-- Experiences -->
+        <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold">Experiences</legend>
+            <div *ngFor="let experience of selectedCandidate.experiences; let i=index" class="experience-item border-b pb-4 mb-4">
+                <div class="field field-grid">
+                    <label for="companyName_{{i}}" class="field-label">Company Name</label>
+                    <input id="companyName_{{i}}" type="text" pInputText [(ngModel)]="experience.companyName" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="position_{{i}}" class="field-label">Position</label>
+                    <input id="position_{{i}}" type="text" pInputText [(ngModel)]="experience.position" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="startDate_{{i}}" class="field-label">Start Date</label>
+                    <p-calendar id="startDate_{{i}}" [(ngModel)]="experience.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                </div>
+                <div class="field field-grid">
+                    <label for="endDate_{{i}}" class="field-label">End Date</label>
+                    <p-calendar id="endDate_{{i}}" [(ngModel)]="experience.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                </div>
+                <div class="field field-grid">
+                    <label for="description_{{i}}" class="field-label">Description</label>
+                    <textarea id="description_{{i}}" pInputTextarea [(ngModel)]="experience.description" rows="3" class="field-input"></textarea>
+                </div>
+                <div class="flex justify-end mt-2">
+                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeExperience(i)"></button>
+                </div>
+            </div>
+            <button pButton type="button" label="Add Experience" icon="pi pi-plus" class="p-button-secondary" (click)="addExperience()"></button>
+        </fieldset>
+
+        <!-- Skills -->
+        <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold">Skills</legend>
+            <div *ngFor="let skill of selectedCandidate.skills; let i=index" class="skill-item border-b pb-4 mb-4">
+                <div class="field field-grid">
+                    <label for="skillName_{{i}}" class="field-label">Skill Name</label>
+                    <input id="skillName_{{i}}" type="text" pInputText [(ngModel)]="skill.skillName" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="proficiencyLevel_{{i}}" class="field-label">Proficiency Level</label>
+                    <p-dropdown id="proficiencyLevel_{{i}}" [(ngModel)]="skill.proficiencyLevel" [options]="proficiencyLevelOptions" placeholder="Select Proficiency Level" class="field-input"></p-dropdown>
+                </div>
+                <div class="flex justify-end mt-2">
+                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeSkill(i)"></button>
+                </div>
+            </div>
+            <button pButton type="button" label="Add Skill" icon="pi pi-plus" class="p-button-secondary" (click)="addSkill()"></button>
+        </fieldset>
+
+        <!-- Educations -->
+        <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold">Educations</legend>
+            <div *ngFor="let education of selectedCandidate.educations; let i=index" class="education-item border-b pb-4 mb-4">
+                <div class="field field-grid">
+                    <label for="institution_{{i}}" class="field-label">Institution</label>
+                    <input id="institution_{{i}}" type="text" pInputText [(ngModel)]="education.institution" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="degree_{{i}}" class="field-label">Degree</label>
+                    <input id="degree_{{i}}" type="text" pInputText [(ngModel)]="education.degree" class="field-input" />
+                </div>
+                <div class="field field-grid">
+                    <label for="startDateEdu_{{i}}" class="field-label">Start Date</label>
+                    <p-calendar id="startDateEdu_{{i}}" [(ngModel)]="education.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                </div>
+                <div class="field field-grid">
+                    <label for="endDateEdu_{{i}}" class="field-label">End Date</label>
+                    <p-calendar id="endDateEdu_{{i}}" [(ngModel)]="education.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                </div>
+                <div class="field field-grid">
+                    <label for="diploma_{{i}}" class="field-label">Diploma</label>
+                    <input id="diploma_{{i}}" type="text" pInputText [(ngModel)]="education.diploma" class="field-input" />
+                </div>
+                <div class="flex justify-end mt-2">
+                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeEducation(i)"></button>
+                </div>
+            </div>
+            <button pButton type="button" label="Add Education" icon="pi pi-plus" class="p-button-secondary" (click)="addEducation()"></button>
+        </fieldset>
+
+        <!-- Languages -->
+<fieldset class="mb-4 border rounded p-4">
+    <legend class="text-lg font-semibold">Languages</legend>
+    <div *ngFor="let language of selectedCandidate.naturalLanguages; let i=index" class="language-item border-b pb-4 mb-4">
+        <div class="field field-grid">
+            <label for="description_{{i}}" class="field-label">Description</label>
+            <textarea id="description_{{i}}" pInputTextarea [(ngModel)]="language.description" rows="3" class="field-input"></textarea>
+        </div>
+        <div class="field field-grid">
+            <label for="englishDescription_{{i}}" class="field-label">English Description</label>
+            <textarea id="englishDescription_{{i}}" pInputTextarea [(ngModel)]="language.englishDescription" rows="3" class="field-input"></textarea>
+        </div>
+        <div class="field field-grid">
+            <label for="fullDescription_{{i}}" class="field-label">Full Description</label>
+            <textarea id="fullDescription_{{i}}" pInputTextarea [(ngModel)]="language.fullDescription" rows="3" class="field-input"></textarea>
+        </div>
+        <div class="field field-grid">
+            <label for="language_{{i}}" class="field-label">Language</label>
+            <input id="language_{{i}}" type="text" pInputText [(ngModel)]="language.language" class="field-input" />
+        </div>
+        <div class="field field-grid">
+            <label for="languageInEnglish_{{i}}" class="field-label">Language (English)</label>
+            <input id="languageInEnglish_{{i}}" type="text" pInputText [(ngModel)]="language.languageInEnglish" class="field-input" />
+        </div>
+        <div class="field field-grid">
+            <label for="level_{{i}}" class="field-label">Level</label>
+            <p-dropdown id="level_{{i}}" [(ngModel)]="language.level" [options]="languageLevelOptions"  placeholder="Select Level" class="field-input"></p-dropdown>
+        </div>
+        <div class="field field-grid">
+            <label for="isNative_{{i}}" class="field-label">Native</label>
+            <p-checkbox id="isNative_{{i}}" [(ngModel)]="language.isNative" [binary]="true" class="field-input"></p-checkbox>
+        </div>
+        <div class="flex justify-end mt-2">
+            <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeLanguage(i)"></button>
+        </div>
+    </div>
+    <button pButton type="button" label="Add Language" icon="pi pi-plus" (click)="addLanguage()" class="p-button-secondary"></button>
+</fieldset>
     </div>
     <ng-template pTemplate="footer">
         <p-button icon="pi pi-times" label="Cancel" (click)="displayEditDialog = false" styleClass="p-button-text"></p-button>

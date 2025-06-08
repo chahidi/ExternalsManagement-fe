@@ -2,7 +2,7 @@ import { Candidate } from './candidate';
 
 export interface Contact {
   id: string;
-  candidate: Candidate; 
+  candidateId: Candidate | string ;
   contactType: string;
   contactValue: string;
 }

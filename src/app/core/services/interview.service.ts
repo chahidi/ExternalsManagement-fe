@@ -9,11 +9,12 @@ import { InterviewInstance } from '../models/interview-instance';
 export class InterviewService {
   private apiUrl = 'http://localhost:3001/interviews';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl);
   }
+
   generateNewLink(interviewId: string): Observable<{
     id: number;
     candidateId: number;

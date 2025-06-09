@@ -9,12 +9,14 @@ import { InterviewRecord } from '../models/interview-record';
   providedIn: 'root'
 })
 export class InterviewService {
+  
   private apiUrl = `${environment.apiInterviews}/interviews`;
   constructor(private http: HttpClient) {}
 
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl);
   }
+
   generateNewLink(interviewId: string): Observable<{
     id: number;
     candidateId: number;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { InterviewRecord } from '../models/interview-record';
+import { Record } from '../models/record';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -15,7 +15,7 @@ export class RecordService {
 
   constructor(private http: HttpClient) {}
 
-  saveRecord(record: InterviewRecord): Observable<InterviewRecord> {
-    return this.http.post<InterviewRecord>(this.apiUrl, record);
+  saveRecord(record: Record): Observable<Record> {
+    return this.http.post<Record>(this.apiUrl, record);
   }
 }

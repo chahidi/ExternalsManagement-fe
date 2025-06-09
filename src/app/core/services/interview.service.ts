@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { InterviewInstance } from '../models/interview-instance';
 import { environment } from '../../../environments/environment';
-import { InterviewRecord } from '../models/interview-record';
+import { Record } from '../models/record';
 
 @Injectable({
   providedIn: 'root'

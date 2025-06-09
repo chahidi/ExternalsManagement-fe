@@ -1,3 +1,7 @@
+
+
+
+
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecordService } from '../../core/services/record.service';
@@ -32,6 +36,7 @@ export class InterviewMeetingComponent {
   showSubtitles: boolean = false;
   liveSubtitle: string = '';
   recognition!: any;
+  isTranscriptionActive = false;
 
   constructor(private recordService: RecordService) {}
 
@@ -103,6 +108,8 @@ export class InterviewMeetingComponent {
       this.mediaRecorder.start();
     }
 
+    this.startTranscription(); // 🔹 Automatically start subtitle transcription on start
+
     this.preventResizeOnce = true;
     setTimeout(() => (this.preventResizeOnce = false), 1000);
 
@@ -151,12 +158,6 @@ export class InterviewMeetingComponent {
 
   toggleSubtitles() {
     this.showSubtitles = !this.showSubtitles;
-
-    if (this.showSubtitles) {
-      this.startTranscription();
-    } else {
-      this.stopTranscription();
-    }
   }
 
   startTranscription() {
@@ -167,7 +168,6 @@ export class InterviewMeetingComponent {
       return;
     }
 
-    console.log('🎤 Starting speech recognition...');
     this.recognition = new SpeechAPI();
     this.recognition.lang = 'en-US';
     this.recognition.interimResults = true;
@@ -175,14 +175,13 @@ export class InterviewMeetingComponent {
 
     this.recognition.onstart = () => {
       console.log('✅ Speech recognition started.');
+      this.isTranscriptionActive = true;
     };
 
     this.recognition.onresult = (event: any) => {
-      console.log('📥 Raw results:', event.results);
       const transcript = Array.from(event.results)
         .map((result: any) => result[0].transcript)
         .join('');
-      console.log('📝 Final transcript:', transcript);
       this.liveSubtitle = transcript;
     };
 
@@ -193,14 +192,14 @@ export class InterviewMeetingComponent {
 
     this.recognition.onend = () => {
       console.warn('🛑 Speech recognition stopped.');
+      this.isTranscriptionActive = false;
     };
 
     this.recognition.start();
   }
 
   stopTranscription() {
-    if (this.recognition) {
-      console.log('🛑 Stopping speech recognition...');
+    if (this.recognition && this.isTranscriptionActive) {
       this.recognition.stop();
     }
     this.liveSubtitle = '';

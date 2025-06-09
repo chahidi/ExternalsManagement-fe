@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { InterviewRecord } from '../models/interview-record';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecordService {
-  private apiUrl = 'http://localhost:3001/records'; // Mockoon endpoint
+    // Mockoon endpoint
+    private apiUrl = `${environment.apiInterviews}/records`;
+
 
   constructor(private http: HttpClient) {}
 

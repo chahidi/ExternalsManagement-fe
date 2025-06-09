@@ -28,14 +28,21 @@ export class InterviewMeetingComponent {
   interviewStartTime: number = 0;
   interviewRecord!: InterviewRecord;
 
+  // Subtitles
+  showSubtitles: boolean = false;
+  liveSubtitle: string = '';
+  recognition!: any;
+
   constructor(private recordService: RecordService) {}
 
   async prepareInterview() {
     this.previewMode = true;
     try {
-        this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        const video = this.videoElement.nativeElement;
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const video = this.videoElement.nativeElement;
       video.srcObject = this.stream;
+      video.muted = true;
+      video.volume = 0;
       await video.play();
     } catch {
       this.warningMessage = 'Camera access denied. Please enable your camera and reload the page.';
@@ -54,6 +61,8 @@ export class InterviewMeetingComponent {
     if (this.stream) {
       const video = this.videoElement.nativeElement;
       video.srcObject = this.stream;
+      video.muted = true;
+      video.volume = 0;
       await video.play();
 
       this.recordedChunks = [];
@@ -106,6 +115,8 @@ export class InterviewMeetingComponent {
     this.interviewInProgress = false;
     this.interviewFinalizing = true;
 
+    this.stopTranscription();
+
     if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.stop();
 
@@ -138,21 +149,78 @@ export class InterviewMeetingComponent {
     window.scrollTo(0, 0);
   }
 
+  toggleSubtitles() {
+    this.showSubtitles = !this.showSubtitles;
+
+    if (this.showSubtitles) {
+      this.startTranscription();
+    } else {
+      this.stopTranscription();
+    }
+  }
+
+  startTranscription() {
+    const SpeechAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechAPI) {
+      this.warningMessage = '❌ Speech recognition not supported in this browser.';
+      console.warn('❌ SpeechRecognition API not supported.');
+      return;
+    }
+
+    console.log('🎤 Starting speech recognition...');
+    this.recognition = new SpeechAPI();
+    this.recognition.lang = 'en-US';
+    this.recognition.interimResults = true;
+    this.recognition.continuous = true;
+
+    this.recognition.onstart = () => {
+      console.log('✅ Speech recognition started.');
+    };
+
+    this.recognition.onresult = (event: any) => {
+      console.log('📥 Raw results:', event.results);
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0].transcript)
+        .join('');
+      console.log('📝 Final transcript:', transcript);
+      this.liveSubtitle = transcript;
+    };
+
+    this.recognition.onerror = (event: any) => {
+      console.error('🚨 Speech recognition error:', event.error);
+      this.warningMessage = '⚠️ Speech recognition error: ' + event.error;
+    };
+
+    this.recognition.onend = () => {
+      console.warn('🛑 Speech recognition stopped.');
+    };
+
+    this.recognition.start();
+  }
+
+  stopTranscription() {
+    if (this.recognition) {
+      console.log('🛑 Stopping speech recognition...');
+      this.recognition.stop();
+    }
+    this.liveSubtitle = '';
+  }
+
   private preventUnload = (event: BeforeUnloadEvent) => {
     event.preventDefault();
     event.returnValue = '';
-  };
+  }
 
   private handleTabSwitch = () => {
     if (document.visibilityState === 'hidden') {
       this.warningMessage = '🚫 Tab switch detected. You have been disqualified.';
     }
-  };
+  }
 
   private handleResize = () => {
     if (this.preventResizeOnce) return;
     this.warningMessage = '⚠️ Resizing is not allowed during the interview.';
-  };
+  }
 
   closeWarning() {
     this.warningMessage = null;

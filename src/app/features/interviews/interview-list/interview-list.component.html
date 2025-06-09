@@ -107,7 +107,6 @@
             </a>
             <span *ngIf="!interview.interviewLink" class="text-gray-400 italic">Not Available</span>
           </td>
-<span *ngIf="!interview.interviewLink" class="text-gray-400 italic">Not Available</span>
 
         <td>{{ interview.startedAt | date: 'dd-MM-yyyy' }}</td>
         <td>{{ getRemainingHours(interview.expiresAt) }}</td>

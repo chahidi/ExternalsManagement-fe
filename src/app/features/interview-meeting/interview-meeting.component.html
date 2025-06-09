@@ -8,6 +8,28 @@
   <ng-container *ngIf="interviewInProgress">
     <div class="fixed inset-0 bg-black flex items-center justify-center z-40">
       <video #videoElement autoplay muted class="w-full h-full object-cover"></video>
+
+
+
+
+
+      <!-- 🎤 Subtitle Text -->
+      <div
+        *ngIf="showSubtitles"
+        class="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white text-xl font-medium bg-black bg-opacity-50 px-4 py-2 rounded"
+      >
+        {{ liveSubtitle }}
+      </div>
+
+      <!-- 🎛️ Subtitle Toggle Button -->
+      <button
+        (click)="toggleSubtitles()"
+        class="absolute bottom-6 left-6 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full text-lg font-semibold shadow-lg"
+      >
+        {{ showSubtitles ? 'Hide Subtitles' : 'Show Subtitles' }}
+      </button>
+
+      <!-- ⏹️ Finish Button -->
       <button
         (click)="finishInterview()"
         class="absolute bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full text-lg font-semibold shadow-lg"

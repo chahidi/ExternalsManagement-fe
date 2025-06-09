@@ -3,12 +3,12 @@ import { City } from './city';
 import { Country } from './country';
 
 export interface Address {
-  id: string; 
+  id: string;
   street: string;
   postalCode: string;
   fullAddress: string;
-  city: City; 
-  country: Country; 
-  candidate: Candidate; 
+  city: City |null;
+  country: Country|null;
+  candidate?: Candidate;
 }
 

@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { CandidateFilterService } from '../../../../core/services/candidate-filter.service';
 import { Candidate } from '../../../../core/models/candidate';
+import { Contact} from '../../../../core/models/contact';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
@@ -16,13 +19,19 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 interface FilterCriteria {
   skills: any[];
   language: any;
   yearsOfExperience: number | null;
+}
+
+interface DropdownOption {
+  label: string;
+  value: string;
 }
 
 @Component({
@@ -43,7 +52,9 @@ interface FilterCriteria {
     ConfirmDialogModule,
     DialogModule,
     TextareaModule,
-    ToastModule
+    ToastModule,
+    CalendarModule,
+    CheckboxModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',
@@ -57,12 +68,27 @@ export class CandidateListComponent implements OnInit {
 
   skillOptions: any[] = [];
   languageOptions: any[] = [];
+  proficiencyLevels: string[] = ['BEGINNER', 'INTERMEDIATE', 'EXPERT'];
+  proficiencyLevelOptions: DropdownOption[] = [];
+  languageLevelOptions: DropdownOption[] = [];
+  languageLevels: string[] = ['BEGINNER', 'LOWER_INTERMEDIATE', 'INTERMEDIATE', 'UPPER_INTERMEDIATE', 'ADVANCED' ];
 
-  filters: FilterCriteria = {
-    skills: [],
-    language: null,
-    yearsOfExperience: null
-  };
+  cities: any[] = [
+    { id: '', name: 'Paris', country: null },
+    { id: '', name: 'London', country: null },
+    { id: '', name: 'New York', country: null }
+  ];
+  countries: any[] = [
+    { id: '', name: 'France' , englishName:'France', cities :null},
+    { id: '', name: 'UK', englishName:'United Kingdom', cities :null },
+    { id: '', name: 'USA' ,  englishName:'United State', cities :null}
+  ];
+
+    filters: FilterCriteria = {
+      skills: [],
+      language: null,
+      yearsOfExperience: null,
+    };
 
   constructor(
     private candidateService: CandidateService,
@@ -73,10 +99,24 @@ export class CandidateListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCandidates();
-    this.loadFilterOptions();
+    this.initFilterOptions();
+
+    this.proficiencyLevelOptions = this.proficiencyLevels.map(level => ({
+      label: level,
+      value: level
+    }));
+    this.languageLevelOptions = this.languageLevels.map(lang => ({
+        label :lang,
+        value: lang
+      }));
   }
 
-  loadFilterOptions(): void {
+  isArray(value: any): boolean {
+    return Array.isArray(value);
+  }
+
+  // Initialize with default values but will be updated with real data after loading candidates
+  initFilterOptions(): void {
     this.skillOptions = [
       { name: 'JavaScript', code: 'JavaScript' },
       { name: 'Java', code: 'Java' },
@@ -95,11 +135,85 @@ export class CandidateListComponent implements OnInit {
     ];
   }
 
+  // Updated method to extract available skills and languages from the loaded candidates
+  loadFilterOptions(): void {
+    // Extract unique skills from candidates
+    const uniqueSkills = new Set<string>();
+    this.candidates.forEach(candidate => {
+      if (candidate.skills && candidate.skills.length) {
+        candidate.skills.forEach(skill => {
+          if (skill.skillName) {
+            uniqueSkills.add(skill.skillName);
+          }
+        });
+      }
+    });
+
+    // Create skill options
+    this.skillOptions = Array.from(uniqueSkills).sort().map(skill => ({
+      name: skill,
+      code: skill
+    }));
+
+    if (this.skillOptions.length === 0) {
+      // If no skills found, use default options
+      this.initFilterOptions();
+    } else {
+      console.log('Loaded actual skills from candidates:', this.skillOptions);
+    }
+
+    // Extract unique languages from candidates
+    const uniqueLanguages = new Set<string>();
+    this.candidates.forEach(candidate => {
+      if (candidate.naturalLanguages && candidate.naturalLanguages.length) {
+        candidate.naturalLanguages.forEach(lang => {
+          // Prioritize language field but fall back to others if needed
+          const languageName = lang.language || lang.languageInEnglish || lang.englishDescription;
+          if (languageName) {
+            uniqueLanguages.add(languageName);
+          }
+        });
+      }
+    });
+
+    // Create language options
+    this.languageOptions = Array.from(uniqueLanguages).sort().map(language => ({
+      name: language,
+      code: language
+    }));
+
+    if (this.languageOptions.length === 0) {
+      // If no languages found, keep default options
+      console.log('No languages found in candidates, using defaults');
+      this.languageOptions = [
+        { name: 'English', code: 'English' },
+        { name: 'French', code: 'French' },
+        { name: 'Spanish', code: 'Spanish' },
+        { name: 'German', code: 'German' },
+        { name: 'Arabic', code: 'Arabic' }
+      ];
+    } else {
+      console.log('Loaded actual languages from candidates:', this.languageOptions);
+    }
+
+    console.log('Available skills:', this.skillOptions);
+    console.log('Available languages:', this.languageOptions);
+  }
+
   loadCandidates(): void {
     this.loading = true;
     this.candidateService.getCandidates().subscribe({
       next: (data) => {
-        this.candidates = data;
+        this.candidates = data || [];
+        console.log('Loaded candidates:', this.candidates.length);
+        // Log a sample candidate to check its structure
+        if (this.candidates.length > 0) {
+          console.log('Sample candidate:', this.candidates[0]);
+        }
+
+        // Load filter options based on real candidate data
+        this.loadFilterOptions();
+
         this.loading = false;
       },
       error: (err) => {
@@ -108,7 +222,7 @@ export class CandidateListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load candidates.'
+          detail: err.message || 'Failed to load candidates.'
         });
       },
     });
@@ -116,25 +230,59 @@ export class CandidateListComponent implements OnInit {
 
   applyFilters(): void {
     this.loading = true;
+    console.log('Applying filters:', this.filters);
 
-    const filterParams: any = {};
-
+    // Check if filters contain the expected data structure
     if (this.filters.skills && this.filters.skills.length > 0) {
-      filterParams.skills = this.filters.skills.map(skill => skill.code).join(',');
+      console.log('Skills filter:', this.filters.skills);
+      this.filters.skills.forEach((skill: any, index: number) => {
+        console.log(`Skill ${index}:`, skill.name, skill.code);
+      });
     }
 
     if (this.filters.language) {
-      filterParams.language = this.filters.language.code;
+      console.log('Language filter:', this.filters.language.name, this.filters.language.code);
     }
 
     if (this.filters.yearsOfExperience !== null) {
-      filterParams.yearsOfExperience = this.filters.yearsOfExperience;
+      console.log('Years of experience filter:', this.filters.yearsOfExperience);
+    }
+
+    const filterParams: any = {};
+
+    // Clone the filters to ensure we're passing the complete objects
+    if (this.filters.skills && this.filters.skills.length > 0) {
+      filterParams.skills = [...this.filters.skills];
+    }
+
+    if (this.filters.language) {
+      filterParams.language = {...this.filters.language};
+    }
+
+    if (this.filters.yearsOfExperience !== null) {
+      // Ensure we're passing a number value for years of experience
+      filterParams.yearsOfExperience = Number(this.filters.yearsOfExperience);
     }
 
     this.candidateFilterService.filterCandidates(filterParams).subscribe({
       next: (data) => {
-        this.candidates = data;
+        console.log('Filtered candidates:', data.length);
+        this.candidates = data || [];
         this.loading = false;
+
+        if (data.length === 0) {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'No Results',
+            detail: 'No candidates match the selected filters.'
+          });
+        } else {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Filters Applied',
+            detail: `Found ${data.length} candidates matching your criteria.`
+          });
+        }
       },
       error: (err) => {
         console.error('Error filtering candidates:', err);
@@ -152,25 +300,180 @@ export class CandidateListComponent implements OnInit {
     this.filters = {
       skills: [],
       language: null,
-      yearsOfExperience: null
+      yearsOfExperience: null,
     };
     this.loadCandidates();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Filters Reset',
+      detail: 'All filters have been cleared.'
+    });
   }
 
   onFilterInput(event: Event, table: Table): void {
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement) {
-      table.filterGlobal(inputElement.value, 'contains');
-    }
+    const inputValue = (event.target as HTMLInputElement).value;
+    table.filterGlobal(inputValue, 'contains');
   }
 
   clear(table: Table): void {
     table.clear();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Table Cleared',
+      detail: 'All table filters have been cleared.'
+    });
   }
 
-  editCandidate(candidate: Candidate): void {
-    this.selectedCandidate = JSON.parse(JSON.stringify(candidate));
-    this.displayEditDialog = true;
+  editCandidate(candidate: Candidate): void {this.selectedCandidate = { ...candidate };
+  this.selectedCandidate.addresses = this.selectedCandidate.addresses || [];
+  this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
+  this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
+  this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+  this.selectedCandidate.educations = this.selectedCandidate.educations || [];
+  this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
+  // Synchroniser city.country pour les adresses existantes
+  this.selectedCandidate.addresses.forEach(addr => this.syncCityCountry(addr));
+  this.displayEditDialog = true;
+}
+addAddress(): void {
+    console.log('Adding new address');
+    if (!this.selectedCandidate) return;
+    const newAddress = {
+      id: '',
+      street: '',
+      postalCode: '',
+      fullAddress: '',
+      city: this.cities[0], // Valeur par défaut : première ville
+      country: this.countries[0] // Valeur par défaut : premier pays
+    };
+    this.syncCityCountry(newAddress); // Synchroniser city.country
+    this.selectedCandidate.addresses.push(newAddress);
+  }
+
+  removeAddress(index: number): void {
+    if (this.selectedCandidate) {
+      this.selectedCandidate.addresses.splice(index, 1);
+    }
+  }
+
+  syncCityCountry(address: any): void {
+    if (address.city && address.country) {
+      // S'assurer que city.country correspond à address.country
+      address.city = {
+        ...address.city,
+        country: address.country,
+        countryId: address.country.id
+      };
+    }
+  }
+
+  onCityChange(address: any): void {
+    if (address.city) {
+      const selectedCity = this.cities.find(city => city.id === address.city.id);
+      if (selectedCity) {
+        const correspondingCountry = this.countries.find(country => country.id === selectedCity.countryId);
+        if (correspondingCountry) {
+          address.country = correspondingCountry;
+          this.syncCityCountry(address);
+        }
+      }
+    }
+  }
+
+  onCountryChange(address: any): void {
+    if (address.country && address.city) {
+      this.syncCityCountry(address);
+    }
+  }
+
+  addContact(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
+    this.selectedCandidate.contacts.push({
+      id: '',
+      candidateId: this.selectedCandidate.id,
+      contactType: '',
+      contactValue: ''
+    });
+  }
+
+  removeContact(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.contacts) return;
+    this.selectedCandidate.contacts.splice(index, 1);
+  }
+
+  addExperience(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
+    this.selectedCandidate.experiences.push({
+      id: '',
+      candidateId: this.selectedCandidate.id,
+      companyName: '',
+      position: '',
+      startDate: '',
+      endDate: null,
+      description: ''
+    });
+  }
+
+  removeExperience(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.experiences) return;
+    this.selectedCandidate.experiences.splice(index, 1);
+  }
+
+  addSkill(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+    this.selectedCandidate.skills.push({
+      id: '',
+      skillName: '',
+      proficiencyLevel: 'BEGINNER',
+    });
+  }
+
+  removeSkill(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.skills) return;
+    this.selectedCandidate.skills.splice(index, 1);
+  }
+
+  addEducation(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.educations = this.selectedCandidate.educations || [];
+    this.selectedCandidate.educations.push({
+      id: '',
+      candidate: this.selectedCandidate,
+      institution: '',
+      degree: '',
+      startDate: '',
+      endDate: '',
+      diploma: ''
+    });
+  }
+
+  removeEducation(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.educations) return;
+    this.selectedCandidate.educations.splice(index, 1);
+  }
+
+  addLanguage(): void {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
+    this.selectedCandidate.naturalLanguages.push({
+      id: '',
+      candidate: this.selectedCandidate,
+      description: '',
+      englishDescription: '',
+      fullDescription: '',
+      language: '',
+      languageInEnglish: '',
+      level: 'BEGINNER',
+      isNative: false
+    });
+  }
+
+  removeLanguage(index: number): void {
+    if (!this.selectedCandidate || !this.selectedCandidate.naturalLanguages) return;
+    this.selectedCandidate.naturalLanguages.splice(index, 1);
   }
 
   saveCandidate(): void {
@@ -199,7 +502,7 @@ export class CandidateListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to update candidate.'
+          detail: err.message || 'Failed to update candidate.'
         });
         this.loading = false;
       }
@@ -236,14 +539,14 @@ export class CandidateListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to delete candidate.'
+          detail: err.message || 'Failed to delete candidate.'
         });
         this.loading = false;
       }
     });
   }
 
-  getPrimaryContact(contacts: any[], type: string): string {
+  getPrimaryContact(contacts: Contact[], type: string): string {
     const contact = contacts?.find(c => c.contactType === type);
     return contact ? contact.contactValue : 'N/A';
   }

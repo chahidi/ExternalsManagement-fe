@@ -3,12 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
-import { StatsService } from '../../../../core/services/stats.service'; // Import the service
+import { StatsService } from '../../../../core/services/stats.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-stats-widget',
   standalone: true,
-  imports: [CardModule, ChartModule, TabViewModule],
+  imports: [CardModule, ChartModule, TabViewModule, CommonModule],
   templateUrl: './stats-widget.component.html',
   styleUrls: ['./stats-widget.component.scss']
 })
@@ -20,7 +23,7 @@ export class StatsWidgetComponent implements OnInit {
   public totalCandidates: number = 0;
   private languages: string[] = [];
   private skills: string[] = [];
-  private experienceData: any[] = [];
+  private experienceData: any = {};
 
   constructor(private statsService: StatsService) {}
 
@@ -36,9 +39,11 @@ export class StatsWidgetComponent implements OnInit {
   loadTotalCandidates(): void {
     this.statsService.getTotalCandidates().subscribe({
       next: (total) => {
-        this.totalCandidates = total;
+        console.log('Total candidates:', total);
+        this.totalCandidates = total || 0;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading total candidates:', err);
         this.totalCandidates = 0;
       }
     });
@@ -47,11 +52,13 @@ export class StatsWidgetComponent implements OnInit {
   loadAllLanguages(): void {
     this.statsService.getLanguages().subscribe({
       next: (languages) => {
-        this.languages = languages.length ? languages : ['No Languages'];
+        console.log('Languages loaded:', languages);
+        this.languages = languages && languages.length ? languages : ['No Data'];
         this.loadLanguagesChart();
       },
-      error: () => {
-        this.languages = ['No Languages'];
+      error: (err) => {
+        console.error('Error loading languages:', err);
+        this.languages = ['No Data'];
         this.loadLanguagesChart();
       }
     });
@@ -60,71 +67,143 @@ export class StatsWidgetComponent implements OnInit {
   loadAllSkills(): void {
     this.statsService.getSkills().subscribe({
       next: (skills) => {
-        this.skills = skills.length ? skills : ['No Skills'];
+        console.log('Skills loaded:', skills);
+        this.skills = skills && skills.length ? skills : ['No Data'];
         this.loadSkillsChart();
       },
-      error: () => {
-        this.skills = ['No Skills'];
+      error: (err) => {
+        console.error('Error loading skills:', err);
+        this.skills = ['No Data'];
         this.loadSkillsChart();
       }
     });
   }
 
   loadLanguagesChart(): void {
-    if (!this.languages.length) return;
+    if (!this.languages.length) {
+      this.createEmptyLanguageChart();
+      return;
+    }
 
-    Promise.all(
-      this.languages.map(lang =>
-        this.statsService.getCandidatesByLanguage(lang).toPromise()
-          .then(candidates => candidates?.length || 0)
-          .catch(() => 0)
+    if (this.languages[0] === 'No Data') {
+      this.createEmptyLanguageChart();
+      return;
+    }
+
+    // Use forkJoin to handle multiple observables
+    const requests = this.languages.map(lang =>
+      this.statsService.getCandidatesByLanguage(lang).pipe(
+        catchError(() => of(0))
       )
-    ).then(counts => {
-      this.languageChartData = {
-        labels: this.languages,
-        datasets: [{
-          label: 'Candidates by Language',
-          backgroundColor: '#42A5F5',
-          borderColor: '#1E88E5',
-          data: counts[0] === 0 && this.languages[0] === 'No Languages' ? [0] : counts,
-          borderWidth: 1
-        }]
-      };
-    }).catch(() => {
-      this.languageChartData = { labels: ['Error'], datasets: [{ data: [0] }] };
+    );
+
+    forkJoin(requests).subscribe({
+      next: (counts) => {
+        console.log('Language counts received:', counts);
+
+        this.languageChartData = {
+          labels: this.languages,
+          datasets: [{
+            label: 'Candidates by Language',
+            backgroundColor: this.generateColors(counts.length),
+            borderColor: '#1E88E5',
+            data: counts,
+            borderWidth: 1
+          }]
+        };
+      },
+      error: () => {
+        this.createEmptyLanguageChart();
+      }
     });
   }
 
-  loadSkillsChart(): void {
-    if (!this.skills.length) return;
+  createEmptyLanguageChart(): void {
+    this.languageChartData = {
+      labels: ['No Data Available'],
+      datasets: [{
+        label: 'Candidates by Language',
+        backgroundColor: '#E0E0E0',
+        data: [0],
+        borderWidth: 1
+      }]
+    };
+  }
 
-    Promise.all(
-      this.skills.map(skill =>
-        this.statsService.getCandidatesBySkill(skill).toPromise()
-          .then(candidates => candidates?.length || 0)
-          .catch(() => 0)
+  loadSkillsChart(): void {
+    if (!this.skills.length || this.skills[0] === 'No Data') {
+      this.createEmptySkillsChart();
+      return;
+    }
+
+    // Use forkJoin to handle multiple observables
+    const requests = this.skills.map(skill =>
+      this.statsService.getCandidatesBySkill(skill).pipe(
+        catchError(() => of([]))
       )
-    ).then(counts => {
-      const isEmptyData = counts.every(count => count === 0) || this.skills[0] === 'No Skills';
-      this.skillsChartData = {
-        labels: isEmptyData ? ['No Data'] : this.skills,
-        datasets: [{
-          data: isEmptyData ? [1] : counts,
-          backgroundColor: isEmptyData ? ['#E0E0E0'] : this.generateColors(counts.length),
-          hoverBackgroundColor: isEmptyData ? ['#E0E0E0'] : this.generateColors(counts.length),
-          borderWidth: 1,
-          borderColor: isEmptyData ? '#d1d1d1' : '#ffffff'
-        }]
-      };
-    }).catch(() => {
-      this.skillsChartData = { labels: ['Error'], datasets: [{ data: [1] }] };
+    );
+
+    forkJoin(requests).subscribe({
+      next: (responses) => {
+        const counts = responses.map(candidates => candidates?.length || 0);
+
+        const isEmptyData = counts.every(count => count === 0);
+        if (isEmptyData) {
+          this.createEmptySkillsChart();
+          return;
+        }
+
+        this.skillsChartData = {
+          labels: this.skills,
+          datasets: [{
+            data: counts,
+            backgroundColor: this.generateColors(counts.length),
+            hoverBackgroundColor: this.generateColors(counts.length),
+            borderWidth: 1
+          }]
+        };
+      },
+      error: () => {
+        this.createEmptySkillsChart();
+      }
     });
+  }
+
+  createEmptySkillsChart(): void {
+    this.skillsChartData = {
+      labels: ['No Data Available'],
+      datasets: [{
+        data: [1],
+        backgroundColor: ['#E0E0E0'],
+        hoverBackgroundColor: ['#E0E0E0'],
+        borderWidth: 1
+      }]
+    };
   }
 
   initChartOptions(): void {
     this.chartOptions = {
-      plugins: { legend: { labels: { color: '#495057' } }, tooltip: {} },
-      scales: { y: { beginAtZero: true }, x: {} },
+      plugins: {
+        legend: {
+          labels: { color: '#495057' }
+        },
+        tooltip: {
+          enabled: true
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: '#495057'
+          }
+        },
+        x: {
+          ticks: {
+            color: '#495057'
+          }
+        }
+      },
       responsive: true,
       maintainAspectRatio: false
     };
@@ -133,63 +212,83 @@ export class StatsWidgetComponent implements OnInit {
   loadExperienceData(): void {
     this.statsService.getExperienceDistribution().subscribe({
       next: (data) => {
-        this.experienceData = (data as any).experienceDistribution || [];
-        console.log('experienceData: ', this.experienceData);
-        this.totalCandidates = (data as any).totalCandidates ?? 0;
+        console.log('Experience data loaded:', data);
+        this.experienceData = data.experienceDistribution || {};
+        this.totalCandidates = data.totalCandidates || this.totalCandidates;
         this.loadExperienceChart();
       },
-      error: () => {
-        this.experienceData = [];
-        // this.loadExperienceChart();
+      error: (err) => {
+        console.error('Error loading experience data:', err);
+        this.experienceData = {};
+        this.createEmptyExperienceChart();
       }
     });
   }
 
   loadExperienceChart(): void {
-    const sorted = Object.entries(this.experienceData)
-                        .sort(([a], [b]) => parseInt(a) - parseInt(b));
-    console.log('sorted: ', sorted);
-  
-    const labels = sorted.map(([label]) => label);
-    console.log('labels: ', labels);
-    const counts = sorted.map(([, count]) => count);
-    console.log('counts: ', counts);
+    // Check if data is empty
+    if (!this.experienceData || Object.keys(this.experienceData).length === 0) {
+      this.createEmptyExperienceChart();
+      return;
+    }
 
-    // Define unique colors for each experience range
-    const uniqueColors = [
-      '#FF6F61', // 0 years
-      '#6B5B95', // 1 year
-      '#88B04B', // 2 years
-      '#F7CAC9', // 3 years
-      '#92A8D1', // 4 years
-      '#955251', // 5 years
-      '#B565A7', // 6 years
-      '#009B77', // 7 years
-      '#DD4124', // 8 years
-      '#45B8AC', // 9 years
-      '#EFC050', // 10+ years
-    ];
+    try {
+      const entries = Object.entries(this.experienceData);
+      if (entries.length === 0) {
+        this.createEmptyExperienceChart();
+        return;
+      }
 
-    const backgroundColors = labels.map((_, index) => uniqueColors[index % uniqueColors.length]);
-    const borderColors = backgroundColors.map(color => color); // Use same colors for borders
+      // Sort by numeric value of experience year
+      const sorted = entries.sort((a, b) => {
+        const aVal = a[0] === '10+' ? 11 : parseInt(a[0]);
+        const bVal = b[0] === '10+' ? 11 : parseInt(b[0]);
+        return aVal - bVal;
+      });
 
+      const labels = sorted.map(([label]) => label + (label !== '10+' ? ' years' : ' years'));
+      const counts = sorted.map(([, count]) => count);
+
+      // Define unique colors for each experience range
+      const backgroundColors = this.generateColors(counts.length);
+
+      this.experienceChartData = {
+        labels,
+        datasets: [{
+          label: 'Candidates by experience',
+          data: counts,
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors,
+          borderWidth: 1
+        }]
+      };
+
+      console.log('Experience chart data:', this.experienceChartData);
+    } catch (error) {
+      console.error('Error creating experience chart:', error);
+      this.createEmptyExperienceChart();
+    }
+  }
+
+  createEmptyExperienceChart(): void {
     this.experienceChartData = {
-      labels,
+      labels: ['No Experience Data'],
       datasets: [{
-        label: 'Candidates by experience range',
-        data: counts,
-        backgroundColor: backgroundColors,
-        borderColor: borderColors,
+        label: 'Candidates by experience',
+        data: [0],
+        backgroundColor: ['#E0E0E0'],
+        borderColor: ['#E0E0E0'],
         borderWidth: 1
       }]
     };
-
-    console.log('experienceChartData: ', this.experienceChartData);
   }
-  
 
   private generateColors(count: number): string[] {
-    const colors = ['#42A5F5', '#66BB6A', '#FFCA28', '#EF5350'];
+    const colors = [
+      '#FF6F61', '#6B5B95', '#88B04B', '#F7CAC9', '#92A8D1',
+      '#955251', '#B565A7', '#009B77', '#DD4124', '#45B8AC', '#EFC050'
+    ];
+
     return Array.from({ length: count }, (_, i) => colors[i % colors.length]);
   }
 }

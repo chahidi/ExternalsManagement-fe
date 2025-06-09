@@ -15,6 +15,7 @@ export class InterviewService {
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl);
   }
+
   generateNewLink(interviewId: string): Observable<{
     id: number;
     candidateId: number;

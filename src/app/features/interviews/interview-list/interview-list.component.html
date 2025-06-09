@@ -60,6 +60,7 @@
             <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
           </div>
         </th>
+        <th>Interview Link</th>
         <th>Planned On</th>
         <th>Remaining Time</th>
         <th>Status Comment</th>
@@ -73,6 +74,19 @@
         <td>{{ interview.candidate.fullName }}</td>
         <td>{{ getEmail(interview.candidate) }}</td>
         <td>{{ interview.mainTech }}</td>
+        <td>
+            <a
+              *ngIf="interview.interviewLink"
+            [href]="interview.interviewLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-600 underline hover:text-blue-800"
+            >
+              {{ interview.interviewLink }}
+            </a>
+            <span *ngIf="!interview.interviewLink" class="text-gray-400 italic">Not Available</span>
+          </td>
+
         <td>{{ interview.startedAt | date: 'dd-MM-yyyy' }}</td>
         <td>{{ getRemainingHours(interview.expiresAt) }}</td>
         <td>
@@ -85,18 +99,11 @@
         </td>
         <td>{{ interview.linkGenerationCount || 0 }}</td>
         <td>
-          <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details"
-            (click)="viewDetails(interview)"></button>
-          <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail"
-            (click)="sendMail(interview)"></button>
-          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text"
-            [disabled]="!canGenerateLink(interview)" [pTooltip]="getGenerateLinkTooltip(interview)"
-            tooltipPosition="top" (click)="generateNewLink(interview)"></button>
-          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit"
-            (click)="editInterview(interview)"></button>
-          <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete"
-            (click)="confirmDeleteInterview(interview)"></button>
-
+          <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
+          <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" (click)="sendMail(interview)"></button>
+          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [disabled]="!canGenerateLink(interview)" [pTooltip]="getGenerateLinkTooltip(interview)" tooltipPosition="top" (click)="generateNewLink(interview)"></button>
+          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" (click)="editInterview(interview)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" (click)="confirmDeleteInterview(interview)"></button>
         </td>
       </tr>
     </ng-template>
@@ -138,10 +145,8 @@
 
           <textarea id="message" pInputTextarea [(ngModel)]="mailBody" autoResize="true" rows="5" class="w-full"
             placeholder="Write the main content..."></textarea>
-
-          <div class="p-2 border rounded bg-gray-100 mt-2 whitespace-pre-line">{{ mailFooter }}</div>
-        </div>
-
+            <div class="p-2 border rounded bg-gray-100 mt-2 whitespace-pre-line">{{ mailFooter }}</div>
+          </div>
       </div>
     </div>
 

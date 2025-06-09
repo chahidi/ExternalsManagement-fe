@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { InterviewListComponent } from './interview-list/interview-list.component';
 
 export const INTERVIEWS_ROUTES: Routes = [
   {
@@ -13,5 +12,5 @@ export const INTERVIEWS_ROUTES: Routes = [
     loadComponent: () =>
       import('./interview-result/interview-result.component').then(m => m.InterviewResultComponent),
     title: 'Interview Results'
-  }
+  },
 ];

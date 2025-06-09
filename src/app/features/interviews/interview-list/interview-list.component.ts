@@ -16,30 +16,34 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { RouterModule } from '@angular/router'; 
 
 
 @Component({
-  selector: 'app-interview-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TableModule,
-    TooltipModule,
-    ButtonModule,
-    DialogModule,
-    FormsModule,
-    InputTextModule,
-    InputTextarea,
-    DropdownModule,
-    CalendarModule,
-    ToastModule,
-    DatePipe,
-    ConfirmDialogModule
-  ],
+  
+    selector: 'app-interview-list',
+    standalone: true,
+    imports: [
+        CommonModule,
+        TableModule,
+        TooltipModule,
+        ButtonModule,
+        DialogModule,
+        FormsModule,
+        InputTextModule,
+        InputTextarea,
+        DropdownModule,
+        CalendarModule,
+        ToastModule,
+        DatePipe,
+        ConfirmDialogModule,
+        RouterModule
+      ],
 
-  providers: [MessageService, ConfirmationService],
-  templateUrl: './interview-list.component.html',
-  styleUrls: ['./interview-list.component.scss']
+    providers: [MessageService, ConfirmationService],
+    templateUrl: './interview-list.component.html',
+    styleUrls: ['./interview-list.component.scss']
+  
 })
 export class InterviewListComponent implements OnInit {
 

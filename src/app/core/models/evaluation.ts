@@ -1,6 +1,14 @@
+// export interface Evaluation {
+//   id: string;
+//   type: 'Overall' | 'Technical' | 'Communication' | 'ProblemSolving';
+//   score: number;
+//   remarks?: string;
+// }
+
 export interface Evaluation {
   id: string;
-  type: 'Overall' | 'Technical' | 'Communication' | 'ProblemSolving';
+  interviewId: number;
   score: number;
-  remarks?: string;
+  description: string;
+  type: string;
 }

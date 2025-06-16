@@ -1,6 +1,5 @@
-
 export interface Record {
-  id: number;
+  id: string;
   interviewId: number;
   recordedAt: Date;
   durationInSeconds: number;

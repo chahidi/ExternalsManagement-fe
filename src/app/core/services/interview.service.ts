@@ -3,23 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { InterviewInstance } from '../models/interview-instance';
 import { environment } from '../../../environments/environment';
-<<<<<<< interviews-adjust
-=======
-import { InterviewRecord } from '../models/interview-record';
->>>>>>> interviews-develop
 
 @Injectable({
   providedIn: 'root'
 })
 export class InterviewService {
-<<<<<<< interviews-adjust
   private apiUrl = `${environment.apiInterviews}/interviews`;
 
-=======
-  
-  private apiUrl = `${environment.apiInterviews}/interviews`;
->>>>>>> interviews-develop
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl);

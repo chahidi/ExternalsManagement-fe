@@ -67,30 +67,10 @@
 
     <ng-template pTemplate="header">
       <tr>
-<<<<<<< interviews-adjust
         <th>Candidate Name</th>
         <th>Email</th>
         <th>Main Tech</th>
-=======
-        <th>
-          <div class="flex items-center justify-between">
-            Candidate Name
-            <p-columnFilter type="text" field="candidate.fullName" display="menu"></p-columnFilter>
-          </div>
-        </th>
-        <th>
-          <div class="flex items-center justify-between">
-            Email
-            <p-columnFilter type="text" field="candidate.contacts.contactValue" display="menu"></p-columnFilter>
-          </div>
-        </th>
-        <th>
-          <div class="flex items-center justify-between">
-            Main Tech
-            <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
-          </div>
-        </th>
->>>>>>> interviews-develop
+
         <th>Interview Link</th>
         <th>Planned On</th>
         <th>Remaining Time</th>
@@ -106,7 +86,6 @@
         <td>{{ getEmail(interview.candidate) }}</td>
         <td>{{ interview.mainTech }}</td>
         <td>
-<<<<<<< interviews-adjust
           <a
             *ngIf="interview.interviewLink?.text"
             [href]="interview.interviewLink.text"
@@ -116,20 +95,6 @@
           >
           <span *ngIf="!interview.interviewLink?.text" class="text-gray-400 italic">Not Available</span>
         </td>
-=======
-            <a
-              *ngIf="interview.interviewLink"
-            [href]="interview.interviewLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-blue-600 underline hover:text-blue-800"
-            >
-              {{ interview.interviewLink }}
-            </a>
-            <span *ngIf="!interview.interviewLink" class="text-gray-400 italic">Not Available</span>
-          </td>
-
->>>>>>> interviews-develop
         <td>{{ interview.startedAt | date: 'dd-MM-yyyy' }}</td>
         <td>{{ getRemainingHours(interview.interviewLink?.expiresAt) }}</td>
         <td>
@@ -142,7 +107,6 @@
             {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
           </span>
         </td>
-<<<<<<< interviews-adjust
         <td>{{ interview.link?.generationCount ?? 0 }}</td>
         <td class="flex gap-1">
           <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
@@ -163,16 +127,8 @@
             class="p-button-sm p-button-danger p-button-text"
             pTooltip="Delete"
             (click)="confirmDeleteInterview(interview)"
-          ></button>
-=======
-        <td>{{ interview.linkGenerationCount || 0 }}</td>
-        <td>
-          <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" pTooltip="View Details" (click)="viewDetails(interview)"></button>
-          <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" pTooltip="Send Mail" (click)="sendMail(interview)"></button>
-          <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [disabled]="!canGenerateLink(interview)" [pTooltip]="getGenerateLinkTooltip(interview)" tooltipPosition="top" (click)="generateNewLink(interview)"></button>
-          <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" pTooltip="Edit" (click)="editInterview(interview)"></button>
-          <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" pTooltip="Delete" (click)="confirmDeleteInterview(interview)"></button>
->>>>>>> interviews-develop
+          >
+        </button>
         </td>
       </tr>
     </ng-template>
@@ -187,14 +143,14 @@
     [dismissableMask]="true"
   >
     <div *ngIf="selectedInterview">
-      <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate?.fullName }}</p>
+      <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
       <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
       <p><strong>Main Tech:</strong> {{ selectedInterview.mainTech }}</p>
-      <p><strong>Interview Link:</strong> {{ selectedInterview.interviewLink?.text ?? 'N/A' }}</p>
+      <p><strong>Interview Link:</strong> {{ selectedInterview.interviewLink.text}}</p>
       <p><strong>Planned On:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
       <p><strong>Remaining Time:</strong> {{ getRemainingHours(selectedInterview.interviewLink.expiresAt) }}</p>
       <p><strong>Status:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
-      <p><strong>Links Generated:</strong> {{ selectedInterview.interviewLink?.generationCount ?? 0 }}</p>
+      <p><strong>Links Generated:</strong> {{ selectedInterview.interviewLink.generationCount }}</p>
     </div>
   </p-dialog>
 
@@ -228,7 +184,6 @@
 
       <div class="field">
         <label for="message" class="font-semibold mb-1">Message:</label>
-<<<<<<< interviews-adjust
         <div class="p-2 border rounded bg-gray-100 mb-2 whitespace-pre-line">{{ mailHeader }}</div>
         <textarea
           id="message"
@@ -239,16 +194,6 @@
           class="w-full"
         ></textarea>
         <div class="p-2 border rounded bg-gray-100 mt-2 whitespace-pre-line">{{ mailFooter }}</div>
-=======
-        <div class="field mb-3">
-          <label class="font-semibold"></label>
-          <div class="p-2 border rounded bg-gray-100 mb-2 whitespace-pre-line">{{ mailHeader }}</div>
-
-          <textarea id="message" pInputTextarea [(ngModel)]="mailBody" autoResize="true" rows="5" class="w-full"
-            placeholder="Write the main content..."></textarea>
-            <div class="p-2 border rounded bg-gray-100 mt-2 whitespace-pre-line">{{ mailFooter }}</div>
-          </div>
->>>>>>> interviews-develop
       </div>
     </div>
 

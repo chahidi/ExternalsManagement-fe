@@ -52,14 +52,14 @@
   <!-- 📋 Interview Table -->
 
 
-<p-table
+  <p-table
   #dt
   [value]="filteredInterviews"
   [loading]="loading"
   [paginator]="true"
   [rows]="5"
   [rowsPerPageOptions]="[5, 10, 20]"
-  [globalFilterFields]="['candidate.fullName', 'candidate.contacts.contactValue', 'mainTech', 'interviewLink.text', 'isPassed']"
+  [globalFilterFields]="['candidate.fullName', 'mainTech', 'offer.title', 'comment']"
   responsiveLayout="scroll"
 >
   <ng-template pTemplate="caption">
@@ -73,56 +73,19 @@
 
   <ng-template pTemplate="header">
     <tr>
-      <th>
-        Candidate Name
-        <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter>
-      </th>
-      <th>
-        Email
-        <p-columnFilter field="candidate.contacts.contactValue" matchMode="contains" display="menu"></p-columnFilter>
-      </th>
-      <th>
-        Main Tech
-        <p-columnFilter field="mainTech" matchMode="contains" display="menu"></p-columnFilter>
-      </th>
-      <th>
-        Interview Link
-        <p-columnFilter field="interviewLink.text" matchMode="contains" display="menu"></p-columnFilter>
-      </th>
-      <th>
-        Planned On
-        <p-columnFilter field="startedAt" matchMode="equals" display="menu" [showOperator]="false">
-          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <input
-              type="date"
-              class="p-inputtext p-component w-full"
-              [ngModel]="value"
-              (ngModelChange)="filter($event)"
-            />
-          </ng-template>
-        </p-columnFilter>
-      </th>
-      <th>
-        Remaining Time
-      </th>
-      <th>
-        Status
-        <p-columnFilter field="isPassed" matchMode="equals" display="menu">
-          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
-              [options]="statusOptions"
-              [ngModel]="value"
-              (onChange)="filter($event.value)"
-              placeholder="Select Status"
-              optionLabel="label"
-              optionValue="value"
-              [showClear]="true"
-              [style]="{ width: '100%' }"
-            ></p-dropdown>
-          </ng-template>
-        </p-columnFilter>
-      </th>
-      <th>Links Generated</th>
+      <th>Candidate Name <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter></th>
+      <th>Main Tech <p-columnFilter field="mainTech" matchMode="contains" display="menu"></p-columnFilter></th>
+      <th>Title <p-columnFilter field="offer.title" matchMode="contains" display="menu"></p-columnFilter></th>
+      <th>Comment <p-columnFilter field="comment" matchMode="contains" display="menu"></p-columnFilter></th>
+      <th>Scheduled On <p-columnFilter field="startedAt" matchMode="equals" display="menu" [showOperator]="false">
+        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+          <input type="date" class="p-inputtext p-component w-full" [ngModel]="value" (ngModelChange)="filter($event)" />
+        </ng-template>
+      </p-columnFilter></th>
+      <th>Passed On</th>
+      <th>Remaining Time</th>
+      <th>Duration</th>
+      <th>Recording Link</th>
       <th>Actions</th>
     </tr>
   </ng-template>
@@ -130,74 +93,64 @@
   <ng-template pTemplate="body" let-interview>
     <tr>
       <td>{{ interview.candidate?.fullName }}</td>
-      <td>{{ getEmail(interview.candidate) }}</td>
       <td>{{ interview.mainTech }}</td>
-      <td>
-        <a
-          *ngIf="interview.interviewLink?.text"
-          [href]="interview.interviewLink.text"
-          target="_blank"
-          class="text-blue-600 underline"
-          >{{ interview.interviewLink.text }}</a
-        >
-        <span *ngIf="!interview.interviewLink?.text" class="text-gray-400 italic">Not Available</span>
-      </td>
+      <td>{{ interview.offer?.title || '—' }}</td>
+      <td>{{ interview.comment || '—' }}</td>
       <td>{{ interview.startedAt | date: 'dd-MM-yyyy' }}</td>
+      <td>{{ interview.submittedAt ? (interview.submittedAt | date: 'dd-MM-yyyy') : '—' }}</td>
       <td>{{ getRemainingHours(interview.interviewLink?.expiresAt) }}</td>
       <td>
-        <span
-          [ngClass]="{
-            'status-passed': interview.isPassed,
-            'status-notyet': !interview.isPassed
-          }"
-        >
-          {{ interview.isPassed ? 'Passed' : 'Not Yet' }}
-        </span>
+        <ng-container *ngIf="interview.record?.durationInSeconds; else noDuration">
+          {{ (interview.record.durationInSeconds / 60) | number:'1.0-0' }} min
+        </ng-container>
+        <ng-template #noDuration>—</ng-template>
       </td>
-      <td>{{ interview.link?.generationCount ?? 0 }}</td>
+      <td>
+        <a *ngIf="interview.record?.fileUrl" [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
+        <span *ngIf="!interview.record?.fileUrl" class="text-gray-400 italic">Not Available</span>
+      </td>
       <td class="flex gap-1">
         <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" (click)="viewDetails(interview)"></button>
         <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" (click)="sendMail(interview)"></button>
-        <button
-          pButton
-          icon="pi pi-refresh"
-          class="p-button-sm p-button-text"
-          [disabled]="!canGenerateLink(interview)"
-          [pTooltip]="getGenerateLinkTooltip(interview)"
-          tooltipPosition="top"
-          (click)="generateNewLink(interview)"
-        ></button>
+        <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [disabled]="!canGenerateLink(interview)" [pTooltip]="getGenerateLinkTooltip(interview)" tooltipPosition="top" (click)="generateNewLink(interview)"></button>
         <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" (click)="editInterview(interview)"></button>
-        <button
-          pButton
-          icon="pi pi-trash"
-          class="p-button-sm p-button-danger p-button-text"
-          (click)="confirmDeleteInterview(interview)"
-        ></button>
+        <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDeleteInterview(interview)"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
+<!-- 👁️ View Details Dialog -->
+<p-dialog
+  header="Interview Details"
+  [(visible)]="displayEditDialog"
+  modal="modal"
+  [style]="{ maxWidth: '90vw' }"
+  [dismissableMask]="true"
+>
+  <div *ngIf="selectedInterview">
+    <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
+    <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
+    <p><strong>Main Tech:</strong> {{ selectedInterview.mainTech }}</p>
+    <p><strong>Title:</strong> {{ selectedInterview.offer.title || '—' }}</p>
+    <p><strong>Comment:</strong> {{ selectedInterview.comment || '—' }}</p>
+    <p><strong>Scheduled On:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
+    <p><strong>Passed On:</strong> {{ selectedInterview.submittedAt ? (selectedInterview.submittedAt | date: 'medium') : '—' }}</p>
+    <p><strong>Remaining Time:</strong> {{ getRemainingHours(selectedInterview.interviewLink.expiresAt) }}</p>
+    <p><strong>Status:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
+    <p><strong>Links Generated:</strong> {{ selectedInterview.interviewLink.generationCount }}</p>
+    <p><strong>Duration:</strong>
+      <ng-container *ngIf="selectedInterview.record?.durationInSeconds; else noDur">
+        {{ (selectedInterview.record.durationInSeconds / 60) | number:'1.0-0' }} min
+      </ng-container>
+      <ng-template #noDur>—</ng-template>
+    </p>
+    <p><strong>Recording:</strong>
+      <a *ngIf="selectedInterview.record?.fileUrl" [href]="selectedInterview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
+      <span *ngIf="!selectedInterview.record?.fileUrl" class="text-gray-400 italic">Not Available</span>
+    </p>
+  </div>
+</p-dialog>
 
-  <!-- 🔍 View Details Dialog -->
-  <p-dialog
-    header="Interview Details"
-    [(visible)]="displayEditDialog"
-    modal="modal"
-    [style]="{ maxWidth: '90vw' }"
-    [dismissableMask]="true"
-  >
-    <div *ngIf="selectedInterview">
-      <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
-      <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
-      <p><strong>Main Tech:</strong> {{ selectedInterview.mainTech }}</p>
-      <p><strong>Interview Link:</strong> {{ selectedInterview.interviewLink.text}}</p>
-      <p><strong>Planned On:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
-      <p><strong>Remaining Time:</strong> {{ getRemainingHours(selectedInterview.interviewLink.expiresAt) }}</p>
-      <p><strong>Status:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
-      <p><strong>Links Generated:</strong> {{ selectedInterview.interviewLink.generationCount }}</p>
-    </div>
-  </p-dialog>
 
   <!-- 📧 Send Mail Dialog -->
   <p-dialog

@@ -4,7 +4,7 @@
 <div class="p-4">
   <h2 class="text-xl font-bold mb-4">Interview List</h2>
 
-  <!-- 🔍 Filter Panel -->
+  <!--  Filter Panel -->
   <div class="card mb-4">
     <h3 class="text-lg font-semibold mb-3">Filter Interviews</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -48,10 +48,7 @@
       <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
     </div>
   </div>
-
-  <!-- 📋 Interview Table -->
-
-
+  <!--  Interview Table -->
   <p-table
   #dt
   [value]="filteredInterviews"
@@ -109,97 +106,34 @@
         <a *ngIf="interview.record?.fileUrl" [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
         <span *ngIf="!interview.record?.fileUrl" class="text-gray-400 italic">Not Available</span>
       </td>
+
       <td class="flex gap-1">
-        <button pButton icon="pi pi-eye" class="p-button-sm p-button-text" (click)="viewDetails(interview)"></button>
-        <button pButton icon="pi pi-envelope" class="p-button-sm p-button-text" (click)="sendMail(interview)"></button>
-        <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [disabled]="!canGenerateLink(interview)" [pTooltip]="getGenerateLinkTooltip(interview)" tooltipPosition="top" (click)="generateNewLink(interview)"></button>
-        <button pButton icon="pi pi-pencil" class="p-button-sm p-button-text" (click)="editInterview(interview)"></button>
-        <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDeleteInterview(interview)"></button>
-      </td>
+  <!--  Generate New Link -->
+  <button
+    pButton
+    icon="pi pi-refresh"
+    class="p-button-sm p-button-text"
+    [disabled]="!canGenerateLink(interview)"
+    [pTooltip]="getGenerateLinkTooltip(interview)"
+    tooltipPosition="top"
+    (click)="generateNewLink(interview)"
+  ></button>
+
+  <!--  Add/Edit Comment -->
+  <button
+    pButton
+    icon="pi pi-comment"
+    class="p-button-sm p-button-text"
+  ></button>
+
+  <!--  Delete Interview -->
+  <button
+    pButton
+    icon="pi pi-trash"
+    class="p-button-sm p-button-danger p-button-text"
+    (click)="confirmDeleteInterview(interview)"
+  ></button>
+</td>
     </tr>
   </ng-template>
 </p-table>
-<!-- 👁️ View Details Dialog -->
-<p-dialog
-  header="Interview Details"
-  [(visible)]="displayEditDialog"
-  modal="modal"
-  [style]="{ maxWidth: '90vw' }"
-  [dismissableMask]="true"
->
-  <div *ngIf="selectedInterview">
-    <p><strong>Candidate Name:</strong> {{ selectedInterview.candidate.fullName }}</p>
-    <p><strong>Email:</strong> {{ getEmail(selectedInterview.candidate) }}</p>
-    <p><strong>Main Tech:</strong> {{ selectedInterview.mainTech }}</p>
-    <p><strong>Title:</strong> {{ selectedInterview.offer.title || '—' }}</p>
-    <p><strong>Comment:</strong> {{ selectedInterview.comment || '—' }}</p>
-    <p><strong>Scheduled On:</strong> {{ selectedInterview.startedAt | date: 'medium' }}</p>
-    <p><strong>Passed On:</strong> {{ selectedInterview.submittedAt ? (selectedInterview.submittedAt | date: 'medium') : '—' }}</p>
-    <p><strong>Remaining Time:</strong> {{ getRemainingHours(selectedInterview.interviewLink.expiresAt) }}</p>
-    <p><strong>Status:</strong> {{ selectedInterview.isPassed ? 'Passed' : 'Not Yet' }}</p>
-    <p><strong>Links Generated:</strong> {{ selectedInterview.interviewLink.generationCount }}</p>
-    <p><strong>Duration:</strong>
-      <ng-container *ngIf="selectedInterview.record?.durationInSeconds; else noDur">
-        {{ (selectedInterview.record.durationInSeconds / 60) | number:'1.0-0' }} min
-      </ng-container>
-      <ng-template #noDur>—</ng-template>
-    </p>
-    <p><strong>Recording:</strong>
-      <a *ngIf="selectedInterview.record?.fileUrl" [href]="selectedInterview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
-      <span *ngIf="!selectedInterview.record?.fileUrl" class="text-gray-400 italic">Not Available</span>
-    </p>
-  </div>
-</p-dialog>
-
-
-  <!-- 📧 Send Mail Dialog -->
-  <p-dialog
-    header="Send Email"
-    [(visible)]="mailDialogVisible"
-    [modal]="true"
-    [dismissableMask]="true"
-    [draggable]="false"
-    [resizable]="false"
-    [styleClass]="'email-popup-flex-height'"
-  >
-    <div class="p-fluid p-3">
-      <div class="field mb-3">
-        <label class="font-semibold">To:</label>
-        <span class="block text-gray-800 pl-1">{{ selectedCandidateEmail }}</span>
-      </div>
-
-      <div class="field mb-3">
-        <label for="subject" class="font-semibold">Subject:</label>
-        <input
-          id="subject"
-          type="text"
-          pInputText
-          [(ngModel)]="mailSubject"
-          class="w-full"
-          placeholder="e.g., Interview Invitation"
-        />
-      </div>
-
-      <div class="field">
-        <label for="message" class="font-semibold mb-1">Message:</label>
-        <div class="p-2 border rounded bg-gray-100 mb-2 whitespace-pre-line">{{ mailHeader }}</div>
-        <textarea
-          id="message"
-          pInputTextarea
-          [(ngModel)]="mailBody"
-          autoResize="true"
-          rows="5"
-          class="w-full"
-        ></textarea>
-        <div class="p-2 border rounded bg-gray-100 mt-2 whitespace-pre-line">{{ mailFooter }}</div>
-      </div>
-    </div>
-
-    <ng-template pTemplate="footer">
-      <div class="flex justify-end gap-2 px-3 pb-2">
-        <button pButton icon="pi pi-send" label="Send" class="p-button-success" (click)="confirmSendMail()"></button>
-        <button pButton icon="pi pi-times" label="Cancel" class="p-button-secondary" (click)="mailDialogVisible = false"></button>
-      </div>
-    </ng-template>
-  </p-dialog>
-</div>

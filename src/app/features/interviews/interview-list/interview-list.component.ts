@@ -9,7 +9,6 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextarea } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { MessageService } from 'primeng/api';
@@ -29,7 +28,6 @@ import { RouterModule } from '@angular/router';
     DialogModule,
     FormsModule,
     InputTextModule,
-    InputTextarea,
     DropdownModule,
     CalendarModule,
     ToastModule,
@@ -124,12 +122,6 @@ export class InterviewListComponent implements OnInit {
     this.startDateFilter = null;
     this.filteredInterviews = this.interviews;
   }
-
-  getEmail(candidate: any): string {
-    const email = candidate.contacts?.find((c: any) => c.contactType === 'Email');
-    return email ? email.contactValue : 'N/A';
-  }
-
   getRemainingHours(expiryDate?: Date): string {
     if (!expiryDate) return 'N/A';
     const now = new Date();
@@ -137,52 +129,6 @@ export class InterviewListComponent implements OnInit {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
-
-  viewDetails(interview: InterviewInstance): void {
-    this.selectedInterview = interview;
-    this.displayEditDialog = true;
-  }
-
-  sendMail(interview: InterviewInstance): void {
-    this.selectedCandidateEmail = this.getEmail(interview.candidate);
-    this.selectedCandidateName = interview.candidate.fullName;
-    this.mailSubject = 'Interview Invitation';
-
-    const interviewDate = new Date(interview.startedAt ?? new Date());
-    const formattedDate = interviewDate.toLocaleDateString('en-GB');
-    const formattedTime = interviewDate.toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-    const link = interview.interviewLink?.text ?? '[Link Not Available]';
-
-    this.mailHeader = 'Dear ' + this.selectedCandidateName + ',';
-    this.mailBody = `We hope this mail finds you well.\n\nInterview scheduled on: ${formattedDate} at ${formattedTime}\n\nLink: ${link}`;
-    this.mailFooter = 'Best Regards,\nNTT Data Morocco';
-
-    this.mailDialogVisible = true;
-  }
-
-  confirmSendMail(): void {
-    this.interviewService.sendMail(this.selectedCandidateEmail, this.mailSubject, this.mailBody).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mail Sent',
-          detail: 'Mail sent successfully!'
-        });
-        this.mailDialogVisible = false;
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to send mail.'
-        });
-      }
-    });
-  }
-
   generateNewLink(interview: InterviewInstance): void {
     this.interviewService.generateNewLink(interview.id.toString()).subscribe({
       next: (response) => {
@@ -257,7 +203,4 @@ export class InterviewListComponent implements OnInit {
     });
   }
 
-  editInterview(interview: InterviewInstance): void {
-    console.log('Edit Interview:', interview);
-  }
 }

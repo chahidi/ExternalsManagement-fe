@@ -125,6 +125,7 @@
       </td>
 
       <td class="flex gap-1">
+        
   <!--  Generate New Link -->
   <button
     pButton
@@ -137,11 +138,13 @@
   ></button>
 
   <!--  Add/Edit Comment -->
-  <button
-    pButton
-    icon="pi pi-comment"
-    class="p-button-sm p-button-text"
-  ></button>
+<button
+  pButton
+  icon="pi pi-comment"
+  class="p-button-sm p-button-text"
+  pTooltip="Add Comment"
+  (click)="AddCommentPopup(interview)"
+></button>
 
   <!--  Delete Interview -->
   <button
@@ -154,3 +157,34 @@
     </tr>
   </ng-template>
 </p-table>
+
+  <!--  Add comment -->
+<p-dialog
+  header="Add Comment"
+  [(visible)]="showCommentDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [dismissableMask]="true"
+>
+  <div class="p-fluid p-3">
+    <div class="field mb-3">
+      <label for="comment" class="font-semibold block mb-2">Comment:</label>
+      <textarea
+        id="comment"
+        pInputTextarea
+        [(ngModel)]="tempComment"
+        rows="6"
+        autoResize="true"
+        class="p-inputtext w-full border border-gray-300 rounded"
+        placeholder="Enter your comment here..."
+      ></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2 px-3 pb-3">
+      <button pButton label="Close" class="p-button-secondary" (click)="showCommentDialog = false"></button>
+      <button pButton label="Save" class="p-button-primary" (click)="saveComment()"></button>
+    </div>
+  </ng-template>
+</p-dialog>

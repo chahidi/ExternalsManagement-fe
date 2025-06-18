@@ -32,11 +32,14 @@ export class InterviewService {
       generationCount: number;
     }>(`${this.apiUrl}/${interviewId}/link`, {});
   }
-sendEmail(interviewId: string): Observable<any> {
+  sendEmail(interviewId: string): Observable<any> {
   return this.http.post<any>(
     `${this.apiUrl}/${interviewId}/send-email`,
     {}
   );
 }
+ AddComment(id: string, interview: InterviewInstance) {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, interview);
+  }
 
 }

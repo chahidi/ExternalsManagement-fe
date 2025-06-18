@@ -55,6 +55,11 @@ export class InterviewListComponent implements OnInit {
     { label: 'Not Yet', value: false }
   ];
 
+    showCommentDialog: boolean = false;
+tempComment: string = '';
+selectedCommentInterview: InterviewInstance | null = null;
+
+
   constructor(
     private interviewService: InterviewService,
     private candidateService: CandidateService,
@@ -166,7 +171,45 @@ export class InterviewListComponent implements OnInit {
     return 'Link is still available';
   }
   return 'Generate New Link';
+    }
+
+
+    AddCommentPopup(interview: InterviewInstance): void {
+  this.tempComment = interview.comment || '';
+  this.selectedCommentInterview = interview;
+  this.showCommentDialog = true;
 }
+
+saveComment(): void {
+  if (!this.selectedCommentInterview) return;
+
+  const updatedInterview = {
+    ...this.selectedCommentInterview,
+    comment: this.tempComment
+  };
+
+  this.interviewService.AddComment(updatedInterview.id.toString(), updatedInterview).subscribe({
+    next: () => {
+      this.selectedCommentInterview!.comment = this.tempComment;
+      this.showCommentDialog = false;
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Comment Saved',
+        detail: 'Comment saved successfully!'
+      });
+    },
+    error: (err) => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to save comment'
+      });
+      console.error('Save comment failed:', err);
+    }
+  });
+}
+
 
 
   confirmDeleteInterview(interview: InterviewInstance): void {

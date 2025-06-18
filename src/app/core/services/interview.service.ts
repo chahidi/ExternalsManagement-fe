@@ -30,6 +30,10 @@ export class InterviewService {
     return this.http.post(`${this.apiUrl}/send-mail`, { to, subject, body });
   }
 
+  AddComment(id: string, interview: InterviewInstance) {
+    return this.http.put<any>(`http://localhost:3001/interviews/${id}`, interview);
+  }
+
   deleteInterview(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }

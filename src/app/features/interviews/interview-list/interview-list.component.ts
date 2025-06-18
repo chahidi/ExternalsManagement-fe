@@ -68,12 +68,18 @@ export class InterviewListComponent implements OnInit {
     { label: 'Not Yet', value: false }
   ];
 
+  showCommentDialog: boolean = false;
+  commentInput!: string;
+  tempComment: string = '';
+  selectedCommentInterview: InterviewInstance | null = null;
+
+
   constructor(
     private interviewService: InterviewService,
     private candidateService: CandidateService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadMainTechOptions();
@@ -227,6 +233,44 @@ export class InterviewListComponent implements OnInit {
     return 'Generate New Link';
   }
 
+  AddCommentPopup(interview: InterviewInstance): void {
+    this.tempComment = interview.comment || '';
+    this.selectedCommentInterview = interview;
+    this.showCommentDialog = true;
+  }
+
+  saveComment(): void {
+    if (!this.selectedCommentInterview) return;
+
+    const updatedInterview = {
+      ...this.selectedCommentInterview,
+      comment: this.tempComment
+    };
+
+    this.interviewService.AddComment(updatedInterview.id.toString(), updatedInterview).subscribe({
+      next: () => {
+        this.selectedCommentInterview!.comment = this.tempComment;
+        this.showCommentDialog = false;
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Comment Saved',
+          detail: 'Comment saved successfully!'
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save comment'
+        });
+        console.error('Save comment failed:', err);
+      }
+    });
+  }
+
+
+
   confirmDeleteInterview(interview: InterviewInstance): void {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this interview?',
@@ -257,7 +301,4 @@ export class InterviewListComponent implements OnInit {
     });
   }
 
-  editInterview(interview: InterviewInstance): void {
-    console.log('Edit Interview:', interview);
-  }
 }

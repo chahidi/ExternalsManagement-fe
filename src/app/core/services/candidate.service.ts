@@ -10,7 +10,9 @@ import { environment } from '../../../environments/environment';
 })
 export class CandidateService {
 
-  private baseUrl = `${environment.apiUrl}/v1/candidates`;
+    private baseUrl = `${environment.apiUrl}/v1/candidates`;
+    private apiUrl = `${environment.apiInterviews}/v1/candidates`;
+
   constructor(private http: HttpClient) { }
 
 
@@ -129,7 +131,7 @@ export class CandidateService {
   }
 
   getAllMainTech(): Observable<string[]> {
-    return this.http.get<string[]>(`http://localhost:3001/v1/candidates/main-techs`);
+    return this.http.get<string[]>(`${this.apiUrl}/main-techs`);
   }
 
 }

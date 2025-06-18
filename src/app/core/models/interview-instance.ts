@@ -16,6 +16,7 @@ export interface InterviewInstance {
   startedAt: Date;
   submittedAt: Date | null;
   isPassed: boolean;
+  overallScore: number;
   comment: string;
   questions: Question[];
   answers: Answer[];

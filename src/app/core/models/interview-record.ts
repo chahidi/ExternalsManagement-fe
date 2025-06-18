@@ -1,4 +1,3 @@
-// src/app/core/models/interview-record.ts
 export interface InterviewRecord {
     id: number;
     interviewId: number;

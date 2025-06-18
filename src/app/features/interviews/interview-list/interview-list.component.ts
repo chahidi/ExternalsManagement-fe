@@ -9,7 +9,6 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextarea } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { MessageService } from 'primeng/api';
@@ -29,7 +28,6 @@ import { RouterModule } from '@angular/router';
     DialogModule,
     FormsModule,
     InputTextModule,
-    InputTextarea,
     DropdownModule,
     CalendarModule,
     ToastModule,
@@ -46,17 +44,6 @@ export class InterviewListComponent implements OnInit {
   filteredInterviews: InterviewInstance[] = [];
   loading = true;
 
-  displayEditDialog = false;
-  selectedInterview: InterviewInstance | null = null;
-
-  mailDialogVisible = false;
-  selectedCandidateEmail = '';
-  selectedCandidateName = '';
-  mailSubject = '';
-  mailBody = '';
-  mailHeader = '';
-  mailFooter = '';
-
   mainTechFilter: string | null = null;
   statusFilter: boolean | null = null;
   startDateFilter: Date | null = null;
@@ -67,6 +54,11 @@ export class InterviewListComponent implements OnInit {
     { label: 'Passed', value: true },
     { label: 'Not Yet', value: false }
   ];
+
+    showCommentDialog: boolean = false;
+tempComment: string = '';
+selectedCommentInterview: InterviewInstance | null = null;
+
 
   constructor(
     private interviewService: InterviewService,
@@ -84,10 +76,7 @@ export class InterviewListComponent implements OnInit {
   loadMainTechOptions(): void {
     this.candidateService.getAllMainTech().subscribe({
       next: (techList) => {
-        this.techOptions = techList.map((tech) => ({
-          label: tech,
-          value: tech
-        }));
+        this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
       },
       error: () => {
         this.messageService.add({
@@ -125,107 +114,105 @@ export class InterviewListComponent implements OnInit {
     this.filteredInterviews = this.interviews;
   }
 
-  getEmail(candidate: any): string {
-    const email = candidate.contacts?.find((c: any) => c.contactType === 'Email');
-    return email ? email.contactValue : 'N/A';
-  }
-
   getRemainingHours(expiryDate?: Date): string {
     if (!expiryDate) return 'N/A';
-    const now = new Date();
-    const diff = new Date(expiryDate).getTime() - now.getTime();
+    const diff = new Date(expiryDate).getTime() - new Date().getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
 
-  viewDetails(interview: InterviewInstance): void {
-    this.selectedInterview = interview;
-    this.displayEditDialog = true;
-  }
+ generateNewLink(interview: InterviewInstance): void {
+  this.interviewService.generateNewLink(interview.id.toString()).subscribe({
+    next: (response) => {
+      interview.interviewLink = {
+        id: response.linkId,
+        text: response.newLink,
+        generationCount: response.generationCount,
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h from now
+      };
 
-  sendMail(interview: InterviewInstance): void {
-    this.selectedCandidateEmail = this.getEmail(interview.candidate);
-    this.selectedCandidateName = interview.candidate.fullName;
-    this.mailSubject = 'Interview Invitation';
+      interview.startedAt = new Date();
 
-    const interviewDate = new Date(interview.startedAt ?? new Date());
-    const formattedDate = interviewDate.toLocaleDateString('en-GB');
-    const formattedTime = interviewDate.toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-    const link = interview.interviewLink?.text ?? '[Link Not Available]';
+      console.log('✅ New generation count:', response.generationCount);
 
-    this.mailHeader = 'Dear ' + this.selectedCandidateName + ',';
-    this.mailBody = `We hope this mail finds you well.\n\nInterview scheduled on: ${formattedDate} at ${formattedTime}\n\nLink: ${link}`;
-    this.mailFooter = 'Best Regards,\nNTT Data Morocco';
-
-    this.mailDialogVisible = true;
-  }
-
-  confirmSendMail(): void {
-    this.interviewService.sendMail(this.selectedCandidateEmail, this.mailSubject, this.mailBody).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mail Sent',
-          detail: 'Mail sent successfully!'
-        });
-        this.mailDialogVisible = false;
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to send mail.'
-        });
-      }
-    });
-  }
-
-  generateNewLink(interview: InterviewInstance): void {
-    this.interviewService.generateNewLink(interview.id.toString()).subscribe({
-      next: (response) => {
-        interview.interviewLink = {
-          id: response.linkId,
-          text: response.newLink,
-          generationCount: (interview.interviewLink?.generationCount ?? 0) + 1,
-          createdAt: new Date(),
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-        };
-        interview.startedAt = new Date();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Link Generated',
-          detail: 'A new link has been successfully generated.'
-        });
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Link Generation Failed',
-          detail: 'Could not generate new link.'
-        });
-      }
-    });
-  }
-
-  canGenerateLink(interview: InterviewInstance): boolean {
-    const now = new Date();
-    if (!interview.interviewLink) return true;
-    const isExpired = new Date(interview.interviewLink.expiresAt).getTime() <= now.getTime();
-    const count = interview.interviewLink.generationCount ?? 0;
-    return isExpired && count < 3;
-  }
-
-  getGenerateLinkTooltip(interview: InterviewInstance): string {
-    const count = interview.interviewLink?.generationCount ?? 0;
-    if (count >= 3) return 'You’ve reached the max of 3 link generations.';
-    if (interview.interviewLink?.expiresAt && new Date(interview.interviewLink.expiresAt).getTime() > Date.now()) {
-      return 'Link is still valid.';
+      this.interviewService.sendEmail(interview.id.toString()).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Link Generated',
+            detail: `Link generated successfully!\nGeneration number: ${interview.interviewLink.generationCount}`
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Email Failed',
+            detail: 'Link generated, but email sending failed.'
+          });
+        }
+      });
+    },
+    error: () => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Generation Failed',
+        detail: 'Link could not be generated.'
+      });
     }
-    return 'Generate New Link';
+  });
+}
+
+    canGenerateLink(interview: InterviewInstance): boolean {
+  if (!interview.interviewLink) return true;
+  return new Date(interview.interviewLink.expiresAt).getTime() <= Date.now();
+}
+
+    getGenerateLinkTooltip(interview: InterviewInstance): string {
+  if (interview.interviewLink?.expiresAt && new Date(interview.interviewLink.expiresAt).getTime() > Date.now()) {
+    return 'Link is still available';
   }
+  return 'Generate New Link';
+    }
+
+
+    AddCommentPopup(interview: InterviewInstance): void {
+  this.tempComment = interview.comment || '';
+  this.selectedCommentInterview = interview;
+  this.showCommentDialog = true;
+}
+
+saveComment(): void {
+  if (!this.selectedCommentInterview) return;
+
+  const updatedInterview = {
+    ...this.selectedCommentInterview,
+    comment: this.tempComment
+  };
+
+  this.interviewService.AddComment(updatedInterview.id.toString(), updatedInterview).subscribe({
+    next: () => {
+      this.selectedCommentInterview!.comment = this.tempComment;
+      this.showCommentDialog = false;
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Comment Saved',
+        detail: 'Comment saved successfully!'
+      });
+    },
+    error: (err) => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to save comment'
+      });
+      console.error('Save comment failed:', err);
+    }
+  });
+}
+
+
 
   confirmDeleteInterview(interview: InterviewInstance): void {
     this.confirmationService.confirm({
@@ -255,9 +242,5 @@ export class InterviewListComponent implements OnInit {
         });
       }
     });
-  }
-
-  editInterview(interview: InterviewInstance): void {
-    console.log('Edit Interview:', interview);
   }
 }

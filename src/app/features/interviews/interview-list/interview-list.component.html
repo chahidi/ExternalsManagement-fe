@@ -108,8 +108,8 @@
 </td>
 
       <td>{{ interview.mainTech }}</td>
-      <td>{{ interview.offer?.title || '—' }}</td>
-      <td>{{ interview.comment || '—' }}</td>
+      <td>{{ interview.offer?.title || 'N/A' }}</td>
+      <td>{{ interview.comment || 'N/A' }}</td>
       <td>{{ interview.startedAt | date: 'dd-MM-yyyy' }}</td>
       <td>{{ interview.submittedAt ? (interview.submittedAt | date: 'dd-MM-yyyy') : '—' }}</td>
       <td>{{ getRemainingHours(interview.interviewLink?.expiresAt) }}</td>
@@ -125,7 +125,7 @@
       </td>
 
       <td class="flex gap-1">
-        
+
   <!--  Generate New Link -->
   <button
     pButton

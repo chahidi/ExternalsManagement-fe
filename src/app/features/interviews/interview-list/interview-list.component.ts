@@ -121,45 +121,47 @@ selectedCommentInterview: InterviewInstance | null = null;
     return hours > 0 ? `${hours}h` : 'Expired';
   }
 
-  generateNewLink(interview: InterviewInstance): void {
-    this.interviewService.generateNewLink(interview.id.toString()).subscribe({
-      next: (response) => {
-        const currentCount = interview.interviewLink?.generationCount ?? 0;
-        interview.interviewLink = {
-          id: response.linkId,
-          text: response.newLink,
-          generationCount: currentCount + 1,
-          createdAt: new Date(),
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-        };
-        interview.startedAt = new Date();
+ generateNewLink(interview: InterviewInstance): void {
+  this.interviewService.generateNewLink(interview.id.toString()).subscribe({
+    next: (response) => {
+      interview.interviewLink = {
+        id: response.linkId,
+        text: response.newLink,
+        generationCount: response.generationCount,
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h from now
+      };
 
-        this.interviewService.sendEmail(interview.id.toString()).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Link Generated',
-              detail: `Link generated successfully!\nGeneration number: ${interview.interviewLink.generationCount}`
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'warn',
-              summary: 'Email Failed',
-              detail: 'Link generated, but email sending failed.'
-            });
-          }
-        });
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Generation Failed',
-          detail: 'Link could not be generated.'
-        });
-      }
-    });
-  }
+      interview.startedAt = new Date();
+
+      console.log('✅ New generation count:', response.generationCount);
+
+      this.interviewService.sendEmail(interview.id.toString()).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Link Generated',
+            detail: `Link generated successfully!\nGeneration number: ${interview.interviewLink.generationCount}`
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Email Failed',
+            detail: 'Link generated, but email sending failed.'
+          });
+        }
+      });
+    },
+    error: () => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Generation Failed',
+        detail: 'Link could not be generated.'
+      });
+    }
+  });
+}
 
     canGenerateLink(interview: InterviewInstance): boolean {
   if (!interview.interviewLink) return true;

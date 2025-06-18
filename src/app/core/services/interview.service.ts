@@ -42,8 +42,4 @@ export class InterviewService {
     return this.http.put<any>(`${this.apiUrl}/${id}`, interview);
   }
 
-
-
-    
-
 }

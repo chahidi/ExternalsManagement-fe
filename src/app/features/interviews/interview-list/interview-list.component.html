@@ -71,6 +71,12 @@
   <ng-template pTemplate="header">
     <tr>
       <th>Candidate Name <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter></th>
+
+      <th>
+  Interview Link
+  <p-columnFilter field="interviewLink.text" matchMode="contains" display="menu"></p-columnFilter>
+</th>
+
       <th>Main Tech <p-columnFilter field="mainTech" matchMode="contains" display="menu"></p-columnFilter></th>
       <th>Title <p-columnFilter field="offer.title" matchMode="contains" display="menu"></p-columnFilter></th>
       <th>Comment <p-columnFilter field="comment" matchMode="contains" display="menu"></p-columnFilter></th>
@@ -90,6 +96,17 @@
   <ng-template pTemplate="body" let-interview>
     <tr>
       <td>{{ interview.candidate?.fullName }}</td>
+    <td>
+  <a
+    *ngIf="interview.interviewLink?.text"
+    [href]="interview.interviewLink.text"
+    target="_blank"
+    class="text-blue-600 underline"
+    >{{ interview.interviewLink.text }}</a
+  >
+  <span *ngIf="!interview.interviewLink?.text" class="text-gray-400 italic">Not Available</span>
+</td>
+
       <td>{{ interview.mainTech }}</td>
       <td>{{ interview.offer?.title || '—' }}</td>
       <td>{{ interview.comment || '—' }}</td>

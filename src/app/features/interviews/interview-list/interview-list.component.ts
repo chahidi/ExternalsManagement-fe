@@ -44,17 +44,6 @@ export class InterviewListComponent implements OnInit {
   filteredInterviews: InterviewInstance[] = [];
   loading = true;
 
-  displayEditDialog = false;
-  selectedInterview: InterviewInstance | null = null;
-
-  mailDialogVisible = false;
-  selectedCandidateEmail = '';
-  selectedCandidateName = '';
-  mailSubject = '';
-  mailBody = '';
-  mailHeader = '';
-  mailFooter = '';
-
   mainTechFilter: string | null = null;
   statusFilter: boolean | null = null;
   startDateFilter: Date | null = null;
@@ -82,10 +71,7 @@ export class InterviewListComponent implements OnInit {
   loadMainTechOptions(): void {
     this.candidateService.getAllMainTech().subscribe({
       next: (techList) => {
-        this.techOptions = techList.map((tech) => ({
-          label: tech,
-          value: tech
-        }));
+        this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
       },
       error: () => {
         this.messageService.add({
@@ -122,56 +108,66 @@ export class InterviewListComponent implements OnInit {
     this.startDateFilter = null;
     this.filteredInterviews = this.interviews;
   }
+
   getRemainingHours(expiryDate?: Date): string {
     if (!expiryDate) return 'N/A';
-    const now = new Date();
-    const diff = new Date(expiryDate).getTime() - now.getTime();
+    const diff = new Date(expiryDate).getTime() - new Date().getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
+
   generateNewLink(interview: InterviewInstance): void {
     this.interviewService.generateNewLink(interview.id.toString()).subscribe({
       next: (response) => {
+        const currentCount = interview.interviewLink?.generationCount ?? 0;
         interview.interviewLink = {
           id: response.linkId,
           text: response.newLink,
-          generationCount: (interview.interviewLink?.generationCount ?? 0) + 1,
+          generationCount: currentCount + 1,
           createdAt: new Date(),
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
         };
         interview.startedAt = new Date();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Link Generated',
-          detail: 'A new link has been successfully generated.'
+
+        this.interviewService.sendEmail(interview.id.toString()).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Link Generated',
+              detail: `Link generated successfully!\nGeneration number: ${interview.interviewLink.generationCount}`
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Email Failed',
+              detail: 'Link generated, but email sending failed.'
+            });
+          }
         });
       },
       error: () => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Link Generation Failed',
-          detail: 'Could not generate new link.'
+          summary: 'Generation Failed',
+          detail: 'Link could not be generated.'
         });
       }
     });
   }
 
-  canGenerateLink(interview: InterviewInstance): boolean {
-    const now = new Date();
-    if (!interview.interviewLink) return true;
-    const isExpired = new Date(interview.interviewLink.expiresAt).getTime() <= now.getTime();
-    const count = interview.interviewLink.generationCount ?? 0;
-    return isExpired && count < 3;
-  }
+    canGenerateLink(interview: InterviewInstance): boolean {
+  if (!interview.interviewLink) return true;
+  return new Date(interview.interviewLink.expiresAt).getTime() <= Date.now();
+}
 
-  getGenerateLinkTooltip(interview: InterviewInstance): string {
-    const count = interview.interviewLink?.generationCount ?? 0;
-    if (count >= 3) return 'You’ve reached the max of 3 link generations.';
-    if (interview.interviewLink?.expiresAt && new Date(interview.interviewLink.expiresAt).getTime() > Date.now()) {
-      return 'Link is still valid.';
-    }
-    return 'Generate New Link';
+    getGenerateLinkTooltip(interview: InterviewInstance): string {
+  if (interview.interviewLink?.expiresAt && new Date(interview.interviewLink.expiresAt).getTime() > Date.now()) {
+    return 'Link is still available';
   }
+  return 'Generate New Link';
+}
+
 
   confirmDeleteInterview(interview: InterviewInstance): void {
     this.confirmationService.confirm({
@@ -202,5 +198,4 @@ export class InterviewListComponent implements OnInit {
       }
     });
   }
-
 }

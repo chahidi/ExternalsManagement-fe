@@ -16,21 +16,27 @@ export class InterviewService {
     return this.http.get<InterviewInstance[]>(this.apiUrl);
   }
 
+  deleteInterview(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+  }
+
+
   generateNewLink(interviewId: string): Observable<{
     linkId: number;
     newLink: string;
+    generationCount: number;
   }> {
     return this.http.post<{
       linkId: number;
       newLink: string;
-    }>(`${this.apiUrl}/${interviewId}/generate-link`, {});
+      generationCount: number;
+    }>(`${this.apiUrl}/${interviewId}/link`, {});
   }
+sendEmail(interviewId: string): Observable<any> {
+  return this.http.post<any>(
+    `${this.apiUrl}/${interviewId}/send-email`,
+    {}
+  );
+}
 
-  sendMail(to: string, subject: string, body: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/send-mail`, { to, subject, body });
-  }
-
-  deleteInterview(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
-  }
 }

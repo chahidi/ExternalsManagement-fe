@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 export class InterviewService {
   private apiUrl = `${environment.apiInterviews}/interviews`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl);
@@ -20,26 +20,39 @@ export class InterviewService {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 
-
-  generateNewLink(interviewId: string): Observable<{
+  generateNewLink(interview: InterviewInstance): Observable<{
     linkId: number;
     newLink: string;
     generationCount: number;
   }> {
+    const payload = {
+      candidateId: interview.candidate.id,
+      offerId: interview.offer.id,
+      interviewId: interview.id,
+      scheduledDate: interview.startedAt
+    };
+
     return this.http.post<{
       linkId: number;
       newLink: string;
       generationCount: number;
-    }>(`${this.apiUrl}/${interviewId}/link`, {});
-  }
-  sendEmail(interviewId: string): Observable<any> {
-  return this.http.post<any>(
-    `${this.apiUrl}/${interviewId}/send-email`,
-    {}
-  );
-}
- AddComment(id: string, interview: InterviewInstance) {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, interview);
+    }>(`${this.apiUrl}/generate-link`, payload);
   }
 
+
+
+  sendEmail(interview: InterviewInstance, linkText: string): Observable<{ message: string }> {
+    const payload = {
+      candidateFullName: interview.candidate.fullName,
+      offerTitle: interview.offer.title,
+      scheduledDate: interview.startedAt,
+      interviewLinkText: linkText
+    };
+
+    return this.http.post<{ message: string }>(`${this.apiUrl}/send-email`, payload);
+  }
+
+  AddComment(id: string, interview: InterviewInstance) {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, interview);
+  }
 }

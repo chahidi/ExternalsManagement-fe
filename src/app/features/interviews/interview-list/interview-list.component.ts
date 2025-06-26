@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { InterviewService } from '../../../core/services/interview.service';
 import { CandidateService } from '../../../core/services/candidate.service';
@@ -42,7 +43,7 @@ import { RouterModule } from '@angular/router';
 export class InterviewListComponent implements OnInit {
   interviews: InterviewInstance[] = [];
   filteredInterviews: InterviewInstance[] = [];
-  loading = true;
+    loading = true;
 
   mainTechFilter: string | null = null;
   statusFilter: boolean | null = null;
@@ -55,10 +56,11 @@ export class InterviewListComponent implements OnInit {
     { label: 'Not Yet', value: false }
   ];
 
-    showCommentDialog: boolean = false;
-tempComment: string = '';
-selectedCommentInterview: InterviewInstance | null = null;
+  showCommentDialog: boolean = false;
+  tempComment: string = '';
+  selectedCommentInterview: InterviewInstance | null = null;
 
+  generatedLinks: { [key: number]: string } = {}; // Frontend-only transient state
 
   constructor(
     private interviewService: InterviewService,
@@ -121,98 +123,75 @@ selectedCommentInterview: InterviewInstance | null = null;
     return hours > 0 ? `${hours}h` : 'Expired';
   }
 
- generateNewLink(interview: InterviewInstance): void {
-  this.interviewService.generateNewLink(interview.id.toString()).subscribe({
-    next: (response) => {
-      interview.interviewLink = {
-        id: response.linkId,
-        text: response.newLink,
-        generationCount: response.generationCount,
-        createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h from now
-      };
+  generateNewLink(interview: InterviewInstance): void {
+    this.interviewService.generateNewLink(interview).subscribe({
+        next: (response) => {
+               console.log('🔗 Link generation response from Mockoon:', response);
+        const linkText = response.newLink;
+        this.generatedLinks[interview.id] = linkText;
 
-      interview.startedAt = new Date();
-
-      console.log('✅ New generation count:', response.generationCount);
-
-      this.interviewService.sendEmail(interview.id.toString()).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Link Generated',
-            detail: `Link generated successfully!\nGeneration number: ${interview.interviewLink.generationCount}`
-          });
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Email Failed',
-            detail: 'Link generated, but email sending failed.'
-          });
-        }
-      });
-    },
-    error: () => {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Generation Failed',
-        detail: 'Link could not be generated.'
-      });
-    }
-  });
-}
-
-    canGenerateLink(interview: InterviewInstance): boolean {
-  if (!interview.interviewLink) return true;
-  return new Date(interview.interviewLink.expiresAt).getTime() <= Date.now();
-}
-
-    getGenerateLinkTooltip(interview: InterviewInstance): string {
-  if (interview.interviewLink?.expiresAt && new Date(interview.interviewLink.expiresAt).getTime() > Date.now()) {
-    return 'Link is still available';
+        this.interviewService.sendEmail(interview, linkText).subscribe({
+          next: (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Email Sent',
+              detail: res.message
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Email Failed',
+              detail: 'Link generated, but email sending failed.'
+            });
+          }
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Generation Failed',
+          detail: 'Could not generate interview link.'
+        });
+      }
+    });
   }
-  return 'Generate New Link';
-    }
 
+  AddCommentPopup(interview: InterviewInstance): void {
+    this.tempComment = interview.comment || '';
+    this.selectedCommentInterview = interview;
+    this.showCommentDialog = true;
+  }
 
-    AddCommentPopup(interview: InterviewInstance): void {
-  this.tempComment = interview.comment || '';
-  this.selectedCommentInterview = interview;
-  this.showCommentDialog = true;
-}
+  saveComment(): void {
+    if (!this.selectedCommentInterview) return;
 
-saveComment(): void {
-  if (!this.selectedCommentInterview) return;
+    const updatedInterview = {
+      ...this.selectedCommentInterview,
+      comment: this.tempComment
+    };
 
-  const updatedInterview = {
-    ...this.selectedCommentInterview,
-    comment: this.tempComment
-  };
+    this.interviewService.AddComment(updatedInterview.id.toString(), updatedInterview).subscribe({
+      next: () => {
+        this.selectedCommentInterview!.comment = this.tempComment;
+        this.showCommentDialog = false;
 
-  this.interviewService.AddComment(updatedInterview.id.toString(), updatedInterview).subscribe({
-    next: () => {
-      this.selectedCommentInterview!.comment = this.tempComment;
-      this.showCommentDialog = false;
-
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Comment Saved',
-        detail: 'Comment saved successfully!'
-      });
-    },
-    error: (err) => {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Failed to save comment'
-      });
-      console.error('Save comment failed:', err);
-    }
-  });
-}
-
-
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Comment Saved',
+          detail: 'Comment saved successfully!'
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save comment'
+        });
+        console.error('Save comment failed:', err);
+      }
+    });
+  }
 
   confirmDeleteInterview(interview: InterviewInstance): void {
     this.confirmationService.confirm({

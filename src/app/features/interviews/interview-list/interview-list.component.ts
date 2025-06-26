@@ -126,7 +126,7 @@ export class InterviewListComponent implements OnInit {
   generateNewLink(interview: InterviewInstance): void {
     this.interviewService.generateNewLink(interview).subscribe({
         next: (response) => {
-               console.log('🔗 Link generation response from Mockoon:', response);
+               console.log(' Link generation response from Mockoon:', response);
         const linkText = response.newLink;
         this.generatedLinks[interview.id] = linkText;
 

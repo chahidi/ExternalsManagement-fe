@@ -1,4 +1,3 @@
-
 export interface Evaluation {
   id: string;
   interviewId: number;

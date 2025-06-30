@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { InterviewInstance } from '../models/interview-instance';
 import { environment } from '../../../environments/environment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,10 +21,9 @@ export class InterviewService {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 
-  generateNewLink(interview: InterviewInstance): Observable<{
-    linkId: number;
+      generateInterviewLink(interview: InterviewInstance): Observable<{
     newLink: string;
-    generationCount: number;
+    scheduledDate: Date;
   }> {
     const payload = {
       candidateId: interview.candidate.id,
@@ -33,13 +33,17 @@ export class InterviewService {
     };
 
     return this.http.post<{
-      linkId: number;
       newLink: string;
-      generationCount: number;
+      scheduledDate: Date;
     }>(`${this.apiUrl}/generate-link`, payload);
   }
 
-
+regenerateInterviewLink(interviewId: number): Observable<{ newLink: string }> {
+  return this.http.post<{ newLink: string }>(
+    `${this.apiUrl}/regenerate-link`,
+    { interviewId }
+  );
+}
 
   sendEmail(interview: InterviewInstance, linkText: string): Observable<{ message: string }> {
     const payload = {
@@ -55,4 +59,6 @@ export class InterviewService {
   AddComment(id: string, interview: InterviewInstance) {
     return this.http.put<any>(`${this.apiUrl}/${id}`, interview);
   }
+
+
 }

@@ -1,6 +1,7 @@
+import { InterviewInstance } from './interview-instance';
 export interface Evaluation {
   id: string;
-  interviewId: number;
+  interview: InterviewInstance;
   score: number;
-    description: string;
+  description: string;
 }

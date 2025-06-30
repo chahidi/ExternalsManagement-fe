@@ -122,40 +122,40 @@ export class InterviewListComponent implements OnInit {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
+    generateNewLink(interview: InterviewInstance): void {
+  this.interviewService.regenerateInterviewLink(interview.id).subscribe({
+    next: (response) => {
+      console.log(' Regenerated Link:', response);
+      const linkText = response.newLink;
+      this.generatedLinks[interview.id] = linkText;
 
-  generateNewLink(interview: InterviewInstance): void {
-    this.interviewService.generateNewLink(interview).subscribe({
-        next: (response) => {
-               console.log(' Link generation response from Mockoon:', response);
-        const linkText = response.newLink;
-        this.generatedLinks[interview.id] = linkText;
+      this.interviewService.sendEmail(interview, linkText).subscribe({
+        next: (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Email Sent',
+            detail: res.message
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Email Failed',
+            detail: 'Link generated, but email sending failed.'
+          });
+        }
+      });
+    },
+    error: () => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Generation Failed',
+        detail: 'Could not regenerate interview link.'
+      });
+    }
+  });
+}
 
-        this.interviewService.sendEmail(interview, linkText).subscribe({
-          next: (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Email Sent',
-              detail: res.message
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'warn',
-              summary: 'Email Failed',
-              detail: 'Link generated, but email sending failed.'
-            });
-          }
-        });
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Generation Failed',
-          detail: 'Could not generate interview link.'
-        });
-      }
-    });
-  }
 
   AddCommentPopup(interview: InterviewInstance): void {
     this.tempComment = interview.comment || '';
@@ -222,4 +222,13 @@ export class InterviewListComponent implements OnInit {
       }
     });
   }
+
+
+
+
+
+
+
+
+
 }

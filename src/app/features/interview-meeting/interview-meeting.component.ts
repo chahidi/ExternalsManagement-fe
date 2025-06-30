@@ -2,6 +2,10 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecordService } from '../../core/services/record.service';
 import { Record } from '../../core/models/record';
+import { InterviewService } from '../../core/services/interview.service';
+import { PromptService } from '../../core/services/prompt.service';
+import { Question } from '../../core/models/question';
+import { TextToSpeechService } from '../../core/services/text-to-speech.service';
 
 @Component({
   selector: 'app-interview-meeting',
@@ -32,7 +36,35 @@ export class InterviewMeetingComponent {
   liveSubtitle: string = '';
   recognition!: any;
 
-  constructor(private recordService: RecordService) {}
+  questions: Question[] = [];
+  currentQuestionIndex = 0;
+  timeRemaining = 0;
+  questionInterval: any;
+
+  constructor(
+    private recordService: RecordService,
+    private interviewService: InterviewService,
+    private promptService: PromptService,
+    private tts: TextToSpeechService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadInterviewQuestions();
+  }
+
+  loadInterviewQuestions(): void {
+    const prompt = 'Give me 5 basic interview questions';
+    this.promptService.getQuestions(prompt).subscribe({
+      next: (q) => {
+        this.questions = q;
+        this.currentQuestionIndex = 0;
+        console.log('Loaded structured questions:', q);
+      },
+      error: (err) => {
+        console.error('Failed to load structured interview questions:', err);
+      }
+    });
+  }
 
   async prepareInterview() {
     this.previewMode = true;
@@ -52,6 +84,7 @@ export class InterviewMeetingComponent {
     this.interviewStarted = true;
     this.previewMode = false;
     this.interviewInProgress = true;
+
     if (document.documentElement.requestFullscreen) {
       await document.documentElement.requestFullscreen();
     }
@@ -104,13 +137,52 @@ export class InterviewMeetingComponent {
     window.addEventListener('beforeunload', this.preventUnload);
     document.addEventListener('visibilitychange', this.handleTabSwitch);
     window.addEventListener('resize', this.handleResize);
+
+    this.startNextQuestion();
+  }
+
+startNextQuestion() {
+  const current = this.questions[this.currentQuestionIndex];
+  if (!current) return;
+
+  if (!this.interviewInProgress) return;
+
+  this.speakCurrentQuestion();
+
+  this.timeRemaining = current.timeLimit;
+
+  this.questionInterval = setInterval(() => {
+    this.timeRemaining--;
+
+    if (this.timeRemaining <= 0) {
+      clearInterval(this.questionInterval);
+      this.currentQuestionIndex++;
+
+      if (this.currentQuestionIndex < this.questions.length) {
+        this.startNextQuestion();
+      } else {
+        this.finishInterview();
+      }
+    }
+  }, 1000);
+}
+
+  speakCurrentQuestion() {
+    const question = this.questions[this.currentQuestionIndex];
+    if (question) {
+      this.tts.speak(question.text);
+    }
   }
 
   finishInterview() {
     this.interviewInProgress = false;
     this.interviewFinalizing = true;
-
     this.stopTranscription();
+      this.tts.stop();
+       if (this.questionInterval) {
+    clearInterval(this.questionInterval);
+    this.questionInterval = null;
+  }
 
     if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.stop();
@@ -126,6 +198,7 @@ export class InterviewMeetingComponent {
 
     this.stream?.getTracks().forEach(t => t.stop());
     this.stream = null;
+
     if (document.fullscreenElement) {
       document.exitFullscreen();
     }
@@ -157,6 +230,7 @@ export class InterviewMeetingComponent {
     this.recognition.lang = 'en-US';
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
+
     this.recognition.onresult = (event: any) => {
       const transcript = Array.from(event.results)
         .map((result: any) => result[0].transcript)

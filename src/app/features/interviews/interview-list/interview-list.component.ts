@@ -122,13 +122,19 @@ export class InterviewListComponent implements OnInit {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
-    
-    generateNewLink(interview: InterviewInstance): void {
-  this.interviewService.regenerateInterviewLink(interview.id).subscribe({
+
+
+generateNewLink(interview: InterviewInstance): void {
+  console.log('Calling generateInterviewLink for interview:', interview.id);
+
+  this.interviewService.generateInterviewLink(interview).subscribe({
     next: (response) => {
-      console.log(' Regenerated Link:', response);
-      const linkText = response.newLink;
+      const linkText = response.newLink?.startsWith('http')
+        ? response.newLink
+        : 'https://yourapp.com' + response.newLink;
+
       this.generatedLinks[interview.id] = linkText;
+      console.log('Generated Link Stored:', this.generatedLinks[interview.id]);
 
       this.interviewService.sendEmail(interview).subscribe({
         next: (res) => {
@@ -147,15 +153,17 @@ export class InterviewListComponent implements OnInit {
         }
       });
     },
-    error: () => {
+    error: (err) => {
+      console.error('Generate link failed:', err);
       this.messageService.add({
         severity: 'error',
         summary: 'Generation Failed',
-        detail: 'Could not regenerate interview link.'
+        detail: err.message || 'Could not generate interview link.'
       });
     }
   });
 }
+
 
 
   AddCommentPopup(interview: InterviewInstance): void {

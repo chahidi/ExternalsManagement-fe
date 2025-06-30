@@ -1,29 +1,46 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ElevenLabsRequest, ElevenLabsError } from '../models/eleven-labs.models';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, finalize, retry, timeout } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TextToSpeechService {
-  private apiKey = 'sk_356820c37bb02abccebcc08faa76cef7e30daf05ad6e0e0c';
-  private voiceId = 'EXAVITQu4vr4xnSDxMaL';
+  private readonly apiKey = environment.elevenLabs.apiKey;
+  private readonly voiceId = environment.elevenLabs.voiceId;
+  private readonly baseUrl = environment.elevenLabs.baseUrl;
+  private readonly apiUrl = `${this.baseUrl}/text-to-speech/${this.voiceId}`;
+
   private audio: HTMLAudioElement | null = null;
   private abortController: AbortController | null = null;
+  private currentBlobUrl: string | null = null;
 
-  constructor() {}
+  // Loading and error states
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  public loading$ = this.loadingSubject.asObservable();
+
+  private errorSubject = new BehaviorSubject<string | null>(null);
+  public error$ = this.errorSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
 
   speak(text: string): void {
-    this.stop(); // Stop any in-progress request and audio
+    this.stop(); 
 
+    if (!text.trim()) {
+      this.errorSubject.next('Text cannot be empty');
+      return;
+    }
+
+    this.clearError();
+    this.loadingSubject.next(true);
     this.abortController = new AbortController();
 
-    const url = `https://api.elevenlabs.io/v1/text-to-speech/${this.voiceId}`;
-    const headers = {
-      'xi-api-key': this.apiKey,
-      'Content-Type': 'application/json',
-    };
-
-    const body = {
-      text,
+    const payload: ElevenLabsRequest = {
+      text: text.trim(),
       model_id: 'eleven_monolingual_v1',
       voice_settings: {
         stability: 0.3,
@@ -31,51 +48,111 @@ export class TextToSpeechService {
       },
     };
 
-    fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-      signal: this.abortController.signal,
-    })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Failed to get audio');
+    const headers = new HttpHeaders({
+      'xi-api-key': this.apiKey,
+      'Content-Type': 'application/json',
+    });
 
-        // If stop() was called before response finished
-        if (this.abortController?.signal.aborted) return;
-
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-
-        // Double-check: did stop() happen while waiting for blob?
-        if (this.abortController?.signal.aborted) return;
-
-        this.audio = new Audio(blobUrl);
-        this.audio.play();
+    this.http
+      .post(this.apiUrl, payload, {
+        headers,
+        responseType: 'blob',
       })
-      .catch((error) => {
-        if (error.name !== 'AbortError') {
-          console.error('TTS error:', error);
-        }
+      .pipe(
+        timeout(30000),
+        retry(2),
+        catchError(this.handleError.bind(this)),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe({
+        next: (blob: Blob) => {
+          if (this.abortController?.signal.aborted) return;
+          this.playAudio(blob);
+        },
+        error: (err) => {
+          this.errorSubject.next(err.message || 'Failed to generate speech');
+        },
       });
   }
 
-  stop(): void {
-    // stop audio if playing
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.src = '';
-      this.audio = null;
-    }
+  private playAudio(blob: Blob): void {
+    this.cleanupBlobUrl();
 
-    // abort request
+    this.currentBlobUrl = URL.createObjectURL(blob);
+    this.audio = new Audio(this.currentBlobUrl);
+
+    this.audio.addEventListener('ended', () => this.cleanupBlobUrl());
+    this.audio.addEventListener('error', () => {
+      this.errorSubject.next('Audio playback failed');
+      this.cleanupBlobUrl();
+    });
+
+    this.audio.play().catch((error) => {
+      this.errorSubject.next('Audio playback failed: ' + error.message);
+      this.cleanupBlobUrl();
+    });
+  }
+
+  stop(): void {
     if (this.abortController) {
       this.abortController.abort();
       this.abortController = null;
     }
+
+    if (this.audio) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+      this.audio = null;
+    }
+
+    this.cleanupBlobUrl();
+    this.loadingSubject.next(false);
+  }
+
+  private cleanupBlobUrl(): void {
+    if (this.currentBlobUrl) {
+      URL.revokeObjectURL(this.currentBlobUrl);
+      this.currentBlobUrl = null;
+    }
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An unknown error occurred.';
+
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      switch (error.status) {
+        case 401:
+          errorMessage = 'Invalid API key';
+          break;
+        case 422:
+          errorMessage = 'Invalid request parameters';
+          break;
+        case 429:
+          errorMessage = 'Rate limit exceeded';
+          break;
+        case 500:
+          errorMessage = 'Internal server error';
+          break;
+        default:
+          errorMessage = `Server error (${error.status})`;
+      }
+    }
+
+    console.error('TTS Service Error:', error);
+    return throwError(() => new Error(errorMessage));
+  }
+
+  private clearError(): void {
+    this.errorSubject.next(null);
+  }
+
+  get isPlaying(): boolean {
+    return this.audio ? !this.audio.paused : false;
+  }
+
+  ngOnDestroy(): void {
+    this.stop();
   }
 }
-
-
-
-
-// sk_356820c37bb02abccebcc08faa76cef7e30daf05ad6e0e0c

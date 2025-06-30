@@ -122,6 +122,7 @@ export class InterviewListComponent implements OnInit {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return hours > 0 ? `${hours}h` : 'Expired';
   }
+    
     generateNewLink(interview: InterviewInstance): void {
   this.interviewService.regenerateInterviewLink(interview.id).subscribe({
     next: (response) => {
@@ -129,7 +130,7 @@ export class InterviewListComponent implements OnInit {
       const linkText = response.newLink;
       this.generatedLinks[interview.id] = linkText;
 
-      this.interviewService.sendEmail(interview, linkText).subscribe({
+      this.interviewService.sendEmail(interview).subscribe({
         next: (res) => {
           this.messageService.add({
             severity: 'success',

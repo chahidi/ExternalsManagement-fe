@@ -45,12 +45,11 @@ regenerateInterviewLink(interviewId: number): Observable<{ newLink: string }> {
   );
 }
 
-  sendEmail(interview: InterviewInstance, linkText: string): Observable<{ message: string }> {
+  sendEmail(interview: InterviewInstance): Observable<{ message: string }> {
     const payload = {
       candidateFullName: interview.candidate.fullName,
       offerTitle: interview.offer.title,
       scheduledDate: interview.startedAt,
-      interviewLinkText: linkText
     };
 
     return this.http.post<{ message: string }>(`${this.apiUrl}/send-email`, payload);

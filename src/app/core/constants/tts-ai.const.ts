@@ -27,3 +27,5 @@ export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
     style: 0.0,
     use_speaker_boost: true
 };
+
+export const MODEL_ID = 'eleven_monolingual_v1';

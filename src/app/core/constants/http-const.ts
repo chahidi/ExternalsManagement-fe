@@ -1,4 +1,6 @@
 // HTTP Status codes for ElevenLabs API
+import { HttpConfig } from '../api/http-config';
+
 export const HTTP_STATUS_CODES = {
     SUCCESS: 200,
     CREATED: 201,
@@ -16,3 +18,11 @@ export const DEFAULT_HEADERS = {
     'Accept': 'audio/mpeg',
     'User-Agent': 'Angular-ElevenLabs-Client/1.0'
 } as const;
+
+
+export const HTTP_CONFIG: HttpConfig = {
+  baseUrl: '', 
+  timeout: 30000,
+  retryAttempts: 2,
+  retryDelay: 1000,
+};

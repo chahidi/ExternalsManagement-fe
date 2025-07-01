@@ -5,11 +5,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, retry, timeout, finalize, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { InterviewInstance } from '../models/interview-instance';
-import {
-  GenerateInterviewPayload,
-  GenerateInterviewResponse,
-  ApiResponse
-} from '../models/interview-payload.model';
+import { GenerateInterviewLinkPayload, ApiResponse } from '../api/interview-payload';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
@@ -17,7 +13,7 @@ export class InterviewService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getInterviews(): Observable<InterviewInstance[]> {
     return this.http.get<InterviewInstance[]>(this.apiUrl)
@@ -35,8 +31,8 @@ export class InterviewService {
       );
   }
 
-  generateInterviewLink(interview: InterviewInstance): Observable<GenerateInterviewResponse> {
-    const payload: GenerateInterviewPayload = {
+  generateInterviewLink(interview: InterviewInstance): Observable<string> {
+    const payload: GenerateInterviewLinkPayload = {
       candidateId: interview.candidate.id,
       offerId: interview.offer.id,
       interviewId: interview.id,
@@ -58,7 +54,7 @@ export class InterviewService {
 
     this.loadingSubject.next(true);
 
-    return this.http.post<GenerateInterviewResponse>(`${this.apiUrl}/generate-link`, payload).pipe(
+    return this.http.post<string>(`${this.apiUrl}/generate-link`, payload).pipe(
       timeout(10000),
       retry(2),
       finalize(() => this.loadingSubject.next(false)),

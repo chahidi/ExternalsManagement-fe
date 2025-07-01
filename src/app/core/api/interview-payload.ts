@@ -1,13 +1,12 @@
-export interface GenerateInterviewPayload {
+export interface GenerateInterviewLinkPayload {
   candidateId: string;
   offerId: string;
   interviewId: number;
   scheduledDate: Date;
 }
 
-export interface GenerateInterviewResponse {
+export interface GenerateInterviewLinkResponse {
   newLink: string;
-  scheduledDate: Date;
 }
 
 export interface ApiResponse<T> {

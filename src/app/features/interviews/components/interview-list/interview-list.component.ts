@@ -1,8 +1,8 @@
 
 import { Component, OnInit } from '@angular/core';
-import { InterviewService } from '../../../core/services/interview.service';
-import { CandidateService } from '../../../core/services/candidate.service';
-import { InterviewInstance } from '../../../core/models/interview-instance';
+import { InterviewService } from '../../../../core/services/interview.service';
+import { CandidateService } from '../../../../core/services/candidate.service';
+import { InterviewInstance } from '../../../../core/models/interview-instance';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -43,7 +43,7 @@ import { RouterModule } from '@angular/router';
 export class InterviewListComponent implements OnInit {
   interviews: InterviewInstance[] = [];
   filteredInterviews: InterviewInstance[] = [];
-    loading = true;
+  loading = true;
 
   mainTechFilter: string | null = null;
   statusFilter: boolean | null = null;
@@ -67,7 +67,7 @@ export class InterviewListComponent implements OnInit {
     private candidateService: CandidateService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadMainTechOptions();
@@ -124,45 +124,42 @@ export class InterviewListComponent implements OnInit {
   }
 
 
-generateNewLink(interview: InterviewInstance): void {
-  console.log('Calling generateInterviewLink for interview:', interview.id);
+  generateNewLink(interview: InterviewInstance): void {
+    console.log('Calling generateInterviewLink for interview:', interview.id);
 
-  this.interviewService.generateInterviewLink(interview).subscribe({
-    next: (response) => {
-      const linkText = response.newLink?.startsWith('http')
-        ? response.newLink
-        : 'https://yourapp.com' + response.newLink;
+    this.interviewService.generateInterviewLink(interview).subscribe({
+      next: (generatedLink) => {
+        const linkText = generatedLink ? generatedLink : 'N/A'
+        this.generatedLinks[interview.id] = linkText;
+        console.log('Generated Link Stored:', this.generatedLinks[interview.id]);
 
-      this.generatedLinks[interview.id] = linkText;
-      console.log('Generated Link Stored:', this.generatedLinks[interview.id]);
-
-      this.interviewService.sendEmail(interview).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Email Sent',
-            detail: res.message
-          });
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Email Failed',
-            detail: 'Link generated, but email sending failed.'
-          });
-        }
-      });
-    },
-    error: (err) => {
-      console.error('Generate link failed:', err);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Generation Failed',
-        detail: err.message || 'Could not generate interview link.'
-      });
-    }
-  });
-}
+        this.interviewService.sendEmail(interview).subscribe({
+          next: (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Email Sent',
+              detail: res.message
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Email Failed',
+              detail: 'Link generated, but email sending failed.'
+            });
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Generate link failed:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Generation Failed',
+          detail: err.message || 'Could not generate interview link.'
+        });
+      }
+    });
+  }
 
 
 

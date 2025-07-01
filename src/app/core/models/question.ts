@@ -3,5 +3,5 @@ export interface Question {
   text: string;
   timeLimit: number;
   interviewId: number;
-  answers: string;
+  answer: string;
 }

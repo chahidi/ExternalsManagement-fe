@@ -1,11 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RecordService } from '../../core/services/record.service';
-import { Record } from '../../core/models/record';
-import { InterviewService } from '../../core/services/interview.service';
-import { PromptService } from '../../core/services/prompt.service';
-import { Question } from '../../core/models/question';
-import { TextToSpeechService } from '../../core/services/text-to-speech.service';
+import { RecordService } from '../../../../core/services/record.service';
+import { Record } from '../../../../core/models/record';
+import { InterviewService } from '../../../../core/services/interview.service';
+import { PromptService } from '../../../../core/services/prompt.service';
+import { Question } from '../../../../core/models/question';
+import { TextToSpeechService } from '../../../../core/services/text-to-speech.service'
 
 @Component({
   selector: 'app-interview-meeting',
@@ -48,7 +48,7 @@ export class InterviewMeetingComponent {
     private interviewService: InterviewService,
     private promptService: PromptService,
     private tts: TextToSpeechService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadInterviewQuestions();
@@ -143,31 +143,31 @@ export class InterviewMeetingComponent {
     this.startNextQuestion();
   }
 
-startNextQuestion() {
-  const current = this.questions[this.currentQuestionIndex];
-  if (!current) return;
+  startNextQuestion() {
+    const current = this.questions[this.currentQuestionIndex];
+    if (!current) return;
 
-  if (!this.interviewInProgress) return;
+    if (!this.interviewInProgress) return;
 
-  this.speakCurrentQuestion();
+    this.speakCurrentQuestion();
 
-  this.timeRemaining = current.timeLimit;
+    this.timeRemaining = current.timeLimit;
 
-  this.questionInterval = setInterval(() => {
-    this.timeRemaining--;
+    this.questionInterval = setInterval(() => {
+      this.timeRemaining--;
 
-    if (this.timeRemaining <= 0) {
-      clearInterval(this.questionInterval);
-      this.currentQuestionIndex++;
+      if (this.timeRemaining <= 0) {
+        clearInterval(this.questionInterval);
+        this.currentQuestionIndex++;
 
-      if (this.currentQuestionIndex < this.questions.length) {
-        this.startNextQuestion();
-      } else {
-        this.finishInterview();
+        if (this.currentQuestionIndex < this.questions.length) {
+          this.startNextQuestion();
+        } else {
+          this.finishInterview();
+        }
       }
-    }
-  }, 1000);
-}
+    }, 1000);
+  }
 
   speakCurrentQuestion() {
     const question = this.questions[this.currentQuestionIndex];
@@ -180,11 +180,11 @@ startNextQuestion() {
     this.interviewInProgress = false;
     this.interviewFinalizing = true;
     this.stopTranscription();
-      this.tts.stop();
-       if (this.questionInterval) {
-    clearInterval(this.questionInterval);
-    this.questionInterval = null;
-  }
+    this.tts.stop();
+    if (this.questionInterval) {
+      clearInterval(this.questionInterval);
+      this.questionInterval = null;
+    }
 
     if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.stop();

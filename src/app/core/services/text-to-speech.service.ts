@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ElevenLabsRequest, ElevenLabsError } from '../models/eleven-labs.models';
+import { ElevenLabsRequest } from '../api/tts-ai-config';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, retry, timeout } from 'rxjs/operators';
 
@@ -25,10 +25,10 @@ export class TextToSpeechService {
   private errorSubject = new BehaviorSubject<string | null>(null);
   public error$ = this.errorSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   speak(text: string): void {
-    this.stop(); 
+    this.stop();
 
     if (!text.trim()) {
       this.errorSubject.next('Text cannot be empty');

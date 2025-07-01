@@ -23,6 +23,3 @@ export interface GenerateSpeechPayload {
   model_id?: string;
   voice_settings?: VoiceSettings;
 }
-
-
-

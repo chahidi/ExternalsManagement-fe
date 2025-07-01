@@ -1,11 +1,13 @@
+import { POPULAR_VOICE_IDS } from '../app/core/constants/tts-ai.const';
+
 export const environment = {
   production: false,
     apiUrl: "http://localhost:8080/api",
   apiInterviews: "http://localhost:3001",
 elevenLabs: {
-    apiKey: '', // TEMP only
+    apiKey: '', 
     baseUrl: 'https://api.elevenlabs.io/v1',
-    voiceId: 'EXAVITQu4vr4xnSDxMaL',
+     voiceId: POPULAR_VOICE_IDS.PAUL,
   }
 
 };

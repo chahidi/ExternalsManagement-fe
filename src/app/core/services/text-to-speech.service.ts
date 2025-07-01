@@ -64,7 +64,6 @@ export class TextToSpeechService implements OnDestroy {
         responseType: 'blob',
       })
       .pipe(
-        // ❌ (Still hardcoded: timeout & retry - optional improvement)
         timeout(30000),
         retry(2),
         catchError(this.handleError.bind(this)),

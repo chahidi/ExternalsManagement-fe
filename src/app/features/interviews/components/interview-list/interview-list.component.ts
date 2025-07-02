@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { InterviewService } from '../../../../core/services/interview.service';
 import { CandidateService } from '../../../../core/services/candidate.service';
@@ -17,224 +16,187 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule } from '@angular/router';
+import { switchMap } from 'rxjs/operators'; 
 
 @Component({
-  selector: 'app-interview-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TableModule,
-    TooltipModule,
-    ButtonModule,
-    DialogModule,
-    FormsModule,
-    InputTextModule,
-    DropdownModule,
-    CalendarModule,
-    ToastModule,
-    DatePipe,
-    ConfirmDialogModule,
-    RouterModule
-  ],
-  providers: [MessageService, ConfirmationService],
-  templateUrl: './interview-list.component.html',
-  styleUrls: ['./interview-list.component.scss']
+    selector: 'app-interview-list',
+    standalone: true,
+    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, DropdownModule, CalendarModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule],
+    providers: [MessageService, ConfirmationService],
+    templateUrl: './interview-list.component.html',
+    styleUrls: ['./interview-list.component.scss']
 })
 export class InterviewListComponent implements OnInit {
-  interviews: InterviewInstance[] = [];
-  filteredInterviews: InterviewInstance[] = [];
-  loading = true;
+    interviews: InterviewInstance[] = [];
+    filteredInterviews: InterviewInstance[] = [];
+    loading = true;
 
-  mainTechFilter: string | null = null;
-  statusFilter: boolean | null = null;
-  startDateFilter: Date | null = null;
+    mainTechFilter: string | null = null;
+    statusFilter: boolean | null = null;
+    startDateFilter: Date | null = null;
 
-  now: Date = new Date();
-  techOptions: { label: string; value: string }[] = [];
-  statusOptions = [
-    { label: 'Passed', value: true },
-    { label: 'Not Yet', value: false }
-  ];
+    now: Date = new Date();
+    techOptions: { label: string; value: string }[] = [];
+    statusOptions = [
+        { label: 'Passed', value: true },
+        { label: 'Not Yet', value: false }
+    ];
 
-  showCommentDialog: boolean = false;
-  tempComment: string = '';
-  selectedCommentInterview: InterviewInstance | null = null;
+    showCommentDialog: boolean = false;
+    tempComment: string = '';
+    selectedCommentInterview: InterviewInstance | null = null;
 
-  generatedLinks: { [key: number]: string } = {}; // Frontend-only transient state
+    constructor(
+        private interviewService: InterviewService,
+        private candidateService: CandidateService,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService
+    ) {}
 
-  constructor(
-    private interviewService: InterviewService,
-    private candidateService: CandidateService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService
-  ) { }
+    ngOnInit(): void {
+        this.loadMainTechOptions();
+        this.loadInterviews();
+        setInterval(() => (this.now = new Date()), 60000);
+    }
 
-  ngOnInit(): void {
-    this.loadMainTechOptions();
-    this.loadInterviews();
-    setInterval(() => (this.now = new Date()), 60000);
-  }
-
-  loadMainTechOptions(): void {
-    this.candidateService.getAllMainTech().subscribe({
-      next: (techList) => {
-        this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load Main Tech options'
+    loadMainTechOptions(): void {
+        this.candidateService.getAllMainTech().subscribe({
+            next: (techList) => {
+                this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
+            },
+            error: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to load Main Tech options'
+                });
+            }
         });
-      }
-    });
-  }
+    }
 
-  loadInterviews(): void {
-    this.interviewService.getInterviews().subscribe((data) => {
-      this.interviews = data;
-      this.filteredInterviews = this.interviews;
-      this.loading = false;
-    });
-  }
+    loadInterviews(): void {
+        this.interviewService.getInterviews().subscribe((data) => {
+            this.interviews = data;
+            this.filteredInterviews = this.interviews;
+            this.loading = false;
+        });
+    }
 
-  applyFilters(): void {
-    this.filteredInterviews = this.interviews.filter((interview) => {
-      const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
-      const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
-      const matchDate =
-        !this.startDateFilter ||
-        new Date(interview.startedAt).toDateString() === this.startDateFilter.toDateString();
-      return matchTech && matchStatus && matchDate;
-    });
-  }
+    applyFilters(): void {
+        this.filteredInterviews = this.interviews.filter((interview) => {
+            const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
+            const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
+            const matchDate = !this.startDateFilter || new Date(interview.startedAt).toDateString() === this.startDateFilter.toDateString();
+            return matchTech && matchStatus && matchDate;
+        });
+    }
 
-  resetFilters(): void {
-    this.mainTechFilter = null;
-    this.statusFilter = null;
-    this.startDateFilter = null;
-    this.filteredInterviews = this.interviews;
-  }
+    resetFilters(): void {
+        this.mainTechFilter = null;
+        this.statusFilter = null;
+        this.startDateFilter = null;
+        this.filteredInterviews = this.interviews;
+    }
 
-  getRemainingHours(expiryDate?: Date): string {
-    if (!expiryDate) return 'N/A';
-    const diff = new Date(expiryDate).getTime() - new Date().getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    return hours > 0 ? `${hours}h` : 'Expired';
-  }
+    getRemainingHours(expiryDate?: Date): string {
+        if (!expiryDate) return 'N/A';
+        const diff = new Date(expiryDate).getTime() - new Date().getTime();
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        return hours > 0 ? `${hours}h` : 'Expired';
+    }
 
+    generateNewLink(interview: InterviewInstance): void {
+        console.log('📩 Generating interview link for ID:', interview.id);
 
-  generateNewLink(interview: InterviewInstance): void {
-    console.log('Calling generateInterviewLink for interview:', interview.id);
-
-    this.interviewService.generateInterviewLink(interview).subscribe({
-      next: (generatedLink) => {
-        const linkText = generatedLink ? generatedLink : 'N/A'
-        this.generatedLinks[interview.id] = linkText;
-        console.log('Generated Link Stored:', this.generatedLinks[interview.id]);
-
-        this.interviewService.sendEmail(interview).subscribe({
-          next: (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Email Sent',
-              detail: res.message
+        this.interviewService
+            .generateInterviewLink(interview)
+            .pipe(
+                switchMap((generatedLink) => {
+                    console.log('✅ Generated Link:', generatedLink);
+                    // send the email
+                    return this.interviewService.sendEmail(interview);
+                })
+            )
+            .subscribe({
+                next: (res) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Email Sent',
+                        detail: res.message
+                    });
+                },
+                error: (err) => {
+                    console.error('Link generation or email failed:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: err.message || 'Failed to generate link or send email.'
+                    });
+                }
             });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'warn',
-              summary: 'Email Failed',
-              detail: 'Link generated, but email sending failed.'
-            });
-          }
+    }
+
+    AddCommentPopup(interview: InterviewInstance): void {
+        this.tempComment = interview.comment || '';
+        this.selectedCommentInterview = interview;
+        this.showCommentDialog = true;
+    }
+
+    saveComment(): void {
+        if (!this.selectedCommentInterview) return;
+
+        const id = this.selectedCommentInterview.id.toString();
+        const comment = this.tempComment;
+
+        this.interviewService.AddComment(id, comment).subscribe({
+            next: () => {
+                this.selectedCommentInterview!.comment = comment;
+                this.showCommentDialog = false;
+
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Comment Saved',
+                    detail: 'Comment saved successfully!'
+                });
+            },
+            error: (err) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to save comment'
+                });
+                console.error('Save comment failed:', err);
+            }
         });
-      },
-      error: (err) => {
-        console.error('Generate link failed:', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Generation Failed',
-          detail: err.message || 'Could not generate interview link.'
+    }
+
+    confirmDeleteInterview(interview: InterviewInstance): void {
+        this.confirmationService.confirm({
+            message: 'Are you sure you want to delete this interview?',
+            header: 'Confirm Delete',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => this.deleteInterview(interview)
         });
-      }
-    });
-  }
+    }
 
-
-
-  AddCommentPopup(interview: InterviewInstance): void {
-    this.tempComment = interview.comment || '';
-    this.selectedCommentInterview = interview;
-    this.showCommentDialog = true;
-  }
-
-  saveComment(): void {
-    if (!this.selectedCommentInterview) return;
-
-    const updatedInterview = {
-      ...this.selectedCommentInterview,
-      comment: this.tempComment
-    };
-
-    this.interviewService.AddComment(updatedInterview.id.toString(), updatedInterview).subscribe({
-      next: () => {
-        this.selectedCommentInterview!.comment = this.tempComment;
-        this.showCommentDialog = false;
-
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Comment Saved',
-          detail: 'Comment saved successfully!'
+    deleteInterview(interview: InterviewInstance): void {
+        this.interviewService.deleteInterview(interview.id.toString()).subscribe({
+            next: () => {
+                this.interviews = this.interviews.filter((i) => i.id !== interview.id);
+                this.filteredInterviews = this.filteredInterviews.filter((i) => i.id !== interview.id);
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Deleted',
+                    detail: 'Interview deleted successfully'
+                });
+            },
+            error: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to delete interview'
+                });
+            }
         });
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save comment'
-        });
-        console.error('Save comment failed:', err);
-      }
-    });
-  }
-
-  confirmDeleteInterview(interview: InterviewInstance): void {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this interview?',
-      header: 'Confirm Delete',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => this.deleteInterview(interview)
-    });
-  }
-
-  deleteInterview(interview: InterviewInstance): void {
-    this.interviewService.deleteInterview(interview.id.toString()).subscribe({
-      next: () => {
-        this.interviews = this.interviews.filter(i => i.id !== interview.id);
-        this.filteredInterviews = this.filteredInterviews.filter(i => i.id !== interview.id);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Deleted',
-          detail: 'Interview deleted successfully'
-        });
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to delete interview'
-        });
-      }
-    });
-  }
-
-
-
-
-
-
-
-
-
+    }
 }

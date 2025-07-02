@@ -5,6 +5,12 @@ export interface GenerateInterviewLinkPayload {
   scheduledDate: Date;
 }
 
+export interface SendInterviewEmailPayload {
+  candidateFullName: string;
+  offerTitle: string;
+  scheduledDate: Date;
+}
+
 export interface GenerateInterviewLinkResponse {
   newLink: string;
 }

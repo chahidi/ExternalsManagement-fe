@@ -112,7 +112,7 @@ export class InterviewListComponent implements OnInit {
     private formatDate(date: Date | string | null): string {
         if (!date) return '';
         const d = new Date(date);
-        return d.toISOString().split('T')[0]; 
+        return d.toString(); 
     }
 
 

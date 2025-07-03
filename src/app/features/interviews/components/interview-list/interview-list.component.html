@@ -12,9 +12,13 @@
                 <label for="mainTech" class="block mb-2">Main Tech</label>
                 <p-dropdown id="mainTech" [options]="techOptions" [(ngModel)]="mainTechFilter" placeholder="Select Tech" [style]="{ width: '100%' }"></p-dropdown>
             </div>
-            <div class="field">
+           <!--  <div class="field">
                 <label for="status" class="block mb-2">Interview Status</label>
                 <p-dropdown id="status" [options]="statusOptions" [(ngModel)]="statusFilter" placeholder="Select Status" [style]="{ width: '100%' }"></p-dropdown>
+            </div>  -->
+            <div class="field">
+                <label for="title" class="block mb-2">Title</label>
+                <p-dropdown id="title" [options]="titleOptions" [(ngModel)]="titleFilter" placeholder="Select Title" [style]="{ width: '100%' }"></p-dropdown>
             </div>
             <div class="field">
                 <label for="startDate" class="block mb-2">Start Date</label>

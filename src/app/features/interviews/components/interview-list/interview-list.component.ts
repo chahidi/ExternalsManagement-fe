@@ -32,15 +32,31 @@ export class InterviewListComponent implements OnInit {
     loading = true;
 
     mainTechFilter: string | null = null;
-    statusFilter: boolean | null = null;
+    //statusFilter: boolean | null = null;
+    titleFilter: string | null = null;
     startDateFilter: Date | null = null;
 
     now: Date = new Date();
     techOptions: { label: string; value: string }[] = [];
-    statusOptions = [
+    /* statusOptions = [
         { label: 'Passed', value: true },
         { label: 'Not Yet', value: false }
     ];
+ */
+
+    
+
+    get titleOptions(): { label: string; value: string }[] {
+        if (!this.interviews) return [];
+  
+        const titles = this.interviews
+        .map(i => i.offer?.title)
+        .filter((v, i, a) => !!v && a.indexOf(v) === i)
+        .sort();
+
+        return titles.map(title => ({ label: title, value: title }));
+    }
+
 
     showCommentDialog: boolean = false;
     tempComment: string = '';
@@ -77,6 +93,7 @@ export class InterviewListComponent implements OnInit {
     loadInterviews(): void {
         this.interviewService.getInterviews().subscribe((data) => {
             this.interviews = data;
+            console.log("Loaded Interviews:", this.interviews);
             this.filteredInterviews = this.interviews;
             this.loading = false;
         });
@@ -85,15 +102,24 @@ export class InterviewListComponent implements OnInit {
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
             const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
-            const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
-            const matchDate = !this.startDateFilter || new Date(interview.startedAt).toDateString() === this.startDateFilter.toDateString();
-            return matchTech && matchStatus && matchDate;
+            const matchTitle = !this.titleFilter || interview.offer?.title === this.titleFilter;
+            //const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
+            const matchDate = !this.startDateFilter || this.formatDate(interview.startedAt)=== this.formatDate(this.startDateFilter);
+            return matchTech && matchTitle && matchDate;
         });
     }
 
+    private formatDate(date: Date | string | null): string {
+        if (!date) return '';
+        const d = new Date(date);
+        return d.toISOString().split('T')[0]; 
+    }
+
+
     resetFilters(): void {
         this.mainTechFilter = null;
-        this.statusFilter = null;
+        //this.statusFilter = null;
+        this.titleFilter=null;
         this.startDateFilter = null;
         this.filteredInterviews = this.interviews;
     }

@@ -16,7 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule } from '@angular/router';
-import { switchMap } from 'rxjs/operators'; 
+import { switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-interview-list',
@@ -44,15 +44,15 @@ export class InterviewListComponent implements OnInit {
     ];
  */
 
-    
 
+    // I will add an endpoint
     get titleOptions(): { label: string; value: string }[] {
         if (!this.interviews) return [];
-  
+
         const titles = this.interviews
-        .map(i => i.offer?.title)
-        .filter((v, i, a) => !!v && a.indexOf(v) === i)
-        .sort();
+            .map(i => i.offer?.title)
+            .filter((v, i, a) => !!v && a.indexOf(v) === i)
+            .sort();
 
         return titles.map(title => ({ label: title, value: title }));
     }
@@ -67,7 +67,7 @@ export class InterviewListComponent implements OnInit {
         private candidateService: CandidateService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -104,7 +104,7 @@ export class InterviewListComponent implements OnInit {
             const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
             const matchTitle = !this.titleFilter || interview.offer?.title === this.titleFilter;
             //const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
-            const matchDate = !this.startDateFilter || this.formatDate(interview.startedAt)=== this.formatDate(this.startDateFilter);
+            const matchDate = !this.startDateFilter || this.formatDate(interview.startedAt) === this.formatDate(this.startDateFilter);
             return matchTech && matchTitle && matchDate;
         });
     }
@@ -112,14 +112,14 @@ export class InterviewListComponent implements OnInit {
     private formatDate(date: Date | string | null): string {
         if (!date) return '';
         const d = new Date(date);
-        return d.toString(); 
+        return d.toString();
     }
 
 
     resetFilters(): void {
         this.mainTechFilter = null;
         //this.statusFilter = null;
-        this.titleFilter=null;
+        this.titleFilter = null;
         this.startDateFilter = null;
         this.filteredInterviews = this.interviews;
     }

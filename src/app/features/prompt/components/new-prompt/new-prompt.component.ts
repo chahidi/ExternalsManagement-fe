@@ -8,11 +8,19 @@ import { Prompt } from '../../../../core/models/prompt';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-new-prompt',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, ToastModule], 
+  imports: [
+    CommonModule,
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    ToastModule,
+    RouterModule
+],
   templateUrl: './new-prompt.component.html',
   styleUrl: './new-prompt.component.scss',
   providers: [MessageService]
@@ -31,7 +39,13 @@ export class NewPromptComponent {
     this.promptService.createPrompt(this.prompt).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Prompt created successfully' });
-        this.router.navigate(['/prompts/prompt-list']);
+        this.prompt = {
+            id: '',
+            promptCode: '',
+            promptDesc: '',
+            schema: '',
+        };
+        this.router.navigate(['/features/prompts/prompt-list']);
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });

@@ -32,6 +32,15 @@ export class MenuComponent {
                 ]
             },
             {
+                label : 'Offer Management' , 
+                items : [
+                    {label : 'New offer'  , icon : 'pi pi-plus-circle' , routerLink : ['/offers/new-offer']},
+                    {label : 'Offer List' , icon : 'pi pi-briefcase' , routerLink : ['/offers']},
+
+                ]
+            },
+
+            {
                 label: 'Prompt Management',
                 items: [
                     { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },

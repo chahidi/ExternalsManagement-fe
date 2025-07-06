@@ -1,0 +1,94 @@
+<h4>Offer List</h4>
+
+<p-confirmDialog></p-confirmDialog>
+
+
+
+
+<p-table #dt1 [value]="filteredOffers" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+  <ng-template pTemplate="caption">
+    <div class="flex items-center gap-4 w-full">
+      <p-button 
+        label="Clear" 
+        [outlined]="true" 
+        icon="pi pi-filter-slash" 
+        (click)="clear(dt1)" 
+      ></p-button>
+  
+      <span class=" inline-flex p-input-icon-left ml-auto w-full max-w-sm ">
+        <i class="pi pi-search my-3  text-lg"></i>
+        <input 
+          pInputText 
+          type="text" 
+          placeholder="Search offers..." 
+          [(ngModel)]="searchQuery" 
+          (input)="onSearch()"
+          class=" border rounded-lg h-12 px-3 py-3 w-full mx-3"
+        />
+      </span>
+      
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 15%;">Title</th>
+      <th style="width: 25%;">Description</th>
+      <th>Salary</th>
+      <th>Type</th>
+      <th>Department</th>
+      <th>Posted On</th>
+      <th>Status</th>
+      <th style="width: 15%;">Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-offer>
+    <tr>
+      <td>{{ offer.titre }}</td>
+      <td class="p-text-truncate">{{ offer.description }}</td>
+      <td>{{ offer.salary}}</td>
+      <td>{{ offer.type }}</td>
+      <td>{{ offer.department }}</td>
+      <td>{{ offer.createdAt }}</td>
+      <td>
+        <span [ngClass]="{
+          'badge bg-success': offer.status === 'open',
+          'badge bg-danger': offer.status === 'closed'
+        }">
+          {{ offer.status }}
+        </span>
+      </td>
+      <td class="p-text-center">
+        <div class="p-d-flex p-jc-center p-gap-2">
+          <button 
+            pButton 
+            type="button" 
+            icon="pi pi-eye" 
+            class="p-button-rounded p-button-text p-button-info" 
+            pTooltip="View Details" 
+            tooltipPosition="top"
+            (click)="goToDetails(offer.id)"
+          ></button>
+          <button 
+            pButton 
+            type="button" 
+            icon="pi pi-pencil" 
+            class="p-button-rounded p-button-text p-button-warning" 
+            pTooltip="Edit Offer" 
+            tooltipPosition="top"
+            (click)="openEditOffer(offer)"
+          ></button>
+          <button 
+            pButton 
+            type="button" 
+            icon="pi pi-trash" 
+            class="p-button-rounded p-button-text p-button-danger" 
+            pTooltip="Delete Offer" 
+            tooltipPosition="top"
+            (click)="deleteOffer(offer.id)"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<router-outlet></router-outlet>

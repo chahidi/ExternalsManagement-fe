@@ -1,0 +1,103 @@
+
+<h4>New Offer</h4>
+<p-panel header="Create New Offer" class="p-mb-5">
+    <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid">
+      <div class="p-grid p-formgrid ">
+        <!-- LEFT COLUMN -->
+          <div class="p-field p-mb-4">
+            <label for="titre" class="p-text-bold p-mb-2 ">Title</label>
+            <input 
+              id="titre" 
+              type="text" 
+              pInputText 
+              formControlName="titre" 
+              placeholder="e.g. Frontend Developer"
+              class="p-inputtext w-full  my-3"
+            />
+            <small class="p-error text-red-600" *ngIf="offerForm.get('titre')?.invalid && offerForm.get('titre')?.touched">
+                Title is required!
+            </small>
+          </div>
+  
+          <div class="p-field p-mb-4">
+            <label for="department" class="p-text-bold p-mb-2">Department</label>
+            <input 
+              id="department" 
+              type="text" 
+              pInputText 
+              formControlName="department" 
+              placeholder="e.g. Engineering"
+              class="p-inputtext w-full my-3"
+            />
+            <small class="p-error text-red-600" *ngIf="offerForm.get('department')?.invalid && offerForm.get('department')?.touched">
+            Department is required!
+              </small>
+          </div>
+  
+          <div class="p-field p-mb-4">
+            <label for="description" class="p-text-bold p-mb-2">Description</label>
+            <textarea 
+              id="description" 
+              pInputTextarea 
+              formControlName="description" 
+              placeholder="Short summary"
+              rows="5"
+              class="p-inputtext w-full my-3"
+            ></textarea>
+            <small class="p-error" *ngIf="offerForm.get('description')?.invalid && offerForm.get('description')?.touched">
+                Description is required ! 
+                  </small>
+          </div>
+        
+       
+          <div class="p-field p-mb-4">
+            <label for="salary" class="p-text-bold p-mb-2">Salary</label>
+            <p-inputNumber 
+              inputId="salary" 
+              formControlName="salary" 
+              mode="currency" 
+              currency="MAD" 
+              locale="fr-MA"
+              placeholder="0.00 MAD"
+              class="p-inputtext w-full my-3"
+            ></p-inputNumber>
+            <small class="p-error text-red-600" *ngIf="
+              offerForm.get('salary')?.errors?.['required'] && offerForm.get('salary')?.touched
+            ">
+              Salary is required!
+            </small>
+            <small class="p-error text-red-600" *ngIf="
+              offerForm.get('salary')?.errors?.['min'] && offerForm.get('salary')?.touched
+            ">
+              Minimum salary is 1000 MAD!
+            </small>
+          </div>
+          
+  
+          <div class="p-field p-mb-4">
+            <label for="type" class="p-text-bold p-mb-2">Type</label>
+            <p-dropdown 
+              inputId="type"
+              [options]="types"
+              formControlName="type"
+              placeholder="Select type"
+              class="p-inputtext w-full my-3"
+            ></p-dropdown>
+
+          </div>
+        </div>
+     <br>
+  
+      <!-- ACTION BUTTON -->
+      <div class="p-d-flex p-jc-end p-mt-5">
+        <button 
+          pButton 
+          type="submit" 
+          label="Save Offer" 
+          icon="pi pi-check"
+          class="p-button p-button-lg"
+          [disabled]="offerForm.invalid"
+        ></button>
+      </div>
+    </form>
+  </p-panel>

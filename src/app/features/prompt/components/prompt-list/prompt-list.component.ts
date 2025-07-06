@@ -9,28 +9,44 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+
 
 @Component({
   selector: 'app-prompt-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, ToastModule, DialogModule, FormsModule, InputTextModule], // input text module is used.
+  imports: [
+    CommonModule,
+    TableModule,
+    ButtonModule,
+    ToastModule,
+    DialogModule,
+    FormsModule,
+    InputTextModule,
+    ConfirmDialogModule
+],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss',
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
 })
 export class PromptListComponent implements OnInit {
   prompts: Prompt[] = [];
   totalRecords = 0;
   loading = false;
   first = 0;
-  rows = 10;
+  rows = 5;
   sortField = '';
   sortOrder = 1;
 
   dialogVisible = false;
   selectedPrompt: Prompt = { id: '', promptCode: '', promptDesc: '', schema: '' };
 
-  constructor(private promptService: PromptService, private messageService: MessageService) {}
+  constructor(
+    private promptService: PromptService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+) {}
 
   ngOnInit() {
     this.loadPrompts();
@@ -55,6 +71,17 @@ export class PromptListComponent implements OnInit {
       },
     });
   }
+
+  confirmDelete(id: string) {
+    this.confirmationService.confirm({
+        message: 'Are you sure you want to delete this prompt?',
+        header: 'Confirm Deletion',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+        this.deletePrompt(id);
+        }
+    });
+    }
 
   deletePrompt(id: string) {
     this.promptService.deletePrompt(id).subscribe({

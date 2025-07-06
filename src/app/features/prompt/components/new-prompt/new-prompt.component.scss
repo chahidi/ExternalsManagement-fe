@@ -1,10 +1,10 @@
 
 .card {
     padding: 20px;
-  
+
     .field {
       margin-bottom: 15px;
-  
+
       label {
         display: block;
         margin-bottom: 5px;
@@ -17,15 +17,14 @@
 
 .card {
   padding: 20px;
-  background-color: #f5f7fa; 
-  border: 1px solid #e0e0e0; 
-  border-radius: 8px; 
+  background-color: #f5f7fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
 h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #1a3c34; 
   margin-bottom: 20px;
   letter-spacing: 0.5px;
 }
@@ -56,7 +55,6 @@ h2 {
 }
 
 button {
-  background-color: #1a3c34; 
   color: white;
   padding: 10px 15px;
   border: none;
@@ -65,8 +63,5 @@ button {
   font-size: 16px;
   transition: background-color 0.3s ease;
 
-  &:hover {
-    background-color: darken(#1a3c34, 10%);
-  }
-}  
+}
 }

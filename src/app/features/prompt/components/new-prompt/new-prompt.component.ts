@@ -45,7 +45,10 @@ export class NewPromptComponent {
             promptDesc: '',
             schema: '',
         };
-        this.router.navigate(['/features/prompts/prompt-list']);
+        // this.router.navigate(['/features/prompts/prompt-list']);
+        setTimeout(() => {
+            this.router.navigate(['/features/prompts/prompt-list']);
+        }, 1000);
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });

@@ -20,7 +20,7 @@ export class InterviewMeetingComponent {
   interviewFinalizing = false;
   interviewCompleted = false;
   transcriptVisible: boolean = true;
-
+  
 
   warningMessage: string | null = null;
   stream: MediaStream | null = null;

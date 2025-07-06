@@ -1,11 +1,85 @@
 <h4>Offer List</h4>
 
+<p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
 
 
+<div class="card mb-4">
+  <h3 class="text-lg font-semibold mb-3">Filter Offers</h3>
 
-<p-table #dt1 [value]="filteredOffers" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+    <div class="field">
+      <label class="block mb-2">Department</label>
+      <p-dropdown
+        [options]="departmentOptions"
+        [(ngModel)]="selectedDepartment"
+        (onChange)="applyAllFilters()"
+        placeholder="Select department"
+        class="w-full"
+      ></p-dropdown>
+    </div>
+
+    <div class="field">
+      <label class="block mb-2">Type</label>
+      <p-dropdown
+        [options]="typeOptions"
+        [(ngModel)]="selectedType"
+        (onChange)="applyAllFilters()"
+        placeholder="Select type"
+        class="w-full"
+      ></p-dropdown>
+    </div>
+
+    <div class="field">
+      <label class="block mb-2">Status</label>
+      <p-dropdown
+        [options]="statusOptions"
+        [(ngModel)]="selectedStatut"
+        (onChange)="applyAllFilters()"
+        placeholder="Select status"
+        class="w-full"
+
+
+
+      ></p-dropdown>
+    </div>
+
+    <div class="field col-span-1 md:col-span-2 lg:col-span-3">
+      <label class="block mb-2">Salary Range (MAD)</label>
+      <p-slider
+        [(ngModel)]="selectedSalaryRange"
+        [range]="true"
+        [min]="1000"
+        [max]="10000"
+        [step]="500"
+        (onSlideEnd)="applyAllFilters()"
+      ></p-slider>
+      <div class="text-sm text-gray-600 mt-1">
+        From: {{ selectedSalaryRange[0] }} MAD to {{ selectedSalaryRange[1] }} MAD
+      </div>
+    </div>
+
+  </div>
+
+  <div class="flex justify-end mt-4">
+    <p-button 
+      label="Reset"
+      icon="pi pi-times"
+      styleClass="p-button-outlined p-button-danger mr-2"
+      (click)="resetFilters()"
+    ></p-button>
+    <p-button 
+      label="Apply Filters"
+      icon="pi pi-filter"
+      (click)="applyAllFilters()"
+    ></p-button>
+  </div>
+</div>
+
+
+<p-table #dt1 [value]="filteredOffers" [paginator]="true" [rows]="5" responsiveLayout="scroll" >
   <ng-template pTemplate="caption">
     <div class="flex items-center gap-4 w-full">
       <p-button 
@@ -45,14 +119,15 @@
     <tr>
       <td>{{ offer.titre }}</td>
       <td class="p-text-truncate">{{ offer.description }}</td>
-      <td>{{ offer.salary}}</td>
+      <td>{{ offer.salary}}DH</td>
       <td>{{ offer.type }}</td>
       <td>{{ offer.department }}</td>
       <td>{{ offer.createdAt }}</td>
       <td>
         <span [ngClass]="{
-          'badge bg-success': offer.status === 'open',
-          'badge bg-danger': offer.status === 'closed'
+          'badge': true,
+          'text-green-600': offer.status === 'open',
+          'text-red-500': offer.status === 'closed'
         }">
           {{ offer.status }}
         </span>

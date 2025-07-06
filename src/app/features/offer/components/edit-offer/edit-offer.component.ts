@@ -9,6 +9,10 @@ import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import {  CardModule } from 'primeng/card';
 
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+
+
 @Component({
   selector: 'app-edit-offer',
   standalone: true,
@@ -18,8 +22,10 @@ import {  CardModule } from 'primeng/card';
     InputTextModule,
     InputNumberModule,
     DropdownModule,
-    ButtonModule
-  ],
+    ButtonModule,
+    ToastModule
+  ], 
+  providers  : [MessageService], 
   templateUrl: './edit-offer.component.html',
   styleUrls: ['./edit-offer.component.scss']
 })
@@ -50,7 +56,8 @@ export class EditOfferComponent {
     private fb: FormBuilder,
     private offerService: OfferService,
     public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig
+    public config: DynamicDialogConfig , 
+    private messageService : MessageService 
   ) {
     this.offer = this.config.data.offer;
 
@@ -70,6 +77,12 @@ export class EditOfferComponent {
         ...this.offerForm.value
       };
       const result = this.offerService.updateOffer(updatedOffer);
+      this.messageService.add({
+        severity : "success" ,
+        summary : "Update", 
+        detail  : "Offer has been updated succesfully"
+      })
+      
       if (result) {
         this.ref.close(true);
       } else {

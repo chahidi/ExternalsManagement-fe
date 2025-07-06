@@ -4,4 +4,5 @@ export interface Response {
     id : string
     description : string 
     question  : Question
+    attachements? : string[]
 }

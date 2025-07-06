@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +16,8 @@ import { InterviewService } from '../../../../core/services/intereview.service';
     NgIf ,
     NgClass,
     CardModule,
-    ButtonModule
+    ButtonModule,
+    RouterModule
   ],
   templateUrl: './offer-detail.component.html',
   styleUrls: ['./offer-detail.component.scss']

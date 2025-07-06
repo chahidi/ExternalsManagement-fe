@@ -16,6 +16,18 @@ export class OfferService {
   private generateMockOffers() {
     for (let i = 0; i < 20; i++) {
       const date = faker.date.recent({ days: 30 });
+      const  departmentOptions = [
+        { label: 'Data Analyst', value: 'Data Analyst' },
+        { label: 'Front End', value: 'Front End' },
+        { label: 'Back End', value: 'Back End' },
+        { label: 'Full-stuck ', value: 'Full-Stuck' },
+        { label: 'Tester', value: 'Tester' },
+        { label: 'Java developer', value: 'Java developer' },
+        { label: 'Angular Developer', value: 'Angular developer' },
+        { label: 'Devops', value: 'Devops' },
+        { label: 'networking systhem', value: 'networking systhem' },
+        { label: 'database administrator', value: 'database Adminstrator' }
+      ];
       this.offers.push({
         id: faker.string.uuid(),
         titre: faker.name.jobTitle(),
@@ -24,9 +36,8 @@ export class OfferService {
         createdAt: `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`,
         status: faker.helpers.arrayElement(['open', 'closed']),
         type: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Contract', 'internship']),
-        department: faker.commerce.department()
-      });
-    }
+        department: faker.helpers.arrayElement(departmentOptions.map(dep => dep.value))}
+    )}
   }
 
   getOffers(): Offer[] {

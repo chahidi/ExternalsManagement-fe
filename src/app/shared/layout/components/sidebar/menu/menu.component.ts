@@ -34,8 +34,8 @@ export class MenuComponent {
             {
                 label : 'Offer Management' , 
                 items : [
-                    {label : 'New offer'  , icon : 'pi pi-plus-circle' , routerLink : ['/offers/new-offer']},
-                    {label : 'Offer List' , icon : 'pi pi-briefcase' , routerLink : ['/offers']},
+                    {label : 'New offer'  , icon : 'pi pi-briefcase' , routerLink : ['/offers/new-offer']},
+                    {label : 'Offer List' , icon : 'pi pi-fw pi-list' , routerLink : ['/offers']},
 
                 ]
             },

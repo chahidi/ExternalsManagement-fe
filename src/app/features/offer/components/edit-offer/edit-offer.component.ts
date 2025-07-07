@@ -11,12 +11,14 @@ import {  CardModule } from 'primeng/card';
 
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { NgIf } from '@angular/common';
 
 
 @Component({
   selector: 'app-edit-offer',
   standalone: true,
   imports: [
+    NgIf, 
     CardModule,
     ReactiveFormsModule,
     InputTextModule,

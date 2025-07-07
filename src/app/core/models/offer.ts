@@ -6,6 +6,6 @@ export interface Offer {
     salary: number;
     createdAt?: string;
     status?: 'open' | 'closed';
-    type?: 'Full-time' | 'Part-time' | 'Contract' | 'internship';
+    type?: string;
     department?: string;
 }

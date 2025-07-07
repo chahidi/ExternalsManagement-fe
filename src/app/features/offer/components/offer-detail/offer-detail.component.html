@@ -1,95 +1,152 @@
-<div class="container mx-auto p-6  min-h-screen">
-  <p-card 
-    header="Offer Details" 
-    *ngIf="offer" 
-    class="rounded-lg shadow-md"
-  >
-    <div class="grid grid-cols-1 gap-4">
-      <div class="flex items-center">
-        <strong class="w-32 font-medium">Titre:</strong>
-        <span class="">{{ offer.titre }}</span>
+<div class="container my-4">
+  <p-card *ngIf="offer" header="Offer Details" class="shadow-sm">
+    <div class="row g-3">
+      <div class="col-12">
+        <h4 class="mb-0">
+          <i class="pi pi-briefcase me-2 align-middle"></i>{{ offer.titre }}
+        </h4>
       </div>
-      <div class="flex items-start">
-        <strong class=" w-32 font-medium">Description:</strong>
-        <p class=" flex-1">{{ offer.description }}</p>
+
+
+      <ng-container *ngFor="let item of [
+        { icon: 'building',  label: 'Department',  value: offer.department },
+        { icon: 'clock',     label: 'Type',        value: offer.type },
+        { icon: 'wallet',    label: 'Salary',      value: offer.salary + ' DH' },
+        { icon: 'calendar',  label: 'Posted',      value: offer.createdAt }
+
+      ]; let i = index">
+        <div class="col-12 col-md-6 m-3">
+          <i class="pi pi-{{ item.icon }} me-2 align-middle text-secondary"></i>
+          <strong>{{ item.label }}:</strong> {{ item.value }}
+        </div>
+      </ng-container>
+
+
+   
+      <div class="col-12 col-md-6 m-3">
+        <i class="pi pi-info-circle me-2 align-middle text-secondary"></i>
+        <strong>Status:</strong>
+        <p-tag
+          [value]="offer.status"
+          [severity]="offer.status === 'open' ? 'success' : 'danger'"
+          class="ms-1"
+        ></p-tag>
       </div>
-      <div class="flex items-center">
-        <strong class="w-32 font-medium">Department:</strong>
-        <span class="">{{ offer.department }}</span>
-      </div>
-      <div class="flex items-center">
-        <strong class=" w-32 font-medium">Type:</strong>
-        <span class="">{{ offer.type }}</span>
-      </div>
-      <div class="flex items-center">
-        <strong class="w-32 font-medium">Salary:</strong>
-        <span class="">{{ offer.salary }} DH</span>
-      </div>
-      <div class="flex items-center">
-        <strong class=" w-32 font-medium">Status:</strong>
-        <span 
-          class="px-3 py-1 rounded-full text-sm font-medium"
-          [ngClass]="{
-            'bg-green-100 text-green-800': offer.status === 'open',
-            'bg-red-100 text-red-800': offer.status === 'closed'
-          }"
-        >
-          {{ offer.status }}
-        </span>
-      </div>
-      <div class="flex items-center">
-        <strong class="w-32 font-medium">Posted:</strong>
-        <span class="">{{ offer.createdAt}}</span>
+
+      <!-- Description -->
+      <div class="col-12 mt-2">
+        <p-divider align="left">
+          <span class="p-tag p-tag-rounded p-tag-info">
+            <i class="pi pi-align-left me-1"></i>Description
+          </span>
+        </p-divider>
+        <p class="mt-2 mb-0">{{ offer.description }}</p>
       </div>
     </div>
 
-    <!-- Relational Interviews -->
-    <div class="mt-8">
-      <h3 class="text-xl font-semibold  mb-4 " style="color: #0ea5e9;">Interviews for this Offer</h3>
-      <div *ngIf="interviews.length > 0; else noInterviews">
-        <ul class="space-y-3">
-          <li *ngFor="let interview of interviews" class="p-4 bg-gray-50 rounded-md shadow-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <div>
-                <strong class="">Candidate:</strong>
-                <span >{{ interview.candidate.fullName }}</span>
+    <div class="mt-4">
+      <p-divider align="left">
+        <span class="p-tag p-tag-rounded p-tag-primary">
+          <i class="pi pi-comments me-1"></i>Interviews
+        </span>
+      </p-divider>
+
+      <ng-container *ngIf="interviews?.length; else noInterviews">
+        <p-accordion [multiple]="true" class="mt-3">
+          <p-accordionTab
+            *ngFor="let iv of interviews; let idx = index"
+            [header]="
+              'Interview ' + (idx + 1) +
+              ' -' + iv.candidate.fullName
+            "
+          >
+            <div class="row g-3">
+              <div class="col-12 col-md-6 m-3">
+                <i class="pi pi-user me-2 align-middle"></i>
+                <strong>Candidate:</strong> {{ iv.candidate.fullName }}
               </div>
-              <div>
-                <strong class="">Status:</strong>
-                <span class="">{{ interview.status}}</span>
+              <div class="col-12 col-md-6 m-3">
+                <i class="pi pi-check-circle me-2 align-middle"></i>
+                <strong>Status:</strong> {{ iv.status }}
               </div>
-              <div>
-                <strong class="">Date:</strong>
-                <span class="">{{ interview.sheduledDate }}</span>
+              <div class="col-12 col-md-6 m-3">
+                <i class="pi pi-calendar-clock me-2 align-middle"></i>
+                <strong>Date:</strong> {{ iv.sheduledDate }}
               </div>
             </div>
-          </li>
-        </ul>
-      </div>
+
+            <!-- Questions / Responses -->
+            <div class="mt-4">
+              <p-divider align="left">
+                <span class="p-tag p-tag-rounded p-tag-warning">
+                  <i class="pi pi-question-circle me-1"></i>Questions
+                </span>
+              </p-divider>
+
+              <ng-container *ngIf="questions[iv.id]?.length; else noQuestions">
+                <p-accordion [multiple]="true" class="mt-3">
+                  <p-accordionTab
+                    *ngFor="let q of questions[iv.id]; let qi = index"
+                    [header]="'Question ' + (qi + 1)"
+                  >
+                    <!-- Question text -->
+                    <div class="mb-3">
+                      <strong>Question:</strong>
+                      <p class="mb-2">{{ q.description }}</p>
+                    </div>
+
+                    <!-- Responses -->
+                    <strong class="d-block mb-2">Responses:</strong>
+                    <ng-container
+                      *ngIf="responses[q.id]?.length; else noResponses"
+                    >
+                      <p-chip
+                        *ngFor="let r of responses[q.id]"
+                        class="me-2 mb-2"
+                        [label]="r.description"
+                        icon="pi pi-angle-right"
+                        severity="info"
+                      ></p-chip>
+                    </ng-container>
+                    <ng-template #noResponses>
+                      <p class="text-muted">No responses yet.</p>
+                    </ng-template>
+                  </p-accordionTab>
+                </p-accordion>
+              </ng-container>
+              <ng-template #noQuestions>
+                <p class="text-muted mt-2">No questions for this interview.</p>
+              </ng-template>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+      </ng-container>
+
       <ng-template #noInterviews>
-        <p class="italic">No interviews scheduled for this offer.</p>
+        <p class="text-muted mt-2">No interviews scheduled for this offer.</p>
       </ng-template>
     </div>
 
-    <div class="flex justify-end mt-6">
-      <button 
-        pButton 
-        label="Back to Offers" 
+    <!-- ░░░ FOOTER ░░░ -->
+    <div class="mt-4 text-end">
+      <button
+        pButton
+        label="Back to Offers"
         icon="pi pi-arrow-left"
         routerLink="/offers"
-        class="p-button p-button-lg "
+        class="p-button"
       ></button>
     </div>
   </p-card>
 
-  <div *ngIf="!offer" class="text-center mt-8">
-    <p class=" mb-4">No offer found with this ID.</p>
-    <button 
-      pButton 
-      label="Back to Offers" 
+  <div *ngIf="!offer" class="text-center my-5">
+    <p class="text-muted mb-3">No offer found with this ID.</p>
+    <button
+      pButton
+      label="Back to Offers"
       icon="pi pi-arrow-left"
       routerLink="/offers"
-      class="p-button p-button-lg"
+      class="p-button"
     ></button>
   </div>
 </div>

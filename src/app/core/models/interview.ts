@@ -7,4 +7,5 @@ export interface Interview {
     candidate : Candidate;
     sheduledDate : string;
     status :string;
+    feedBack? : string
 }

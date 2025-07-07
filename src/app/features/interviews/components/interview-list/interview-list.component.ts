@@ -122,7 +122,7 @@ export class InterviewListComponent implements OnInit {
     resetFilters(): void {
         this.mainTechFilter = null;
         this.titleFilter = null;
-        this.startDateFilter = null;
+        this.scheduledDateFilter = null;
         this.filteredInterviews = this.interviews;
     }
 

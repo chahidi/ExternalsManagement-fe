@@ -13,18 +13,14 @@
                 <p-dropdown id="mainTech" [options]="techOptions" [(ngModel)]="mainTechFilter" placeholder="Select Tech"
                     [style]="{ width: '100%' }"></p-dropdown>
             </div>
-            <!--  <div class="field">
-                <label for="status" class="block mb-2">Interview Status</label>
-                <p-dropdown id="status" [options]="statusOptions" [(ngModel)]="statusFilter" placeholder="Select Status" [style]="{ width: '100%' }"></p-dropdown>
-            </div>  -->
             <div class="field">
                 <label for="title" class="block mb-2">Title</label>
                 <p-dropdown id="title" [options]="titleOptions" [(ngModel)]="titleFilter" placeholder="Select Title"
                     [style]="{ width: '100%' }"></p-dropdown>
             </div>
             <div class="field">
-                <label for="startDate" class="block mb-2">Start Date</label>
-                <p-calendar id="startDate" [(ngModel)]="startDateFilter" dateFormat="yy-mm-dd" showIcon="true"
+                <label for="scheduledDate" class="block mb-2">Scheduled Date</label>
+                <p-calendar id="scheduledDate" [(ngModel)]="scheduledDateFilter" dateFormat="yy-mm-dd" showIcon="true"
                     [style]="{ width: '100%' }" inputStyleClass="w-full"></p-calendar>
             </div>
         </div>

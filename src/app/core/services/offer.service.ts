@@ -10,15 +10,12 @@ import { environment } from '../../../environments/environment';
 })
 export class OfferService {
 
-    private baseUrl = `${environment.apiUrl}/v1/offers`;
-    private apiUrl = `${environment.apiInterviews}/v1/offers`;
+  private baseUrl = `${environment.apiUrl}/v1/offers`;
+  private apiUrl = `${environment.apiInterviews}/v1/offers`;
 
   constructor(private http: HttpClient) { }
 
 
-
-
-  
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
     if (error.error instanceof ErrorEvent) {
@@ -37,8 +34,8 @@ export class OfferService {
     return throwError(() => new Error(errorMessage));
   }
 
-  
-  getAllTitles(): Observable<String[]>{
+
+  getAllTitles(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/titles`);
   }
 

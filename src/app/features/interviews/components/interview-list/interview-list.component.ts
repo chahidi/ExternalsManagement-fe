@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { InterviewService } from '../../../../core/services/interview.service';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { InterviewInstance } from '../../../../core/models/interview-instance';
+import { OfferService } from '../../../../core/services/offer.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -32,30 +33,12 @@ export class InterviewListComponent implements OnInit {
     loading = true;
 
     mainTechFilter: string | null = null;
-    //statusFilter: boolean | null = null;
     titleFilter: string | null = null;
-    startDateFilter: Date | null = null;
+    scheduledDateFilter: Date | null = null;
 
     now: Date = new Date();
     techOptions: { label: string; value: string }[] = [];
-    /* statusOptions = [
-        { label: 'Passed', value: true },
-        { label: 'Not Yet', value: false }
-    ];
- */
-
-
-    // I will add an endpoint
-    get titleOptions(): { label: string; value: string }[] {
-        if (!this.interviews) return [];
-
-        const titles = this.interviews
-            .map(i => i.offer?.title)
-            .filter((v, i, a) => !!v && a.indexOf(v) === i)
-            .sort();
-
-        return titles.map(title => ({ label: title, value: title }));
-    }
+    titleOptions: { label: string; value: string }[] = [];
 
 
     showCommentDialog: boolean = false;
@@ -66,11 +49,13 @@ export class InterviewListComponent implements OnInit {
         private interviewService: InterviewService,
         private candidateService: CandidateService,
         private messageService: MessageService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private offerService: OfferService
     ) { }
 
     ngOnInit(): void {
         this.loadMainTechOptions();
+        this.loadTitleOptions();
         this.loadInterviews();
         setInterval(() => (this.now = new Date()), 60000);
     }
@@ -90,10 +75,24 @@ export class InterviewListComponent implements OnInit {
         });
     }
 
+    loadTitleOptions(): void {
+        this.offerService.getAllTitles().subscribe({
+            next: (titles) => {
+                this.titleOptions = titles.map((title) => ({ label: title, value: title }));
+            },
+            error: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to load title options'
+                });
+            }
+        });
+    }
+
     loadInterviews(): void {
         this.interviewService.getInterviews().subscribe((data) => {
             this.interviews = data;
-            console.log("Loaded Interviews:", this.interviews);
             this.filteredInterviews = this.interviews;
             this.loading = false;
         });
@@ -103,22 +102,25 @@ export class InterviewListComponent implements OnInit {
         this.filteredInterviews = this.interviews.filter((interview) => {
             const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
             const matchTitle = !this.titleFilter || interview.offer?.title === this.titleFilter;
-            //const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
-            const matchDate = !this.startDateFilter || this.formatDate(interview.startedAt) === this.formatDate(this.startDateFilter);
+            const matchDate = !this.scheduledDateFilter || this.formatDate(interview.startedAt) === this.formatDate(this.scheduledDateFilter);
             return matchTech && matchTitle && matchDate;
         });
     }
 
+
     private formatDate(date: Date | string | null): string {
         if (!date) return '';
         const d = new Date(date);
-        return d.toString();
+        const year = d.getFullYear();
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const day = d.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
+
 
 
     resetFilters(): void {
         this.mainTechFilter = null;
-        //this.statusFilter = null;
         this.titleFilter = null;
         this.startDateFilter = null;
         this.filteredInterviews = this.interviews;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { InterviewService } from '../../../../core/services/interview.service';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { InterviewInstance } from '../../../../core/models/interview-instance';
+import { OfferService } from '../../../../core/services/offer.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -32,15 +33,13 @@ export class InterviewListComponent implements OnInit {
     loading = true;
 
     mainTechFilter: string | null = null;
-    statusFilter: boolean | null = null;
-    startDateFilter: Date | null = null;
+    titleFilter: string | null = null;
+    scheduledDateFilter: Date | null = null;
 
     now: Date = new Date();
     techOptions: { label: string; value: string }[] = [];
-    statusOptions = [
-        { label: 'Passed', value: true },
-        { label: 'Not Yet', value: false }
-    ];
+    titleOptions: { label: string; value: string }[] = [];
+
 
     showCommentDialog: boolean = false;
     tempComment: string = '';
@@ -50,11 +49,13 @@ export class InterviewListComponent implements OnInit {
         private interviewService: InterviewService,
         private candidateService: CandidateService,
         private messageService: MessageService,
-        private confirmationService: ConfirmationService
-    ) {}
+        private confirmationService: ConfirmationService,
+        private offerService: OfferService
+    ) { }
 
     ngOnInit(): void {
         this.loadMainTechOptions();
+        this.loadTitleOptions();
         this.loadInterviews();
         setInterval(() => (this.now = new Date()), 60000);
     }
@@ -74,6 +75,21 @@ export class InterviewListComponent implements OnInit {
         });
     }
 
+    loadTitleOptions(): void {
+        this.offerService.getAllTitles().subscribe({
+            next: (titles) => {
+                this.titleOptions = titles.map((title) => ({ label: title, value: title }));
+            },
+            error: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to load title options'
+                });
+            }
+        });
+    }
+
     loadInterviews(): void {
         this.interviewService.getInterviews().subscribe((data) => {
             this.interviews = data;
@@ -84,25 +100,35 @@ export class InterviewListComponent implements OnInit {
 
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
-            const matchTech = !this.mainTechFilter || interview.candidate?.mainTech === this.mainTechFilter;
-            const matchStatus = this.statusFilter === null || (interview.evaluation?.score !== undefined && interview.evaluation.score >= 50 === this.statusFilter);
-            const matchDate = !this.startDateFilter || new Date(interview.scheduledAt).toDateString() === this.startDateFilter.toDateString();
-            return matchTech && matchStatus && matchDate;
+            const matchTech = !this.mainTechFilter || interview.candidate.mainTech === this.mainTechFilter;
+            const matchTitle = !this.titleFilter || interview.offer?.title === this.titleFilter;
+            const matchDate = !this.scheduledDateFilter || this.formatDate(interview.scheduledAt) === this.formatDate(this.scheduledDateFilter);
+            return matchTech && matchTitle && matchDate;
         });
     }
 
+
+    private formatDate(date: Date | string | null): string {
+        if (!date) return '';
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const day = d.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+
+
     resetFilters(): void {
         this.mainTechFilter = null;
-        this.statusFilter = null;
-        this.startDateFilter = null;
+        this.titleFilter = null;
+        this.scheduledDateFilter = null;
         this.filteredInterviews = this.interviews;
     }
 
-    getRemainingHours(scheduledAt?: Date): string {
-        if (!scheduledAt) return 'N/A';
-        const expiry = new Date(scheduledAt);
-        expiry.setHours(expiry.getHours() + 24);
-        const diff = expiry.getTime() - new Date().getTime();
+    getRemainingHours(expiryDate?: Date): string {
+        if (!expiryDate) return 'N/A';
+        const diff = new Date(expiryDate).getTime() - new Date().getTime();
         const hours = Math.floor(diff / (1000 * 60 * 60));
         return hours > 0 ? `${hours}h` : 'Expired';
     }
@@ -115,6 +141,7 @@ export class InterviewListComponent implements OnInit {
             .pipe(
                 switchMap((generatedLink) => {
                     console.log('✅ Generated Link:', generatedLink);
+                    // send the email
                     return this.interviewService.sendEmail(interview);
                 })
             )

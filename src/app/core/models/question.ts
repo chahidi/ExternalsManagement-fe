@@ -1,8 +1,8 @@
+import { InterviewInstance } from './interview-instance';
 export interface Question {
-  id: string;
-  text: string;
-  type: string;
-  level: string;
-  timeLimit: number;
-  interviewId: number;
+    id: string;
+    text: string;
+    timeLimit: number;
+    interview: InterviewInstance;
+    answer: string;
 }

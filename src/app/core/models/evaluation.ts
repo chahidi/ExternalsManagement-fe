@@ -1,14 +1,7 @@
-// export interface Evaluation {
-//   id: string;
-//   type: 'Overall' | 'Technical' | 'Communication' | 'ProblemSolving';
-//   score: number;
-//   remarks?: string;
-// }
-
+import { InterviewInstance } from './interview-instance';
 export interface Evaluation {
   id: string;
-  interviewId: number;
+  interview: InterviewInstance;
   score: number;
   description: string;
-  type: string;
 }

@@ -6,15 +6,13 @@ import { Record } from './record';
 
 export interface InterviewInstance {
     id: number;
+    questions: Question[];
     candidate: Candidate;
     offer: Offer;
-    mainTech: string;
-    startedAt: Date;
-    submittedAt: Date | null;
-    isPassed: boolean;
-    overallScore: number;
+    evaluation: Evaluation;
     comment: string;
-    questions: Question[];
-    evaluations: Evaluation[];
+    scheduledAt: Date;
+    startDate: Date;
+    endDate: Date | null;
     record: Record;
 }

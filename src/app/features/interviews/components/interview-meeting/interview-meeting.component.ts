@@ -19,7 +19,7 @@ export class InterviewMeetingComponent {
     interviewInProgress = false;
     interviewFinalizing = false;
     interviewCompleted = false;
-    transcriptVisible: boolean = true;
+    transcriptVisible = true;
 
     warningMessage: string | null = null;
     stream: MediaStream | null = null;
@@ -30,17 +30,19 @@ export class InterviewMeetingComponent {
     mediaRecorder!: MediaRecorder;
     recordedChunks: Blob[] = [];
     recordedBlobUrl: string | null = null;
-    interviewStartTime: number = 0;
+    interviewStartTime = 0;
     interviewRecord!: Record;
 
-    showSubtitles: boolean = false;
-    liveSubtitle: string = '';
+    showSubtitles = false;
+    liveSubtitle = '';
     recognition!: any;
 
     questions: Question[] = [];
     currentQuestionIndex = 0;
     timeRemaining = 0;
     questionInterval: any;
+
+    transcriptions: string[] = [];
 
     constructor(
         private recordService: RecordService,
@@ -142,21 +144,23 @@ export class InterviewMeetingComponent {
         this.startNextQuestion();
     }
 
-    startNextQuestion() {
+    async startNextQuestion() {
         const current = this.questions[this.currentQuestionIndex];
-        if (!current) return;
-
-        if (!this.interviewInProgress) return;
-
-        this.speakCurrentQuestion();
+        if (!current || !this.interviewInProgress) return;
 
         this.timeRemaining = current.timeLimit;
+        this.liveSubtitle = '';
+
+        // 🧠 Speak and then start transcription
+        await this.tts.speak(current.text);
+        this.startTranscription();
 
         this.questionInterval = setInterval(() => {
             this.timeRemaining--;
-
             if (this.timeRemaining <= 0) {
                 clearInterval(this.questionInterval);
+                this.stopTranscription();
+                this.transcriptions.push(this.liveSubtitle.trim());
                 this.currentQuestionIndex++;
 
                 if (this.currentQuestionIndex < this.questions.length) {
@@ -168,18 +172,12 @@ export class InterviewMeetingComponent {
         }, 1000);
     }
 
-    speakCurrentQuestion() {
-        const question = this.questions[this.currentQuestionIndex];
-        if (question) {
-            this.tts.speak(question.text);
-        }
-    }
-
     finishInterview() {
         this.interviewInProgress = false;
         this.interviewFinalizing = true;
         this.stopTranscription();
         this.tts.stop();
+
         if (this.questionInterval) {
             clearInterval(this.questionInterval);
             this.questionInterval = null;
@@ -212,12 +210,8 @@ export class InterviewMeetingComponent {
     finalizeRecording() {
         this.interviewFinalizing = false;
         this.interviewCompleted = true;
+        console.log('📋 All transcriptions:', this.transcriptions);
         window.scrollTo(0, 0);
-    }
-
-    toggleSubtitles() {
-        this.showSubtitles = !this.showSubtitles;
-        this.showSubtitles ? this.startTranscription() : this.stopTranscription();
     }
 
     startTranscription() {

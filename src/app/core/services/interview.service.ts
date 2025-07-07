@@ -28,7 +28,7 @@ export class InterviewService {
             candidateId: interview.candidate.id,
             offerId: interview.offer.id,
             interviewId: interview.id,
-            scheduledDate: interview.startedAt
+            scheduledDate: interview.scheduledAt // ✅ FIXED
         };
 
         if (!payload.candidateId || typeof payload.candidateId !== 'string') {
@@ -58,7 +58,7 @@ export class InterviewService {
         const payload: SendInterviewEmailPayload = {
             candidateFullName: interview.candidate.fullName,
             offerTitle: interview.offer.title,
-            scheduledDate: interview.startedAt
+            scheduledDate: interview.scheduledAt // ✅ FIXED
         };
 
         if (!payload.candidateFullName || typeof payload.candidateFullName !== 'string') {
@@ -73,6 +73,7 @@ export class InterviewService {
 
         return this.http.post<{ message: string }>(`${this.apiUrl}/send-email`, payload).pipe(retry(2), catchError(this.handleError));
     }
+
     AddComment(id: string, comment: string): Observable<any> {
         return this.http.put<any>(`${this.apiUrl}/${id}`, { comment }).pipe(retry(2), catchError(this.handleError));
     }

@@ -16,7 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule } from '@angular/router';
-import { switchMap } from 'rxjs/operators'; 
+import { switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-interview-list',
@@ -84,9 +84,9 @@ export class InterviewListComponent implements OnInit {
 
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
-            const matchTech = !this.mainTechFilter || interview.mainTech === this.mainTechFilter;
-            const matchStatus = this.statusFilter === null || interview.isPassed === this.statusFilter;
-            const matchDate = !this.startDateFilter || new Date(interview.startedAt).toDateString() === this.startDateFilter.toDateString();
+            const matchTech = !this.mainTechFilter || interview.candidate?.mainTech === this.mainTechFilter;
+            const matchStatus = this.statusFilter === null || (interview.evaluation?.score !== undefined && interview.evaluation.score >= 50 === this.statusFilter);
+            const matchDate = !this.startDateFilter || new Date(interview.scheduledAt).toDateString() === this.startDateFilter.toDateString();
             return matchTech && matchStatus && matchDate;
         });
     }
@@ -98,9 +98,11 @@ export class InterviewListComponent implements OnInit {
         this.filteredInterviews = this.interviews;
     }
 
-    getRemainingHours(expiryDate?: Date): string {
-        if (!expiryDate) return 'N/A';
-        const diff = new Date(expiryDate).getTime() - new Date().getTime();
+    getRemainingHours(scheduledAt?: Date): string {
+        if (!scheduledAt) return 'N/A';
+        const expiry = new Date(scheduledAt);
+        expiry.setHours(expiry.getHours() + 24);
+        const diff = expiry.getTime() - new Date().getTime();
         const hours = Math.floor(diff / (1000 * 60 * 60));
         return hours > 0 ? `${hours}h` : 'Expired';
     }
@@ -113,7 +115,6 @@ export class InterviewListComponent implements OnInit {
             .pipe(
                 switchMap((generatedLink) => {
                     console.log('✅ Generated Link:', generatedLink);
-                    // send the email
                     return this.interviewService.sendEmail(interview);
                 })
             )

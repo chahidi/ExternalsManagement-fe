@@ -109,6 +109,10 @@
                         (click)="AddCommentPopup(interview)"></button>
                     <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text"
                         (click)="confirmDeleteInterview(interview)"></button>
+                    <!--for testing the evaluation-->
+                    <button pButton icon="pi pi-chart-line" class="p-button-sm p-button-success p-button-text"
+                        [pTooltip]="'Evaluate Interview'" tooltipPosition="top" (click)="evaluateInterview(interview)">
+                    </button>
                 </td>
             </tr>
         </ng-template>

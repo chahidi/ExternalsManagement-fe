@@ -36,6 +36,18 @@ export class InterviewMeetingComponent {
     showSubtitles = false;
     liveSubtitle = '';
     recognition!: any;
+    transcriptMessages: { sender: string; text: string; align: 'left' | 'right'; type: 'question' | 'answer' }[] = [];
+    addCurrentQuestionToTranscript() {
+        const questionText = this.questions[this.currentQuestionIndex]?.text;
+        if (questionText) {
+            this.transcriptMessages.push({
+                sender: 'AI',
+                text: questionText,
+                align: 'left',
+                type: 'question'
+            });
+        }
+    }
 
     questions: Question[] = [];
     currentQuestionIndex = 0;
@@ -53,6 +65,16 @@ export class InterviewMeetingComponent {
 
     ngOnInit(): void {
         this.loadInterviewQuestions();
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
+    }
+    currentTime: string = '';
+
+    updateClock() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        this.currentTime = `${hours}:${minutes}`;
     }
 
     loadInterviewQuestions(): void {
@@ -150,6 +172,9 @@ export class InterviewMeetingComponent {
 
         this.timeRemaining = current.timeLimit;
         this.liveSubtitle = '';
+
+        // 👉 Push question to Live Transcript
+        this.addCurrentQuestionToTranscript();
 
         // 🧠 Speak and then start transcription
         await this.tts.speak(current.text);

@@ -172,3 +172,11 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+.loading-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; 
+}

@@ -20,7 +20,6 @@ import { BadgeModule }     from 'primeng/badge';
   imports: [
     NgFor,
     NgIf,
-    NgClass,
     CardModule,
     ButtonModule,
     AccordionModule,

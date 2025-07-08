@@ -4,8 +4,8 @@ import { InterviewEvaluationService } from '../../../../core/services/interview-
 @Component({
   selector: 'app-interview-result',
   imports: [],
-  templateUrl: './interview-result.component.html',
-  styleUrl: './interview-result.component.scss'
+  templateUrl: './interview-evaluation.component.html',
+  styleUrl: './interview-evaluation.component.scss'
 })
 export class InterviewResultComponent{
 

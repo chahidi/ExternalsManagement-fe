@@ -3,6 +3,7 @@ import { InterviewService } from '../../../../core/services/interview.service';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { InterviewInstance } from '../../../../core/models/interview-instance';
 import { OfferService } from '../../../../core/services/offer.service';
+import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -50,7 +51,8 @@ export class InterviewListComponent implements OnInit {
         private candidateService: CandidateService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
-        private offerService: OfferService
+        private offerService: OfferService,
+        private evaluationService: InterviewEvaluationService // jsut for testing the evaluation method
     ) { }
 
     ngOnInit(): void {
@@ -227,4 +229,38 @@ export class InterviewListComponent implements OnInit {
             }
         });
     }
+
+    evaluateInterview(interview: InterviewInstance): void {
+        const questions = interview.questions;
+
+        if (!questions || questions.length === 0) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'No Questions',
+                detail: 'This interview has no questions to evaluate.'
+            });
+            return;
+        }
+
+        //to test the evaluation
+        this.evaluationService.getInterviewEvaluation('Evaluate this candidate', questions).subscribe({
+            next: (evaluation) => {
+                interview.evaluation = evaluation;
+
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Evaluated',
+                    detail: `Evaluation score: ${evaluation.score}`
+                });
+            },
+            error: (err) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Evaluation Failed',
+                    detail: err.message || 'Could not evaluate the interview'
+                });
+            }
+        });
+    }
+
 }

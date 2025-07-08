@@ -177,24 +177,24 @@ export class CandidateListComponent implements OnInit {
     });
 
     // Create language options
-    this.languageOptions = Array.from(uniqueLanguages).sort().map(language => ({
-      name: language,
-      code: language
-    }));
+    // this.languageOptions = Array.from(uniqueLanguages).sort().map(language => ({
+    //   name: language,
+    //   code: language
+    // }));
 
-    if (this.languageOptions.length === 0) {
-      // If no languages found, keep default options
-      console.log('No languages found in candidates, using defaults');
-      this.languageOptions = [
-        { name: 'English', code: 'English' },
-        { name: 'French', code: 'French' },
-        { name: 'Spanish', code: 'Spanish' },
-        { name: 'German', code: 'German' },
-        { name: 'Arabic', code: 'Arabic' }
-      ];
-    } else {
-      console.log('Loaded actual languages from candidates:', this.languageOptions);
-    }
+    // if (this.languageOptions.length === 0) {
+    //   // If no languages found, keep default options
+    //   console.log('No languages found in candidates, using defaults');
+    //   this.languageOptions = [
+    //     { name: 'English', code: 'English' },
+    //     { name: 'French', code: 'French' },
+    //     { name: 'Spanish', code: 'Spanish' },
+    //     { name: 'German', code: 'German' },
+    //     { name: 'Arabic', code: 'Arabic' }
+    //   ];
+    // } else {
+    //   console.log('Loaded actual languages from candidates:', this.languageOptions);
+    // }
 
     console.log('Available skills:', this.skillOptions);
     console.log('Available languages:', this.languageOptions);

@@ -7,11 +7,9 @@
         </h4>
       </div>
 
-
       <ng-container *ngFor="let item of [
         { icon: 'building',  label: 'Department',  value: offer.department },
         { icon: 'clock',     label: 'Type',        value: offer.type },
-        { icon: 'wallet',    label: 'Salary',      value: offer.salary + ' DH' },
         { icon: 'calendar',  label: 'Posted',      value: offer.createdAt }
 
       ]; let i = index">
@@ -33,7 +31,7 @@
         ></p-tag>
       </div>
 
-      <!-- Description -->
+  
       <div class="col-12 mt-2">
         <p-divider align="left">
           <span class="p-tag p-tag-rounded p-tag-info">
@@ -75,7 +73,7 @@
               </div>
             </div>
 
-            <!-- Questions / Responses -->
+          
             <div class="mt-4">
               <p-divider align="left">
                 <span class="p-tag p-tag-rounded p-tag-warning">
@@ -89,13 +87,12 @@
                     *ngFor="let q of questions[iv.id]; let qi = index"
                     [header]="'Question ' + (qi + 1)"
                   >
-                    <!-- Question text -->
+                   
                     <div class="mb-3">
                       <strong>Question:</strong>
                       <p class="mb-2">{{ q.description }}</p>
                     </div>
 
-                    <!-- Responses -->
                     <strong class="d-block mb-2">Responses:</strong>
                     <ng-container
                       *ngIf="responses[q.id]?.length; else noResponses"
@@ -127,7 +124,7 @@
       </ng-template>
     </div>
 
-    <!-- ░░░ FOOTER ░░░ -->
+ 
     <div class="mt-4 text-end">
       <button
         pButton

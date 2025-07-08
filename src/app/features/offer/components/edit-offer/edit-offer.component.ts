@@ -66,7 +66,6 @@ export class EditOfferComponent {
     this.offerForm = this.fb.group({
       titre: [this.offer.titre, Validators.required],
       description: [this.offer.description, Validators.required],
-      salary: [this.offer.salary, [Validators.required, Validators.min(1000)]],
       type: [this.offer.type, Validators.required],
       department: [this.offer.department, Validators.required]
     });

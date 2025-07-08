@@ -3,7 +3,7 @@
 <p-panel header="Create New Offer" class="p-mb-5">
     <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid">
 
-        <!-- LEFT COLUMN -->
+      
           <div class="p-field p-mb-4">
             <label for="titre" class="p-text-bold p-mb-2 ">Title</label>
             <input 
@@ -49,28 +49,7 @@
                   </small>
           </div>
         
-       
-         
-            <label for="salary" class="p-text-bold p-mb-2">Salary</label>
-            <p-inputNumber 
-            inputId="salary" 
-            formControlName="salary" 
-            mode="currency" 
-            currency="MAD" 
-            locale="fr-MA"
-            placeholder="0.00 MAD"
-            class="w-full my-3"
-          ></p-inputNumber>
-            <small class="p-error text-red-600" *ngIf="
-              offerForm.get('salary')?.errors?.['required'] && offerForm.get('salary')?.touched
-            ">
-              Salary is required!
-            </small>
-            <small class="p-error text-red-600" *ngIf="
-              offerForm.get('salary')?.errors?.['min'] && offerForm.get('salary')?.touched
-            ">
-              Minimum salary is 1000 MAD!
-            </small>
+    
           
           
   
@@ -88,7 +67,7 @@
        
      <br>
   
-      <!-- ACTION BUTTON -->
+
       <div class="p-d-flex p-jc-end p-mt-5">
         <button 
           pButton 

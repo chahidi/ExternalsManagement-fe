@@ -1,6 +1,5 @@
 <p-card class="p-4">
     <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid space-y-4">
-      <!-- Title -->
       <div class="p-field">
         <label for="titre" class="block font-semibold mb-2">Title</label>
         <input
@@ -21,7 +20,7 @@
         </small>
       </div>
   
-      <!-- Description -->
+
       <div class="p-field">
         <label for="description" class="block font-semibold mb-2">Description</label>
         <textarea
@@ -44,27 +43,7 @@
       </div>
   
       <div class="p-grid p-formgrid gap-4">
-        <!-- Salary -->
-        <div class="p-col-12 p-md-6 p-field">
-          <label for="salary" class="block font-semibold mb-2">Salary</label>
-          <p-inputNumber
-            id="salary"
-            class="w-full"
-            formControlName="salary"
-            mode="currency"
-            currency="MAD"
-            locale="en-US"
-            placeholder="Enter salary"
-            aria-describedby="salary-error"
-            [class.p-invalid]="offerForm.get('salary')?.touched && (offerForm.get('salary')?.hasError('required') || offerForm.get('salary')?.hasError('min'))"
-          ></p-inputNumber>
-          <small id="salary-error" *ngIf="offerForm.get('salary')?.touched" class="p-error block mt-1">
-            <span *ngIf="offerForm.get('salary')?.hasError('required')">Salary is required.</span>
-            <span *ngIf="offerForm.get('salary')?.hasError('min')">Salary must be at least 1000.</span>
-          </small>
-        </div>
-  
-        <!-- Type -->
+   
         <div class="p-col-12 p-md-6 p-field">
           <label for="type" class="block font-semibold mb-2">Type</label>
           <p-dropdown
@@ -86,7 +65,6 @@
         </div>
       </div>
   
-      <!-- Department -->
       <div class="p-field">
         <label for="department" class="block font-semibold mb-2">Department</label>
         <p-dropdown
@@ -107,7 +85,7 @@
         </small>
       </div>
   
-      <!-- Footer -->
+
       <div class="p-dialog-footer flex justify-end gap-2 mt-4">
         <button
           pButton

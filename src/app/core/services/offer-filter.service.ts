@@ -39,9 +39,5 @@ export class OfferFilterService {
     return offers.filter(o => o.status === status)
   }
 
-  filterBySalaryRange(offers: Offer[], range: [number, number]): Offer[] {
-    if (!range || range.length !== 2) return offers;
-    return offers.filter(o => o.salary >= range[0] && o.salary <= range[1]);
-  }
   
 }

@@ -36,7 +36,6 @@ export class OfferService {
         id: faker.string.uuid(),
         titre: faker.name.jobTitle(),
         description: faker.lorem.paragraph(3),
-        salary: faker.number.int({ min: 3000, max: 6000 }),
         createdAt: `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`,
         status: faker.helpers.arrayElement(['open', 'closed']),
         type: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Contract', 'Internship']),
@@ -45,7 +44,7 @@ export class OfferService {
 
       this.offers.push(offer);
 
-      const numInterviews = faker.number.int({ min: 1, max: 2 }); // 1–2 interviews
+      const numInterviews = faker.number.int({ min: 1, max: 2 }); 
       for (let j = 0; j < numInterviews; j++) {
         const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
         const interview: Interview = {
@@ -57,7 +56,7 @@ export class OfferService {
         };
         this.interviews.push(interview);
 
-        const numQuestions = faker.number.int({ min: 2, max: 3 }); // 2–3 questions
+        const numQuestions = faker.number.int({ min: 2, max: 3 }); 
         for (let q = 0; q < numQuestions; q++) {
           const question: Question = {
             id: faker.string.uuid(),
@@ -66,7 +65,7 @@ export class OfferService {
           };
           this.questions.push(question);
 
-          const numResponses = faker.number.int({ min: 1, max: 2 }); // 1–2 responses
+          const numResponses = faker.number.int({ min: 1, max: 2 }); 
           for (let r = 0; r < numResponses; r++) {
             this.responses.push({
               id: faker.string.uuid(),
@@ -118,6 +117,6 @@ export class OfferService {
   }
 
   getResponsesByQuestionId(questionId: string): Response[] {
-    return this.responses.filter(r => r.question.id === questionId); // Fixed syntax error
+    return this.responses.filter(r => r.question.id === questionId); 
   }
 }

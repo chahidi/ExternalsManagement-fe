@@ -35,7 +35,6 @@ export class NewOfferComponent {
     this.offerForm = formBuilder.group({
       titre: ['' , Validators.required],
       description: ['' ,Validators.required],
-      salary: [null  , Validators.required , Validators.min(1000)],
       type: ['' ,Validators.required] ,
       department: ['' , Validators.required]
     });

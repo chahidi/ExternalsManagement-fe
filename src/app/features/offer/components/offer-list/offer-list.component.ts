@@ -151,8 +151,7 @@ export class OfferListComponent implements OnInit {
       return (
         (!this.selectedDepartment || offer.department === this.selectedDepartment) &&
         (!this.selectedType || offer.type === this.selectedType) &&
-        (!this.selectedStatut || offer.status === this.selectedStatut) &&
-        (offer.salary >= this.selectedSalaryRange[0] && offer.salary <= this.selectedSalaryRange[1])
+        (!this.selectedStatut || offer.status === this.selectedStatut)
       );
     });
   

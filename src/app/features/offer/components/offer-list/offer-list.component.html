@@ -46,21 +46,6 @@
       ></p-dropdown>
     </div>
 
-    <div class="field col-span-1 md:col-span-2 lg:col-span-3">
-      <label class="block mb-2">Salary Range (MAD)</label>
-      <p-slider
-        [(ngModel)]="selectedSalaryRange"
-        [range]="true"
-        [min]="1000"
-        [max]="10000"
-        [step]="500"
-        (onSlideEnd)="applyAllFilters()"
-      ></p-slider>
-      <div class="text-sm text-gray-600 mt-1">
-        From: {{ selectedSalaryRange[0] }} MAD to {{ selectedSalaryRange[1] }} MAD
-      </div>
-    </div>
-
   </div>
 
   <div class="flex justify-end mt-4">
@@ -107,7 +92,6 @@
     <tr>
       <th style="width: 15%;">Title</th>
       <th style="width: 25%;">Description</th>
-      <th>Salary</th>
       <th>Type</th>
       <th>Department</th>
       <th>Posted On</th>
@@ -119,7 +103,6 @@
     <tr>
       <td>{{ offer.titre }}</td>
       <td class="p-text-truncate">{{ offer.description }}</td>
-      <td>{{ offer.salary}}DH</td>
       <td>{{ offer.type }}</td>
       <td>{{ offer.department }}</td>
       <td>{{ offer.createdAt }}</td>

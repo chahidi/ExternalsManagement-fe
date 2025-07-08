@@ -42,7 +42,6 @@ export class MenuComponent {
                 label: 'Interviews Management',
                 items: [
                     { label: 'Interview List', icon: 'pi pi-fw pi-list', routerLink: ['/interviews/interview-list'] },
-                    { label: 'Interviews Result', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/interviews/interview-result'] }
                 ]
             }
         ];

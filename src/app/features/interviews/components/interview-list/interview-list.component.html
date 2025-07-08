@@ -77,6 +77,7 @@
                 <th>Passed On</th>
                 <th>Remaining Time</th>
                 <th>Duration</th>
+                <th>Evaluation</th>
                 <th>Recording Link</th>
                 <th>Actions</th>
             </tr>
@@ -97,6 +98,16 @@
                     <ng-template #noDuration>—</ng-template>
                 </td>
                 <td>
+                    <ng-container *ngIf="shouldShowEvaluation(interview); else noEvaluation">
+                        <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer">
+                            View Evaluation
+                        </a>
+                    </ng-container>
+                    <ng-template #noEvaluation>
+                        <span class="text-gray-400 italic">N/A</span>
+                    </ng-template>
+                </td>
+                <td>
                     <a *ngIf="interview.record?.fileUrl" [href]="interview.record.fileUrl" target="_blank"
                         class="text-blue-600 underline">View Recording</a>
                     <span *ngIf="!interview.record?.fileUrl" class="text-gray-400 italic">Not Available</span>
@@ -109,10 +120,6 @@
                         (click)="AddCommentPopup(interview)"></button>
                     <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text"
                         (click)="confirmDeleteInterview(interview)"></button>
-                    <!--for testing the evaluation-->
-                    <button pButton icon="pi pi-chart-line" class="p-button-sm p-button-success p-button-text"
-                        [pTooltip]="'Evaluate Interview'" tooltipPosition="top" (click)="evaluateInterview(interview)">
-                    </button>
                 </td>
             </tr>
         </ng-template>

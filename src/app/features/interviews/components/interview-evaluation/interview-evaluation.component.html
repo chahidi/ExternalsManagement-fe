@@ -1,7 +1,15 @@
-<div class="container">
+<div *ngIf="loading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="!loading && error.happened" class="error-container">
+    <p-message severity="error" [text]="error.message"></p-message>
+</div>
+
+<div *ngIf="!loading && !error.happened && interview" class="container">
     <div class="header">
         <h1 class="interview-title">
-            Interview Evaluation for <span class="candidate-name">Aaron Wang</span>
+            Interview Evaluation for <span class="candidate-name">{{interview.candidate.fullName || 'Unknown'}}</span>
         </h1>
 
         <div class="interview-details">
@@ -10,7 +18,7 @@
                     <path
                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
-                <span>Developer Intern</span>
+                <span>{{ interview.offer.title || 'No Title' }}</span>
             </div>
 
             <div class="detail-item">
@@ -18,7 +26,7 @@
                     <path
                         d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
                 </svg>
-                <span>Mar 5, 2024</span>
+                <span>{{ interview.startDate | date: 'MMM d, y' }}</span>
             </div>
 
             <div class="detail-item">
@@ -26,10 +34,10 @@
                     <path
                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
-                <span>9 minutes and 25 seconds</span>
+                <span>{{interview.record.durationInSeconds / 60 | number: '1.0-0' }} min</span>
             </div>
 
-           
+
         </div>
     </div>
 
@@ -37,20 +45,16 @@
         <div class="feedback-section">
             <h2 class="section-title">Overall Feedback</h2>
             <p class="feedback-text">
-                Overall, Aaron has shown a decent grasp of Python and strong problem-solving abilities. His
-                communication skills are generally clear, but there is room for improvement in professional conduct and
-                depth of discussion. His technical knowledge and problem-solving approach are promising, but he should
-                work on providing more detailed explanations and maintaining a professional demeanor throughout the
-                interview process.
+                {{ evaluation?.description || 'Feedback not available.' }}
             </p>
         </div>
 
         <div class="score-panel">
             <div class="score-title">Overall Hire Score</div>
             <div class="score-circle">
-                <div class="score-value">77</div>
+                <div class="score-value">{{ evaluation?.score || 'N/A' }}</div>
             </div>
-            
+
         </div>
     </div>
 </div>

@@ -7,12 +7,17 @@ import { InterviewEvaluationService } from '../../../../core/services/interview-
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { BadgeModule } from 'primeng/badge';
+import { TagModule } from 'primeng/tag';
+import { AccordionModule } from 'primeng/accordion';
 
 
 @Component({
   selector: 'app-interview-evaluation',
   standalone: true,
-  imports: [ProgressSpinnerModule,MessageModule,CommonModule],
+  imports: [ProgressSpinnerModule,MessageModule,CommonModule,CardModule,ButtonModule,BadgeModule,TagModule,AccordionModule],
   providers: [MessageService],
   templateUrl: './interview-evaluation.component.html',
   styleUrls: ['./interview-evaluation.component.scss']

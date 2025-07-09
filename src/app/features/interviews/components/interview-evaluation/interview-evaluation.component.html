@@ -7,54 +7,48 @@
 </div>
 
 <div *ngIf="!loading && !error.happened && interview" class="container">
-    <div class="header">
-        <h1 class="interview-title">
-            Interview Evaluation for <span class="candidate-name">{{interview.candidate.fullName || 'Unknown'}}</span>
-        </h1>
+    <p-card class="header-card">
+        <div class="interview-header">
+            <h1 class="interview-title">
+                Interview Evaluation for
+                <span class="candidate-name">{{interview.candidate.fullName || 'Unknown'}}</span>
+            </h1>
 
-        <div class="interview-details">
-            <div class="detail-item">
-                <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
-                <span>{{ interview.offer.title || 'No Title' }}</span>
+            <div class="interview-details">
+                <div class="detail-item">
+                    <i class="pi pi-briefcase detail-icon"></i>
+                    <span>{{ interview.offer.title || 'No Title' }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <i class="pi pi-calendar detail-icon"></i>
+                    <span>{{ interview.startDate | date: 'MMM d, y' }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <i class="pi pi-clock detail-icon"></i>
+                    <span>{{interview.record.durationInSeconds / 60 | number: '1.0-0' }} min</span>
+                </div>
             </div>
-
-            <div class="detail-item">
-                <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                </svg>
-                <span>{{ interview.startDate | date: 'MMM d, y' }}</span>
-            </div>
-
-            <div class="detail-item">
-                <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
-                <span>{{interview.record.durationInSeconds / 60 | number: '1.0-0' }} min</span>
-            </div>
-
-
         </div>
-    </div>
-
+    </p-card>
     <div class="main-content">
-        <div class="feedback-section">
-            <h2 class="section-title">Overall Feedback</h2>
+        <p-card class="feedback-section">
+            <ng-template pTemplate="header">
+                <h2 class="section-title">Overall Feedback</h2>
+            </ng-template>
             <p class="feedback-text">
                 {{ evaluation?.description || 'Feedback not available.' }}
             </p>
-        </div>
+        </p-card>
 
-        <div class="score-panel">
-            <div class="score-title">Overall Hire Score</div>
+        <p-card class="score-panel">
+            <ng-template pTemplate="header">
+                <div class="score-title">Overall Hire Score</div>
+            </ng-template>
             <div class="score-circle">
                 <div class="score-value">{{ evaluation?.score || 'N/A' }}</div>
             </div>
-
-        </div>
+        </p-card>
     </div>
 </div>

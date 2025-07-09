@@ -17,7 +17,8 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
+import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
 
 @Component({
     selector: 'app-interview-list',
@@ -137,50 +138,64 @@ export class InterviewListComponent implements OnInit {
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         console.log('Generating interview link for ID:', interview.id);
 
-        this.interviewService.generateInterviewLink(interview).subscribe({
-            next: (generatedLink: string) => {
-                console.log('Generated Link:', generatedLink);
-                interview.link = generatedLink;
-
-                this.interviewService.saveInterviewLink(interview.id, generatedLink).subscribe({
-                    next: () => {
-                        console.log('Link saved successfully');
-
-                        this.interviewService.sendEmail(interview).subscribe({
-                            next: (res) => {
-                                this.messageService.add({
-                                    severity: 'success',
-                                    summary: 'Email Sent',
-                                    detail: res.message
-                                });
-                            },
-                            error: (emailError) => {
-                                console.error('Failed to send email:', emailError);
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: 'Email Sending Error',
-                                    detail: emailError.message || 'Failed to send interview email.'
-                                });
-                            }
-                        });
-                    },
-                    error: (saveError) => {
-                        console.error('Failed to save interview link:', saveError);
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Saving Link Error',
-                            detail: saveError.message || 'Failed to save interview link.'
-                        });
-                    }
+        this.interviewService.generateInterviewLink(interview).pipe(
+            tap((link) => {
+                console.log('Generated Link:', link);
+                interview.link = link;
+            }),
+            switchMap((link) => this.interviewService.saveInterviewLink(interview.id, link)),
+            tap(() => console.log('Link saved successfully')),
+            switchMap(() => this.interviewService.sendEmail(interview))
+        ).subscribe({
+            next: (res) => {
+                console.log('Email sent successfully');
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Email Sent',
+                    detail: res.message
                 });
             },
-            error: (linkError) => {
-                console.error('Failed to generate interview link:', linkError);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Link Generation Error',
-                    detail: linkError.message || 'Failed to generate interview link.'
-                });
+            error: (err: Error) => {
+                const message = err.message;
+
+                if (message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
+                    message === ERROR_MESSAGES.INTERVIEW.INVALID_OFFER_ID ||
+                    message === ERROR_MESSAGES.INTERVIEW.INVALID_INTERVIEW_ID ||
+                    message === ERROR_MESSAGES.INTERVIEW.INVALID_SCHEDULED_DATE ||
+                    message.includes('generate')) {
+                    console.error('Failed to generate interview link:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Link Generation Error',
+                        detail: message
+                    });
+                } else if (message.includes('save') || message.includes('savelink') || message.includes('/savelink')) {
+                    console.error('Failed to save interview link:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Saving Link Error',
+                        detail: message
+                    });
+                } else if (
+                    message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME ||
+                    message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE ||
+                    message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE ||
+                    message.includes('email')
+                ) {
+                    console.error('Failed to send email:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Email Sending Error',
+                        detail: message
+                    });
+                } else {
+                    console.error('Unknown error during interview flow:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Unexpected Error',
+                        detail: message || 'An unexpected error occurred.'
+                    });
+                }
             }
         });
     }

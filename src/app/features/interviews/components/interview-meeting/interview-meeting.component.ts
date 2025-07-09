@@ -257,6 +257,7 @@ export class InterviewMeetingComponent {
         if (document.fullscreenElement) {
             document.exitFullscreen();
         }
+            console.log(' Full Questions Array:', this.questions);
 
         window.removeEventListener('beforeunload', this.preventUnload);
         document.removeEventListener('visibilitychange', this.handleTabSwitch);

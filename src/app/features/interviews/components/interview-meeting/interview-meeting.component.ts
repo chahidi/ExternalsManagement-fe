@@ -6,11 +6,12 @@ import { InterviewService } from '../../../../core/services/interview.service';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     templateUrl: './interview-meeting.component.html'
 })
 export class InterviewMeetingComponent {
@@ -20,7 +21,7 @@ export class InterviewMeetingComponent {
     interviewFinalizing = false;
     interviewCompleted = false;
     transcriptVisible = true;
-
+    currentAnswerText: string = '';
     warningMessage: string | null = null;
     stream: MediaStream | null = null;
     private preventResizeOnce = false;
@@ -166,6 +167,36 @@ export class InterviewMeetingComponent {
         this.startNextQuestion();
     }
 
+    submitAnswer(): void {
+        const answer = this.currentAnswerText.trim();
+        if (!answer) return;
+
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        if (currentQuestion) {
+            currentQuestion.answer = answer;
+        }
+
+        this.transcriptMessages.push({
+            sender: 'You',
+            text: answer,
+            align: 'right',
+            type: 'answer'
+        });
+
+        this.currentAnswerText = '';
+        clearInterval(this.questionInterval);
+        this.stopTranscription();
+
+        this.transcriptions.push(this.liveSubtitle.trim());
+
+        this.currentQuestionIndex++;
+        if (this.currentQuestionIndex < this.questions.length) {
+            setTimeout(() => this.startNextQuestion(), 2000);
+        } else {
+            this.finishInterview();
+        }
+    }
+
     async startNextQuestion() {
         const current = this.questions[this.currentQuestionIndex];
         if (!current || !this.interviewInProgress) return;
@@ -173,10 +204,10 @@ export class InterviewMeetingComponent {
         this.timeRemaining = current.timeLimit;
         this.liveSubtitle = '';
 
-        // 👉 Push question to Live Transcript
+        // Push question to Live Transcript
         this.addCurrentQuestionToTranscript();
 
-        // 🧠 Speak and then start transcription
+        //  Speak and then start transcription
         await this.tts.speak(current.text);
         this.startTranscription();
 

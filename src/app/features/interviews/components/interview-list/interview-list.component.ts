@@ -134,35 +134,55 @@ export class InterviewListComponent implements OnInit {
         return hours > 0 ? `${hours}h` : 'Expired';
     }
 
-    generateNewLink(interview: InterviewInstance): void {
-        console.log('📩 Generating interview link for ID:', interview.id);
+    generateLinkAndSendEmail(interview: InterviewInstance): void {
+        console.log('Generating interview link for ID:', interview.id);
 
-        this.interviewService
-            .generateInterviewLink(interview)
-            .pipe(
-                switchMap((generatedLink) => {
-                    console.log('✅ Generated Link:', generatedLink);
-                    // send the email
-                    return this.interviewService.sendEmail(interview);
-                })
-            )
-            .subscribe({
-                next: (res) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Email Sent',
-                        detail: res.message
-                    });
-                },
-                error: (err) => {
-                    console.error('Link generation or email failed:', err);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: err.message || 'Failed to generate link or send email.'
-                    });
-                }
-            });
+        this.interviewService.generateInterviewLink(interview).subscribe({
+            next: (generatedLink: string) => {
+                console.log('Generated Link:', generatedLink);
+                interview.link = generatedLink;
+
+                this.interviewService.saveInterviewLink(interview.id, generatedLink).subscribe({
+                    next: () => {
+                        console.log('Link saved successfully');
+
+                        this.interviewService.sendEmail(interview).subscribe({
+                            next: (res) => {
+                                this.messageService.add({
+                                    severity: 'success',
+                                    summary: 'Email Sent',
+                                    detail: res.message
+                                });
+                            },
+                            error: (emailError) => {
+                                console.error('Failed to send email:', emailError);
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Email Sending Error',
+                                    detail: emailError.message || 'Failed to send interview email.'
+                                });
+                            }
+                        });
+                    },
+                    error: (saveError) => {
+                        console.error('Failed to save interview link:', saveError);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Saving Link Error',
+                            detail: saveError.message || 'Failed to save interview link.'
+                        });
+                    }
+                });
+            },
+            error: (linkError) => {
+                console.error('Failed to generate interview link:', linkError);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Link Generation Error',
+                    detail: linkError.message || 'Failed to generate interview link.'
+                });
+            }
+        });
     }
 
     AddCommentPopup(interview: InterviewInstance): void {

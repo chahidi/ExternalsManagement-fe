@@ -13,7 +13,7 @@ export class InterviewService {
     private loadingSubject = new BehaviorSubject<boolean>(false);
     public loading$ = this.loadingSubject.asObservable();
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getInterviews(): Observable<InterviewInstance[]> {
         return this.http.get<InterviewInstance[]>(this.apiUrl).pipe(retry(2), catchError(this.handleError));
@@ -89,5 +89,10 @@ export class InterviewService {
 
         console.error('[InterviewService Error]', errorMessage);
         return throwError(() => new Error(errorMessage));
+    }
+
+
+    saveInterviewLink(interviewId: number, link: string): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${interviewId}/savelink`, { link }).pipe(retry(2), catchError(this.handleError));
     }
 }

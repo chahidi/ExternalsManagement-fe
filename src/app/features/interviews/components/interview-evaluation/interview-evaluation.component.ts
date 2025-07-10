@@ -12,13 +12,15 @@ import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { TagModule } from 'primeng/tag';
 import { AccordionModule } from 'primeng/accordion';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { ToastModule } from 'primeng/toast';
 
 
 @Component({
   selector: 'app-interview-evaluation',
   standalone: true,
-  imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule],
-  providers: [MessageService],
+  imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule,ToastModule],
+  providers: [MessageService,NotificationService],
   templateUrl: './interview-evaluation.component.html',
   styleUrls: ['./interview-evaluation.component.scss']
 })
@@ -35,7 +37,8 @@ export class InterviewEvaluationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private evaluationService: InterviewEvaluationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private notify: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -54,11 +57,7 @@ export class InterviewEvaluationComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to fetch evaluation:', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load evaluation data'
-        });
+        this.notify.showError("Error",'Failed to load evaluation data')
         this.loading = false;
       }
     });

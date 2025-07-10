@@ -27,7 +27,7 @@ import { Observable, EMPTY } from 'rxjs';
     selector: 'app-interview-list',
     standalone: true,
     imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, DropdownModule, CalendarModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule],
-    providers: [MessageService, ConfirmationService],
+    providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
 })
@@ -54,10 +54,10 @@ export class InterviewListComponent implements OnInit {
     constructor(
         private interviewService: InterviewService,
         private candidateService: CandidateService,
-        private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private offerService: OfferService,
         private router: Router,
+        private notify: NotificationService
     ) { }
 
     ngOnInit(): void {
@@ -73,11 +73,7 @@ export class InterviewListComponent implements OnInit {
                 this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
             },
             error: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to load Main Tech options'
-                });
+                this.notify.showError('Error', 'Failed to load Main Tech options');
             }
         });
     }
@@ -88,11 +84,7 @@ export class InterviewListComponent implements OnInit {
                 this.titleOptions = titles.map((title) => ({ label: title, value: title }));
             },
             error: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to load title options'
-                });
+                this.notify.showError('Error', 'Failed to load title options')
             }
         });
     }
@@ -168,11 +160,7 @@ export class InterviewListComponent implements OnInit {
             })
         ).subscribe({
             next: (res) => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Email Sent Successfully',
-                    detail: res.message
-                });
+                this.notify.showSuccess('Email Sent Successfully', res.message);
             }
         });
     }
@@ -194,19 +182,10 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.selectedCommentInterview!.comment = comment;
                 this.showCommentDialog = false;
-
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Comment Saved',
-                    detail: 'Comment saved successfully!'
-                });
+                this.notify.showSuccess('Comment Saved', 'Comment saved successfully!');
             },
             error: (err) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to save comment'
-                });
+                this.notify.showError('Error', 'Failed to save comment');
                 console.error('Save comment failed:', err);
             }
         });
@@ -226,18 +205,11 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.interviews = this.interviews.filter((i) => i.id !== interview.id);
                 this.filteredInterviews = this.filteredInterviews.filter((i) => i.id !== interview.id);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Deleted',
-                    detail: 'Interview deleted successfully'
-                });
+                this.notify.showSuccess('Deleted', 'Interview deleted successfully');
+
             },
             error: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to delete interview'
-                });
+                this.notify.showError('Error', 'Failed to delete interview');
             }
         });
     }
@@ -263,18 +235,10 @@ export class InterviewListComponent implements OnInit {
             message.includes('generate')
         ) {
             console.error('Failed to generate interview link:', err);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Link Generation Error',
-                detail: message
-            });
+            this.notify.showError('Link Generation Error', message);
         } else {
             console.error('Unexpected error during link generation:', err);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Unexpected Error',
-                detail: message || 'An unexpected error occurred.'
-            });
+            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
         }
         return EMPTY;
     }
@@ -287,18 +251,10 @@ export class InterviewListComponent implements OnInit {
             message.includes('/savelink')
         ) {
             console.error('Failed to save interview link:', err);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Saving Link Error',
-                detail: message
-            });
+            this.notify.showError('Saving Link Error', message);
         } else {
             console.error('Unexpected error during link saving:', err);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Unexpected Error',
-                detail: message || 'An unexpected error occurred.'
-            });
+            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
         }
         return EMPTY;
     }
@@ -312,18 +268,10 @@ export class InterviewListComponent implements OnInit {
             message.includes('email')
         ) {
             console.error('Failed to send email:', err);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Email Sending Error',
-                detail: message
-            });
+            this.notify.showError('Email Sending Error', message);
         } else {
             console.error('Unexpected error during email sending:', err);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Unexpected Error',
-                detail: message || 'An unexpected error occurred.'
-            });
+            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
         }
         return EMPTY;
     }

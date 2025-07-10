@@ -46,7 +46,6 @@ import { TextToSpeechService } from '../../../../core/services/text-to-speech.se
                 )
             ])
         ]),
-
         trigger('slideInInterview', [
             transition(':enter', [
                 style({

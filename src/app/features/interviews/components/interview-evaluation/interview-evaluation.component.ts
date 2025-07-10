@@ -17,7 +17,7 @@ import { AccordionModule } from 'primeng/accordion';
 @Component({
   selector: 'app-interview-evaluation',
   standalone: true,
-  imports: [ProgressSpinnerModule,MessageModule,CommonModule,CardModule,ButtonModule,BadgeModule,TagModule,AccordionModule],
+  imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule],
   providers: [MessageService],
   templateUrl: './interview-evaluation.component.html',
   styleUrls: ['./interview-evaluation.component.scss']

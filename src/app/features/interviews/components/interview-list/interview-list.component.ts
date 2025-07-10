@@ -17,8 +17,11 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule, Router } from '@angular/router';
-import { tap, switchMap } from 'rxjs/operators';
+import { tap, switchMap, catchError, finalize } from 'rxjs/operators';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
+import { Observable, EMPTY } from 'rxjs';
+
 
 @Component({
     selector: 'app-interview-list',
@@ -46,13 +49,15 @@ export class InterviewListComponent implements OnInit {
     tempComment: string = '';
     selectedCommentInterview: InterviewInstance | null = null;
 
+    isGeneratingLink = false;
+
     constructor(
         private interviewService: InterviewService,
         private candidateService: CandidateService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private offerService: OfferService,
-        private router: Router
+        private router: Router,
     ) { }
 
     ngOnInit(): void {
@@ -136,69 +141,42 @@ export class InterviewListComponent implements OnInit {
     }
 
     generateLinkAndSendEmail(interview: InterviewInstance): void {
-        console.log('Generating interview link for ID:', interview.id);
+        this.isGeneratingLink = true;
 
         this.interviewService.generateInterviewLink(interview).pipe(
-            tap((link) => {
+            tap(link => {
                 console.log('Generated Link:', link);
                 interview.link = link;
             }),
-            switchMap((link) => this.interviewService.saveInterviewLink(interview.id, link)),
-            tap(() => console.log('Link saved successfully')),
-            switchMap(() => this.interviewService.sendEmail(interview))
+            catchError(err => this.handleGenerateLinkError(err)),
+
+            switchMap(link =>
+                this.interviewService.saveInterviewLink(interview.id, link).pipe(
+                    tap(() => console.log('Link saved successfully')),
+                    catchError(err => this.handleSaveLinkError(err))
+                )
+            ),
+
+            switchMap(() =>
+                this.interviewService.sendEmail(interview).pipe(
+                    catchError(err => this.handleSendEmailError(err))
+                )
+            ),
+
+            finalize(() => {
+                this.isGeneratingLink = false;
+            })
         ).subscribe({
             next: (res) => {
-                console.log('Email sent successfully');
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Email Sent',
+                    summary: 'Email Sent Successfully',
                     detail: res.message
                 });
-            },
-            error: (err: Error) => {
-                const message = err.message;
-
-                if (message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
-                    message === ERROR_MESSAGES.INTERVIEW.INVALID_OFFER_ID ||
-                    message === ERROR_MESSAGES.INTERVIEW.INVALID_INTERVIEW_ID ||
-                    message === ERROR_MESSAGES.INTERVIEW.INVALID_SCHEDULED_DATE ||
-                    message.includes('generate')) {
-                    console.error('Failed to generate interview link:', err);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Link Generation Error',
-                        detail: message
-                    });
-                } else if (message.includes('save') || message.includes('savelink') || message.includes('/savelink')) {
-                    console.error('Failed to save interview link:', err);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Saving Link Error',
-                        detail: message
-                    });
-                } else if (
-                    message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME ||
-                    message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE ||
-                    message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE ||
-                    message.includes('email')
-                ) {
-                    console.error('Failed to send email:', err);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Email Sending Error',
-                        detail: message
-                    });
-                } else {
-                    console.error('Unknown error during interview flow:', err);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Unexpected Error',
-                        detail: message || 'An unexpected error occurred.'
-                    });
-                }
             }
         });
     }
+
 
     AddCommentPopup(interview: InterviewInstance): void {
         this.tempComment = interview.comment || '';
@@ -272,5 +250,81 @@ export class InterviewListComponent implements OnInit {
         this.router.navigate(['/interviews/evaluation', interview.id], {
             state: { interview }
         });
+    }
+
+
+    private handleGenerateLinkError(err: Error): Observable<never> {
+        const message = err.message;
+        if (
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_OFFER_ID ||
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_INTERVIEW_ID ||
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_SCHEDULED_DATE ||
+            message.includes('generate')
+        ) {
+            console.error('Failed to generate interview link:', err);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Link Generation Error',
+                detail: message
+            });
+        } else {
+            console.error('Unexpected error during link generation:', err);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Unexpected Error',
+                detail: message || 'An unexpected error occurred.'
+            });
+        }
+        return EMPTY;
+    }
+
+    private handleSaveLinkError(err: Error): Observable<never> {
+        const message = err.message;
+        if (
+            message.includes('save') ||
+            message.includes('savelink') ||
+            message.includes('/savelink')
+        ) {
+            console.error('Failed to save interview link:', err);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Saving Link Error',
+                detail: message
+            });
+        } else {
+            console.error('Unexpected error during link saving:', err);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Unexpected Error',
+                detail: message || 'An unexpected error occurred.'
+            });
+        }
+        return EMPTY;
+    }
+
+    private handleSendEmailError(err: Error): Observable<never> {
+        const message = err.message;
+        if (
+            message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME ||
+            message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE ||
+            message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE ||
+            message.includes('email')
+        ) {
+            console.error('Failed to send email:', err);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Email Sending Error',
+                detail: message
+            });
+        } else {
+            console.error('Unexpected error during email sending:', err);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Unexpected Error',
+                detail: message || 'An unexpected error occurred.'
+            });
+        }
+        return EMPTY;
     }
 }

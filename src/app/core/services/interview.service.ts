@@ -58,7 +58,7 @@ export class InterviewService {
         const payload: SendInterviewEmailPayload = {
             candidateFullName: interview.candidate.fullName,
             offerTitle: interview.offer.title,
-            scheduledDate: interview.scheduledAt // ✅ FIXED
+            scheduledDate: interview.scheduledAt 
         };
 
         if (!payload.candidateFullName || typeof payload.candidateFullName !== 'string') {

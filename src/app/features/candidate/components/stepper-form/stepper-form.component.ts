@@ -88,37 +88,44 @@ export class StepperFormComponent implements OnInit {
           [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0)]
         ],
         gender: ['', Validators.required],
-        mainTech: ['', Validators.required],
+        mainTech: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9+#.\- ]+$/)]],
         summary: ['', Validators.required]
       },
       { validators: this.experienceAgeValidator }
     );
 
     this.addressForm = this.fb.group({
-      street: ['', Validators.required],
-      postalCode: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9\\s-]{3,10}$')]],
+        street: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s\-#.,'\/]+$/)]],
+        postalCode: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9\\s-]{3,10}$')]],
       fullAddress: ['', Validators.required],
-      city: ['', [Validators.required, Validators.pattern('^[a-zA-Z\\s-]+$')]],
-      country: ['', [Validators.required, Validators.pattern('^[a-zA-Z\\s-]+$')]]
+      city: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
+      country: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ\s'.-]+$/)]],
     });
 
     this.educationForm = this.fb.group({
-      institution: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      diploma: ['', Validators.required]
-    });
-
-    this.experienceForm = this.fb.group(
-      {
-        companyName: ['', Validators.required],
-        position: ['', Validators.required],
+        institution: ['', [
+          Validators.required,
+          Validators.pattern('^[A-Za-z0-9\\s\\-\\.\\&\\,\'\"]+$')
+        ]],
         startDate: ['', Validators.required],
         endDate: ['', Validators.required],
-        description: ['', Validators.required]
+        diploma: ['', [
+            Validators.required,
+            Validators.pattern(/^[A-Za-z0-9\s,.\-'\+#&()]+$/)
+          ]]
       },
-      { validators: this.experienceDateValidator }
-    );
+      { validators: this.dateRangeValidator } );
+
+    this.experienceForm = this.fb.group(
+        {
+          companyName: ['', Validators.pattern("^[A-Za-z0-9&'’+.,\\-\\s]+$")],
+          position: ['',  Validators.pattern('^[A-Za-z\\s/-]+$')],
+          startDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+          endDate: ['', Validators.pattern('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')],
+          description: ['', Validators.pattern('^[A-Za-z0-9\\s,.!?()\\-:;/\'"#\\n]+$')]
+        },
+        { validators: this.experienceDateValidator }
+      );
 
     // validator for language
     this.languageForm = this.fb.group({
@@ -134,8 +141,36 @@ export class StepperFormComponent implements OnInit {
 
     this.contactForm = this.fb.group({
       contactType: ['Email', Validators.required],
-      contactValue: ['', [Validators.required, Validators.pattern(/^(?:\+?\d{10,15}|[^@]+@[^@]+\.[^@]+)$/)]]
+      contactValue: ['', [Validators.required,]]
     });
+
+    this.contactForm.get('contactType')?.valueChanges.subscribe((type: string) => {
+        const contactControl = this.contactForm.get('contactValue');
+        if (!contactControl) return;
+
+        contactControl.clearValidators();
+
+        if (type === 'Email') {
+          contactControl.setValidators([
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+          ]);
+        } else if (type === 'Phone') {
+          contactControl.setValidators([
+            Validators.required,
+            Validators.pattern(/^\+?\d{10,15}$/)
+          ]);
+        } else if (type === 'LinkedIn') {
+          contactControl.setValidators([
+            Validators.required,
+            Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)
+          ]);
+        } else {
+          contactControl.setValidators([Validators.required]);
+        }
+
+        contactControl.updateValueAndValidity();
+      });
 
     this.route.paramMap.subscribe(params => {
       const navigationData = history.state.extractedData;
@@ -179,15 +214,14 @@ export class StepperFormComponent implements OnInit {
       });
     }
 
-    if (this.extractedData.experiences && this.extractedData.experiences.length > 0) {
-      this.experienceForm.patchValue({
-        companyName: this.extractedData.experiences[0].companyName || '',
-        position: this.extractedData.experiences[0].position || '',
-        startDate: this.extractedData.experiences[0].startDate || '',
-        endDate: this.extractedData.experiences[0].endDate || '',
-        description: this.extractedData.experiences[0].description || ''
-      });
-    }
+        const experience = this.extractedData.experiences?.[0] || {};
+    this.experienceForm.patchValue({
+    companyName: experience.companyName || '',
+    position: experience.position || '',
+    startDate: experience.startDate || '',
+    endDate: experience.endDate || '',
+    description: experience.description || ''
+    });
 
     // ;anguage map
     if (this.extractedData.naturalLanguages && this.extractedData.naturalLanguages.length > 0) {
@@ -219,6 +253,8 @@ export class StepperFormComponent implements OnInit {
         contactType: ['Email', 'Phone', 'LinkedIn'].includes(contactType) ? contactType : 'Email',
         contactValue: this.extractedData.contacts[0].contactValue || ''
       });
+      // Trigger the validators after patching the values
+        this.contactForm.get('contactValue')?.updateValueAndValidity();
     }
   }
 
@@ -238,6 +274,25 @@ export class StepperFormComponent implements OnInit {
       }
       if (age < 18) return { underAge: true };
       if (age > 80) return { overAge: true };
+    }
+    return null;
+  }
+  // Custom validator for startDate < endDate
+  dateRangeValidator(control: AbstractControl): ValidationErrors | null {
+    const startDate = control.get('startDate')?.value;
+    const endDate = control.get('endDate')?.value;
+
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      console.log('Start Date:', start);
+      console.log('End Date:', end);
+
+      // Check if the start date is after the end date
+      if (start > end) {
+        return { invalidDateRange: true };
+      }
     }
     return null;
   }
@@ -359,7 +414,7 @@ export class StepperFormComponent implements OnInit {
         summary: this.generalDataForm.value.summary,
         address: this.addressForm.value,
         educations: [this.educationForm.value],
-        experiences: [this.experienceForm.value],
+        experiences: this.experienceForm.valid && this.experienceForm.value.companyName ? [this.experienceForm.value] : [],
         languages: [this.languageForm.value],
         skills: [this.skillsForm.value],
         contacts: [this.contactForm.value]

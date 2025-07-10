@@ -120,3 +120,58 @@
 :host ::ng-deep .p-chart canvas {
   max-width: 100%;
 }
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.chart-card {
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #495057;
+    font-weight: 600;
+  }
+}
+
+.total-card {
+  .total-candidates {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .total-label {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+
+    .candidate-count {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #3f51b5;
+    }
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .stats-header {
+    flex-direction: column;
+
+    .stats-title {
+      margin-bottom: 1rem;
+    }
+
+    .total-card {
+      width: 100%;
+    }
+  }
+}

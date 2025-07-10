@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-// PrimeNG Imports
+import { INTERVIEW_RULES, InterviewRule } from '../../../../core/constants/interview-rules.const';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
@@ -15,7 +15,6 @@ import { MessageService } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
-
 import { RecordService } from '../../../../core/services/record.service';
 import { Record } from '../../../../core/models/record';
 import { InterviewService } from '../../../../core/services/interview.service';
@@ -26,23 +25,84 @@ import { TextToSpeechService } from '../../../../core/services/text-to-speech.se
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule,
-        ButtonModule,
-        CardModule,
-        MessageModule,
-        MessagesModule,
-        InputTextModule,
-        PanelModule,
-        ProgressSpinnerModule,
-        ToastModule,
-        DividerModule,
-        TagModule,
-        SkeletonModule
-    ],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule],
     templateUrl: './interview-meeting.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
+    animations: [
+        trigger('cameraTransition', [
+            transition(':enter', [
+                style({
+                    transform: 'scale(0.5) translateX(-50%) translateY(-30%)',
+                    borderRadius: '12px',
+                    opacity: 0.8
+                }),
+                animate(
+                    '800ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        transform: 'scale(1) translateX(0) translateY(0)',
+                        borderRadius: '16px',
+                        opacity: 1
+                    })
+                )
+            ])
+        ]),
+
+        trigger('slideInInterview', [
+            transition(':enter', [
+                style({
+                    opacity: 0,
+                    transform: 'translateY(100%)'
+                }),
+                animate(
+                    '600ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    })
+                )
+            ])
+        ]),
+        trigger('fadeInControls', [
+            transition(':enter', [
+                style({
+                    opacity: 0,
+                    transform: 'translateY(20px)'
+                }),
+                animate(
+                    '500ms 400ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    })
+                )
+            ])
+        ]),
+        trigger('slideInTranscript', [
+            transition(':enter', [
+                style({
+                    opacity: 0,
+                    transform: 'translateX(100%)'
+                }),
+                animate(
+                    '400ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 1,
+                        transform: 'translateX(0)'
+                    })
+                )
+            ]),
+            transition(':leave', [
+                animate(
+                    '300ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 0,
+                        transform: 'translateX(100%)'
+                    })
+                )
+            ])
+        ]),
+        trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('300ms ease-in', style({ opacity: 1 }))])])
+    ]
 })
 export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;
@@ -78,35 +138,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     questionInterval: any;
     transcriptions: string[] = [];
     currentTime: string = '';
-
-    // Interview Rules
-    interviewRules = [
-        {
-            icon: 'pi pi-camera',
-            title: 'Camera Access Required',
-            description: 'Camera access is required to begin the interview session.'
-        },
-        {
-            icon: 'pi pi-ban',
-            title: 'No Tab Switching',
-            description: 'Do not switch tabs, minimize, or close the window during the interview.'
-        },
-        {
-            icon: 'pi pi-expand',
-            title: 'Fullscreen Mode',
-            description: 'Fullscreen mode will start automatically after you click "I\'m Ready".'
-        },
-        {
-            icon: 'pi pi-eye',
-            title: 'Stay Focused',
-            description: 'Maintain focus and avoid distractions throughout the session.'
-        },
-        {
-            icon: 'pi pi-video',
-            title: 'Session Recording',
-            description: 'The entire session will be monitored and recorded for evaluation.'
-        }
-    ];
+    interviewRules: InterviewRule[] = INTERVIEW_RULES;
 
     constructor(
         private recordService: RecordService,
@@ -123,7 +155,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        // Initialize camera after view is ready
         setTimeout(() => {
             this.initializeCamera();
         }, 500);
@@ -158,8 +189,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     async initializeCamera() {
         try {
             console.log('Initializing camera...');
-
-            // Request camera and microphone access
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     width: { ideal: 1280 },
@@ -174,12 +203,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
             this.cameraReady = true;
             this.previewMode = true;
-
-            // Set up preview video with delay to ensure element is ready
             setTimeout(() => {
                 this.setupPreviewVideo();
             }, 100);
-
         } catch (error) {
             console.error('Camera initialization error:', error);
             this.warningMessage = 'Camera access denied. Please enable your camera and reload the page.';
@@ -204,7 +230,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
             video.onloadedmetadata = () => {
                 console.log('Preview video metadata loaded');
-                video.play().catch(e => console.error('Error playing preview video:', e));
+                video.play().catch((e) => console.error('Error playing preview video:', e));
             };
 
             video.onerror = (e) => {
@@ -227,7 +253,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
             video.onloadedmetadata = () => {
                 console.log('Interview video metadata loaded');
-                video.play().catch(e => console.error('Error playing interview video:', e));
+                video.play().catch((e) => console.error('Error playing interview video:', e));
             };
 
             video.onerror = (e) => {
@@ -262,8 +288,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         } catch (error) {
             console.warn('Could not enter fullscreen mode:', error);
         }
-
-        // Set up interview video with delay to ensure element is ready
         setTimeout(() => {
             this.setupInterviewVideo();
         }, 100);
@@ -313,7 +337,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.preventResizeOnce = true;
         setTimeout(() => (this.preventResizeOnce = false), 1000);
 
-        // Add event listeners
         window.addEventListener('beforeunload', this.preventUnload);
         document.addEventListener('visibilitychange', this.handleTabSwitch);
         window.addEventListener('resize', this.handleResize);
@@ -423,7 +446,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
 
         console.log('Full Questions Array:', this.questions);
-        
 
         // Remove event listeners
         window.removeEventListener('beforeunload', this.preventUnload);
@@ -509,7 +531,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
+            this.stream.getTracks().forEach((track) => track.stop());
         }
         if (this.questionInterval) {
             clearInterval(this.questionInterval);

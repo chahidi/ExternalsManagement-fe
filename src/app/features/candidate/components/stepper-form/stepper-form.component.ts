@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -23,7 +23,6 @@ import { MenuItem } from 'primeng/api';
   selector: 'app-candidate-form',
   standalone: true,
   imports: [
-    CommonModule,
     PanelModule,
     StepsModule,
     InputTextModule,
@@ -33,7 +32,7 @@ import { MenuItem } from 'primeng/api';
     ReactiveFormsModule,
     DropdownModule,
     RadioButtonModule
-  ],
+],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']
 })

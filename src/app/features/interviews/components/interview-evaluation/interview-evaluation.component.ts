@@ -50,7 +50,7 @@ export class InterviewEvaluationComponent implements OnInit {
       return;
     }
 
-    this.evaluationService.getInterviewEvaluation("Please evaluate this candidate", this.interview.questions).subscribe({
+    this.evaluationService.getInterviewEvaluation(this.interview.id).subscribe({
       next: (data) => {
         this.evaluation = data;
         this.loading = false;

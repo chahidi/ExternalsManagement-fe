@@ -18,10 +18,15 @@ export class InterviewEvaluationService {
   constructor(private http: HttpClient) { }
 
 
-  getInterviewEvaluation(prompt: string, questions: Question[]): Observable<Evaluation> {
+  getInterviewEvaluation(interviewId: number): Observable<Evaluation> {
+    return this.http.get<Evaluation>(`${this.apiUrl}/evaluation/${interviewId}`)
+      .pipe(catchError((error) => handleError("Fetching Interview Evaluation", error)));
+  }
+
+  prepareInterviewEvaluation(prompt: string, questions: Question[]): Observable<Evaluation> {
     const body = { prompt, questions };
     return this.http.post<Evaluation>(`${this.apiUrl}/evaluation`, body)
-      .pipe(catchError((error) => handleError("Interview Evaluation", error)));
+      .pipe(catchError((error) => handleError("Saving Interview Evaluation", error)));
   }
 
 }

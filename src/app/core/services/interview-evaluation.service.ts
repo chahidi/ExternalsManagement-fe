@@ -18,7 +18,7 @@ export class InterviewEvaluationService {
   constructor(private http: HttpClient) { }
 
 
-  getInterviewEvaluation(interviewId: number): Observable<Evaluation> {
+  getInterviewEvaluation(interviewId: string): Observable<Evaluation> {
     return this.http.get<Evaluation>(`${this.apiUrl}/evaluation/${interviewId}`)
       .pipe(catchError((error) => handleError("Fetching Interview Evaluation", error)));
   }

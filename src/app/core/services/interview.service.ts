@@ -37,7 +37,7 @@ export class InterviewService {
         if (!payload.offerId || typeof payload.offerId !== 'string') {
             return throwError(() => new Error(ERROR_MESSAGES.INTERVIEW.INVALID_OFFER_ID));
         }
-        if (!payload.interviewId || typeof payload.interviewId !== 'number') {
+        if (!payload.interviewId || typeof payload.interviewId !== 'string') {
             return throwError(() => new Error(ERROR_MESSAGES.INTERVIEW.INVALID_INTERVIEW_ID));
         }
         if (!payload.scheduledDate) {
@@ -92,7 +92,7 @@ export class InterviewService {
     }
 
 
-    saveInterviewLink(interviewId: number, link: string): Observable<any> {
+    saveInterviewLink(interviewId: string, link: string): Observable<any> {
         return this.http.put<any>(`${this.apiUrl}/${interviewId}/savelink`, { link }).pipe(retry(2), catchError(this.handleError));
     }
 }

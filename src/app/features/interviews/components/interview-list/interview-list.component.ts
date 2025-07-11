@@ -17,13 +17,17 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { tap, switchMap, catchError, finalize } from 'rxjs/operators';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
+import { Observable, EMPTY } from 'rxjs';
+
 
 @Component({
     selector: 'app-interview-list',
     standalone: true,
     imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, DropdownModule, CalendarModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule],
-    providers: [MessageService, ConfirmationService],
+    providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
 })
@@ -45,13 +49,15 @@ export class InterviewListComponent implements OnInit {
     tempComment: string = '';
     selectedCommentInterview: InterviewInstance | null = null;
 
+    isGeneratingLink = false;
+
     constructor(
         private interviewService: InterviewService,
         private candidateService: CandidateService,
-        private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private offerService: OfferService,
-        private router: Router
+        private router: Router,
+        private notify: NotificationService
     ) { }
 
     ngOnInit(): void {
@@ -67,11 +73,7 @@ export class InterviewListComponent implements OnInit {
                 this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
             },
             error: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to load Main Tech options'
-                });
+                this.notify.showError('Error', 'Failed to load Main Tech options');
             }
         });
     }
@@ -82,11 +84,7 @@ export class InterviewListComponent implements OnInit {
                 this.titleOptions = titles.map((title) => ({ label: title, value: title }));
             },
             error: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to load title options'
-                });
+                this.notify.showError('Error', 'Failed to load title options')
             }
         });
     }
@@ -134,36 +132,39 @@ export class InterviewListComponent implements OnInit {
         return hours > 0 ? `${hours}h` : 'Expired';
     }
 
-    generateNewLink(interview: InterviewInstance): void {
-        console.log('📩 Generating interview link for ID:', interview.id);
+    generateLinkAndSendEmail(interview: InterviewInstance): void {
+        this.isGeneratingLink = true;
 
-        this.interviewService
-            .generateInterviewLink(interview)
-            .pipe(
-                switchMap((generatedLink) => {
-                    console.log('✅ Generated Link:', generatedLink);
-                    // send the email
-                    return this.interviewService.sendEmail(interview);
-                })
-            )
-            .subscribe({
-                next: (res) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Email Sent',
-                        detail: res.message
-                    });
-                },
-                error: (err) => {
-                    console.error('Link generation or email failed:', err);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: err.message || 'Failed to generate link or send email.'
-                    });
-                }
-            });
+        this.interviewService.generateInterviewLink(interview).pipe(
+            tap(link => {
+                console.log('Generated Link:', link);
+                interview.link = link;
+            }),
+            catchError(err => this.handleGenerateLinkError(err)),
+
+            switchMap(link =>
+                this.interviewService.saveInterviewLink(interview.id, link).pipe(
+                    tap(() => console.log('Link saved successfully')),
+                    catchError(err => this.handleSaveLinkError(err))
+                )
+            ),
+
+            switchMap(() =>
+                this.interviewService.sendEmail(interview).pipe(
+                    catchError(err => this.handleSendEmailError(err))
+                )
+            ),
+
+            finalize(() => {
+                this.isGeneratingLink = false;
+            })
+        ).subscribe({
+            next: (res) => {
+                this.notify.showSuccess('Email Sent Successfully', res.message);
+            }
+        });
     }
+
 
     AddCommentPopup(interview: InterviewInstance): void {
         this.tempComment = interview.comment || '';
@@ -181,19 +182,10 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.selectedCommentInterview!.comment = comment;
                 this.showCommentDialog = false;
-
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Comment Saved',
-                    detail: 'Comment saved successfully!'
-                });
+                this.notify.showSuccess('Comment Saved', 'Comment saved successfully!');
             },
             error: (err) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to save comment'
-                });
+                this.notify.showError('Error', 'Failed to save comment');
                 console.error('Save comment failed:', err);
             }
         });
@@ -213,18 +205,11 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.interviews = this.interviews.filter((i) => i.id !== interview.id);
                 this.filteredInterviews = this.filteredInterviews.filter((i) => i.id !== interview.id);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Deleted',
-                    detail: 'Interview deleted successfully'
-                });
+                this.notify.showSuccess('Deleted', 'Interview deleted successfully');
+
             },
             error: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to delete interview'
-                });
+                this.notify.showError('Error', 'Failed to delete interview');
             }
         });
     }
@@ -237,5 +222,57 @@ export class InterviewListComponent implements OnInit {
         this.router.navigate(['/interviews/evaluation', interview.id], {
             state: { interview }
         });
+    }
+
+
+    private handleGenerateLinkError(err: Error): Observable<never> {
+        const message = err.message;
+        if (
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_OFFER_ID ||
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_INTERVIEW_ID ||
+            message === ERROR_MESSAGES.INTERVIEW.INVALID_SCHEDULED_DATE ||
+            message.includes('generate')
+        ) {
+            console.error('Failed to generate interview link:', err);
+            this.notify.showError('Link Generation Error', message);
+        } else {
+            console.error('Unexpected error during link generation:', err);
+            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+        }
+        return EMPTY;
+    }
+
+    private handleSaveLinkError(err: Error): Observable<never> {
+        const message = err.message;
+        if (
+            message.includes('save') ||
+            message.includes('savelink') ||
+            message.includes('/savelink')
+        ) {
+            console.error('Failed to save interview link:', err);
+            this.notify.showError('Saving Link Error', message);
+        } else {
+            console.error('Unexpected error during link saving:', err);
+            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+        }
+        return EMPTY;
+    }
+
+    private handleSendEmailError(err: Error): Observable<never> {
+        const message = err.message;
+        if (
+            message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME ||
+            message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE ||
+            message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE ||
+            message.includes('email')
+        ) {
+            console.error('Failed to send email:', err);
+            this.notify.showError('Email Sending Error', message);
+        } else {
+            console.error('Unexpected error during email sending:', err);
+            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+        }
+        return EMPTY;
     }
 }

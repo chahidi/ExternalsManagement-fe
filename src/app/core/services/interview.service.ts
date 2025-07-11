@@ -28,7 +28,7 @@ export class InterviewService {
             candidateId: interview.candidate.id,
             offerId: interview.offer.id,
             interviewId: interview.id,
-            scheduledDate: interview.scheduledAt // ✅ FIXED
+            scheduledDate: interview.scheduledAt
         };
 
         if (!payload.candidateId || typeof payload.candidateId !== 'string') {
@@ -58,7 +58,7 @@ export class InterviewService {
         const payload: SendInterviewEmailPayload = {
             candidateFullName: interview.candidate.fullName,
             offerTitle: interview.offer.title,
-            scheduledDate: interview.scheduledAt 
+            scheduledDate: interview.scheduledAt
         };
 
         if (!payload.candidateFullName || typeof payload.candidateFullName !== 'string') {

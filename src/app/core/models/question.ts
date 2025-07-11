@@ -6,3 +6,4 @@ export interface Question {
     interview: InterviewInstance;
     answer: string;
 }
+

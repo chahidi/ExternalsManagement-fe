@@ -1,5 +1,20 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { INTERVIEW_RULES, InterviewRule } from '../../../../core/constants/interview-rules.const';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { MessageModule } from 'primeng/message';
+import { MessagesModule } from 'primeng/messages';
+import { InputTextModule } from 'primeng/inputtext';
+import { PanelModule } from 'primeng/panel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { DividerModule } from 'primeng/divider';
+import { TagModule } from 'primeng/tag';
+import { SkeletonModule } from 'primeng/skeleton';
 import { RecordService } from '../../../../core/services/record.service';
 import { Record } from '../../../../core/models/record';
 import { InterviewService } from '../../../../core/services/interview.service';
@@ -10,22 +25,100 @@ import { TextToSpeechService } from '../../../../core/services/text-to-speech.se
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule],
-    templateUrl: './interview-meeting.component.html'
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule],
+    templateUrl: './interview-meeting.component.html',
+    providers: [MessageService],
+    animations: [
+        trigger('cameraTransition', [
+            transition(':enter', [
+                style({
+                    transform: 'scale(0.5) translateX(-50%) translateY(-30%)',
+                    borderRadius: '12px',
+                    opacity: 0.8
+                }),
+                animate(
+                    '800ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        transform: 'scale(1) translateX(0) translateY(0)',
+                        borderRadius: '16px',
+                        opacity: 1
+                    })
+                )
+            ])
+        ]),
+        trigger('slideInInterview', [
+            transition(':enter', [
+                style({
+                    opacity: 0,
+                    transform: 'translateY(100%)'
+                }),
+                animate(
+                    '600ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    })
+                )
+            ])
+        ]),
+        trigger('fadeInControls', [
+            transition(':enter', [
+                style({
+                    opacity: 0,
+                    transform: 'translateY(20px)'
+                }),
+                animate(
+                    '500ms 400ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    })
+                )
+            ])
+        ]),
+        trigger('slideInTranscript', [
+            transition(':enter', [
+                style({
+                    opacity: 0,
+                    transform: 'translateX(100%)'
+                }),
+                animate(
+                    '400ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 1,
+                        transform: 'translateX(0)'
+                    })
+                )
+            ]),
+            transition(':leave', [
+                animate(
+                    '300ms cubic-bezier(0.35, 0, 0.25, 1)',
+                    style({
+                        opacity: 0,
+                        transform: 'translateX(100%)'
+                    })
+                )
+            ])
+        ]),
+        trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('300ms ease-in', style({ opacity: 1 }))])])
+    ]
 })
-export class InterviewMeetingComponent {
+export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;
     previewMode = false;
     interviewInProgress = false;
     interviewFinalizing = false;
     interviewCompleted = false;
     transcriptVisible = true;
-
+    currentAnswerText: string = '';
     warningMessage: string | null = null;
     stream: MediaStream | null = null;
     private preventResizeOnce = false;
+    cameraReady = false;
+    showRulesAndPreview = true;
 
-    @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
+    @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
+    @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
 
     mediaRecorder!: MediaRecorder;
     recordedChunks: Blob[] = [];
@@ -37,30 +130,21 @@ export class InterviewMeetingComponent {
     liveSubtitle = '';
     recognition!: any;
     transcriptMessages: { sender: string; text: string; align: 'left' | 'right'; type: 'question' | 'answer' }[] = [];
-    addCurrentQuestionToTranscript() {
-        const questionText = this.questions[this.currentQuestionIndex]?.text;
-        if (questionText) {
-            this.transcriptMessages.push({
-                sender: 'AI',
-                text: questionText,
-                align: 'left',
-                type: 'question'
-            });
-        }
-    }
 
     questions: Question[] = [];
     currentQuestionIndex = 0;
     timeRemaining = 0;
     questionInterval: any;
-
     transcriptions: string[] = [];
+    currentTime: string = '';
+    interviewRules: InterviewRule[] = INTERVIEW_RULES;
 
     constructor(
         private recordService: RecordService,
         private interviewService: InterviewService,
         private promptService: PromptService,
-        private tts: TextToSpeechService
+        private tts: TextToSpeechService,
+        private messageService: MessageService
     ) {}
 
     ngOnInit(): void {
@@ -68,7 +152,12 @@ export class InterviewMeetingComponent {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
     }
-    currentTime: string = '';
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this.initializeCamera();
+        }, 500);
+    }
 
     updateClock() {
         const now = new Date();
@@ -87,44 +176,132 @@ export class InterviewMeetingComponent {
             },
             error: (err) => {
                 console.error('Failed to load structured interview questions:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to load interview questions. Please refresh the page.'
+                });
             }
         });
     }
 
-    async prepareInterview() {
-        this.previewMode = true;
+    async initializeCamera() {
         try {
-            this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            const video = this.videoElement.nativeElement;
+            console.log('Initializing camera...');
+            this.stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'user'
+                },
+                audio: true
+            });
+
+            console.log('Camera stream obtained:', this.stream);
+            console.log('Video tracks:', this.stream.getVideoTracks());
+
+            this.cameraReady = true;
+            this.previewMode = true;
+            setTimeout(() => {
+                this.setupPreviewVideo();
+            }, 100);
+        } catch (error) {
+            console.error('Camera initialization error:', error);
+            this.warningMessage = 'Camera access denied. Please enable your camera and reload the page.';
+            this.cameraReady = false;
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Camera Error',
+                detail: 'Unable to access camera. Please check your permissions.'
+            });
+        }
+    }
+
+    private setupPreviewVideo() {
+        if (this.previewVideo?.nativeElement && this.stream) {
+            const video = this.previewVideo.nativeElement;
+            console.log('Setting up preview video element:', video);
+
             video.srcObject = this.stream;
             video.muted = true;
-            await video.play();
-        } catch {
-            this.warningMessage = 'Camera access denied. Please enable your camera and reload the page.';
-            this.previewMode = false;
+            video.playsInline = true;
+            video.autoplay = true;
+
+            video.onloadedmetadata = () => {
+                console.log('Preview video metadata loaded');
+                video.play().catch((e) => console.error('Error playing preview video:', e));
+            };
+
+            video.onerror = (e) => {
+                console.error('Preview video error:', e);
+            };
+        } else {
+            console.warn('Preview video element not found or stream not available');
+        }
+    }
+
+    private setupInterviewVideo() {
+        if (this.interviewVideo?.nativeElement && this.stream) {
+            const video = this.interviewVideo.nativeElement;
+            console.log('Setting up interview video element:', video);
+
+            video.srcObject = this.stream;
+            video.muted = true;
+            video.playsInline = true;
+            video.autoplay = true;
+
+            video.onloadedmetadata = () => {
+                console.log('Interview video metadata loaded');
+                video.play().catch((e) => console.error('Error playing interview video:', e));
+            };
+
+            video.onerror = (e) => {
+                console.error('Interview video error:', e);
+            };
+        } else {
+            console.warn('Interview video element not found or stream not available');
         }
     }
 
     async startInterview() {
-        this.interviewStarted = true;
-        this.previewMode = false;
-        this.interviewInProgress = true;
-
-        if (document.documentElement.requestFullscreen) {
-            await document.documentElement.requestFullscreen();
+        if (!this.cameraReady || !this.stream) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Camera Not Ready',
+                detail: 'Please allow camera access before starting the interview.'
+            });
+            return;
         }
 
-        const video = this.videoElement.nativeElement;
-        video.srcObject = this.stream;
-        video.muted = true;
-        await video.play();
+        console.log('Starting interview...');
 
+        this.interviewStarted = true;
+        this.showRulesAndPreview = false;
+        this.interviewInProgress = true;
+        this.previewMode = false;
+
+        try {
+            if (document.documentElement.requestFullscreen) {
+                await document.documentElement.requestFullscreen();
+            }
+        } catch (error) {
+            console.warn('Could not enter fullscreen mode:', error);
+        }
+        setTimeout(() => {
+            this.setupInterviewVideo();
+        }, 100);
+
+        // Initialize recording
         this.recordedChunks = [];
-        this.mediaRecorder = new MediaRecorder(this.stream!);
+        this.mediaRecorder = new MediaRecorder(this.stream, {
+            mimeType: 'video/webm;codecs=vp9'
+        });
         this.interviewStartTime = Date.now();
 
         this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
-            if (event.data.size > 0) this.recordedChunks.push(event.data);
+            if (event.data.size > 0) {
+                this.recordedChunks.push(event.data);
+            }
         };
 
         this.mediaRecorder.onstop = () => {
@@ -166,6 +343,48 @@ export class InterviewMeetingComponent {
         this.startNextQuestion();
     }
 
+    addCurrentQuestionToTranscript() {
+        const questionText = this.questions[this.currentQuestionIndex]?.text;
+        if (questionText) {
+            this.transcriptMessages.push({
+                sender: 'AI',
+                text: questionText,
+                align: 'left',
+                type: 'question'
+            });
+        }
+    }
+
+    submitAnswer(): void {
+        const answer = this.currentAnswerText.trim();
+        if (!answer) return;
+
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        if (currentQuestion) {
+            currentQuestion.answer = answer;
+        }
+
+        this.transcriptMessages.push({
+            sender: 'You',
+            text: answer,
+            align: 'right',
+            type: 'answer'
+        });
+
+        this.currentAnswerText = '';
+        clearInterval(this.questionInterval);
+        this.stopTranscription();
+
+        this.transcriptions.push(this.liveSubtitle.trim());
+
+        this.currentQuestionIndex++;
+        if (this.currentQuestionIndex < this.questions.length) {
+            setTimeout(() => this.startNextQuestion(), 2000);
+        } else {
+            this.finishInterview();
+        }
+    }
+
     async startNextQuestion() {
         const current = this.questions[this.currentQuestionIndex];
         if (!current || !this.interviewInProgress) return;
@@ -173,10 +392,8 @@ export class InterviewMeetingComponent {
         this.timeRemaining = current.timeLimit;
         this.liveSubtitle = '';
 
-        // 👉 Push question to Live Transcript
         this.addCurrentQuestionToTranscript();
 
-        // 🧠 Speak and then start transcription
         await this.tts.speak(current.text);
         this.startTranscription();
 
@@ -227,6 +444,9 @@ export class InterviewMeetingComponent {
             document.exitFullscreen();
         }
 
+        console.log('Full Questions Array:', this.questions);
+
+        // Remove event listeners
         window.removeEventListener('beforeunload', this.preventUnload);
         document.removeEventListener('visibilitychange', this.handleTabSwitch);
         window.removeEventListener('resize', this.handleResize);
@@ -237,6 +457,11 @@ export class InterviewMeetingComponent {
         this.interviewCompleted = true;
         console.log('📋 All transcriptions:', this.transcriptions);
         window.scrollTo(0, 0);
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Interview Completed',
+            detail: 'Your interview has been successfully recorded and saved.'
+        });
     }
 
     startTranscription() {
@@ -259,6 +484,7 @@ export class InterviewMeetingComponent {
         };
 
         this.recognition.onerror = (event: any) => {
+            console.error('Speech recognition error:', event.error);
             this.warningMessage = 'Speech recognition error: ' + event.error;
         };
 
@@ -280,15 +506,42 @@ export class InterviewMeetingComponent {
     private handleTabSwitch = () => {
         if (document.visibilityState === 'hidden') {
             this.warningMessage = 'Tab switch detected. You are disqualified.';
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Disqualified',
+                detail: 'Tab switching is not allowed during the interview.'
+            });
         }
     };
 
     private handleResize = () => {
         if (this.preventResizeOnce) return;
         this.warningMessage = 'Window resizing is not allowed during interview.';
+        this.messageService.add({
+            severity: 'warn',
+            summary: 'Warning',
+            detail: 'Window resizing is not allowed during the interview.'
+        });
     };
 
     closeWarning() {
         this.warningMessage = null;
+    }
+
+    ngOnDestroy() {
+        if (this.stream) {
+            this.stream.getTracks().forEach((track) => track.stop());
+        }
+        if (this.questionInterval) {
+            clearInterval(this.questionInterval);
+        }
+        if (this.recognition) {
+            this.recognition.stop();
+        }
+
+        // Clean up event listeners
+        window.removeEventListener('beforeunload', this.preventUnload);
+        document.removeEventListener('visibilitychange', this.handleTabSwitch);
+        window.removeEventListener('resize', this.handleResize);
     }
 }

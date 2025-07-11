@@ -14,4 +14,8 @@ export class NotificationService {
   showError(summary: string, detail: string): void {
     this.messageService.add({ severity: 'error', summary, detail });
   }
+
+  showWarning(summary:string,detail:string):void{
+    this.messageService.add({severity:'warn',summary,detail});
+  }
 }

@@ -21,13 +21,16 @@ import { InterviewService } from '../../../../core/services/interview.service';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
+import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule,AvatarModule],
     templateUrl: './interview-meeting.component.html',
-    providers: [MessageService],
+    providers: [MessageService, NotificationService],
     animations: [
         trigger('cameraTransition', [
             transition(':enter', [
@@ -144,8 +147,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private interviewService: InterviewService,
         private promptService: PromptService,
         private tts: TextToSpeechService,
-        private messageService: MessageService
-    ) {}
+        private messageService: MessageService,
+        private evaluationService: InterviewEvaluationService,
+        private notify: NotificationService
+    ) { }
 
     ngOnInit(): void {
         this.loadInterviewQuestions();
@@ -437,6 +442,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.finalizeRecording();
         }
 
+        this.finalizeInterviewAnSaveEvaluation();
+
         this.stream?.getTracks().forEach((t) => t.stop());
         this.stream = null;
 
@@ -463,6 +470,27 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             detail: 'Your interview has been successfully recorded and saved.'
         });
     }
+
+
+    finalizeInterviewAnSaveEvaluation() {
+        this.interviewFinalizing = false;
+        this.interviewCompleted = true;
+        window.scrollTo(0, 0);
+
+        const prompt = 'Evaluate this interview';
+        this.evaluationService.prepareInterviewEvaluation(prompt, this.questions).subscribe({
+            next: (evaluation) => {
+                console.log('Interview Evaluation:', evaluation);
+                this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');
+            },
+            error: (err) => {
+                console.error('Evaluation error:', err);
+                this.notify.showWarning('Evaluation Failed', 'Interview saved, but evaluation failed. Try again later.');
+            }
+        });
+    }
+
+
 
     startTranscription() {
         const SpeechAPI = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;

@@ -181,11 +181,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             },
             error: (err) => {
                 console.error('Failed to load structured interview questions:', err);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to load interview questions. Please refresh the page.'
-                });
+                this.notify.showError( 'Error','Failed to load interview questions. Please refresh the page.')
             }
         });
     }
@@ -214,11 +210,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             console.error('Camera initialization error:', error);
             this.warningMessage = 'Camera access denied. Please enable your camera and reload the page.';
             this.cameraReady = false;
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Camera Error',
-                detail: 'Unable to access camera. Please check your permissions.'
-            });
+            this.notify.showError('Camera Error','Unable to access camera. Please check your permissions.')
         }
     }
 
@@ -270,11 +262,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     async startInterview() {
         if (!this.cameraReady || !this.stream) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Camera Not Ready',
-                detail: 'Please allow camera access before starting the interview.'
-            });
+            this.notify.showWarning('Camera Not Ready','Please allow camera access before starting the interview.')
             return;
         }
 
@@ -464,11 +452,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.interviewCompleted = true;
         console.log('📋 All transcriptions:', this.transcriptions);
         window.scrollTo(0, 0);
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Interview Completed',
-            detail: 'Your interview has been successfully recorded and saved.'
-        });
+        this.notify.showSuccess('Interview Completed','Your interview has been successfully recorded and saved.')
     }
 
 
@@ -534,22 +518,14 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     private handleTabSwitch = () => {
         if (document.visibilityState === 'hidden') {
             this.warningMessage = 'Tab switch detected. You are disqualified.';
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Disqualified',
-                detail: 'Tab switching is not allowed during the interview.'
-            });
+            this.notify.showError('Disqualified', 'Tab switching is not allowed during the interview.')
         }
     };
 
     private handleResize = () => {
         if (this.preventResizeOnce) return;
         this.warningMessage = 'Window resizing is not allowed during interview.';
-        this.messageService.add({
-            severity: 'warn',
-            summary: 'Warning',
-            detail: 'Window resizing is not allowed during the interview.'
-        });
+        this.notify.showWarning('Warning','Window resizing is not allowed during the interview.')
     };
 
     closeWarning() {

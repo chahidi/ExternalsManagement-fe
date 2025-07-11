@@ -10,6 +10,7 @@ export interface InterviewInstance {
     candidate: Candidate;
     offer: Offer;
     evaluation: Evaluation;
+    link: string;
     comment: string;
     scheduledAt: Date;
     startDate: Date;

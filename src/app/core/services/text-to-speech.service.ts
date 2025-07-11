@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, retry, timeout } from 'rxjs/operators';
-
 import { environment } from '../../../environments/environment';
 import { ElevenLabsRequest } from '../api/tts-ai-config';
 import { DEFAULT_VOICE_SETTINGS, MODEL_ID } from '../constants/tts-ai.const';
@@ -33,7 +32,7 @@ export class TextToSpeechService implements OnDestroy {
     private errorSubject = new BehaviorSubject<string | null>(null);
     public error$ = this.errorSubject.asObservable();
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     speak(text: string): void {
         this.stop();
@@ -55,7 +54,7 @@ export class TextToSpeechService implements OnDestroy {
 
         this.http
             .post(this.apiUrl, payload, {
-                headers: this.headers, 
+                headers: this.headers,
                 responseType: 'blob'
             })
             .pipe(

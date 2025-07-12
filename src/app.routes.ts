@@ -16,6 +16,11 @@ export const appRoutes: Routes = [
         component: LayoutComponent,
         loadChildren: () => import('./app/features/candidate/candidate-routes').then((m) => m.CANDIDATE_FORMS_ROUTES),
     },
+    {
+        path: 'prompts',
+        component: LayoutComponent,
+        loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),
+    },
 
     { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }

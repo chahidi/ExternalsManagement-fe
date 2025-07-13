@@ -26,7 +26,7 @@
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
                         "assets": [
-                                                        "src/assets",
+                            "src/assets",
 
                             {
                                 "glob": "favicon.ico",
@@ -137,7 +137,7 @@
                                 "glob": "**/*",
                                 "input": "node_modules/@angular/material/prebuilt-themes",
                                 "output": "./material"
-                            }
+                            },
                             {
                                 "glob": "**/*",
                                 "input": "public"

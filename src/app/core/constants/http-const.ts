@@ -31,22 +31,32 @@ export const HTTP_CONFIG: HttpConfig = {
   retryDelay: 1000,
 };
 
-export function handleError(entity: string,error: HttpErrorResponse): Observable<never> {
-  let errorMessage = 'An error occurred';
+export function handleError(entity: string, error: HttpErrorResponse): Observable<never> {
+  let errorMessage: string;
+
   if (error.error instanceof ErrorEvent) {
-    errorMessage = `Error: ${error.error.message}`;
+    errorMessage = `Client-side error: ${error.error.message}`;
   } else {
-    errorMessage = `Error Code: ${error.status}\nMessage: ${error.error || error.message}`;
-    if (error.status === 404) {
-      errorMessage = entity+' not found';
-    } else if (error.status === 400) {
-      errorMessage = 'Invalid input';
-    } else if (error.status === 500) {
-      errorMessage = 'Internal server error';
+    switch (error.status) {
+      case 400:
+        errorMessage = `${entity}: Invalid input.`;
+        break;
+      case 404:
+        errorMessage = `${entity} not found.`;
+        break;
+      case 500:
+        errorMessage = `Server error while processing ${entity}.`;
+        break;
+      default:
+        const serverMessage =
+          typeof error.error === 'string'
+            ? error.error
+            : error.error?.message || error.message || 'Unknown error';
+        errorMessage = `${entity} failed (Status ${error.status}): ${serverMessage}`;
+        break;
     }
   }
+  console.error(`[${entity} Error]`, error);
 
   return throwError(() => new Error(errorMessage));
 }
-
-

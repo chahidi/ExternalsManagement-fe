@@ -1,7 +1,7 @@
 export interface GenerateInterviewLinkPayload {
   candidateId: string;
   offerId: string;
-  interviewId: number;
+  interviewId: string;
   scheduledDate: Date;
 }
 

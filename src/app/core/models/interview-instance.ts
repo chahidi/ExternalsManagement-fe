@@ -5,7 +5,7 @@ import { Evaluation } from './evaluation';
 import { Record } from './record';
 
 export interface InterviewInstance {
-    id: number;
+    id: string;
     questions: Question[];
     candidate: Candidate;
     offer: Offer;

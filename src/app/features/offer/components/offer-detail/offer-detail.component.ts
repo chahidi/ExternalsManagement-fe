@@ -84,8 +84,6 @@ export class OfferDetailComponent implements OnInit {
         this.responses[question.id] = this.offerService.getResponsesByQuestionId(question.id);
       });
     });
-    console.log('Loaded interviews:', this.interviews);
-    console.log('Loaded questions:', this.questions);
-    console.log('Loaded responses:', this.responses);
+   
   }
 }

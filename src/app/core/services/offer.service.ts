@@ -32,7 +32,7 @@ export class OfferService {
     return this.dataLoaded.asObservable();
   }
 
-  // Wait for data to be loaded
+  // Wait for data to be load
   waitForDataLoaded(): Observable<boolean> {
     return this.isDataLoaded().pipe(
       filter(loaded => loaded),
@@ -47,7 +47,6 @@ export class OfferService {
         this.generateRelatedFakerData();
       }),
       catchError(err => {
-        console.error('Failed to load offers from backend', err);
         return throwError(() => new Error('Failed to load offers from backend'));
       })
     ).subscribe();
@@ -56,13 +55,11 @@ export class OfferService {
   private generateRelatedFakerData(): void {
     this.candidateService.getCandidates().pipe(
       catchError(err => {
-        console.error('Failed to load candidates from backend', err);
         return throwError(() => new Error('Failed to load candidates from backend'));
       })
     ).subscribe({
       next: candidates => {
         if (!candidates || candidates.length === 0) {
-          console.error('No candidates available for generating fake interviews');
           this.dataLoaded.next(true); 
           return;
         }
@@ -104,14 +101,12 @@ export class OfferService {
             }
           }
         }
-        console.log('Generated interviews:', this.interviews);
-        console.log('Generated questions:', this.questions);
-        console.log('Generated responses:', this.responses);
-        this.dataLoaded.next(true); // Mark data as loaded
+     
+        this.dataLoaded.next(true); 
       },
       error: err => {
         console.error('Error in generateRelatedFakerData:', err);
-        this.dataLoaded.next(true); // Mark as loaded even on error to unblock
+        this.dataLoaded.next(true); //datos esta cargada aunque hay err
       }
     });
   }

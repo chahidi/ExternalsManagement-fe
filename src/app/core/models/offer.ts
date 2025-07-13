@@ -6,6 +6,5 @@ export interface Offer {
     createdAt?: string;
     status: 'open' | 'closed' | 'pending';
     type: string;
-    skills? : string[];
     department: string;
 }

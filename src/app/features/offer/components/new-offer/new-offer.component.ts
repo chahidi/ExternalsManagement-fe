@@ -18,25 +18,26 @@ import { OfferService } from '../../../../core/services/offer.service';
     InputTextModule,
     DropdownModule,
     ButtonModule,
-    PanelModule ,
+    PanelModule,
     NgIf
-
   ],
   templateUrl: './new-offer.component.html',
   styleUrls: ['./new-offer.component.scss']
 })
 export class NewOfferComponent {
   offerForm: FormGroup;
-  types = ['Full-Time' , 'Part-Time' , 'Contract' , 'Internship']
+  types = ['Full-Time', 'Part-Time', 'Contract', 'Internship'];
+
   constructor(
-    private formBuilder: FormBuilder, 
-    private router: Router , 
-    private offerService : OfferService)  {
-    this.offerForm = formBuilder.group({
-      titre: ['' , Validators.required],
-      description: ['' ,Validators.required],
-      type: ['' ,Validators.required] ,
-      department: ['' , Validators.required]
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private offerService: OfferService
+  ) {
+    this.offerForm = this.formBuilder.group({
+      titre: ['', Validators.required],
+      description: ['', Validators.required],
+      type: ['', Validators.required],
+      department: ['', Validators.required]
     });
   }
 
@@ -45,8 +46,17 @@ export class NewOfferComponent {
       this.offerForm.markAllAsTouched();
       return;
     }
-  
-    this.offerService.addOffer(this.offerForm.value);
-    this.router.navigate(['/offers']);
+
+    // Appel correct à addOffer avec subscribe
+    this.offerService.addOffer(this.offerForm.value).subscribe({
+      next: (createdOffer) => {
+        // Tu peux éventuellement afficher un message de succès ici
+        this.router.navigate(['/offers']);
+      },
+      error: (err) => {
+        // Gestion simple de l'erreur, tu peux l'améliorer
+        console.error('Erreur lors de la création de l\'offre', err);
+      }
+    });
   }
 }

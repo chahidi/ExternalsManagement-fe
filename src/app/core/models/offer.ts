@@ -4,7 +4,8 @@ export interface Offer {
     titre  : string ;
     description : string ;
     createdAt?: string;
-    status?: 'open' | 'closed';
-    type?: string;
-    department?: string;
+    status: 'open' | 'closed' | 'pending';
+    type: string;
+    skills? : string[];
+    department: string;
 }

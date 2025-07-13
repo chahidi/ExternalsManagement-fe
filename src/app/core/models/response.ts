@@ -7,6 +7,5 @@ export interface Response {
     createdAt? : Date
     isCorrect? :boolean
     score? : Float64ArrayConstructor
-    
     attachements? : string[]
 }

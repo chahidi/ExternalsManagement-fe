@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { OfferService } from '../../../../core/services/offer.service';
 import { Offer } from '../../../../core/models/offer';
@@ -70,25 +70,33 @@ export class EditOfferComponent {
       department: [this.offer.department, Validators.required]
     });
   }
-
   onSubmit() {
     if (this.offerForm.valid) {
       const updatedOffer: Offer = {
         ...this.offer,
         ...this.offerForm.value
       };
-      const result = this.offerService.updateOffer(updatedOffer);
-      this.messageService.add({
-        severity : "success" ,
-        summary : "Update", 
-        detail  : "Offer has been updated succesfully"
-      })
-      
-      if (result) {
-        this.ref.close(true);
-      } else {
-        this.ref.close(false);
-      }
+  
+      this.offerService.updateOffer(updatedOffer).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: "success",
+            summary: "Update",
+            detail: "Offer has been updated successfully"
+          });
+          this.ref.close(true);
+        },
+        error: (err) => {
+          console.error("Update failed", err);
+          this.messageService.add({
+            severity: "error",
+            summary: "Update Failed",
+            detail: "Could not update the offer"
+          });
+          this.ref.close(false);
+        }
+      });
     }
   }
+  
 }

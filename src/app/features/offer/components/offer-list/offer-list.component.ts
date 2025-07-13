@@ -5,17 +5,16 @@ import { ButtonModule } from 'primeng/button';
 import { Router, RouterOutlet } from '@angular/router';
 import { OfferService } from '../../../../core/services/offer.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService} from 'primeng/api';
+import { ConfirmationService ,MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EditOfferComponent } from '../edit-offer/edit-offer.component';
-import { NgClass } from '@angular/common';
+import { NgClass ,CommonModule } from '@angular/common';
 import { OfferFilterService } from '../../../../core/services/offer-filter.service';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { DropdownModule } from 'primeng/dropdown';
 import { SliderModule } from 'primeng/slider';
-import { MessageService } from 'primeng/api';
-import { StyleClassModule } from 'primeng/styleclass';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 
 @Component({
@@ -32,24 +31,27 @@ import { StyleClassModule } from 'primeng/styleclass';
     DropdownModule,
     SliderModule,
     ToastModule,
-
+    MultiSelectModule,
+    CommonModule,
+    RouterOutlet
   ],
   providers: [
-    ConfirmationService, 
-    DialogService , 
-    MessageService],
+    ConfirmationService,
+    DialogService,
+    MessageService
+  ],
   templateUrl: './offer-list.component.html',
   styleUrls: ['./offer-list.component.scss']
 })
 export class OfferListComponent implements OnInit {
   offers: Offer[] = [];
+  filteredOffers: Offer[] = [];
   ref: DynamicDialogRef | undefined;
   searchQuery: string = '';
 
-  filteredOffers: Offer[] = [];
-  selectedDepartment : string = ""
-  selectedType : string = ""
-  selectedStatut : string = ""
+  selectedDepartments: string[] = [];
+  selectedTypes: string[] = [];
+  selectedStatut: string = '';
   selectedSalaryRange: [number, number] = [3000, 6000];
 
   departmentOptions = [
@@ -63,16 +65,15 @@ export class OfferListComponent implements OnInit {
     { label: 'Devops', value: 'Devops' },
     { label: 'networking systhem', value: 'networking systhem' },
     { label: 'database administrator', value: 'database Adminstrator' }
-  ]
+  ];
 
   typeOptions = [
-    { label: 'All Types', value: '' },
     { label: 'Full-time', value: 'Full-time' },
     { label: 'Part-time', value: 'Part-time' },
     { label: 'Contract', value: 'Contract' },
     { label: 'Internship', value: 'internship' }
-  ]
-  
+  ];
+
   statusOptions = [
     { label: 'All Status', value: '' },
     { label: 'Open', value: 'open' },
@@ -84,15 +85,29 @@ export class OfferListComponent implements OnInit {
     private router: Router,
     private confirmationService: ConfirmationService,
     private dialogService: DialogService,
-    private filterService : OfferFilterService,
+    private filterService: OfferFilterService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    this.offers = this.offerService.getOffers();
+    this.loadOffers();
+  }
 
-    // initilal
-    this.filteredOffers = this.offers; 
+  loadOffers() {
+    this.offerService.getOffers().subscribe({
+      next: (data) => {
+        this.offers = data;
+        this.filteredOffers = this.offers;
+      },
+      error: (err) => {
+        console.error('Failed to load offers', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load offers from server'
+        });
+      }
+    });
   }
 
   goToDetails(offerId: string): void {
@@ -105,13 +120,24 @@ export class OfferListComponent implements OnInit {
       header: 'Confirm Delete',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.offerService.deleteOffer(offerId);
-        this.offers = this.offerService.getOffers();
-        this.messageService.add({
-          severity : "success",
-          summary : "Deleted" , 
-          detail : "Offer has been deleted succesufully !"
-        })
+        this.offerService.deleteOffer(offerId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: "success",
+              summary: "Deleted",
+              detail: "Offer has been deleted successfully!"
+            });
+            this.loadOffers();
+          },
+          error: (err) => {
+            console.error('Delete failed', err);
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "Failed to delete offer."
+            });
+          }
+        });
       }
     });
   }
@@ -126,7 +152,7 @@ export class OfferListComponent implements OnInit {
 
     this.ref.onClose.subscribe(updated => {
       if (updated) {
-        this.offers = this.offerService.getOffers();
+        this.loadOffers();
       }
     });
   }
@@ -135,23 +161,40 @@ export class OfferListComponent implements OnInit {
   onSearch() {
     this.filteredOffers = this.filterService.searchOffers(this.offers, this.searchQuery);
   }
+
   clear(dt: any) {
     this.searchQuery = '';
     this.filteredOffers = this.offers;
-    dt.reset(); 
+    dt.reset();
     this.messageService.add({
-      severity : 'info' ,
-      summary : "Clear" , 
-      detail :  "The search is cleared !"
-    })
+      severity: 'info',
+      summary: "Clear",
+      detail: "The search is cleared!"
+    });
   }
 
   applyAllFilters() {
+  
     this.filteredOffers = this.offers.filter(offer => {
+      const offerDept = offer.department?.toLowerCase().trim() || '';
+      const offerType = offer.type?.toLowerCase().trim() || '';
+      const offerStatus = offer.status?.toLowerCase().trim() || '';
+  
       return (
-        (!this.selectedDepartment || offer.department === this.selectedDepartment) &&
-        (!this.selectedType || offer.type === this.selectedType) &&
-        (!this.selectedStatut || offer.status === this.selectedStatut)
+        (this.selectedDepartments.length === 0 || 
+         this.selectedDepartments.some(d => {
+           console.log('Checking department:', d, 'against', offerDept);
+           return d.toLowerCase().trim() === offerDept;
+         })) &&
+  
+        (this.selectedTypes.length === 0 || 
+         this.selectedTypes.some(t => {
+           console.log('Checking type:', t, 'against', offerType);
+           return t.toLowerCase().trim() === offerType;
+         })) &&
+  
+        (!this.selectedStatut || 
+         this.selectedStatut.toLowerCase().trim() === offerStatus)
       );
     });
   
@@ -162,16 +205,18 @@ export class OfferListComponent implements OnInit {
     });
   }
   
+  
+  
+
   resetFilters() {
-    this.selectedDepartment = '';
-    this.selectedType = '';
+    this.selectedDepartments = [];
+    this.selectedTypes = [];
     this.selectedStatut = '';
-    this.selectedSalaryRange = [3000, 6000];
     this.filteredOffers = this.offers;
     this.messageService.add({
-      severity : "error" , 
-      summary : "Reset" , 
-      detail : "Reseting filters !"
-    })
+      severity: "error",
+      summary: "Reset",
+      detail: "Reseting filters!"
+    });
   }
 }

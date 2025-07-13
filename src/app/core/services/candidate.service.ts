@@ -10,14 +10,14 @@ import { environment } from '../../../environments/environment';
 })
 export class CandidateService {
 
-  private baseUrl = `${environment.apiUrl}/v1/candidates`;
+  private baseUrl = `${environment.apiUrl}/candidates`;
   constructor(private http: HttpClient) {}
 
 
 
 
   getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.baseUrl}/all`).pipe(
+    return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
 
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)

@@ -79,7 +79,7 @@
                 </ng-template>
 
                 <!-- Messages -->
-                <div class="h-full overflow-y-auto space-y-2 text-base pb-4">
+                <div #transcriptContainer class="h-[calc(90vh-120px)] overflow-y-auto space-y-2 text-base pb-4">
                     <div *ngFor="let msg of transcriptMessages"
                         [ngClass]="msg.align === 'right' ? 'flex justify-end' : 'flex justify-start'">
                         <div [ngClass]="msg.type === 'question' ? 'bg-gray-200 text-gray-800 mr-10' : msg.align === 'right' ? 'bg-[#0084ff] text-white ml-10' : 'bg-gray-200 text-gray-800 mr-10'"

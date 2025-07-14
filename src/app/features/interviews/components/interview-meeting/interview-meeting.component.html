@@ -79,15 +79,19 @@
                 </ng-template>
 
                 <!-- Messages -->
-                <div #transcriptContainer class="h-[calc(90vh-120px)] overflow-y-auto space-y-2 text-base pb-4">
-                    <div *ngFor="let msg of transcriptMessages"
-                        [ngClass]="msg.align === 'right' ? 'flex justify-end' : 'flex justify-start'">
-                        <div [ngClass]="msg.type === 'question' ? 'bg-gray-200 text-gray-800 mr-10' : msg.align === 'right' ? 'bg-[#0084ff] text-white ml-10' : 'bg-gray-200 text-gray-800 mr-10'"
-                            class="px-5 py-3 rounded-xl max-w-[80%] text-[0.95rem] shadow-sm">
-                            <strong>{{ msg.sender }}:</strong> {{ msg.text }}
+                <p-scrollPanel #transcriptScroll [style]="{height: 'calc(90vh - 120px)'}" styleClass="transcript-scroll-panel"
+                   >
+                    <div class="space-y-2 text-base pb-4">
+                        <div *ngFor="let msg of transcriptMessages"
+                            [ngClass]="msg.align === 'right' ? 'flex justify-end' : 'flex justify-start'">
+                            <div [ngClass]="msg.type === 'question' ? 'bg-gray-200 text-gray-800 mr-10' : msg.align === 'right' ? 'bg-[#0084ff] text-white ml-10' : 'bg-gray-200 text-gray-800 mr-10'"
+                                class="px-5 py-3 rounded-xl max-w-[80%] text-[0.95rem] shadow-sm">
+                                <strong>{{ msg.sender }}:</strong> {{ msg.text }}
+                            </div>
                         </div>
                     </div>
-                </div>
+                </p-scrollPanel>
+
             </p-panel>
         </div>
 

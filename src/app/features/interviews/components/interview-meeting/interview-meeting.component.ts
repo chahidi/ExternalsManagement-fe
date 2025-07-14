@@ -123,8 +123,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
-    @ViewChild('transcriptContainer') transcriptContainer!: ElementRef<HTMLDivElement>;
-
+@ViewChild('transcriptScroll') scrollPanel!: any;
     mediaRecorder!: MediaRecorder;
     recordedChunks: Blob[] = [];
     recordedBlobUrl: string | null = null;
@@ -541,41 +540,17 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     private scrollTranscriptToBottom(): void {
-        setTimeout(() => {
-            if (this.transcriptContainer?.nativeElement) {
-                const container = this.transcriptContainer.nativeElement;
-
-                container.scrollTop = container.scrollHeight;
-
-                setTimeout(() => {
-                    if (container.scrollTop !== container.scrollHeight - container.clientHeight) {
-                        container.scrollTop = container.scrollHeight;
-                    }
-                }, 50);
-            }
-        }, 0);
-
-        setTimeout(() => {
-            if (this.transcriptContainer?.nativeElement) {
-                const container = this.transcriptContainer.nativeElement;
-                container.scrollTop = container.scrollHeight;
-            }
-        }, 100);
-    }
-
-    private scrollToLastMessage(): void {
-        setTimeout(() => {
-            if (this.transcriptContainer?.nativeElement) {
-                const container = this.transcriptContainer.nativeElement;
-                const lastMessage = container.querySelector('div:last-child');
-                if (lastMessage) {
-                    lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                }
-            }
-        }, 100);
-    }
+    setTimeout(() => {
+        if (this.scrollPanel && this.scrollPanel.contentViewChild?.nativeElement) {
+            const el = this.scrollPanel.contentViewChild.nativeElement;
+            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+            this.scrollPanel.moveBar(); 
+        }
+    }, 100);
+}
 
 
+    
     ngOnDestroy() {
         if (this.stream) {
             this.stream.getTracks().forEach((track) => track.stop());

@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { Candidate } from '../models/candidate';
 import { environment } from '../../../environments/environment';
 import { map, catchError } from 'rxjs/operators';
+import { CandidateService } from './candidate.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,10 @@ import { map, catchError } from 'rxjs/operators';
 export class CandidateFilterService {
   private readonly baseUrl = `${environment.apiUrl}/candidates`;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private candidateService: CandidateService
+  ) { }
 
   filterCandidates(filters: any): Observable<Candidate[]> {
     console.log('Filtering with params:', filters);
@@ -20,7 +24,9 @@ export class CandidateFilterService {
     return this.http.get<Candidate[]>(this.baseUrl).pipe(
       map(candidates => {
         console.log('All candidates loaded:', candidates.length);
-        let filteredCandidates = [...candidates];
+        // Apply the same transformation as CandidateService
+        const transformedCandidates = candidates.map(candidate => this.candidateService.transformCandidate(candidate));
+        let filteredCandidates = [...transformedCandidates];
 
         // Filter by skills
         if (filters.skills && filters.skills.length > 0) {

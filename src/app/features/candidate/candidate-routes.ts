@@ -26,5 +26,11 @@ export const CANDIDATE_FORMS_ROUTES: Routes = [
     loadComponent: () => import('./components/stepper-form/stepper-form.component')
       .then(m => m.StepperFormComponent),
     title: 'Stepper Form'
-  }
+  },
+  {
+    path: 'interview-meeting',
+    loadComponent: () =>
+      import('../interviews/components/interview-meeting/interview-meeting.component').then(m => m.InterviewMeetingComponent),
+    title: 'Interview Meeting'
+  },
 ];

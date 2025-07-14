@@ -1,13 +1,24 @@
-import { POPULAR_VOICE_IDS } from '../app/core/constants/tts-ai.const';
+import { TTSProviderType } from '../app/core/api/interfaces/tts.interface';
+
 
 export const environment = {
-  production: false,
-    apiUrl: "http://localhost:8080/api",
-  apiInterviews: "http://localhost:3001",
-elevenLabs: {
-    apiKey: '', 
+  apiUrl: "http://localhost:8080/api",
+    apiInterviews: "http://localhost:3001",
+
+production: false,
+  tts: {
+    provider: TTSProviderType.ELEVEN_LABS,
+    apiKey: 'sk_99720684143252b212e8bbc44e03c2f980bb00bf54b31295',
     baseUrl: 'https://api.elevenlabs.io/v1',
-     voiceId: POPULAR_VOICE_IDS.PAUL,
+    defaultVoiceId: '21m00Tcm4TlvDq8ikWAM',
+    defaultSettings: {
+      stability: 0.5,
+      similarity_boost: 0.5,
+      style: 0.0,
+      use_speaker_boost: true
+    },
+    timeout: 30000,
+    retryAttempts: 2
   }
 
 };

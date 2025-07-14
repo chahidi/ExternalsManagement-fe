@@ -104,8 +104,7 @@ export class StepperFormComponent implements OnInit {
 
     this.educationForm = this.fb.group({
         institution: ['', [
-          Validators.required,
-          Validators.pattern('^[A-Za-z0-9\\s\\-\\.\\&\\,\'\"]+$')
+          Validators.required
         ]],
         startDate: ['', Validators.required],
         endDate: ['', Validators.required],
@@ -158,7 +157,7 @@ export class StepperFormComponent implements OnInit {
         } else if (type === 'Phone') {
           contactControl.setValidators([
             Validators.required,
-            Validators.pattern(/^\+?\d{10,15}$/)
+            Validators.pattern(/^\s*(?:\+\s*(\d{1,3}|\(\d{1,3}\))\s*)?[\d\s\-.()]*\d[\d\s\-.()]*\s*(?:x\d+)?\s*$/)
           ]);
         } else if (type === 'LinkedIn') {
           contactControl.setValidators([
@@ -188,7 +187,7 @@ export class StepperFormComponent implements OnInit {
     this.generalDataForm.patchValue({
       fullName: this.extractedData.fullName || '',
       birthDate: this.extractedData.birthDate || '',
-      yearsOfExperience: this.extractedData.yearsOfExperience || null,
+      yearsOfExperience: this.isNumberAndNotNull(this.extractedData.yearsOfExperience) ? parseInt(this.extractedData.yearsOfExperience).toString(): '0',
       gender: this.extractedData.gender === 'M' ? 'Male' : this.extractedData.gender === 'F' ? 'Female' : '',
       mainTech: this.extractedData.mainTech || '',
       summary: this.extractedData.summary || ''
@@ -408,7 +407,7 @@ export class StepperFormComponent implements OnInit {
       const candidateData = {
         fullName: this.generalDataForm.value.fullName,
         birthDate: this.generalDataForm.value.birthDate,
-        yearsOfExperience: this.generalDataForm.value.yearsOfExperience,
+        yearsOfExperience: Math.floor(this.generalDataForm.value.yearsOfExperience),
         gender: this.generalDataForm.value.gender,
         mainTech: this.generalDataForm.value.mainTech,
         summary: this.generalDataForm.value.summary,
@@ -425,4 +424,8 @@ export class StepperFormComponent implements OnInit {
       this.markAllFormsTouched();
     }
   }
+
+  isNumberAndNotNull(value: string): boolean {
+        return value !== null && typeof value === 'number' && Number.isFinite(value);
+    }
 }

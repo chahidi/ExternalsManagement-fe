@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class CandidateService {
 
-  private baseUrl = `${environment.apiUrl}/v1/candidates`;
+  private baseUrl = `${environment.apiUrl}/candidates`;
   constructor(private http: HttpClient) {}
 
 
@@ -123,7 +123,7 @@ export class CandidateService {
         errorMessage = 'Internal server error';
       }
     }
-   
+
     return throwError(() => new Error(errorMessage));
   }
 }

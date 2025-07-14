@@ -32,9 +32,9 @@ export class TextToSpeechService implements OnDestroy {
     private errorSubject = new BehaviorSubject<string | null>(null);
     public error$ = this.errorSubject.asObservable();
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    speak(text: string): void {
+    speak = (text: string): void => {
         this.stop();
 
         if (!text.trim()) {
@@ -60,7 +60,7 @@ export class TextToSpeechService implements OnDestroy {
             .pipe(
                 timeout(30000),
                 retry(2),
-                catchError(this.handleError.bind(this)),
+                catchError(this.handleError),
                 finalize(() => this.loadingSubject.next(false))
             )
             .subscribe({
@@ -72,15 +72,14 @@ export class TextToSpeechService implements OnDestroy {
                     this.errorSubject.next(err.message || ERROR_MESSAGES.GENERATE_FAIL);
                 }
             });
-    }
+    };
 
-    private playAudio(blob: Blob): void {
+    private playAudio = (blob: Blob): void => {
         this.cleanupBlobUrl();
         this.currentBlobUrl = URL.createObjectURL(blob);
         this.audio = new Audio(this.currentBlobUrl);
 
-        this.audio.addEventListener('ended', () => this.cleanupBlobUrl());
-
+        this.audio.addEventListener('ended', this.cleanupBlobUrl);
         this.audio.addEventListener('error', () => {
             this.errorSubject.next(ERROR_MESSAGES.AUDIO_FAILED);
             this.cleanupBlobUrl();
@@ -90,9 +89,9 @@ export class TextToSpeechService implements OnDestroy {
             this.errorSubject.next(ERROR_MESSAGES.AUDIO_FAILED_WITH_REASON + error.message);
             this.cleanupBlobUrl();
         });
-    }
+    };
 
-    stop(): void {
+    stop = (): void => {
         if (this.abortController) {
             this.abortController.abort();
             this.abortController = null;
@@ -106,16 +105,16 @@ export class TextToSpeechService implements OnDestroy {
 
         this.cleanupBlobUrl();
         this.loadingSubject.next(false);
-    }
+    };
 
-    private cleanupBlobUrl(): void {
+    private cleanupBlobUrl = (): void => {
         if (this.currentBlobUrl) {
             URL.revokeObjectURL(this.currentBlobUrl);
             this.currentBlobUrl = null;
         }
-    }
+    };
 
-    private handleError(error: HttpErrorResponse): Observable<never> {
+    private handleError = (error: HttpErrorResponse): Observable<never> => {
         let errorMessage = ERROR_MESSAGES.UNKNOWN;
 
         if (error.error instanceof ErrorEvent) {
@@ -141,11 +140,11 @@ export class TextToSpeechService implements OnDestroy {
 
         console.error('TTS Service Error:', error);
         return throwError(() => new Error(errorMessage));
-    }
+    };
 
-    private clearError(): void {
+    private clearError = (): void => {
         this.errorSubject.next(null);
-    }
+    };
 
     get isPlaying(): boolean {
         return this.audio ? !this.audio.paused : false;

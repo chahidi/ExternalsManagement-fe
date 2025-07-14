@@ -16,8 +16,8 @@ export class OfferService {
 
     constructor(private http: HttpClient) { }
 
-    getAllTitles(): Observable<string[]> {
+    getAllTitles = (): Observable<string[]> => {
         return this.http.get<string[]>(`${this.apiUrl}/titles`);
-    }
+    };
 
 }

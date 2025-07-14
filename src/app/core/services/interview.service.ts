@@ -15,15 +15,21 @@ export class InterviewService {
 
     constructor(private http: HttpClient) { }
 
-    getInterviews(): Observable<InterviewInstance[]> {
-        return this.http.get<InterviewInstance[]>(this.apiUrl).pipe(retry(2), catchError(this.handleError));
-    }
+    getInterviews = (): Observable<InterviewInstance[]> => {
+        return this.http.get<InterviewInstance[]>(this.apiUrl).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    };
 
-    deleteInterview(id: string): Observable<{ message: string }> {
-        return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`).pipe(retry(2), catchError(this.handleError));
-    }
+    deleteInterview = (id: string): Observable<{ message: string }> => {
+        return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    };
 
-    generateInterviewLink(interview: InterviewInstance): Observable<string> {
+    generateInterviewLink = (interview: InterviewInstance): Observable<string> => {
         const payload: GenerateInterviewLinkPayload = {
             candidateId: interview.candidate.id,
             offerId: interview.offer.id,
@@ -52,9 +58,9 @@ export class InterviewService {
             finalize(() => this.loadingSubject.next(false)),
             catchError(this.handleError)
         );
-    }
+    };
 
-    sendEmail(interview: InterviewInstance): Observable<{ message: string }> {
+    sendEmail = (interview: InterviewInstance): Observable<{ message: string }> => {
         const payload: SendInterviewEmailPayload = {
             candidateFullName: interview.candidate.fullName,
             offerTitle: interview.offer.title,
@@ -71,14 +77,27 @@ export class InterviewService {
             return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE));
         }
 
-        return this.http.post<{ message: string }>(`${this.apiUrl}/send-email`, payload).pipe(retry(2), catchError(this.handleError));
-    }
+        return this.http.post<{ message: string }>(`${this.apiUrl}/send-email`, payload).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    };
 
-    AddComment(id: string, comment: string): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}/${id}`, { comment }).pipe(retry(2), catchError(this.handleError));
-    }
+    AddComment = (id: string, comment: string): Observable<any> => {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, { comment }).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    };
 
-    private handleError(error: HttpErrorResponse): Observable<never> {
+    saveInterviewLink = (interviewId: string, link: string): Observable<any> => {
+        return this.http.put<any>(`${this.apiUrl}/${interviewId}/savelink`, { link }).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    };
+
+    private handleError = (error: HttpErrorResponse): Observable<never> => {
         let errorMessage = ERROR_MESSAGES.INTERVIEW.UNKNOWN;
 
         if (error.error instanceof ErrorEvent) {
@@ -89,10 +108,5 @@ export class InterviewService {
 
         console.error('[InterviewService Error]', errorMessage);
         return throwError(() => new Error(errorMessage));
-    }
-
-
-    saveInterviewLink(interviewId: string, link: string): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}/${interviewId}/savelink`, { link }).pipe(retry(2), catchError(this.handleError));
-    }
+    };
 }

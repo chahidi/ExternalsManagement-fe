@@ -22,14 +22,6 @@ export const appRoutes: Routes = [
         component: LayoutComponent,
         loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
     },
-
-    {
-        path: 'interview/:token',
-        loadComponent: () =>
-            import('./app/features/interviews/components/interview-meeting/interview-meeting.component')
-                .then(m => m.InterviewMeetingComponent)
-    },
-
     { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }
 ];

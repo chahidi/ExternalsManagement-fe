@@ -1,3 +1,4 @@
+// src/app/core/api/interfaces/tts.interface.ts
 import { Observable } from "rxjs";
 
 export interface TTSRequest {

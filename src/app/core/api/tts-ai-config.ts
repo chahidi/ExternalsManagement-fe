@@ -1,3 +1,6 @@
+import { InjectionToken } from '@angular/core';
+
+export const ELEVEN_LABS_CONFIG = new InjectionToken<any>('ELEVEN_LABS_CONFIG');
 export interface ElevenLabsRequest {
   text: string;
   model_id?: string;

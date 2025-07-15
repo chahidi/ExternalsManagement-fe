@@ -9,7 +9,7 @@ import { ERROR_MESSAGES } from '../constants/error-messages.const';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
-    private readonly apiUrl = `${environment.apiInterviews}/interviews`;
+    private readonly apiUrl = `${environment.apiInterviews}/v1/interviews`;
     private loadingSubject = new BehaviorSubject<boolean>(false);
     public loading$ = this.loadingSubject.asObservable();
 
@@ -37,6 +37,8 @@ export class InterviewService {
             scheduledDate: interview.scheduledAt
         };
 
+        const interviewId = interview.id;
+
         if (!payload.candidateId || typeof payload.candidateId !== 'string') {
             return throwError(() => new Error(ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID));
         }
@@ -52,7 +54,7 @@ export class InterviewService {
 
         this.loadingSubject.next(true);
 
-        return this.http.post<string>(`${this.apiUrl}/generate-link`, payload).pipe(
+        return this.http.post<string>(`${this.apiUrl}/${interviewId}/generateLink`, payload).pipe(
             timeout(10000),
             retry(2),
             finalize(() => this.loadingSubject.next(false)),
@@ -77,7 +79,7 @@ export class InterviewService {
             return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE));
         }
 
-        return this.http.post<{ message: string }>(`${this.apiUrl}/send-email`, payload).pipe(
+        return this.http.post<{ message: string }>(`${this.apiUrl}/sendEmail`, payload).pipe(
             retry(2),
             catchError(this.handleError)
         );
@@ -91,7 +93,7 @@ export class InterviewService {
     };
 
     saveInterviewLink = (interviewId: string, link: string): Observable<any> => {
-        return this.http.put<any>(`${this.apiUrl}/${interviewId}/savelink`, { link }).pipe(
+        return this.http.put<any>(`${this.apiUrl}/${interviewId}/saveLink`, { link }).pipe(
             retry(2),
             catchError(this.handleError)
         );

@@ -12,13 +12,13 @@ import { handleError } from '../constants/http-const';
 })
 export class InterviewEvaluationService {
 
-  private baseUrl = `${environment.apiUrl}/v1/interview`;
-  private apiUrl = `${environment.apiInterviews}/v1/interview`;
+  private baseUrl = `${environment.apiUrl}/v1/interviews`;
+  private apiUrl = `${environment.apiInterviews}/v1/interviews`;
 
   constructor(private http: HttpClient) { }
 
   getInterviewEvaluation = (interviewId: string): Observable<Evaluation> => {
-    return this.http.get<Evaluation>(`${this.apiUrl}/evaluation/${interviewId}`)
+    return this.http.get<Evaluation>(`${this.apiUrl}/${interviewId}/evaluation/`)
       .pipe(
         retry(2),
         catchError((error) => handleError("Fetching Interview Evaluation", error))

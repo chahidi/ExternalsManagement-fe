@@ -1,4 +1,3 @@
-
 // src/app/core/api/providers/eleven-labs.provider.ts
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -11,13 +10,13 @@ import { ELEVEN_LABS_CONFIG } from '../interfaces/tts-ai-config';
   providedIn: 'root'
 })
 export class ElevenLabsProvider implements TTSProvider {
-  private readonly headers: HttpHeaders;
-
   constructor(
     private http: HttpClient,
     @Inject(ELEVEN_LABS_CONFIG) private config: any
-  ) {
-    this.headers = new HttpHeaders({
+  ) {}
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'audio/mpeg',
       'xi-api-key': this.config.apiKey
@@ -29,7 +28,7 @@ export class ElevenLabsProvider implements TTSProvider {
     const url = `${this.config.baseUrl}/text-to-speech/${request.voiceId || this.config.defaultVoiceId}`;
 
     return this.http.post(url, payload, {
-      headers: this.headers,
+      headers: this.getHeaders(),
       responseType: 'blob'
     }).pipe(
       map((blob: Blob) => ({
@@ -43,7 +42,7 @@ export class ElevenLabsProvider implements TTSProvider {
 
   getSupportedVoices(): Observable<TTSVoice[]> {
     return this.http.get<any[]>(`${this.config.baseUrl}/voices`, {
-      headers: this.headers
+      headers: this.getHeaders()
     }).pipe(
       map((voices) =>
         voices.map((voice) => ({

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,11 +24,12 @@ import { TextToSpeechService } from '../../../../core/services/text-to-speech.se
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AvatarModule } from 'primeng/avatar';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule,AvatarModule],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule,ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
     animations: [
@@ -122,7 +123,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
-
+@ViewChild('transcriptScroll') scrollPanel!: any;
     mediaRecorder!: MediaRecorder;
     recordedChunks: Blob[] = [];
     recordedBlobUrl: string | null = null;
@@ -149,7 +150,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private tts: TextToSpeechService,
         private messageService: MessageService,
         private evaluationService: InterviewEvaluationService,
-        private notify: NotificationService
+        private notify: NotificationService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -181,7 +183,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             },
             error: (err) => {
                 console.error('Failed to load structured interview questions:', err);
-                this.notify.showError( 'Error','Failed to load interview questions. Please refresh the page.')
+                this.notify.showError('Error', 'Failed to load interview questions. Please refresh the page.')
             }
         });
     }
@@ -210,7 +212,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             console.error('Camera initialization error:', error);
             this.warningMessage = 'Camera access denied. Please enable your camera and reload the page.';
             this.cameraReady = false;
-            this.notify.showError('Camera Error','Unable to access camera. Please check your permissions.')
+            this.notify.showError('Camera Error', 'Unable to access camera. Please check your permissions.')
         }
     }
 
@@ -262,7 +264,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     async startInterview() {
         if (!this.cameraReady || !this.stream) {
-            this.notify.showWarning('Camera Not Ready','Please allow camera access before starting the interview.')
+            this.notify.showWarning('Camera Not Ready', 'Please allow camera access before starting the interview.')
             return;
         }
 
@@ -345,6 +347,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 align: 'left',
                 type: 'question'
             });
+            this.cdr.detectChanges();
+            this.scrollTranscriptToBottom();
         }
     }
 
@@ -369,6 +373,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.stopTranscription();
 
         this.transcriptions.push(this.liveSubtitle.trim());
+
+        this.cdr.detectChanges();
+        this.scrollTranscriptToBottom();
 
         this.currentQuestionIndex++;
         if (this.currentQuestionIndex < this.questions.length) {
@@ -452,7 +459,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.interviewCompleted = true;
         console.log('📋 All transcriptions:', this.transcriptions);
         window.scrollTo(0, 0);
-        this.notify.showSuccess('Interview Completed','Your interview has been successfully recorded and saved.')
+        this.notify.showSuccess('Interview Completed', 'Your interview has been successfully recorded and saved.')
     }
 
 
@@ -525,13 +532,25 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     private handleResize = () => {
         if (this.preventResizeOnce) return;
         this.warningMessage = 'Window resizing is not allowed during interview.';
-        this.notify.showWarning('Warning','Window resizing is not allowed during the interview.')
+        this.notify.showWarning('Warning', 'Window resizing is not allowed during the interview.')
     };
 
     closeWarning() {
         this.warningMessage = null;
     }
 
+    private scrollTranscriptToBottom(): void {
+    setTimeout(() => {
+        if (this.scrollPanel && this.scrollPanel.contentViewChild?.nativeElement) {
+            const el = this.scrollPanel.contentViewChild.nativeElement;
+            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+            this.scrollPanel.moveBar(); 
+        }
+    }, 100);
+}
+
+
+    
     ngOnDestroy() {
         if (this.stream) {
             this.stream.getTracks().forEach((track) => track.stop());

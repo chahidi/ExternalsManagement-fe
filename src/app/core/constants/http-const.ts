@@ -1,5 +1,5 @@
 // HTTP Status codes for ElevenLabs API
-import { HttpConfig } from '../api/http-config';
+import { HttpConfig } from '../api/http.constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
 

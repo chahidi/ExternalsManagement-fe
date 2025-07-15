@@ -1,11 +1,46 @@
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(-8%);
   }
+
   50% {
     transform: translateY(0);
   }
 }
+
 .animate-bounce {
   animation: bounce 1.2s infinite;
+}
+
+::ng-deep .p-panel .p-panel-content {
+  padding: 0 !important;
+  height: calc(100% - 60px) !important;
+  overflow: hidden !important;
+}
+
+
+#transcriptContainer {
+  height: 100% !important;
+  overflow-y: auto !important;
+  scroll-behavior: smooth !important;
+}
+
+#transcriptContainer::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+:ng-deep #transcriptContainer::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+#transcriptContainer::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+#transcriptContainer::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }

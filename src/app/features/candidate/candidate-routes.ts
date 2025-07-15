@@ -26,5 +26,5 @@ export const CANDIDATE_FORMS_ROUTES: Routes = [
     loadComponent: () => import('./components/stepper-form/stepper-form.component')
       .then(m => m.StepperFormComponent),
     title: 'Stepper Form'
-  }
+  },
 ];

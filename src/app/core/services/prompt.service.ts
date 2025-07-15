@@ -10,9 +10,9 @@ import { environment } from '../../../environments/environment';
 export class PromptService {
   private apiUrl = `${environment.apiInterviews}/prompt`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getQuestions(prompt: string): Observable<Question[]> {
+  getQuestions = (prompt: string): Observable<Question[]> => {
     return this.http.post<Question[]>(`${this.apiUrl}/generate-questions`, { prompt });
-  }
+  };
 }

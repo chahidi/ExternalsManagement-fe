@@ -86,7 +86,7 @@ export class InterviewService {
     };
 
     AddComment = (id: string, comment: string): Observable<any> => {
-        return this.http.put<any>(`${this.apiUrl}/${id}`, { comment }).pipe(
+        return this.http.put<any>(`${this.apiUrl}/${id}/addComment`, { comment }).pipe(
             retry(2),
             catchError(this.handleError)
         );

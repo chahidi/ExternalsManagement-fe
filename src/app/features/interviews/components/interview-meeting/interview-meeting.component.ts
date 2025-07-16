@@ -29,7 +29,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule,ScrollPanelModule],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
     animations: [
@@ -123,7 +123,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
-@ViewChild('transcriptScroll') scrollPanel!: any;
+    @ViewChild('transcriptScroll') scrollPanel!: any;
     mediaRecorder!: MediaRecorder;
     recordedChunks: Blob[] = [];
     recordedBlobUrl: string | null = null;
@@ -540,17 +540,17 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     private scrollTranscriptToBottom(): void {
-    setTimeout(() => {
-        if (this.scrollPanel && this.scrollPanel.contentViewChild?.nativeElement) {
-            const el = this.scrollPanel.contentViewChild.nativeElement;
-            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-            this.scrollPanel.moveBar(); 
-        }
-    }, 100);
-}
+        setTimeout(() => {
+            if (this.scrollPanel && this.scrollPanel.contentViewChild?.nativeElement) {
+                const el = this.scrollPanel.contentViewChild.nativeElement;
+                el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+                this.scrollPanel.moveBar();
+            }
+        }, 100);
+    }
 
 
-    
+
     ngOnDestroy() {
         if (this.stream) {
             this.stream.getTracks().forEach((track) => track.stop());

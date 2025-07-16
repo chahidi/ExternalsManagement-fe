@@ -412,7 +412,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');
                 setTimeout(() => {
                     this.router.navigate(['/interview-cloture'], { replaceUrl: true });
-                }, 2000);
+                }, 1000);
             },
             error: (err) => {
                 console.error('Evaluation error:', err);

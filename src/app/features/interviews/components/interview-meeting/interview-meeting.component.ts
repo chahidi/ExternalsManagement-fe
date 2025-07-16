@@ -125,7 +125,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('transcriptScroll') scrollPanel!: any;
-
     mediaRecorder!: MediaRecorder;
     recordedChunks: Blob[] = [];
     recordedBlobUrl: string | null = null;
@@ -642,7 +641,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }
         }, 100);
     }
-
     ngOnDestroy() {
         if (this.stream) {
             this.stream.getTracks().forEach((track) => track.stop());

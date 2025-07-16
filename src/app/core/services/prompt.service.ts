@@ -8,11 +8,11 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class PromptService {
-  private apiUrl = `${environment.apiInterviews}/prompt`;
+  private apiUrl = `${environment.apiInterviews}/v1/prompt`;
 
   constructor(private http: HttpClient) { }
 
   getQuestions = (prompt: string): Observable<Question[]> => {
-    return this.http.post<Question[]>(`${this.apiUrl}/generate-questions`, { prompt });
+    return this.http.post<Question[]>(`${this.apiUrl}/generateQuestions`, { prompt });
   };
 }

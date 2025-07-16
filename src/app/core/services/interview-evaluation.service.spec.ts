@@ -11,8 +11,9 @@ describe('InterviewEvaluationService', () => {
     let httpMock: HttpTestingController;
 
     const interviewAlice: InterviewInstance = {
-        id: 1,
+        id: '1abc',
         comment: 'Excellent React skills.',
+        link:'',
         scheduledAt: new Date('2025-06-01T09:00:00Z'),
         startDate: new Date('2025-06-01T09:10:00Z'),
         endDate: new Date('2025-06-01T11:00:00Z'),
@@ -102,7 +103,7 @@ describe('InterviewEvaluationService', () => {
             interview: interviewAlice
         };
 
-        service.getInterviewEvaluation('Evaluate this candidate', mockQuestions).subscribe((response) => {
+        service.getInterviewEvaluation('Evaluate this candidate').subscribe((response) => {
             expect(response).toEqual(mockResponse);
             expect(response.score).toBe(84);
         });

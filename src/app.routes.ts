@@ -24,10 +24,15 @@ export const appRoutes: Routes = [
     },
 
     {
-        path: 'interview/:token',
+        path: 'interviews/:token',
         loadComponent: () =>
             import('./app/features/interviews/components/interview-meeting/interview-meeting.component')
                 .then(m => m.InterviewMeetingComponent)
+    }, {
+        path: 'evaluation/:id',
+        loadComponent: () =>
+            import('./app/features/interviews/components/interview-evaluation/interview-evaluation.component').then(m => m.InterviewEvaluationComponent),
+        title: 'Interview Evaluation'
     },
 
     { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },

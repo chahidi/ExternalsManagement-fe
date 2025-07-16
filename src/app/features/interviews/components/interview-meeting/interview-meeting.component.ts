@@ -119,7 +119,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     stream: MediaStream | null = null;
     private preventResizeOnce = false;
     cameraReady = false;
-    cameraEnabled = false; // New property to track if camera is enabled
+    cameraEnabled = false;
     showRulesAndPreview = true;
 
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
@@ -144,13 +144,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     transcriptions: string[] = [];
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
-
     // Speech recognition specific properties
     isListening = false;
     finalTranscript = '';
     interimTranscript = '';
-    silenceTimer: any;
-    autoSubmitTimer: any;
     lastSpeechTime = 0;
     aiSpeaking = false; // Track if AI is currently speaking
 
@@ -170,7 +167,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
         this.checkSpeechRecognitionSupport();
-        // Auto-enable camera ready state for non-camera mode
         this.cameraReady = true;
     }
 
@@ -284,7 +280,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }, 100);
         }
 
-        // Initialize recording only if camera is available
         if (this.cameraEnabled && this.stream) {
             this.recordedChunks = [];
             this.mediaRecorder = new MediaRecorder(this.stream, {
@@ -328,7 +323,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
             this.mediaRecorder.start();
         } else {
-            // Create a minimal record for audio-only interviews
             this.interviewStartTime = Date.now();
         }
 
@@ -367,7 +361,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.aiSpeaking = true; // Mark AI as speaking
 
         this.addCurrentQuestionToTranscript();
-
         this.questionInterval = setInterval(() => {
             this.timeRemaining--;
             if (this.timeRemaining <= 0) {
@@ -378,7 +371,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         try {
             await this.tts.speak(current.text);
             this.aiSpeaking = false; // AI finished speaking
-            console.log('🎤 AI finished speaking, starting speech recognition...');
+            console.log(' AI finished speaking, starting speech recognition...');
 
             setTimeout(() => {
                 if (this.interviewInProgress && this.timeRemaining > 0) {
@@ -387,8 +380,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }, 500);
         } catch (error) {
             console.error('TTS error:', error);
-            this.aiSpeaking = false; // AI finished speaking (even with error)
-            // If TTS fails, still start speech recognition
+            this.aiSpeaking = false; // AI finished speaking
             setTimeout(() => {
                 if (this.interviewInProgress && this.timeRemaining > 0) {
                     this.startSpeechRecognition();
@@ -429,24 +421,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
             this.finalTranscript += finalTranscript;
             this.interimTranscript = interimTranscript;
-
-            // Update live subtitle with combined text
             this.liveSubtitle = this.finalTranscript + this.interimTranscript;
-
-            // Update the current answer text
             this.currentAnswerText = this.finalTranscript;
-
             this.cdr.detectChanges();
             this.lastSpeechTime = Date.now();
-
-            this.resetSilenceTimer();
         };
 
         this.recognition.onerror = (event: any) => {
             console.error('Speech recognition error:', event.error);
-            if (event.error === 'no-speech') {
-                this.handleNoSpeechDetected();
-            } else if (event.error === 'network') {
+            if (event.error === 'network') {
                 this.notify.showError('Network Error', 'Speech recognition network error. Please check your connection.');
             }
         };
@@ -454,6 +437,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.recognition.onend = () => {
             this.isListening = false;
             console.log('Speech recognition ended');
+
+            // Only restart if interview is still in progress, time remaining, and AI not speaking
             if (this.interviewInProgress && this.currentQuestionIndex < this.questions.length && this.timeRemaining > 0 && !this.aiSpeaking) {
                 console.log('Restarting speech recognition...');
                 setTimeout(() => {
@@ -465,46 +450,13 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         };
 
         this.recognition.start();
-        console.log('🎤 Speech recognition started for question:', this.currentQuestionIndex + 1);
-    }
-
-    resetSilenceTimer() {
-        if (this.silenceTimer) {
-            clearTimeout(this.silenceTimer);
-        }
-
-        this.silenceTimer = setTimeout(() => {
-            if (this.finalTranscript.trim().length > 0) {
-                this.autoSubmitAnswer();
-            }
-        }, 3000);
-    }
-
-    handleNoSpeechDetected() {
-        // If no speech for 10 seconds, move to next question
-        if (this.autoSubmitTimer) {
-            clearTimeout(this.autoSubmitTimer);
-        }
-
-        this.autoSubmitTimer = setTimeout(() => {
-            if (this.interviewInProgress) {
-                this.moveToNextQuestion();
-            }
-        }, 10000);
-    }
-
-    autoSubmitAnswer() {
-        if (this.finalTranscript.trim().length > 0) {
-            console.log('Auto-submitting answer due to silence');
-            this.submitCurrentAnswer();
-        }
+        console.log('Speech recognition started for question:', this.currentQuestionIndex + 1);
     }
 
     submitCurrentAnswer() {
         const answer = this.finalTranscript.trim();
         if (!answer) return;
 
-        // Stop speech recognition
         this.stopSpeechRecognition();
 
         // Save answer to current question
@@ -521,24 +473,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             type: 'answer'
         });
 
-        console.log('💾 Answer saved:', answer);
+        console.log('Answer saved:', answer);
         this.cdr.detectChanges();
         this.scrollTranscriptToBottom();
 
-        // Move to next question
         this.moveToNextQuestion();
     }
 
     moveToNextQuestion() {
         this.stopSpeechRecognition();
         clearInterval(this.questionInterval);
-
-        if (this.silenceTimer) {
-            clearTimeout(this.silenceTimer);
-        }
-        if (this.autoSubmitTimer) {
-            clearTimeout(this.autoSubmitTimer);
-        }
 
         this.currentQuestionIndex++;
         if (this.currentQuestionIndex < this.questions.length) {
@@ -549,12 +493,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     handleQuestionTimeout() {
-        console.log('⏰ Question timeout reached');
+        console.log('Question timeout reached');
         clearInterval(this.questionInterval);
 
-        if (this.finalTranscript.trim()) {
+        const answer = this.finalTranscript.trim();
+
+        if (answer) {
             this.submitCurrentAnswer();
         } else {
+            console.log('No answer provided within time limit');
             this.moveToNextQuestion();
         }
     }
@@ -565,15 +512,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.isListening = false;
         }
 
-        if (this.silenceTimer) {
-            clearTimeout(this.silenceTimer);
-        }
-        if (this.autoSubmitTimer) {
-            clearTimeout(this.autoSubmitTimer);
-        }
-
         this.liveSubtitle = '';
-        console.log('🔇 Speech recognition stopped');
+        console.log('Speech recognition stopped');
     }
 
     submitAnswer(): void {
@@ -592,7 +532,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.questionInterval = null;
         }
 
-        // Only stop media recorder if it exists and camera is enabled
         if (this.cameraEnabled && this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
             this.mediaRecorder.stop();
             setTimeout(() => {
@@ -601,7 +540,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 }
             }, 5000);
         } else {
-            // For audio-only interviews, create a minimal record
             if (!this.cameraEnabled) {
                 const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
                 this.interviewRecord = {
@@ -610,7 +548,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                     recordedAt: new Date(),
                     durationInSeconds: duration,
                     fileName: `interview-audio-${Date.now()}.txt`,
-                    fileUrl: '', // No video file for audio-only
+                    fileUrl: '',
                     uploaded: false,
                     transcriptionFileUrl: ''
                 };
@@ -619,8 +557,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
 
         this.finalizeInterviewAnSaveEvaluation();
-
-        // Only stop stream if it exists
         if (this.stream) {
             this.stream.getTracks().forEach((t) => t.stop());
             this.stream = null;
@@ -716,12 +652,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
         if (this.recognition) {
             this.recognition.stop();
-        }
-        if (this.silenceTimer) {
-            clearTimeout(this.silenceTimer);
-        }
-        if (this.autoSubmitTimer) {
-            clearTimeout(this.autoSubmitTimer);
         }
 
         // Clean up event listeners

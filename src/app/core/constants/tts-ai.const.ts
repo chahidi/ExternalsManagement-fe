@@ -6,7 +6,6 @@ export interface VoiceSettings {
     use_speaker_boost?: boolean;
 }
 
-// Common voice IDs (you can get these from ElevenLabs)
 export const POPULAR_VOICE_IDS = {
     RACHEL: '21m00Tcm4TlvDq8ikWAM',
     DREW: '29vD33N1CtxCmqQRPOHJ',

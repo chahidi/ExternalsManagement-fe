@@ -17,7 +17,6 @@ import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RecordService } from '../../../../core/services/record.service';
 import { Record } from '../../../../core/models/record';
-import { InterviewService } from '../../../../core/services/interview.service';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
@@ -25,6 +24,7 @@ import { InterviewEvaluationService } from '../../../../core/services/interview-
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AvatarModule } from 'primeng/avatar';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-interview-meeting',
@@ -143,15 +143,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
 
+    private eventListenersRegistered = false;
+
     constructor(
         private recordService: RecordService,
-        private interviewService: InterviewService,
         private promptService: PromptService,
         private tts: TextToSpeechService,
-        private messageService: MessageService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router: Router,
     ) { }
 
     ngOnInit(): void {
@@ -331,9 +332,12 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.preventResizeOnce = true;
         setTimeout(() => (this.preventResizeOnce = false), 1000);
 
-        window.addEventListener('beforeunload', this.preventUnload);
-        document.addEventListener('visibilitychange', this.handleTabSwitch);
-        window.addEventListener('resize', this.handleResize);
+        if (!this.eventListenersRegistered) {
+            window.addEventListener('beforeunload', this.preventUnload);
+            document.addEventListener('visibilitychange', this.handleTabSwitch);
+            window.addEventListener('resize', this.handleResize);
+            this.eventListenersRegistered = true;
+        }
 
         this.startNextQuestion();
     }
@@ -448,7 +452,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         console.log('Full Questions Array:', this.questions);
 
-        // Remove event listeners
         window.removeEventListener('beforeunload', this.preventUnload);
         document.removeEventListener('visibilitychange', this.handleTabSwitch);
         window.removeEventListener('resize', this.handleResize);
@@ -473,12 +476,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');
+                setTimeout(() => {
+                    this.router.navigate(['/interview-cloture'], { replaceUrl: true });
+                }, 2000);
             },
             error: (err) => {
                 console.error('Evaluation error:', err);
                 this.notify.showWarning('Evaluation Failed', 'Interview saved, but evaluation failed. Try again later.');
             }
         });
+
     }
 
 
@@ -557,14 +564,23 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
         if (this.questionInterval) {
             clearInterval(this.questionInterval);
+            this.questionInterval = null;
         }
         if (this.recognition) {
             this.recognition.stop();
         }
 
-        // Clean up event listeners
-        window.removeEventListener('beforeunload', this.preventUnload);
-        document.removeEventListener('visibilitychange', this.handleTabSwitch);
-        window.removeEventListener('resize', this.handleResize);
+        if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+            this.mediaRecorder.stop();
+        }
+        this.mediaRecorder = null!;
+        this.recordedChunks = [];
+        this.recordedBlobUrl = null;
+
+        if (this.eventListenersRegistered) {
+            window.removeEventListener('beforeunload', this.preventUnload);
+            document.removeEventListener('visibilitychange', this.handleTabSwitch);
+            window.removeEventListener('resize', this.handleResize);
+        }
     }
 }

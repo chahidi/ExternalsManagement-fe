@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, finalize, retry, timeout } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError, finalize, retry, takeUntil, timeout } from 'rxjs/operators';
 import { TTSProvider, TTSRequest, TTSConfig, TTSProviderType } from '../api/interfaces/tts.interface';
 import { TTSProviderFactory } from '../api/factories/tts-provider.factory';
 import { environment } from '../../../environments/environment';
@@ -18,6 +18,7 @@ export class TextToSpeechService implements OnDestroy {
   public loading$ = this.loadingSubject.asObservable();
   private errorSubject = new BehaviorSubject<string | null>(null);
   public error$ = this.errorSubject.asObservable();
+  private readonly destroy$ = new Subject<void>();
 
   constructor(private providerFactory: TTSProviderFactory) {
     this.config = environment.tts;
@@ -32,27 +33,49 @@ export class TextToSpeechService implements OnDestroy {
 
   speak = (text: string, voiceId?: string): void => {
     this.stop();
-    if (!text.trim()) {
-      this.errorSubject.next('Empty text provided');
+
+    if (!this.validateInput(text)) {
       return;
     }
 
+    this.prepareForSpeech();
+
+    const request = this.createSpeechRequest(text, voiceId);
+
+    this.generateSpeech(request);
+  }
+
+  private validateInput = (text: string): Boolean => {
+    if (!text.trim()) {
+      this.errorSubject.next('Empty text provided');
+      return false;
+    }
+    return true
+  }
+
+  private prepareForSpeech = (): void => {
     this.clearError();
     this.loadingSubject.next(true);
     this.abortController = new AbortController();
+  }
 
+  private createSpeechRequest = (text: string, voiceId?: string): TTSRequest => {
     const request: TTSRequest = {
       text: text.trim(),
       voiceId: voiceId || this.config.defaultVoiceId,
       settings: this.config.defaultSettings
     };
+    return request;
+  }
 
+  private generateSpeech = (request: TTSRequest):void => {
     this.provider.generateSpeech(request)
       .pipe(
         timeout(this.config.timeout),
         retry(this.config.retryAttempts),
         catchError(this.handleError),
-        finalize(() => this.loadingSubject.next(false))
+        finalize(() => this.loadingSubject.next(false)),
+        takeUntil(this.destroy$)
       )
       .subscribe({
         next: (response) => {
@@ -115,6 +138,8 @@ export class TextToSpeechService implements OnDestroy {
   }
 
   ngOnDestroy = (): void => {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.stop();
   }
 }

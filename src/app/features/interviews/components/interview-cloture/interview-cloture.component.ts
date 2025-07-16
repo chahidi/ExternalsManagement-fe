@@ -4,7 +4,7 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-
+import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 
 
 
@@ -13,7 +13,8 @@ import { Location } from '@angular/common';
   imports: [CommonModule, CardModule, DividerModule],
   templateUrl: './interview-cloture.component.html',
   styleUrl: './interview-cloture.component.scss',
-  standalone: true
+  standalone: true,
+  animations: [fadeIn]
 })
 export class InterviewClotureComponent implements OnInit {
 

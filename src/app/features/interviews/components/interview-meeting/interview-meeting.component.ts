@@ -25,6 +25,13 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { AvatarModule } from 'primeng/avatar';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { Router } from '@angular/router';
+import {
+    cameraTransition,
+    slideInInterview,
+    fadeInControls,
+    slideInTranscript
+} from '../../../../shared/layout/animations/interview-meeting.animations';
+import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 
 @Component({
     selector: 'app-interview-meeting',
@@ -32,80 +39,7 @@ import { Router } from '@angular/router';
     imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
-    animations: [
-        trigger('cameraTransition', [
-            transition(':enter', [
-                style({
-                    transform: 'scale(0.5) translateX(-50%) translateY(-30%)',
-                    borderRadius: '12px',
-                    opacity: 0.8
-                }),
-                animate(
-                    '800ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        transform: 'scale(1) translateX(0) translateY(0)',
-                        borderRadius: '16px',
-                        opacity: 1
-                    })
-                )
-            ])
-        ]),
-        trigger('slideInInterview', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateY(100%)'
-                }),
-                animate(
-                    '600ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    })
-                )
-            ])
-        ]),
-        trigger('fadeInControls', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateY(20px)'
-                }),
-                animate(
-                    '500ms 400ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    })
-                )
-            ])
-        ]),
-        trigger('slideInTranscript', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }),
-                animate(
-                    '400ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateX(0)'
-                    })
-                )
-            ]),
-            transition(':leave', [
-                animate(
-                    '300ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 0,
-                        transform: 'translateX(100%)'
-                    })
-                )
-            ])
-        ]),
-        trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('300ms ease-in', style({ opacity: 1 }))])])
-    ]
+    animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]
 })
 export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;

@@ -17,7 +17,6 @@ import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RecordService } from '../../../../core/services/record.service';
 import { Record } from '../../../../core/models/record';
-import { InterviewService } from '../../../../core/services/interview.service';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
@@ -25,6 +24,14 @@ import { InterviewEvaluationService } from '../../../../core/services/interview-
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AvatarModule } from 'primeng/avatar';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { Router } from '@angular/router';
+import {
+    cameraTransition,
+    slideInInterview,
+    fadeInControls,
+    slideInTranscript
+} from '../../../../shared/layout/animations/interview-meeting.animations';
+import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 
 @Component({
     selector: 'app-interview-meeting',
@@ -32,80 +39,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
-    animations: [
-        trigger('cameraTransition', [
-            transition(':enter', [
-                style({
-                    transform: 'scale(0.5) translateX(-50%) translateY(-30%)',
-                    borderRadius: '12px',
-                    opacity: 0.8
-                }),
-                animate(
-                    '800ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        transform: 'scale(1) translateX(0) translateY(0)',
-                        borderRadius: '16px',
-                        opacity: 1
-                    })
-                )
-            ])
-        ]),
-        trigger('slideInInterview', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateY(100%)'
-                }),
-                animate(
-                    '600ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    })
-                )
-            ])
-        ]),
-        trigger('fadeInControls', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateY(20px)'
-                }),
-                animate(
-                    '500ms 400ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    })
-                )
-            ])
-        ]),
-        trigger('slideInTranscript', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }),
-                animate(
-                    '400ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateX(0)'
-                    })
-                )
-            ]),
-            transition(':leave', [
-                animate(
-                    '300ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 0,
-                        transform: 'translateX(100%)'
-                    })
-                )
-            ])
-        ]),
-        trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('300ms ease-in', style({ opacity: 1 }))])])
-    ]
+    animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]
 })
 export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;
@@ -143,15 +77,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
 
+    private eventListenersRegistered = false;
+
     constructor(
         private recordService: RecordService,
-        private interviewService: InterviewService,
         private promptService: PromptService,
         private tts: TextToSpeechService,
-        private messageService: MessageService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router: Router,
     ) { }
 
     ngOnInit(): void {
@@ -331,9 +266,12 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.preventResizeOnce = true;
         setTimeout(() => (this.preventResizeOnce = false), 1000);
 
-        window.addEventListener('beforeunload', this.preventUnload);
-        document.addEventListener('visibilitychange', this.handleTabSwitch);
-        window.addEventListener('resize', this.handleResize);
+        if (!this.eventListenersRegistered) {
+            window.addEventListener('beforeunload', this.preventUnload);
+            document.addEventListener('visibilitychange', this.handleTabSwitch);
+            window.addEventListener('resize', this.handleResize);
+            this.eventListenersRegistered = true;
+        }
 
         this.startNextQuestion();
     }
@@ -448,7 +386,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         console.log('Full Questions Array:', this.questions);
 
-        // Remove event listeners
         window.removeEventListener('beforeunload', this.preventUnload);
         document.removeEventListener('visibilitychange', this.handleTabSwitch);
         window.removeEventListener('resize', this.handleResize);
@@ -473,12 +410,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');
+                setTimeout(() => {
+                    this.router.navigate(['/interview-cloture'], { replaceUrl: true });
+                }, 1000);
             },
             error: (err) => {
                 console.error('Evaluation error:', err);
                 this.notify.showWarning('Evaluation Failed', 'Interview saved, but evaluation failed. Try again later.');
             }
         });
+
     }
 
 
@@ -557,14 +498,23 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
         if (this.questionInterval) {
             clearInterval(this.questionInterval);
+            this.questionInterval = null;
         }
         if (this.recognition) {
             this.recognition.stop();
         }
 
-        // Clean up event listeners
-        window.removeEventListener('beforeunload', this.preventUnload);
-        document.removeEventListener('visibilitychange', this.handleTabSwitch);
-        window.removeEventListener('resize', this.handleResize);
+        if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+            this.mediaRecorder.stop();
+        }
+        this.mediaRecorder = null!;
+        this.recordedChunks = [];
+        this.recordedBlobUrl = null;
+
+        if (this.eventListenersRegistered) {
+            window.removeEventListener('beforeunload', this.preventUnload);
+            document.removeEventListener('visibilitychange', this.handleTabSwitch);
+            window.removeEventListener('resize', this.handleResize);
+        }
     }
 }

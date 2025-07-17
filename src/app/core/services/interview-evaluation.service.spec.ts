@@ -6,6 +6,24 @@ import { Question } from '../models/question';
 import { environment } from '../../../environments/environment';
 import { InterviewInstance } from '../models/interview-instance';
 
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+
+providers: [
+  { 
+    provide: ActivatedRoute, 
+    useValue: {
+      paramMap: of({ get: (key: string) => 'someId' }),
+      snapshot: {
+        paramMap: {
+          get: () => 'someId'
+        }
+      }
+    }
+  }
+]
+
+
 describe('InterviewEvaluationService', () => {
     let service: InterviewEvaluationService;
     let httpMock: HttpTestingController;
@@ -13,7 +31,7 @@ describe('InterviewEvaluationService', () => {
     const interviewAlice: InterviewInstance = {
         id: '1abc',
         comment: 'Excellent React skills.',
-        link:'',
+        link: '',
         scheduledAt: new Date('2025-06-01T09:00:00Z'),
         startDate: new Date('2025-06-01T09:10:00Z'),
         endDate: new Date('2025-06-01T11:00:00Z'),
@@ -103,7 +121,7 @@ describe('InterviewEvaluationService', () => {
             interview: interviewAlice
         };
 
-        service.getInterviewEvaluation('Evaluate this candidate').subscribe((response) => {
+        service.prepareInterviewEvaluation('Evaluate this candidate', mockQuestions).subscribe((response) => {
             expect(response).toEqual(mockResponse);
             expect(response.score).toBe(84);
         });
@@ -117,4 +135,24 @@ describe('InterviewEvaluationService', () => {
 
         req.flush(mockResponse);
     });
+
+    it('should fetch the evaluation for a given interview ID', () => {
+        const mockEvaluation: Evaluation = {
+            id: 'eval1',
+            score: 92,
+            description: 'Great technical depth and clarity.',
+            interview: interviewAlice
+        };
+
+        service.getInterviewEvaluation(interviewAlice.id).subscribe((response) => {
+            expect(response).toEqual(mockEvaluation);
+            expect(response.score).toBe(92);
+        });
+
+        const req = httpMock.expectOne(`${environment.apiInterviews}/v1/interviews/${interviewAlice.id}/evaluation/`);
+        expect(req.request.method).toBe('GET');
+
+        req.flush(mockEvaluation);
+    });
+
 });

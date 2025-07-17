@@ -1,12 +1,11 @@
-
+// stability,  similarity_boost,style have values from 0.0 to 1.0
 export interface VoiceSettings {
-    stability: number;        // 0.0 to 1.0
-    similarity_boost: number; // 0.0 to 1.0
-    style?: number;          // 0.0 to 1.0
+    stability: number;        
+    similarity_boost: number; 
+    style?: number;          
     use_speaker_boost?: boolean;
 }
 
-// Common voice IDs (you can get these from ElevenLabs)
 export const POPULAR_VOICE_IDS = {
     RACHEL: '21m00Tcm4TlvDq8ikWAM',
     DREW: '29vD33N1CtxCmqQRPOHJ',
@@ -20,7 +19,6 @@ export const POPULAR_VOICE_IDS = {
     DANIEL: 'onwK4e9ZLuTAKqWW03F9'
 } as const;
 
-// Default voice settings
 export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
     stability: 0.5,
     similarity_boost: 0.5,

@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { catchError, finalize, retry, takeUntil, timeout } from 'rxjs/operators';
-import { TTSProvider, TTSRequest, TTSConfig, TTSProviderType } from '../api/interfaces/tts.interface';
+import { TTSProvider, TTSRequest, TTSConfig, TTSProviderType, TTSState } from '../api/interfaces/tts.interface';
 import { TTSProviderFactory } from '../api/factories/tts-provider.factory';
 import { environment } from '../../../environments/environment';
 
@@ -11,11 +11,11 @@ import { environment } from '../../../environments/environment';
 export class TextToSpeechService implements OnDestroy {
   private provider: TTSProvider;
   private config: TTSConfig;
-  private audio: HTMLAudioElement | null = null;
+  private currentAudio: HTMLAudioElement | null = null;
   private abortController: AbortController | null = null;
   private currentBlobUrl: string | null = null;
-  private loadingSubject = new BehaviorSubject<boolean>(false);
-  public loading$ = this.loadingSubject.asObservable();
+  private stateSubject = new BehaviorSubject<TTSState>(TTSState.Idle);
+  public state$ = this.stateSubject.asObservable();
   private errorSubject = new BehaviorSubject<string | null>(null);
   public error$ = this.errorSubject.asObservable();
   private readonly destroy$ = new Subject<void>();
@@ -45,8 +45,9 @@ export class TextToSpeechService implements OnDestroy {
     this.generateSpeech(request);
   }
 
-  private validateInput = (text: string): Boolean => {
+  private validateInput = (text: string): boolean => {
     if (!text.trim()) {
+      this.setState(TTSState.Error);
       this.errorSubject.next('Empty text provided');
       return false;
     }
@@ -55,7 +56,7 @@ export class TextToSpeechService implements OnDestroy {
 
   private prepareForSpeech = (): void => {
     this.clearError();
-    this.loadingSubject.next(true);
+    this.setState(TTSState.Loading);
     this.abortController = new AbortController();
   }
 
@@ -68,13 +69,17 @@ export class TextToSpeechService implements OnDestroy {
     return request;
   }
 
-  private generateSpeech = (request: TTSRequest):void => {
+  private generateSpeech = (request: TTSRequest): void => {
     this.provider.generateSpeech(request)
       .pipe(
         timeout(this.config.timeout),
         retry(this.config.retryAttempts),
         catchError(this.handleError),
-        finalize(() => this.loadingSubject.next(false)),
+        finalize(() => {
+          if (this.stateSubject.value === TTSState.Loading) {
+            this.setState(TTSState.Idle);
+          }
+        }),
         takeUntil(this.destroy$)
       )
       .subscribe({
@@ -91,13 +96,21 @@ export class TextToSpeechService implements OnDestroy {
   private playAudio = (blob: Blob): void => {
     this.cleanupBlobUrl();
     this.currentBlobUrl = URL.createObjectURL(blob);
-    this.audio = new Audio(this.currentBlobUrl);
-    this.audio.addEventListener('ended', () => this.cleanupBlobUrl());
-    this.audio.addEventListener('error', () => {
+    this.currentAudio = new Audio(this.currentBlobUrl);
+    this.currentAudio.addEventListener('ended', () => {
+      this.setState(TTSState.Idle);
+      this.cleanupBlobUrl();
+    });
+
+    this.currentAudio.addEventListener('error', () => {
+      this.setState(TTSState.Error);
       this.errorSubject.next('Audio playback failed');
       this.cleanupBlobUrl();
     });
-    this.audio.play().catch((error) => {
+
+    this.currentAudio.play().then(() => {
+      this.setState(TTSState.Playing);
+    }).catch((error) => {
       this.errorSubject.next(`Audio playback failed: ${error.message}`);
       this.cleanupBlobUrl();
     });
@@ -108,13 +121,13 @@ export class TextToSpeechService implements OnDestroy {
       this.abortController.abort();
       this.abortController = null;
     }
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.audio = null;
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+      this.currentAudio = null;
     }
     this.cleanupBlobUrl();
-    this.loadingSubject.next(false);
+    this.setState(TTSState.Idle);
   }
 
   private cleanupBlobUrl = (): void => {
@@ -134,7 +147,15 @@ export class TextToSpeechService implements OnDestroy {
   }
 
   get isPlaying(): boolean {
-    return this.audio ? !this.audio.paused : false;
+    return this.currentAudio ? !this.currentAudio.paused : false;
+  }
+
+  private setState = (state: TTSState): void => {
+    this.stateSubject.next(state);
+  }
+
+  get currentState(): TTSState {
+    return this.stateSubject.value;
   }
 
   ngOnDestroy = (): void => {

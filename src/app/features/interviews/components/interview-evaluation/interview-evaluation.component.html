@@ -48,8 +48,11 @@
             <ng-template pTemplate="header">
                 <div class="score-title">Overall Hire Score</div>
             </ng-template>
-            <div class="score-circle">
-                <div class="score-value">{{ evaluation?.score || 'N/A' }}</div>
+            <div #scoreCircle class="score-circle" [style.--progress-degrees]="'0deg'"
+                [style.--score-color]="getScoreColor(evaluation?.score || 0)">
+                <div class="score-value" [class]="getScoreTextClass(evaluation?.score || 0)">
+                   {{ evaluation?.score != null ? animatedScore : 'N/A' }}
+                </div>
             </div>
         </p-card>
     </div>

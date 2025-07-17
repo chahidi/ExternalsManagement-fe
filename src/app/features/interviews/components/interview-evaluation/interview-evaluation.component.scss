@@ -105,12 +105,30 @@ body {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: conic-gradient(var(--primary-color) 0deg 277.2deg, #e5e7eb 277.2deg 360deg);
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px auto 0;
     position: relative;
+    background: #e5e7eb;
+    background: conic-gradient(var(--score-color, var(--primary-color)) var(--progress-degrees, 0deg),
+            #e5e7eb var(--progress-degrees, 0deg));
+
+    transition: background 0.3s ease;
+
+    &::before {
+        content: '';
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: white;
+        position: absolute;
+        z-index: 1;
+    }
+
+    &.pulse {
+        animation: scorePulse 1s ease-in-out 3;
+    }
 }
 
 .score-circle::before {
@@ -125,8 +143,35 @@ body {
 .score-value {
     font-size: 32px;
     font-weight: 700;
-    color: var(--primary-color);
     z-index: 1;
+
+    &.score-excellent {
+        color: var(--primary-color);
+    }
+
+    &.score-good {
+        color: #eab308;
+    }
+
+    &.score-average {
+        color: #f97316;
+    }
+
+    &.score-poor {
+        color: #ef4444;
+    }
+}
+
+@keyframes scorePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 ::ng-deep .p-card {

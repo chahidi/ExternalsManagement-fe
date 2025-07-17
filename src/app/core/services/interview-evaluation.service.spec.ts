@@ -108,7 +108,7 @@ describe('InterviewEvaluationService', () => {
             expect(response.score).toBe(84);
         });
 
-        const req = httpMock.expectOne(`${environment.apiInterviews}/v1/interview/evaluation`);
+        const req = httpMock.expectOne(`${environment.apiInterviews}/v1/interviews/evaluation`);
         expect(req.request.method).toBe('POST');
         expect(req.request.body).toEqual({
             prompt: 'Evaluate this candidate',

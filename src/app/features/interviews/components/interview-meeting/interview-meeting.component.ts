@@ -1,3 +1,6 @@
+
+
+
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
@@ -110,16 +113,16 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;
     previewMode = false;
-    interviewInProgress = false;
-    interviewFinalizing = false;
-    interviewCompleted = false;
-    transcriptVisible = true;
-    currentAnswerText: string = '';
-    warningMessage: string | null = null;
+    isInterviewInProgress = false;
+    isInterviewFinalizing = false;
+    isInterviewCompleted = false;
+    isTranscriptVisible = true;
+    currentUserAnswer: string = '';
+    userWarningMessage: string | null = null;
     stream: MediaStream | null = null;
     private preventResizeOnce = false;
-    cameraReady = false;
-    cameraEnabled = false;
+    isCameraReady = false;
+    isCameraEnabled = false;
     showRulesAndPreview = true;
     showSubmitButton = false;
     canSubmitAnswer = false;
@@ -146,12 +149,13 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     transcriptions: string[] = [];
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
+
     // Speech recognition specific properties
     isListening = false;
-    finalTranscript = '';
-    interimTranscript = '';
+    completedTranscript = '';
+    liveInterimTranscript = '';
     lastSpeechTime = 0;
-    aiSpeaking = false; // Track if AI is currently speaking
+    aiSpeaking = false;
 
     constructor(
         private recordService: RecordService,
@@ -169,25 +173,24 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
         this.checkSpeechRecognitionSupport();
-        this.cameraReady = true;
+        this.isCameraReady = true;
     }
 
     ngAfterViewInit(): void {
-        // Optional camera initialization
         setTimeout(() => {
-            this.initializeCamera();
+            this.requestCameraPermission();
         }, 500);
     }
 
     checkSpeechRecognitionSupport(): void {
         const SpeechAPI = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
         if (!SpeechAPI) {
-            this.warningMessage = 'Speech recognition is not supported in your browser. Please use Chrome or Edge.';
+            this.userWarningMessage = 'Speech recognition is not supported in your browser. Please use Chrome or Edge.';
             this.notify.showError('Browser Not Supported', 'Speech recognition requires Chrome or Edge browser.');
         }
     }
 
-    updateClock() {
+    updateClock(): void {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -197,10 +200,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     loadInterviewQuestions(): void {
         const prompt = 'Give me 5 basic interview questions';
         this.promptService.getQuestions(prompt).subscribe({
-            next: (q) => {
-                this.questions = q;
+            next: (questions) => {
+                this.questions = questions;
                 this.currentQuestionIndex = 0;
-                console.log('Loaded structured questions:', q);
+                console.log('Loaded structured questions:', questions);
             },
             error: (err) => {
                 console.error('Failed to load structured interview questions:', err);
@@ -209,9 +212,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    async initializeCamera() {
+    async requestCameraPermission(): Promise<void> {
         try {
-            console.log('Initializing camera...');
+            console.log('Requesting camera permission...');
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     width: { ideal: 1280 },
@@ -222,50 +225,49 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             });
 
             console.log('Camera stream obtained:', this.stream);
-            this.cameraEnabled = true;
+            this.isCameraEnabled = true;
             this.previewMode = true;
-            setTimeout(() => {
-                this.setupPreviewVideo();
-            }, 100);
+            this.configureCameraPreview();
         } catch (error) {
-            console.warn('Camera initialization failed, proceeding without camera:', error);
-            this.cameraEnabled = false;
-            this.previewMode = false;
-            // Don't show error message, just proceed without camera
+            console.warn('Camera permission denied or failed:', error);
+            this.handleCameraInitializationFailure();
         }
     }
 
-    private setupPreviewVideo() {
-        if (this.previewVideo?.nativeElement && this.stream) {
-            const video = this.previewVideo.nativeElement;
-            video.srcObject = this.stream;
-            video.muted = true;
-            video.playsInline = true;
-            video.autoplay = true;
-            video.onloadedmetadata = () => {
-                video.play().catch((e) => console.error('Error playing preview video:', e));
+    private configureCameraPreview(): void {
+        setTimeout(() => {
+            this.attachStreamToVideoElement(this.previewVideo?.nativeElement);
+        }, 100);
+    }
+
+    private attachStreamToVideoElement(videoElement: HTMLVideoElement | undefined): void {
+        if (videoElement && this.stream) {
+            videoElement.srcObject = this.stream;
+            videoElement.muted = true;
+            videoElement.playsInline = true;
+            videoElement.autoplay = true;
+            videoElement.onloadedmetadata = () => {
+                videoElement.play().catch((e) => console.error('Video play error:', e));
             };
         }
     }
 
-    private setupInterviewVideo() {
+    private handleCameraInitializationFailure(): void {
+        this.isCameraEnabled = false;
+        this.previewMode = false;
+    }
+
+    private configureInterviewVideo(): void {
         if (this.interviewVideo?.nativeElement && this.stream) {
-            const video = this.interviewVideo.nativeElement;
-            video.srcObject = this.stream;
-            video.muted = true;
-            video.playsInline = true;
-            video.autoplay = true;
-            video.onloadedmetadata = () => {
-                video.play().catch((e) => console.error('Error playing interview video:', e));
-            };
+            this.attachStreamToVideoElement(this.interviewVideo.nativeElement);
         }
     }
 
-    async startInterview() {
+    async startInterview(): Promise<void> {
         console.log('Starting interview...');
         this.interviewStarted = true;
         this.showRulesAndPreview = false;
-        this.interviewInProgress = true;
+        this.isInterviewInProgress = true;
         this.previewMode = false;
 
         try {
@@ -276,54 +278,14 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             console.warn('Could not enter fullscreen mode:', error);
         }
 
-        if (this.cameraEnabled) {
+        if (this.isCameraEnabled) {
             setTimeout(() => {
-                this.setupInterviewVideo();
+                this.configureInterviewVideo();
             }, 100);
         }
 
-        if (this.cameraEnabled && this.stream) {
-            this.recordedChunks = [];
-            this.mediaRecorder = new MediaRecorder(this.stream, {
-                mimeType: 'video/webm;codecs=vp9'
-            });
-            this.interviewStartTime = Date.now();
-
-            this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
-                if (event.data.size > 0) {
-                    this.recordedChunks.push(event.data);
-                }
-            };
-
-            this.mediaRecorder.onstop = () => {
-                const blob = new Blob(this.recordedChunks, { type: 'video/webm' });
-                this.recordedBlobUrl = URL.createObjectURL(blob);
-                const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
-
-                this.interviewRecord = {
-                    id: Date.now().toString(),
-                    interviewId: 1,
-                    recordedAt: new Date(),
-                    durationInSeconds: duration,
-                    fileName: `interview-${Date.now()}.webm`,
-                    fileUrl: this.recordedBlobUrl,
-                    uploaded: false,
-                    transcriptionFileUrl: ''
-                };
-
-                this.recordService.saveRecord(this.interviewRecord).subscribe({
-                    next: () => {
-                        console.log('✅ Record saved');
-                        this.finalizeRecording();
-                    },
-                    error: (err) => {
-                        console.error('❌ Error saving record:', err);
-                        this.finalizeRecording();
-                    }
-                });
-            };
-
-            this.mediaRecorder.start();
+        if (this.isCameraEnabled && this.stream) {
+            this.setupMediaRecorder();
         } else {
             this.interviewStartTime = Date.now();
         }
@@ -331,34 +293,84 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.preventResizeOnce = true;
         setTimeout(() => (this.preventResizeOnce = false), 1000);
 
-        window.addEventListener('beforeunload', this.preventUnload);
-        document.addEventListener('visibilitychange', this.handleTabSwitch);
-        window.addEventListener('resize', this.handleResize);
-
+        this.attachEventListeners();
         this.startNextQuestion();
     }
 
-    private clearSpeechRecognition(): void {
+    private setupMediaRecorder(): void {
+        this.recordedChunks = [];
+        this.mediaRecorder = new MediaRecorder(this.stream!, {
+            mimeType: 'video/webm;codecs=vp9'
+        });
+        this.interviewStartTime = Date.now();
+
+        this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
+            if (event.data.size > 0) {
+                this.recordedChunks.push(event.data);
+            }
+        };
+
+        this.mediaRecorder.onstop = () => {
+            this.processRecordedData();
+        };
+
+        this.mediaRecorder.start();
+    }
+
+    private processRecordedData(): void {
+        const blob = new Blob(this.recordedChunks, { type: 'video/webm' });
+        this.recordedBlobUrl = URL.createObjectURL(blob);
+        const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
+
+        this.interviewRecord = {
+            id: Date.now().toString(),
+            interviewId: 1,
+            recordedAt: new Date(),
+            durationInSeconds: duration,
+            fileName: `interview-${Date.now()}.webm`,
+            fileUrl: this.recordedBlobUrl,
+            uploaded: false,
+            transcriptionFileUrl: ''
+        };
+
+        this.recordService.saveRecord(this.interviewRecord).subscribe({
+            next: () => {
+                console.log('✅ Record saved');
+                this.finalizeRecording();
+            },
+            error: (err) => {
+                console.error('❌ Error saving record:', err);
+                this.finalizeRecording();
+            }
+        });
+    }
+
+    private attachEventListeners(): void {
+        window.addEventListener('beforeunload', this.preventUnload);
+        document.addEventListener('visibilitychange', this.handleTabSwitch);
+        window.addEventListener('resize', this.handleResize);
+    }
+
+    private resetSpeechRecognitionData(): void {
         if (this.recognition && this.isListening) {
             this.recognition.stop();
             this.isListening = false;
         }
 
-        // Clear all transcript data
-        this.finalTranscript = '';
-        this.interimTranscript = '';
+        this.completedTranscript = '';
+        this.liveInterimTranscript = '';
         this.liveSubtitle = '';
-        this.currentAnswerText = '';
+        this.currentUserAnswer = '';
 
-        console.log('🧹 Speech recognition cleared');
+        console.log('🧹 Speech recognition data reset');
     }
 
-    addCurrentQuestionToTranscript() {
-        const questionText = this.questions[this.currentQuestionIndex]?.text;
-        if (questionText) {
+    addCurrentQuestionToTranscript(): void {
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        if (currentQuestion?.text) {
             this.transcriptMessages.push({
                 sender: 'AI',
-                text: questionText,
+                text: currentQuestion.text,
                 align: 'left',
                 type: 'question'
             });
@@ -367,165 +379,184 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    async startNextQuestion() {
-        const current = this.questions[this.currentQuestionIndex];
-        if (!current || !this.interviewInProgress) return;
+    async startNextQuestion(): Promise<void> {
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        if (!currentQuestion || !this.isInterviewInProgress) return;
 
-        // CLEAR PREVIOUS RECOGNITION DATA
-        this.clearSpeechRecognition();
-
-        this.timeRemaining = current.timeLimit;
+        this.resetSpeechRecognitionData();
+        this.timeRemaining = currentQuestion.timeLimit;
         this.aiSpeaking = true;
-        this.showSubmitButton = false;
-        this.canSubmitAnswer = false;
-        this.isWaitingForAnswer = false;
+        this.hideSubmissionControls();
 
         this.addCurrentQuestionToTranscript();
-        this.questionInterval = setInterval(() => {
-            this.timeRemaining--;
-            if (this.timeRemaining <= 0) {
-                this.handleQuestionTimeout();
-            }
-        }, 1000);
+        this.initializeQuestionTimer();
 
         try {
-            await this.tts.speak(current.text);
+            await this.tts.speak(currentQuestion.text);
             this.aiSpeaking = false;
             this.isWaitingForAnswer = true;
             this.showSubmitButton = true;
             console.log('✅ AI finished speaking, waiting before recognition...');
 
-            setTimeout(() => {
-                if (this.interviewInProgress && this.timeRemaining > 0) {
-                    this.clearSpeechRecognition();
-                    this.startSpeechRecognition();
-                }
-            }, 2000);
+            this.scheduleDelayedSpeechRecognition();
         } catch (error) {
             console.error('TTS error:', error);
-            this.aiSpeaking = false;
-            this.isWaitingForAnswer = true;
-            this.showSubmitButton = true;
-
-            setTimeout(() => {
-                if (this.interviewInProgress && this.timeRemaining > 0) {
-                    this.clearSpeechRecognition();
-                    this.startSpeechRecognition();
-                }
-            }, 2000);
+            this.handleTTSError();
         }
     }
 
-    startSpeechRecognition() {
+    private scheduleDelayedSpeechRecognition(): void {
+        setTimeout(() => {
+            if (this.isInterviewInProgress && this.timeRemaining > 0) {
+                this.resetSpeechRecognitionData();
+                this.beginSpeechRecognition();
+            }
+        }, 2000);
+    }
+
+    private handleTTSError(): void {
+        this.aiSpeaking = false;
+        this.isWaitingForAnswer = true;
+        this.showSubmitButton = true;
+        this.scheduleDelayedSpeechRecognition();
+    }
+
+    private initializeQuestionTimer(): void {
+        this.questionInterval = setInterval(() => {
+            this.decrementTimeRemaining();
+        }, 1000);
+    }
+
+    private decrementTimeRemaining(): void {
+        this.timeRemaining--;
+        if (this.timeRemaining <= 0) {
+            this.handleQuestionTimeExpired();
+        }
+    }
+
+    private initializeSpeechRecognitionEngine(): void {
         const SpeechAPI = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
         if (!SpeechAPI) {
-            this.warningMessage = 'Speech recognition is not supported in your browser.';
+            this.userWarningMessage = 'Speech recognition is not supported in your browser.';
             return;
         }
 
         this.recognition = new SpeechAPI();
+        this.setupSpeechRecognitionConfiguration();
+        this.attachSpeechRecognitionEventHandlers();
+    }
+
+    private setupSpeechRecognitionConfiguration(): void {
         this.recognition.lang = 'en-US';
         this.recognition.continuous = true;
         this.recognition.interimResults = true;
         this.recognition.maxAlternatives = 1;
+    }
 
+    private attachSpeechRecognitionEventHandlers(): void {
+        this.recognition.onresult = (event: any) => this.handleSpeechRecognitionResult(event);
+        this.recognition.onerror = (event: any) => this.handleSpeechRecognitionError(event);
+        this.recognition.onend = () => this.handleSpeechRecognitionEnd();
+    }
+
+    private handleSpeechRecognitionResult(event: any): void {
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        this.completedTranscript += finalTranscript;
+        this.liveInterimTranscript = interimTranscript;
+        this.liveSubtitle = this.completedTranscript + this.liveInterimTranscript;
+        this.currentUserAnswer = this.completedTranscript;
+
+        this.canSubmitAnswer = this.completedTranscript.trim().length > 0;
+        this.cdr.detectChanges();
+        this.lastSpeechTime = Date.now();
+    }
+
+    private handleSpeechRecognitionError(event: any): void {
+        console.error('Speech recognition error:', event.error);
+        if (event.error === 'network') {
+            this.notify.showError('Network Error', 'Speech recognition network error. Please check your connection.');
+        }
+    }
+
+    private handleSpeechRecognitionEnd(): void {
+        this.isListening = false;
+        console.log('Speech recognition ended');
+
+        if (this.shouldRestartSpeechRecognition()) {
+            this.scheduleRestartSpeechRecognition();
+        }
+    }
+
+    private shouldRestartSpeechRecognition(): boolean {
+        return this.isInterviewInProgress &&
+               this.currentQuestionIndex < this.questions.length &&
+               this.timeRemaining > 0 &&
+               !this.aiSpeaking &&
+               this.isWaitingForAnswer;
+    }
+
+    private scheduleRestartSpeechRecognition(): void {
+        setTimeout(() => {
+            if (this.shouldRestartSpeechRecognition()) {
+                this.beginSpeechRecognition();
+            }
+        }, 1000);
+    }
+
+    private beginSpeechRecognition(): void {
+        this.initializeSpeechRecognitionEngine();
         this.isListening = true;
-        this.finalTranscript = '';
-        this.interimTranscript = '';
-
-        this.recognition.onresult = (event: any) => {
-            let interimTranscript = '';
-            let finalTranscript = '';
-
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-                const transcript = event.results[i][0].transcript;
-                if (event.results[i].isFinal) {
-                    finalTranscript += transcript;
-                } else {
-                    interimTranscript += transcript;
-                }
-            }
-
-            this.finalTranscript += finalTranscript;
-            this.interimTranscript = interimTranscript;
-            this.liveSubtitle = this.finalTranscript + this.interimTranscript;
-            this.currentAnswerText = this.finalTranscript;
-
-            // Enable submit button if user has spoken something
-            this.canSubmitAnswer = this.finalTranscript.trim().length > 0;
-
-            this.cdr.detectChanges();
-            this.lastSpeechTime = Date.now();
-        };
-
-        this.recognition.onerror = (event: any) => {
-            console.error('Speech recognition error:', event.error);
-            if (event.error === 'network') {
-                this.notify.showError('Network Error', 'Speech recognition network error. Please check your connection.');
-            }
-        };
-
-        this.recognition.onend = () => {
-            this.isListening = false;
-            console.log('Speech recognition ended');
-
-            // Only restart if interview is still in progress, time remaining, and AI not speaking
-            if (this.interviewInProgress && this.currentQuestionIndex < this.questions.length && this.timeRemaining > 0 && !this.aiSpeaking && this.isWaitingForAnswer) {
-                console.log('Restarting speech recognition...');
-                setTimeout(() => {
-                    if (this.interviewInProgress && this.timeRemaining > 0 && !this.aiSpeaking && this.isWaitingForAnswer) {
-                        this.startSpeechRecognition();
-                    }
-                }, 1000);
-            }
-        };
-
+        this.completedTranscript = '';
+        this.liveInterimTranscript = '';
         this.recognition.start();
         console.log('Speech recognition started for question:', this.currentQuestionIndex + 1);
     }
 
-    submitCurrentAnswer() {
-        const answer = this.finalTranscript.trim();
-        if (!answer) {
+    submitCurrentAnswer(): void {
+        const userAnswer = this.completedTranscript.trim();
+        if (!userAnswer) {
             this.notify.showWarning('No Answer', 'Please provide an answer before submitting.');
             return;
         }
 
         this.stopSpeechRecognition();
-        this.showSubmitButton = false; // Hide submit button
-        this.canSubmitAnswer = false;
-        this.isWaitingForAnswer = false;
+        this.hideSubmissionControls();
 
-        // Save answer to current question
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (currentQuestion) {
-            currentQuestion.answer = answer;
+            currentQuestion.answer = userAnswer;
         }
 
-        // Add to transcript
         this.transcriptMessages.push({
             sender: 'You',
-            text: answer,
+            text: userAnswer,
             align: 'right',
             type: 'answer'
         });
 
-        console.log('✅ Answer submitted:', answer);
+        console.log('✅ Answer submitted:', userAnswer);
         this.cdr.detectChanges();
         this.scrollTranscriptToBottom();
 
-        // Show success message
         this.notify.showSuccess('Answer Submitted', 'Moving to next question...');
-
-        this.moveToNextQuestion();
+        this.proceedToNextQuestion();
     }
 
-    moveToNextQuestion() {
+    private proceedToNextQuestion(): void {
         this.stopSpeechRecognition();
-        clearInterval(this.questionInterval);
-        this.showSubmitButton = false;
-        this.canSubmitAnswer = false;
-        this.isWaitingForAnswer = false;
+        this.clearQuestionTimer();
+        this.hideSubmissionControls();
 
         this.currentQuestionIndex++;
         if (this.currentQuestionIndex < this.questions.length) {
@@ -534,25 +565,41 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.finishInterview();
         }
     }
-    handleQuestionTimeout() {
-        console.log('⏰ Question timeout reached');
-        clearInterval(this.questionInterval);
-        this.showSubmitButton = false;
-        this.canSubmitAnswer = false;
-        this.isWaitingForAnswer = false;
 
-        const answer = this.finalTranscript.trim();
+    private handleQuestionTimeExpired(): void {
+        console.log('⏰ Question time limit reached');
+        this.clearQuestionTimer();
+        this.hideSubmissionControls();
 
-        if (answer) {
+        const userAnswer = this.completedTranscript.trim();
+
+        if (userAnswer) {
             this.submitCurrentAnswer();
         } else {
-            console.log('No answer provided within time limit');
-            this.notify.showWarning('Time Up', 'No answer provided. Moving to next question.');
-            this.moveToNextQuestion();
+            this.handleNoAnswerProvided();
         }
     }
 
-    stopSpeechRecognition() {
+    private clearQuestionTimer(): void {
+        if (this.questionInterval) {
+            clearInterval(this.questionInterval);
+            this.questionInterval = null;
+        }
+    }
+
+    private hideSubmissionControls(): void {
+        this.showSubmitButton = false;
+        this.canSubmitAnswer = false;
+        this.isWaitingForAnswer = false;
+    }
+
+    private handleNoAnswerProvided(): void {
+        console.log('No answer provided within time limit');
+        this.notify.showWarning('Time Up', 'No answer provided. Moving to next question.');
+        this.proceedToNextQuestion();
+    }
+
+    stopSpeechRecognition(): void {
         if (this.recognition && this.isListening) {
             this.recognition.stop();
             this.isListening = false;
@@ -562,70 +609,52 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         console.log('Speech recognition stopped');
     }
 
-    submitAnswer(): void {
-        this.submitCurrentAnswer();
-    }
-
-    finishInterview() {
-        this.interviewInProgress = false;
-        this.interviewFinalizing = true;
+    finishInterview(): void {
+        this.isInterviewInProgress = false;
+        this.isInterviewFinalizing = true;
         this.aiSpeaking = false;
-        this.showSubmitButton = false;
-        this.canSubmitAnswer = false;
-        this.isWaitingForAnswer = false;
+        this.hideSubmissionControls();
         this.stopSpeechRecognition();
         this.tts.stop();
+        this.clearQuestionTimer();
 
-        if (this.questionInterval) {
-            clearInterval(this.questionInterval);
-            this.questionInterval = null;
-        }
-
-        if (this.cameraEnabled && this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+        if (this.isCameraEnabled && this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
             this.mediaRecorder.stop();
             setTimeout(() => {
-                if (this.interviewFinalizing && !this.interviewCompleted) {
+                if (this.isInterviewFinalizing && !this.isInterviewCompleted) {
                     this.finalizeRecording();
                 }
             }, 5000);
         } else {
-            if (!this.cameraEnabled) {
-                const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
-                this.interviewRecord = {
-                    id: Date.now().toString(),
-                    interviewId: 1,
-                    recordedAt: new Date(),
-                    durationInSeconds: duration,
-                    fileName: `interview-audio-${Date.now()}.txt`,
-                    fileUrl: '',
-                    uploaded: false,
-                    transcriptionFileUrl: ''
-                };
-            }
+            this.createInterviewRecordWithoutCamera();
             this.finalizeRecording();
         }
 
-        this.finalizeInterviewAnSaveEvaluation();
-        if (this.stream) {
-            this.stream.getTracks().forEach((t) => t.stop());
-            this.stream = null;
-        }
-
-        if (document.fullscreenElement) {
-            document.exitFullscreen();
-        }
+        this.finalizeInterviewAndSaveEvaluation();
+        this.cleanupInterviewResources();
 
         console.log('Full Questions Array:', this.questions);
-
-        // Remove event listeners
-        window.removeEventListener('beforeunload', this.preventUnload);
-        document.removeEventListener('visibilitychange', this.handleTabSwitch);
-        window.removeEventListener('resize', this.handleResize);
     }
 
-    finalizeRecording() {
-        this.interviewFinalizing = false;
-        this.interviewCompleted = true;
+    private createInterviewRecordWithoutCamera(): void {
+        if (!this.isCameraEnabled) {
+            const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
+            this.interviewRecord = {
+                id: Date.now().toString(),
+                interviewId: 1,
+                recordedAt: new Date(),
+                durationInSeconds: duration,
+                fileName: `interview-audio-${Date.now()}.txt`,
+                fileUrl: '',
+                uploaded: false,
+                transcriptionFileUrl: ''
+            };
+        }
+    }
+
+    finalizeRecording(): void {
+        this.isInterviewFinalizing = false;
+        this.isInterviewCompleted = true;
         console.log(
             'All answers captured via speech:',
             this.questions.map((q) => q.answer)
@@ -634,9 +663,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.notify.showSuccess('Interview Completed', 'Your interview has been successfully recorded and saved.');
     }
 
-    finalizeInterviewAnSaveEvaluation() {
-        this.interviewFinalizing = false;
-        this.interviewCompleted = true;
+    finalizeInterviewAndSaveEvaluation(): void {
+        this.isInterviewFinalizing = false;
+        this.isInterviewCompleted = true;
         window.scrollTo(0, 0);
 
         const prompt = 'Evaluate this interview';
@@ -652,12 +681,32 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    startTranscription() {
-        this.startSpeechRecognition();
+    private cleanupInterviewResources(): void {
+        this.stopSpeechRecognition();
+        this.tts.stop();
+        this.clearQuestionTimer();
+        this.releaseMediaStream();
+        this.removeEventListeners();
+        this.exitFullscreenMode();
     }
 
-    stopTranscription() {
-        this.stopSpeechRecognition();
+    private releaseMediaStream(): void {
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
+    }
+
+    private removeEventListeners(): void {
+        window.removeEventListener('beforeunload', this.preventUnload);
+        document.removeEventListener('visibilitychange', this.handleTabSwitch);
+        window.removeEventListener('resize', this.handleResize);
+    }
+
+    private exitFullscreenMode(): void {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
     }
 
     private preventUnload = (e: BeforeUnloadEvent) => {
@@ -667,19 +716,19 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     private handleTabSwitch = () => {
         if (document.visibilityState === 'hidden') {
-            this.warningMessage = 'Tab switch detected. You are disqualified.';
+            this.userWarningMessage = 'Tab switch detected. You are disqualified.';
             this.notify.showError('Disqualified', 'Tab switching is not allowed during the interview.');
         }
     };
 
     private handleResize = () => {
         if (this.preventResizeOnce) return;
-        this.warningMessage = 'Window resizing is not allowed during interview.';
+        this.userWarningMessage = 'Window resizing is not allowed during interview.';
         this.notify.showWarning('Warning', 'Window resizing is not allowed during the interview.');
     };
 
-    closeWarning() {
-        this.warningMessage = null;
+    closeWarning(): void {
+        this.userWarningMessage = null;
     }
 
     private scrollTranscriptToBottom(): void {
@@ -691,20 +740,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }
         }, 100);
     }
-    ngOnDestroy() {
-        if (this.stream) {
-            this.stream.getTracks().forEach((track) => track.stop());
-        }
-        if (this.questionInterval) {
-            clearInterval(this.questionInterval);
-        }
-        if (this.recognition) {
-            this.recognition.stop();
-        }
 
-        // Clean up event listeners
-        window.removeEventListener('beforeunload', this.preventUnload);
-        document.removeEventListener('visibilitychange', this.handleTabSwitch);
-        window.removeEventListener('resize', this.handleResize);
+    ngOnDestroy(): void {
+        this.cleanupInterviewResources();
     }
 }

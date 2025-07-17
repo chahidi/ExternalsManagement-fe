@@ -41,6 +41,24 @@
                 </div>
             </div>
 
+        <!-- Submit Answer Button  -->
+<div
+  *ngIf="showSubmitButton"
+  class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center"
+  [@fadeInControls]
+>
+  <p-button
+    label="Submit Answer"
+    icon="pi pi-check"
+    severity="secondary"
+    size="large"
+    [disabled]="!canSubmitAnswer"
+    (onClick)="submitAnswer()"
+    styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
+    pTooltip="Submit your current answer">
+  </p-button>
+</div>
+
 
             <!-- Bottom Controls -->
             <div class="fixed bottom-4 right-[calc(14%+5rem)] z-50" [@fadeInControls]>
@@ -121,9 +139,9 @@
 
             <ng-template pTemplate="content">
                 <div class="text-center space-y-6 text-gray-700 px-10">
-                    <p class="text-2xl font-semibold">You’ve successfully completed your interview.</p>
+                    <p class="text-2xl font-semibold">You've successfully completed your interview.</p>
                     <p class="text-lg">Your answers have been recorded and submitted for evaluation.</p>
-                    <p class="text-lg">You’ll receive your results via email shortly. We appreciate your time and
+                    <p class="text-lg">You'll receive your results via email shortly. We appreciate your time and
                         effort!</p>
 
                     <p-divider class="my-6"></p-divider>

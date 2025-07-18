@@ -1,0 +1,119 @@
+
+:host {
+    display: block;
+  }
+
+.custom-table {
+    background-color: #f5f7fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    table-layout: fixed !important;
+    overflow: hidden;
+
+    .p-datatable-header {
+        font-size: 24px;
+        font-weight: 700;
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    tr > th{
+        font-weight: 700;
+    }
+
+    .p-datatable-thead > tr > th,
+    .p-datatable-tbody > tr > td {
+        padding: 10px 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .col-prompt-code {
+        width: 15% !important;
+        min-width: 100px !important;
+    }
+
+    .col-text {
+        width: 28% !important;
+        min-width: 100px !important;
+    }
+
+    .col-schema {
+        width: 42% !important;
+        min-width: 150px !important;
+    }
+
+    .col-actions {
+        width: 15% !important;
+        min-width: 100px !important;
+    }
+
+    .p-datatable-thead > tr > th {
+        background-color: #e8ecef;
+        font-weight: 900;
+        color: black;
+    }
+
+    .p-datatable-tbody > tr > td {
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .p-paginator {
+        background-color: #e8ecef;
+        padding: 10px;
+        border-top: 1px solid #e0e0e0;
+    }
+}
+
+
+.form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+
+        label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #1a3c34;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+}
+
+
+  button {
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }

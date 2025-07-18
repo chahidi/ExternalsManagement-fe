@@ -1,0 +1,19 @@
+<p-toast></p-toast>
+<div class="card">
+  <h2>Add New Prompt</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="promptCode">Prompt Code</label>
+      <input type="text" id="promptCode" pInputText [(ngModel)]="prompt.promptCode" name="promptCode" />
+    </div>
+    <div class="field">
+      <label for="promptDesc">Text (Required)</label>
+      <textarea id="promptDesc" pInputText pTextArea [(ngModel)]="prompt.promptDesc" name="promptDesc" required></textarea>
+    </div>
+    <div class="field">
+      <label for="schema">Schema (JSON)</label>
+      <textarea id="schema" pInputText pTextArea [(ngModel)]="prompt.schema" name="schema"></textarea>
+    </div>
+    <button pButton type="submit" label="Submit" class="p-button-info"></button>
+  </form>
+</div>

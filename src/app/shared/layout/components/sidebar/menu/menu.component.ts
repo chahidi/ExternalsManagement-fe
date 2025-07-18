@@ -28,8 +28,8 @@ export class MenuComponent {
                 label: 'Prompt Management',
                 items: [
                     { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
-                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
-                ]
+                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] },
+                  ]
             }
         ];
     }

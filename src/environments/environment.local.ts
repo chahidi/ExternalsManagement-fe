@@ -8,7 +8,7 @@ export const environment = {
 production: false,
   tts: {
     provider: TTSProviderType.ELEVEN_LABS,
-    apiKey: 'sk_99720684143252b212e8bbc44e03c2f980bb00bf54b31295',
+    apiKey: 'sk_17667a13361028e3d847f67d19bebb33ace983970cd0b549',
     baseUrl: 'https://api.elevenlabs.io/v1',
     defaultVoiceId: '21m00Tcm4TlvDq8ikWAM',
     defaultSettings: {

@@ -1,10 +1,10 @@
-
-
-
+// src/app/features/interview/components/interview-meeting/interview-meeting.component.ts
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { INTERVIEW_RULES, InterviewRule } from '../../../../core/constants/interview-rules.const';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -26,6 +26,17 @@ import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { SpeechRecognitionService } from '../../../../core/services/speech-recognition.service';
+
+// Define SpeechRecognitionState type locally
+type SpeechRecognitionState = {
+    isListening: boolean;
+    isSupported: boolean;
+    error: string | null;
+    finalTranscript: string;
+    interimTranscript: string;
+    combinedTranscript: string;
+};
 import { AvatarModule } from 'primeng/avatar';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 
@@ -35,81 +46,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
-    animations: [
-        trigger('cameraTransition', [
-            transition(':enter', [
-                style({
-                    transform: 'scale(0.5) translateX(-50%) translateY(-30%)',
-                    borderRadius: '12px',
-                    opacity: 0.8
-                }),
-                animate(
-                    '800ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        transform: 'scale(1) translateX(0) translateY(0)',
-                        borderRadius: '16px',
-                        opacity: 1
-                    })
-                )
-            ])
-        ]),
-        trigger('slideInInterview', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateY(100%)'
-                }),
-                animate(
-                    '600ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    })
-                )
-            ])
-        ]),
-        trigger('fadeInControls', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateY(20px)'
-                }),
-                animate(
-                    '500ms 400ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    })
-                )
-            ])
-        ]),
-        trigger('slideInTranscript', [
-            transition(':enter', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }),
-                animate(
-                    '400ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 1,
-                        transform: 'translateX(0)'
-                    })
-                )
-            ]),
-            transition(':leave', [
-                animate(
-                    '300ms cubic-bezier(0.35, 0, 0.25, 1)',
-                    style({
-                        opacity: 0,
-                        transform: 'translateX(100%)'
-                    })
-                )
-            ])
-        ]),
-        trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('300ms ease-in', style({ opacity: 1 }))])])
-    ]
 })
+
 export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;
     previewMode = false;
@@ -127,7 +65,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     showSubmitButton = false;
     canSubmitAnswer = false;
     isWaitingForAnswer = false;
-
+    aiSpeaking = false;
+    speechRecognitionState: SpeechRecognitionState = {
+        isListening: false,
+        isSupported: false,
+        error: null,
+        finalTranscript: '',
+        interimTranscript: '',
+        combinedTranscript: ''
+    };
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('transcriptScroll') scrollPanel!: any;
@@ -136,12 +82,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     recordedBlobUrl: string | null = null;
     interviewStartTime = 0;
     interviewRecord!: Record;
-
     showSubtitles = false;
     liveSubtitle = '';
-    recognition!: any;
     transcriptMessages: { sender: string; text: string; align: 'left' | 'right'; type: 'question' | 'answer' }[] = [];
-
     questions: Question[] = [];
     currentQuestionIndex = 0;
     timeRemaining = 0;
@@ -149,14 +92,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     transcriptions: string[] = [];
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
-
-    // Speech recognition specific properties
-    isListening = false;
-    completedTranscript = '';
-    liveInterimTranscript = '';
-    lastSpeechTime = 0;
-    aiSpeaking = false;
-
+    private destroy$ = new Subject<void>();
     constructor(
         private recordService: RecordService,
         private interviewService: InterviewService,
@@ -165,15 +101,13 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private messageService: MessageService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
+        private speechRecognitionService: SpeechRecognitionService,
         private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
-        this.loadInterviewQuestions();
-        this.updateClock();
-        setInterval(() => this.updateClock(), 1000);
-        this.checkSpeechRecognitionSupport();
-        this.isCameraReady = true;
+        this.initializeComponent();
+        this.subscribesToSpeechRecognition();
     }
 
     ngAfterViewInit(): void {
@@ -182,9 +116,73 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }, 500);
     }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+        this.cleanupInterviewResources();
+    }
+    //Initialize component with basic setup
+    private initializeComponent(): void {
+        this.loadInterviewQuestions();
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
+        this.checkSpeechRecognitionSupport();
+        this.isCameraReady = true;
+    }
+    //Subscribe to speech recognition service observables
+    private subscribesToSpeechRecognition(): void {
+        // Subscribe to speech recognition state changes
+        this.speechRecognitionService.state$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+            this.speechRecognitionState = state;
+            this.updateUIFromSpeechState(state);
+            this.cdr.detectChanges();
+        });
+
+        // Subscribe to speech recognition results
+        this.speechRecognitionService.result$.pipe(takeUntil(this.destroy$)).subscribe((result) => {
+            this.handleSpeechResult(result);
+        });
+
+        // Subscribe to speech recognition errors
+        this.speechRecognitionService.error$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
+            this.handleSpeechError(error?.message ?? String(error));
+        });
+    }
+    //Update UI based on speech recognition state
+    private updateUIFromSpeechState(state: SpeechRecognitionState): void {
+        this.liveSubtitle = state.combinedTranscript;
+        this.currentUserAnswer = state.finalTranscript;
+        this.canSubmitAnswer = state.finalTranscript.trim().length > 0;
+
+        if (state.error) {
+            this.userWarningMessage = state.error;
+        }
+    }
+    // Handle speech recognition results
+
+    private handleSpeechResult(result: any): void {
+        // Update live subtitle for interim results
+        if (!result.isFinal) {
+            this.liveSubtitle = this.speechRecognitionService.getCombinedTranscript();
+        }
+
+        // Update current answer for final results
+        if (result.isFinal) {
+            this.currentUserAnswer = this.speechRecognitionService.getFinalTranscript();
+            this.canSubmitAnswer = this.currentUserAnswer.trim().length > 0;
+        }
+
+        this.cdr.detectChanges();
+    }
+
+    private handleSpeechError(error: string): void {
+        console.error('Speech recognition error:', error);
+        this.notify.showError('Speech Recognition Error', error);
+        this.userWarningMessage = error;
+    }
+
     checkSpeechRecognitionSupport(): void {
-        const SpeechAPI = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-        if (!SpeechAPI) {
+        if (!this.speechRecognitionService.isSupported()) {
             this.userWarningMessage = 'Speech recognition is not supported in your browser. Please use Chrome or Edge.';
             this.notify.showError('Browser Not Supported', 'Speech recognition requires Chrome or Edge browser.');
         }
@@ -351,20 +349,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         window.addEventListener('resize', this.handleResize);
     }
 
-    private resetSpeechRecognitionData(): void {
-        if (this.recognition && this.isListening) {
-            this.recognition.stop();
-            this.isListening = false;
-        }
-
-        this.completedTranscript = '';
-        this.liveInterimTranscript = '';
-        this.liveSubtitle = '';
-        this.currentUserAnswer = '';
-
-        console.log('🧹 Speech recognition data reset');
-    }
-
     addCurrentQuestionToTranscript(): void {
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (currentQuestion?.text) {
@@ -405,6 +389,13 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    private resetSpeechRecognitionData(): void {
+        this.speechRecognitionService.reset();
+        this.liveSubtitle = '';
+        this.currentUserAnswer = '';
+        console.log('🧹 Speech recognition data reset');
+    }
+
     private scheduleDelayedSpeechRecognition(): void {
         setTimeout(() => {
             if (this.isInterviewInProgress && this.timeRemaining > 0) {
@@ -434,97 +425,13 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    private initializeSpeechRecognitionEngine(): void {
-        const SpeechAPI = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-        if (!SpeechAPI) {
-            this.userWarningMessage = 'Speech recognition is not supported in your browser.';
-            return;
-        }
-
-        this.recognition = new SpeechAPI();
-        this.setupSpeechRecognitionConfiguration();
-        this.attachSpeechRecognitionEventHandlers();
-    }
-
-    private setupSpeechRecognitionConfiguration(): void {
-        this.recognition.lang = 'en-US';
-        this.recognition.continuous = true;
-        this.recognition.interimResults = true;
-        this.recognition.maxAlternatives = 1;
-    }
-
-    private attachSpeechRecognitionEventHandlers(): void {
-        this.recognition.onresult = (event: any) => this.handleSpeechRecognitionResult(event);
-        this.recognition.onerror = (event: any) => this.handleSpeechRecognitionError(event);
-        this.recognition.onend = () => this.handleSpeechRecognitionEnd();
-    }
-
-    private handleSpeechRecognitionResult(event: any): void {
-        let interimTranscript = '';
-        let finalTranscript = '';
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-                finalTranscript += transcript;
-            } else {
-                interimTranscript += transcript;
-            }
-        }
-
-        this.completedTranscript += finalTranscript;
-        this.liveInterimTranscript = interimTranscript;
-        this.liveSubtitle = this.completedTranscript + this.liveInterimTranscript;
-        this.currentUserAnswer = this.completedTranscript;
-
-        this.canSubmitAnswer = this.completedTranscript.trim().length > 0;
-        this.cdr.detectChanges();
-        this.lastSpeechTime = Date.now();
-    }
-
-    private handleSpeechRecognitionError(event: any): void {
-        console.error('Speech recognition error:', event.error);
-        if (event.error === 'network') {
-            this.notify.showError('Network Error', 'Speech recognition network error. Please check your connection.');
-        }
-    }
-
-    private handleSpeechRecognitionEnd(): void {
-        this.isListening = false;
-        console.log('Speech recognition ended');
-
-        if (this.shouldRestartSpeechRecognition()) {
-            this.scheduleRestartSpeechRecognition();
-        }
-    }
-
-    private shouldRestartSpeechRecognition(): boolean {
-        return this.isInterviewInProgress &&
-               this.currentQuestionIndex < this.questions.length &&
-               this.timeRemaining > 0 &&
-               !this.aiSpeaking &&
-               this.isWaitingForAnswer;
-    }
-
-    private scheduleRestartSpeechRecognition(): void {
-        setTimeout(() => {
-            if (this.shouldRestartSpeechRecognition()) {
-                this.beginSpeechRecognition();
-            }
-        }, 1000);
-    }
-
     private beginSpeechRecognition(): void {
-        this.initializeSpeechRecognitionEngine();
-        this.isListening = true;
-        this.completedTranscript = '';
-        this.liveInterimTranscript = '';
-        this.recognition.start();
+        this.speechRecognitionService.start();
         console.log('Speech recognition started for question:', this.currentQuestionIndex + 1);
     }
 
     submitCurrentAnswer(): void {
-        const userAnswer = this.completedTranscript.trim();
+        const userAnswer = this.speechRecognitionService.getFinalTranscript().trim();
         if (!userAnswer) {
             this.notify.showWarning('No Answer', 'Please provide an answer before submitting.');
             return;
@@ -571,7 +478,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.clearQuestionTimer();
         this.hideSubmissionControls();
 
-        const userAnswer = this.completedTranscript.trim();
+        const userAnswer = this.speechRecognitionService.getFinalTranscript().trim();
 
         if (userAnswer) {
             this.submitCurrentAnswer();
@@ -600,11 +507,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     stopSpeechRecognition(): void {
-        if (this.recognition && this.isListening) {
-            this.recognition.stop();
-            this.isListening = false;
-        }
-
+        this.speechRecognitionService.stop();
         this.liveSubtitle = '';
         console.log('Speech recognition stopped');
     }
@@ -688,11 +591,12 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.releaseMediaStream();
         this.removeEventListeners();
         this.exitFullscreenMode();
+        this.speechRecognitionService.destroy();
     }
 
     private releaseMediaStream(): void {
         if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
+            this.stream.getTracks().forEach((track) => track.stop());
             this.stream = null;
         }
     }
@@ -702,6 +606,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         document.removeEventListener('visibilitychange', this.handleTabSwitch);
         window.removeEventListener('resize', this.handleResize);
     }
+
 
     private exitFullscreenMode(): void {
         if (document.fullscreenElement) {
@@ -713,6 +618,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         e.preventDefault();
         e.returnValue = '';
     };
+
 
     private handleTabSwitch = () => {
         if (document.visibilityState === 'hidden') {
@@ -731,6 +637,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.userWarningMessage = null;
     }
 
+
     private scrollTranscriptToBottom(): void {
         setTimeout(() => {
             if (this.scrollPanel && this.scrollPanel.contentViewChild?.nativeElement) {
@@ -739,9 +646,5 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 this.scrollPanel.moveBar();
             }
         }, 100);
-    }
-
-    ngOnDestroy(): void {
-        this.cleanupInterviewResources();
     }
 }

@@ -20,7 +20,6 @@ import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RecordService } from '../../../../core/services/record.service';
 import { Record } from '../../../../core/models/record';
-import { InterviewService } from '../../../../core/services/interview.service';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
@@ -39,6 +38,14 @@ type SpeechRecognitionState = {
 };
 import { AvatarModule } from 'primeng/avatar';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { Router } from '@angular/router';
+import {
+    cameraTransition,
+    slideInInterview,
+    fadeInControls,
+    slideInTranscript
+} from '../../../../shared/layout/animations/interview-meeting.animations';
+import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 
 @Component({
     selector: 'app-interview-meeting',
@@ -46,8 +53,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
+    animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]
 })
-
 export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewStarted = false;
     previewMode = false;
@@ -84,6 +91,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewRecord!: Record;
     showSubtitles = false;
     liveSubtitle = '';
+    recognition!: any;
     transcriptMessages: { sender: string; text: string; align: 'left' | 'right'; type: 'question' | 'answer' }[] = [];
     questions: Question[] = [];
     currentQuestionIndex = 0;
@@ -93,17 +101,18 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
     private destroy$ = new Subject<void>();
+    private eventListenersRegistered = false;
+
     constructor(
         private recordService: RecordService,
-        private interviewService: InterviewService,
         private promptService: PromptService,
         private tts: TextToSpeechService,
-        private messageService: MessageService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
         private speechRecognitionService: SpeechRecognitionService,
-        private cdr: ChangeDetectorRef
-    ) {}
+        private cdr: ChangeDetectorRef,
+        private router: Router,
+    ) { }
 
     ngOnInit(): void {
         this.initializeComponent();
@@ -116,11 +125,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }, 500);
     }
 
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
-        this.cleanupInterviewResources();
-    }
     //Initialize component with basic setup
     private initializeComponent(): void {
         this.loadInterviewQuestions();
@@ -344,9 +348,12 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     private attachEventListeners(): void {
-        window.addEventListener('beforeunload', this.preventUnload);
-        document.addEventListener('visibilitychange', this.handleTabSwitch);
-        window.addEventListener('resize', this.handleResize);
+        if (!this.eventListenersRegistered) {
+            window.addEventListener('beforeunload', this.preventUnload);
+            document.addEventListener('visibilitychange', this.handleTabSwitch);
+            window.addEventListener('resize', this.handleResize);
+            this.eventListenersRegistered = true;
+        }
     }
 
     addCurrentQuestionToTranscript(): void {
@@ -576,12 +583,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');
+                setTimeout(() => {
+                    this.router.navigate(['/interview-cloture'], { replaceUrl: true });
+                }, 1000);
             },
             error: (err) => {
                 console.error('Evaluation error:', err);
                 this.notify.showWarning('Evaluation Failed', 'Interview saved, but evaluation failed. Try again later.');
             }
         });
+
     }
 
     private cleanupInterviewResources(): void {
@@ -646,5 +657,24 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 this.scrollPanel.moveBar();
             }
         }, 100);
+    }
+    ngOnDestroy() {
+        if (this.stream) {
+            this.stream.getTracks().forEach((track) => track.stop());
+        }
+        if (this.questionInterval) {
+            clearInterval(this.questionInterval);
+        }
+        if (this.recognition) {
+            this.recognition.stop();
+        }
+
+        // Clean up event listeners
+        window.removeEventListener('beforeunload', this.preventUnload);
+        document.removeEventListener('visibilitychange', this.handleTabSwitch);
+        window.removeEventListener('resize', this.handleResize);
+        this.destroy$.next();
+        this.destroy$.complete();
+        this.cleanupInterviewResources();
     }
 }

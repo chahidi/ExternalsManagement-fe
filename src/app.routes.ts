@@ -34,6 +34,12 @@ export const appRoutes: Routes = [
             import('./app/features/interviews/components/interview-evaluation/interview-evaluation.component').then(m => m.InterviewEvaluationComponent),
         title: 'Interview Evaluation'
     },
+    {
+        path: 'interview-cloture',
+        loadComponent: () =>
+            import('./app/features/interviews/components/interview-cloture/interview-cloture.component').then(m => m.InterviewClotureComponent),
+        title: 'Interview Evaluation'
+    },
 
     { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }

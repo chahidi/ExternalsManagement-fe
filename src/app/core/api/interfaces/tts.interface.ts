@@ -53,3 +53,10 @@ export enum TTSProviderType {
   GOOGLE = 'google',
   AWS_POLLY = 'aws_polly'
 }
+
+export enum TTSState {
+  Idle = 'IDLE',
+  Loading = 'LOADING',
+  Playing = 'PLAYING',
+  Error = 'ERROR'
+}

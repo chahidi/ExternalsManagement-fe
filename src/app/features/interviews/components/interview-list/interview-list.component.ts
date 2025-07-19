@@ -219,7 +219,7 @@ export class InterviewListComponent implements OnInit {
     }
 
     openEvaluation(interview: InterviewInstance): void {
-        this.router.navigate([`/evaluation/${interview.id}`], {
+        this.router.navigate(['/evaluation',interview.id], {
             state: { interview }
         });
     }

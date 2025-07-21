@@ -140,7 +140,7 @@ export class InterviewListComponent implements OnInit {
                 console.log('Generated Link:', link);
                 interview.link = link;
             }),
-            catchError(err => this.handleGenerateLinkError(err)),
+            catchError(err => this.handleGenerateAndSaveLinkError(err)),
 
             switchMap(() =>
                 this.interviewService.sendEmail(interview).pipe(
@@ -218,7 +218,7 @@ export class InterviewListComponent implements OnInit {
     }
 
 
-    private handleGenerateLinkError(err: Error): Observable<never> {
+    private handleGenerateAndSaveLinkError(err: Error): Observable<never> {
         const message = err.message;
         if (
             message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||

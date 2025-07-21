@@ -29,7 +29,7 @@ export class InterviewService {
         );
     };
 
-    generateInterviewLink = (interview: InterviewInstance): Observable<string> => {
+    generateAndSaveInterviewLink = (interview: InterviewInstance): Observable<string> => {
         const payload: GenerateInterviewLinkPayload = {
             candidateId: interview.candidate.id,
             offerId: interview.offer.id,

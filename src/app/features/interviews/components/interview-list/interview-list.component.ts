@@ -135,7 +135,7 @@ export class InterviewListComponent implements OnInit {
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         this.isGeneratingLink = true;
 
-        this.interviewService.generateInterviewLink(interview).pipe(
+        this.interviewService.generateAndSaveInterviewLink(interview).pipe(
             tap(link => {
                 console.log('Generated Link:', link);
                 interview.link = link;

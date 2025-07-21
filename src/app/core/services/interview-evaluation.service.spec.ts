@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { InterviewEvaluationService } from './interview-evaluation.service';
 import { Evaluation } from '../models/evaluation';
 import { Question } from '../models/question';
@@ -8,6 +8,7 @@ import { InterviewInstance } from '../models/interview-instance';
 
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
 
 providers: [
   { 
@@ -77,8 +78,7 @@ describe('InterviewEvaluationService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            providers: [InterviewEvaluationService]
+            providers: [InterviewEvaluationService,provideHttpClient(),provideHttpClientTesting()]
         });
 
         service = TestBed.inject(InterviewEvaluationService);

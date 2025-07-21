@@ -54,7 +54,7 @@ export class InterviewService {
 
         this.loadingSubject.next(true);
 
-        return this.http.post<string>(`${this.apiUrl}/${interviewId}/generateLink`, payload).pipe(
+        return this.http.post<string>(`${this.apiUrl}/${interviewId}/generateAndSaveLink`, payload).pipe(
             timeout(10000),
             retry(2),
             finalize(() => this.loadingSubject.next(false)),
@@ -87,13 +87,6 @@ export class InterviewService {
 
     AddComment = (id: string, comment: string): Observable<any> => {
         return this.http.put<any>(`${this.apiUrl}/${id}/addComment`, { comment }).pipe(
-            retry(2),
-            catchError(this.handleError)
-        );
-    };
-
-    saveInterviewLink = (interviewId: string, link: string): Observable<any> => {
-        return this.http.put<any>(`${this.apiUrl}/${interviewId}/saveLink`, { link }).pipe(
             retry(2),
             catchError(this.handleError)
         );

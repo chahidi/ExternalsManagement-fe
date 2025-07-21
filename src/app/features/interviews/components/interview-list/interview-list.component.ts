@@ -22,7 +22,6 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
 import { Observable, EMPTY } from 'rxjs';
 
-
 @Component({
     selector: 'app-interview-list',
     standalone: true,
@@ -44,7 +43,6 @@ export class InterviewListComponent implements OnInit {
     techOptions: { label: string; value: string }[] = [];
     titleOptions: { label: string; value: string }[] = [];
 
-
     showCommentDialog: boolean = false;
     tempComment: string = '';
     selectedCommentInterview: InterviewInstance | null = null;
@@ -58,7 +56,7 @@ export class InterviewListComponent implements OnInit {
         private offerService: OfferService,
         private router: Router,
         private notify: NotificationService
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -84,7 +82,7 @@ export class InterviewListComponent implements OnInit {
                 this.titleOptions = titles.map((title) => ({ label: title, value: title }));
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to load title options')
+                this.notify.showError('Error', 'Failed to load title options');
             }
         });
     }
@@ -106,7 +104,6 @@ export class InterviewListComponent implements OnInit {
         });
     }
 
-
     private formatDate(date: Date | string | null): string {
         if (!date) return '';
         const d = new Date(date);
@@ -115,8 +112,6 @@ export class InterviewListComponent implements OnInit {
         const day = d.getDate().toString().padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
-
-
 
     resetFilters(): void {
         this.mainTechFilter = null;
@@ -135,36 +130,34 @@ export class InterviewListComponent implements OnInit {
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         this.isGeneratingLink = true;
 
-        this.interviewService.generateInterviewLink(interview).pipe(
-            tap(link => {
-                console.log('Generated Link:', link);
-                interview.link = link;
-            }),
-            catchError(err => this.handleGenerateLinkError(err)),
+        this.interviewService
+            .generateInterviewLink(interview)
+            .pipe(
+                tap((link) => {
+                    console.log('Generated Link:', link);
+                    interview.link = link;
+                }),
+                catchError((err) => this.handleGenerateLinkError(err)),
 
-            switchMap(link =>
-                this.interviewService.saveInterviewLink(interview.id, link).pipe(
-                    tap(() => console.log('Link saved successfully')),
-                    catchError(err => this.handleSaveLinkError(err))
-                )
-            ),
+                switchMap((link) =>
+                    this.interviewService.saveInterviewLink(interview.id, link).pipe(
+                        tap(() => console.log('Link saved successfully')),
+                        catchError((err) => this.handleSaveLinkError(err))
+                    )
+                ),
 
-            switchMap(() =>
-                this.interviewService.sendEmail(interview).pipe(
-                    catchError(err => this.handleSendEmailError(err))
-                )
-            ),
+                switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
 
-            finalize(() => {
-                this.isGeneratingLink = false;
-            })
-        ).subscribe({
-            next: (res) => {
-                this.notify.showSuccess('Email Sent Successfully', res.message);
-            }
-        });
+                finalize(() => {
+                    this.isGeneratingLink = false;
+                })
+            )
+            .subscribe({
+                next: (res) => {
+                    this.notify.showSuccess('Email Sent Successfully', res.message);
+                }
+            });
     }
-
 
     AddCommentPopup(interview: InterviewInstance): void {
         this.tempComment = interview.comment || '';
@@ -206,7 +199,6 @@ export class InterviewListComponent implements OnInit {
                 this.interviews = this.interviews.filter((i) => i.id !== interview.id);
                 this.filteredInterviews = this.filteredInterviews.filter((i) => i.id !== interview.id);
                 this.notify.showSuccess('Deleted', 'Interview deleted successfully');
-
             },
             error: () => {
                 this.notify.showError('Error', 'Failed to delete interview');
@@ -219,11 +211,11 @@ export class InterviewListComponent implements OnInit {
     }
 
     openEvaluation(interview: InterviewInstance): void {
-        this.router.navigate(['/evaluation',interview.id], {
-            state: { interview }
-        });
-    }
+        sessionStorage.setItem(`interview_${interview.id}`, JSON.stringify(interview));
 
+        const url = this.router.serializeUrl(this.router.createUrlTree(['/evaluation', interview.id]));
+        window.open(url, '_blank');
+    }
 
     private handleGenerateLinkError(err: Error): Observable<never> {
         const message = err.message;
@@ -245,11 +237,7 @@ export class InterviewListComponent implements OnInit {
 
     private handleSaveLinkError(err: Error): Observable<never> {
         const message = err.message;
-        if (
-            message.includes('save') ||
-            message.includes('savelink') ||
-            message.includes('/savelink')
-        ) {
+        if (message.includes('save') || message.includes('savelink') || message.includes('/savelink')) {
             console.error('Failed to save interview link:', err);
             this.notify.showError('Saving Link Error', message);
         } else {
@@ -261,12 +249,7 @@ export class InterviewListComponent implements OnInit {
 
     private handleSendEmailError(err: Error): Observable<never> {
         const message = err.message;
-        if (
-            message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME ||
-            message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE ||
-            message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE ||
-            message.includes('email')
-        ) {
+        if (message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME || message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE || message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE || message.includes('email')) {
             console.error('Failed to send email:', err);
             this.notify.showError('Email Sending Error', message);
         } else {

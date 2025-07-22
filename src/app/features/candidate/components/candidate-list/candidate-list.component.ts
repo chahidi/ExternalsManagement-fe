@@ -421,15 +421,15 @@ addAddress(): void {
     this.selectedCandidate.experiences.splice(index, 1);
   }
 
-  addSkill(): void {
+  /*addSkill(): void {
     if (!this.selectedCandidate) return;
     this.selectedCandidate.skills = this.selectedCandidate.skills || [];
     this.selectedCandidate.skills.push({
       id: '',
       skillName: '',
-      proficiencyLevel: 'BEGINNER',
+      proficiencyLevel: '',
     });
-  }
+  }*/
 
   removeSkill(index: number): void {
     if (!this.selectedCandidate || !this.selectedCandidate.skills) return;
@@ -550,4 +550,40 @@ addAddress(): void {
     const contact = contacts?.find(c => c.contactType === type);
     return contact ? contact.contactValue : 'N/A';
   }
+
+  // Add these properties
+newSkillName: string = '';
+newSkillProficiency: string = '';
+
+// Add these methods
+getProficiencyLabel(value: string): string {
+  const proficiency = this.proficiencyLevelOptions.find(p => p.value === value);
+  return proficiency ? proficiency.label : '';
+}
+
+getProficiencyClass(proficiency: string): string {
+  switch(proficiency) {
+    case 'BEGINNER': return 'beginner';
+    case 'INTERMEDIATE': return 'intermediate';
+    case 'ADVANCED': return 'advanced';
+    case 'EXPERT': return 'expert';
+    default: return '';
+  }
+}
+
+// Modify your addSkill method
+addSkill() {
+  if (this.newSkillName && this.newSkillProficiency) {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+    this.selectedCandidate.skills.push({
+        id: '',
+      skillName: this.newSkillName,
+      proficiencyLevel: this.newSkillProficiency
+    });
+    this.newSkillName = '';
+    this.newSkillProficiency = '';
+  }
+}
+
 }

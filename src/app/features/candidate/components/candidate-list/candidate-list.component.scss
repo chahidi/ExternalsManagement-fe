@@ -63,30 +63,65 @@ legend {
 .skills-tags-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem; /* Increased bottom margin */
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
 }
 
 .skill-tag {
   display: inline-flex;
   align-items: center;
-  border-radius: 16px;
-  padding: 0.75rem 1.25rem; /* Increased padding */
-  font-size: 0.875rem;
+  border-radius: 22px;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  gap: 0.6rem;
   color: white;
   position: relative;
-  padding-right: 2.25rem;
-  min-height: 2.5rem;
-  margin-bottom: 0.5rem; /* Space between tags if they wrap */
+  padding-right: 2.2rem; /* Space for close button */
+  min-height: 2.8rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12);
 
   .skill-name {
-    font-weight: 600;
-    margin-right: 0.5rem; /* Space between name and level */
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    font-size: 1.05rem;
   }
 
   .skill-level {
-    font-size: 0.75rem;
-    opacity: 0.9;
+    font-size: 0.8rem;
+    opacity: 0.92;
+    font-weight: 500;
+    margin-top: 0.3rem; /* Pushes level text down slightly */
+  }
+
+  .tag-close-button {
+    position: absolute;
+    right: 0.5rem; /* Adjusted to extreme right */
+    top: 1rem; /* Perfect top alignment */
+    width: 1rem; /* Smaller size */
+    height: 1rem; /* Smaller size */
+    min-width: 1rem; /* Prevent stretching */
+    min-height: 1rem; /* Prevent stretching */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    color: white !important;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    &:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.2) !important;
+    }
+
+    .pi {
+      font-size: 0.6rem; /* Smaller X icon */
+      margin: 0;
+    }
   }
 }
 

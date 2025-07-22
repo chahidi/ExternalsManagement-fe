@@ -59,3 +59,60 @@ fieldset {
 legend {
     padding: 0 8px;
 }
+
+.skills-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem; /* Increased bottom margin */
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 16px;
+  padding: 0.75rem 1.25rem; /* Increased padding */
+  font-size: 0.875rem;
+  color: white;
+  position: relative;
+  padding-right: 2.25rem;
+  min-height: 2.5rem;
+  margin-bottom: 0.5rem; /* Space between tags if they wrap */
+
+  .skill-name {
+    font-weight: 600;
+    margin-right: 0.5rem; /* Space between name and level */
+  }
+
+  .skill-level {
+    font-size: 0.75rem;
+    opacity: 0.9;
+  }
+}
+
+.add-skill-form {
+  .p-field {
+    margin-bottom: 1.5rem; /* Consistent field spacing */
+
+    label {
+      display: block;
+      margin-bottom: 0.75rem; /* Space between label and input */
+      font-weight: 500;
+    }
+
+    input, p-dropdown {
+      width: 100%;
+      margin-bottom: 0.5rem; /* Small space below inputs */
+    }
+  }
+
+  button {
+    margin-top: 1.75rem; /* Proper alignment with inputs */
+  }
+}
+
+/* Color classes remain the same */
+.beginner { background-color: #3f51b5; }
+.intermediate { background-color: #673ab7; }
+.advanced { background-color: #009688; }
+.expert { background-color: #f44336; }

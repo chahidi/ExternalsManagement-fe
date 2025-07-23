@@ -24,9 +24,11 @@
 .message {
    color: inherit;
    margin-top: 0.5rem;
-   font-size: 0.875rem;
+   font-size: 1.5rem;
 }
-
-::ng-deep .p-progress-spinner-circle {
-   stroke: currentColor;
-}
+::ng-deep .test-spinner {
+   circle {
+     stroke: var(--primary-color);
+     animation: p-progress-spinner-dash 1.5s ease-in-out infinite !important;
+   }
+ }

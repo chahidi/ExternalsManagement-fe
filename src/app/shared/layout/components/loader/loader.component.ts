@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
@@ -12,7 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 export class LoaderComponent {
     @Input() size: string = '50px';
     @Input() strokeWidth: string = '4';
-    @Input() color: string = 'var(--primary-color)';
+    @Input() color: string = '#1976d2';
     @Input() animationDuration: string = '1s';
     @Input() withOverlay: boolean = false;
     @Input() message: string | null = null;

@@ -27,7 +27,6 @@ import { InterviewEvaluationService } from '../../../../core/services/interview-
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SpeechRecognitionService } from '../../../../core/services/speech-recognition.service';
 
-// Define SpeechRecognitionState type locally
 type SpeechRecognitionState = {
     isListening: boolean;
     isSupported: boolean;
@@ -39,12 +38,7 @@ type SpeechRecognitionState = {
 import { AvatarModule } from 'primeng/avatar';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { Router } from '@angular/router';
-import {
-    cameraTransition,
-    slideInInterview,
-    fadeInControls,
-    slideInTranscript
-} from '../../../../shared/layout/animations/interview-meeting.animations';
+import { cameraTransition, slideInInterview, fadeInControls, slideInTranscript } from '../../../../shared/layout/animations/interview-meeting.animations';
 import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 
 @Component({
@@ -111,8 +105,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private notify: NotificationService,
         private speechRecognitionService: SpeechRecognitionService,
         private cdr: ChangeDetectorRef,
-        private router: Router,
-    ) { }
+        private router: Router
+    ) {}
 
     ngOnInit(): void {
         this.initializeComponent();
@@ -592,7 +586,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 this.notify.showWarning('Evaluation Failed', 'Interview saved, but evaluation failed. Try again later.');
             }
         });
-
     }
 
     private cleanupInterviewResources(): void {
@@ -618,7 +611,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         window.removeEventListener('resize', this.handleResize);
     }
 
-
     private exitFullscreenMode(): void {
         if (document.fullscreenElement) {
             document.exitFullscreen();
@@ -629,7 +621,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         e.preventDefault();
         e.returnValue = '';
     };
-
 
     private handleTabSwitch = () => {
         if (document.visibilityState === 'hidden') {
@@ -647,7 +638,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     closeWarning(): void {
         this.userWarningMessage = null;
     }
-
 
     private scrollTranscriptToBottom(): void {
         setTimeout(() => {

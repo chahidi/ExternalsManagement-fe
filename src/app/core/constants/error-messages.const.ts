@@ -22,6 +22,7 @@ export const ERROR_MESSAGES = {
     EMAIL: {
         INVALID_CANDIDATE_NAME: 'Invalid candidate full name',
         INVALID_OFFER_TITLE: 'Invalid offer title',
-        INVALID_SCHEDULED_DATE: 'Invalid scheduled date for email'
+        INVALID_SCHEDULED_DATE: 'Invalid scheduled date for email',
+        INVALID_LINK: 'Invalid Link'
     }
 };

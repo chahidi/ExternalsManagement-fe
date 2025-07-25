@@ -66,7 +66,8 @@ export class InterviewService {
         const payload: SendInterviewEmailPayload = {
             candidateFullName: interview.candidate.fullName,
             offerTitle: interview.offer.title,
-            scheduledDate: interview.scheduledAt
+            scheduledDate: interview.scheduledAt,
+            link: interview.link
         };
 
         if (!payload.candidateFullName || typeof payload.candidateFullName !== 'string') {
@@ -77,6 +78,9 @@ export class InterviewService {
         }
         if (!payload.scheduledDate || !(payload.scheduledDate instanceof Date || typeof payload.scheduledDate === 'string')) {
             return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE));
+        }
+        if (!payload.link || typeof payload.link !== 'string') {
+            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_LINK));
         }
 
         return this.http.post<{ message: string }>(`${this.apiUrl}/sendEmail`, payload).pipe(

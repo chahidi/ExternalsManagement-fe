@@ -9,6 +9,7 @@ export interface SendInterviewEmailPayload {
   candidateFullName: string;
   offerTitle: string;
   scheduledDate: Date;
+  link: string;
 }
 
 export interface GenerateInterviewLinkResponse {

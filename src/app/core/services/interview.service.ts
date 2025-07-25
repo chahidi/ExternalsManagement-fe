@@ -29,7 +29,7 @@ export class InterviewService {
         );
     };
 
-    generateInterviewLink = (interview: InterviewInstance): Observable<string> => {
+    generateAndSaveInterviewLink = (interview: InterviewInstance): Observable<string> => {
         const payload: GenerateInterviewLinkPayload = {
             candidateId: interview.candidate.id,
             offerId: interview.offer.id,
@@ -54,7 +54,7 @@ export class InterviewService {
 
         this.loadingSubject.next(true);
 
-        return this.http.post<string>(`${this.apiUrl}/${interviewId}/generateLink`, payload).pipe(
+        return this.http.post<string>(`${this.apiUrl}/${interviewId}/generateAndSaveLink`, payload).pipe(
             timeout(10000),
             retry(2),
             finalize(() => this.loadingSubject.next(false)),
@@ -66,7 +66,8 @@ export class InterviewService {
         const payload: SendInterviewEmailPayload = {
             candidateFullName: interview.candidate.fullName,
             offerTitle: interview.offer.title,
-            scheduledDate: interview.scheduledAt
+            scheduledDate: interview.scheduledAt,
+            link: interview.link
         };
 
         if (!payload.candidateFullName || typeof payload.candidateFullName !== 'string') {
@@ -78,6 +79,9 @@ export class InterviewService {
         if (!payload.scheduledDate || !(payload.scheduledDate instanceof Date || typeof payload.scheduledDate === 'string')) {
             return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE));
         }
+        if (!payload.link || typeof payload.link !== 'string') {
+            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_LINK));
+        }
 
         return this.http.post<{ message: string }>(`${this.apiUrl}/sendEmail`, payload).pipe(
             retry(2),
@@ -87,13 +91,6 @@ export class InterviewService {
 
     AddComment = (id: string, comment: string): Observable<any> => {
         return this.http.put<any>(`${this.apiUrl}/${id}/addComment`, { comment }).pipe(
-            retry(2),
-            catchError(this.handleError)
-        );
-    };
-
-    saveInterviewLink = (interviewId: string, link: string): Observable<any> => {
-        return this.http.put<any>(`${this.apiUrl}/${interviewId}/saveLink`, { link }).pipe(
             retry(2),
             catchError(this.handleError)
         );

@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InterviewEvaluationComponent } from './interview-evaluation.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { InterviewInstance } from '../../../../core/models/interview-instance';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('InterviewEvaluationComponent', () => {
   let component: InterviewEvaluationComponent;
@@ -72,7 +72,7 @@ describe('InterviewEvaluationComponent', () => {
     spyOnProperty(history, 'state', 'get').and.returnValue({ interview: mockInterview });
 
     await TestBed.configureTestingModule({
-      imports: [InterviewEvaluationComponent, HttpClientTestingModule],
+      imports: [InterviewEvaluationComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -87,7 +87,7 @@ describe('InterviewEvaluationComponent', () => {
         {
           provide: InterviewEvaluationService,
           useValue: mockEvaluationService
-        }
+        },provideHttpClientTesting()
       ]
     }).compileComponents();
 

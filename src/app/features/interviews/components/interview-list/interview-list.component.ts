@@ -130,21 +130,12 @@ export class InterviewListComponent implements OnInit {
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         this.isGeneratingLink = true;
 
-        this.interviewService
-            .generateInterviewLink(interview)
-            .pipe(
-                tap((link) => {
-                    console.log('Generated Link:', link);
-                    interview.link = link;
-                }),
-                catchError((err) => this.handleGenerateLinkError(err)),
-
-                switchMap((link) =>
-                    this.interviewService.saveInterviewLink(interview.id, link).pipe(
-                        tap(() => console.log('Link saved successfully')),
-                        catchError((err) => this.handleSaveLinkError(err))
-                    )
-                ),
+        this.interviewService.generateAndSaveInterviewLink(interview).pipe(
+            tap(link => {
+                console.log('Generated Link:', link);
+                interview.link = link;
+            }),
+            catchError(err => this.handleGenerateAndSaveLinkError(err)),
 
                 switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
 
@@ -217,7 +208,7 @@ export class InterviewListComponent implements OnInit {
         window.open(url, '_blank');
     }
 
-    private handleGenerateLinkError(err: Error): Observable<never> {
+    private handleGenerateAndSaveLinkError(err: Error): Observable<never> {
         const message = err.message;
         if (
             message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
@@ -228,20 +219,12 @@ export class InterviewListComponent implements OnInit {
         ) {
             console.error('Failed to generate interview link:', err);
             this.notify.showError('Link Generation Error', message);
-        } else {
-            console.error('Unexpected error during link generation:', err);
-            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
-        }
-        return EMPTY;
-    }
-
-    private handleSaveLinkError(err: Error): Observable<never> {
-        const message = err.message;
-        if (message.includes('save') || message.includes('savelink') || message.includes('/savelink')) {
-            console.error('Failed to save interview link:', err);
+        } else if(message.includes('save')){
+            console.error('Failed To save the generated link');
             this.notify.showError('Saving Link Error', message);
-        } else {
-            console.error('Unexpected error during link saving:', err);
+        }
+        else {
+            console.error('Unexpected error during link generation:', err);
             this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
         }
         return EMPTY;

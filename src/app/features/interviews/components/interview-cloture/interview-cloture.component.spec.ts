@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InterviewClotureComponent } from './interview-cloture.component';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('InterviewClotureComponent', () => {
   let component: InterviewClotureComponent;
@@ -8,7 +8,8 @@ describe('InterviewClotureComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InterviewClotureComponent]
+      imports: [InterviewClotureComponent],
+      providers:[provideNoopAnimations()]
     })
     .compileComponents();
 

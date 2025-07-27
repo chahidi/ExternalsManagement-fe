@@ -55,7 +55,7 @@ export class NewCvComponent {
                         this.loaderService.hide();
                         alert('CV uploaded successfully!');
                         console.log('Server response:', response);
-                        
+
                         this.router.navigate(['/candidates/stepper'], {
                             state: { extractedData: response }
                         });

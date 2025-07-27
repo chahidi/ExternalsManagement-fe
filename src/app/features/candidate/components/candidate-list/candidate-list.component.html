@@ -1,3 +1,4 @@
+<app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
 <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Candidate List</h2>
 
@@ -41,7 +42,6 @@
         dataKey="id"
         [rows]="10"
         [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="loading"
         [paginator]="true"
         [globalFilterFields]="['fullName', 'addresses.city.name', 'educations.degree', 'experiences.companyName', 'skills.skillName', 'mainTech']"
         responsiveLayout="scroll"
@@ -327,7 +327,7 @@
                     <button type="button"
                             pButton
                             icon="pi pi-plus"
-                            class="p-button-sm w-full mt-6"  
+                            class="p-button-sm w-full mt-6"
                             [disabled]="!newSkillName || !newSkillProficiency"
                             (click)="addSkill()"></button>
                 </div>

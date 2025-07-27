@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 
 
 @Component({
@@ -24,7 +26,8 @@ import { ConfirmationService } from 'primeng/api';
     DialogModule,
     FormsModule,
     InputTextModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    LoaderComponent
 ],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss',
@@ -42,18 +45,23 @@ export class PromptListComponent implements OnInit {
   dialogVisible = false;
   selectedPrompt: Prompt = { id: '', promptCode: '', promptDesc: '', schema: '' };
 
+  isLoading$;
+  loadingMessage$;
+
   constructor(
     private promptService: PromptService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
-) {}
+    private confirmationService: ConfirmationService,
+    private loaderService: LoaderService
+) { this.isLoading$ = this.loaderService.isLoading$;
+    this.loadingMessage$ = this.loaderService.loadingMessage$;}
 
   ngOnInit() {
     this.loadPrompts();
   }
 
   loadPrompts(event?: any) {
-    this.loading = true;
+    this.loaderService.show("Loading prompts...");
     const page = event ? event.first / event.rows : 0;
     const size = event ? event.rows : this.rows;
     const sortField = event ? event.sortField : this.sortField;
@@ -63,11 +71,11 @@ export class PromptListComponent implements OnInit {
       next: (data) => {
         this.prompts = data.content;
         this.totalRecords = data.totalElements;
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-        this.loading = false;
+        this.loaderService.hide();
       },
     });
   }

@@ -65,7 +65,7 @@ export class InterviewService {
     sendEmail = (interview: InterviewInstance): Observable<{ message: string }> => {
         const interviewId = interview.id;
 
-        if(!interviewId || typeof interviewId!=='string'){
+        if(!interviewId || typeof interviewId!=='string' || interviewId.trim()===''){
             return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_INTERVIEWID));
         }
 

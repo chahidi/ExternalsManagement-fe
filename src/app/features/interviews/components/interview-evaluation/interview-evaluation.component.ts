@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { InterviewInstance } from '../../../../core/models/interview-instance';
 import { Evaluation } from '../../../../core/models/evaluation';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,18 +24,17 @@ import { ToastModule } from 'primeng/toast';
     styleUrls: ['./interview-evaluation.component.scss']
 })
 export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
-    @ViewChild('scoreCircle', { static: false }) scoreCircle!: ElementRef;
+    @ViewChildren('scoreCircle') scoreCircles!: QueryList<ElementRef>;
 
     interview: InterviewInstance | null = null;
-    evaluation: Evaluation | null = null;
+    evaluations: Evaluation[] = [];
     loading = true;
     error = {
         happened: false,
         message: ''
     };
 
-    animatedScore = 0;
-    finalScore = 0;
+    animatedScores: { [key: string]: number } = {};
 
     constructor(
         private router: Router,
@@ -55,7 +54,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 if (storedInterview) {
                     try {
                         this.interview = JSON.parse(storedInterview);
-                        // Clean up after use
                         sessionStorage.removeItem(`interview_${interviewId}`);
                     } catch (error) {
                         console.error('Error parsing stored interview data:', error);
@@ -71,13 +69,24 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        this.evaluationService.getInterviewEvaluation(this.interview.id).subscribe({
+        this.loadEvaluations();
+    }
+
+    ngAfterViewInit(): void {
+        if (this.evaluations.length > 0) {
+            setTimeout(() => this.animateAllScores(), 100);
+        }
+    }
+
+    private loadEvaluations(): void {
+        this.evaluationService.getInterviewEvaluation(this.interview!.id).subscribe({
             next: (data) => {
-                this.evaluation = data;
-                this.finalScore = this.evaluation?.score || 0;
+                this.evaluations = Array.isArray(data) ? data : [data];
+                this.evaluations.forEach((evaluation) => {
+                    this.animatedScores[evaluation.id] = 0;
+                });
                 this.loading = false;
-                console.log('evaluation: ', this.finalScore);
-                this.checkAndStartAnimation();
+                setTimeout(() => this.animateAllScores(), 100);
             },
             error: (err) => {
                 console.error('Failed to fetch evaluation:', err);
@@ -85,12 +94,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 this.loading = false;
             }
         });
-    }
-
-    ngAfterViewInit(): void {
-        if (this.evaluation?.score) {
-            this.animateScore();
-        }
     }
 
     getScoreRangeClass(score: number): string {
@@ -114,51 +117,44 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         return 'score-poor';
     }
 
-    animateScore(): void {
-        const scoreElement = this.scoreCircle?.nativeElement;
-        if (!scoreElement || !this.evaluation?.score) return;
+    animateAllScores(): void {
+        if (!this.scoreCircles) return;
+        const scoreElements = this.scoreCircles.toArray();
+        this.evaluations.forEach((evaluation, index) => {
+            if (scoreElements[index]) {
+                this.animateScore(scoreElements[index].nativeElement, evaluation);
+            }
+        });
+    }
 
-        const finalScore = this.evaluation.score;
+    animateScore(scoreElement: HTMLElement, evaluation: Evaluation): void {
+        if (!scoreElement || evaluation.score == null) return;
+        const finalScore = evaluation.score;
         const finalDegrees = (finalScore / 100) * 360;
-
         scoreElement.style.setProperty('--progress-degrees', `${finalDegrees}deg`);
         scoreElement.style.setProperty('--score-color', this.getScoreColor(finalScore));
-
         scoreElement.classList.add('animate');
         scoreElement.classList.add(this.getScoreRangeClass(finalScore));
-
-        this.animateScoreNumber(finalScore);
-
+        this.animateScoreNumber(evaluation.id, finalScore);
         setTimeout(() => {
             scoreElement.classList.add('pulse');
         }, 2000);
     }
 
-    animateScoreNumber(targetScore: number): void {
+    animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();
-
-        const element = this.scoreCircle.nativeElement;
-
-        element.style.setProperty('--score-color', this.getScoreColor(targetScore));
-
         const animate = (currentTime: number) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const easeProgress = this.easeInOutCubic(progress);
-
-            this.animatedScore = Math.round(easeProgress * targetScore);
-            const degrees = (this.animatedScore / 100) * 360;
-
-            element.style.setProperty('--progress-degrees', `${degrees}deg`);
-
+            this.animatedScores[evaluationId] = Math.round(easeProgress * targetScore);
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                this.animatedScore = targetScore;
+                this.animatedScores[evaluationId] = targetScore;
             }
         };
-
         requestAnimationFrame(animate);
     }
 
@@ -167,24 +163,23 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     }
 
     triggerScoreAnimation(): void {
-        if (this.scoreCircle && this.evaluation?.score) {
-            const element = this.scoreCircle.nativeElement;
-            element.classList.remove('animate', 'pulse');
-            element.classList.remove('score-0-25', 'score-25-50', 'score-50-75', 'score-75-100');
-
-            this.animatedScore = 0;
-
-            setTimeout(() => {
-                this.animateScore();
-            }, 100);
+        if (this.scoreCircles && this.evaluations.length > 0) {
+            const scoreElements = this.scoreCircles.toArray();
+            scoreElements.forEach((el) => el.nativeElement.classList.remove('animate', 'pulse'));
+            this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
+            setTimeout(() => this.animateAllScores(), 100);
         }
     }
 
-    private checkAndStartAnimation(): void {
-        setTimeout(() => {
-            if (!this.loading && this.evaluation?.score && this.scoreCircle) {
-                this.animateScore();
-            }
-        }, 100);
+    getEvaluationTypeDescription(evaluation: Evaluation): string {
+        return evaluation.evaluationType?.description || 'General Evaluation';
+    }
+
+    getAnimatedScore(evaluationId: string): number {
+        return this.animatedScores[evaluationId] || 0;
+    }
+
+    trackByEvaluationId(index: number, evaluation: Evaluation): string {
+        return evaluation.id;
     }
 }

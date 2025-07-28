@@ -1,4 +1,3 @@
-// src/app/features/interview/components/interview-meeting/interview-meeting.component.ts
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
@@ -26,6 +25,8 @@ import { TextToSpeechService } from '../../../../core/services/text-to-speech.se
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SpeechRecognitionService } from '../../../../core/services/speech-recognition.service';
+import { Answer } from '../../../../core/models/answer';
+import { ActivatedRoute } from '@angular/router';
 
 type SpeechRecognitionState = {
     isListening: boolean;
@@ -96,6 +97,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
     private destroy$ = new Subject<void>();
     private eventListenersRegistered = false;
+    interviewToken: any;
 
     constructor(
         private recordService: RecordService,
@@ -105,7 +107,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private notify: NotificationService,
         private speechRecognitionService: SpeechRecognitionService,
         private cdr: ChangeDetectorRef,
-        private router: Router
+        private router: Router,
+        private activatedRoute: ActivatedRoute
     ) {}
 
     ngOnInit(): void {
@@ -119,34 +122,41 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }, 500);
     }
 
-    //Initialize component with basic setup
-    private initializeComponent(): void {
-        this.loadInterviewQuestions();
-        this.updateClock();
-        setInterval(() => this.updateClock(), 1000);
-        this.checkSpeechRecognitionSupport();
-        this.isCameraReady = true;
-    }
-    //Subscribe to speech recognition service observables
+    // Update your initializeComponent method
+private initializeComponent(): void {
+    // Extract token from route params first
+    this.activatedRoute.params.subscribe(params => {
+        const token = params['token'];
+        if (token) {
+            this.interviewToken = token;
+            console.log('Extracted interview token:', token);
+            // Load questions after we have the token
+            this.loadInterviewQuestions();
+        } else {
+            console.error('No interview token found in route');
+            this.notify.showError('Error', 'Invalid interview link.');
+            this.router.navigate(['/']);
+        }
+    });
+
+    this.updateClock();
+    setInterval(() => this.updateClock(), 1000);
+    this.checkSpeechRecognitionSupport();
+    this.isCameraReady = true;
+}
     private subscribesToSpeechRecognition(): void {
-        // Subscribe to speech recognition state changes
         this.speechRecognitionService.state$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
             this.speechRecognitionState = state;
             this.updateUIFromSpeechState(state);
             this.cdr.detectChanges();
         });
-
-        // Subscribe to speech recognition results
         this.speechRecognitionService.result$.pipe(takeUntil(this.destroy$)).subscribe((result) => {
             this.handleSpeechResult(result);
         });
-
-        // Subscribe to speech recognition errors
         this.speechRecognitionService.error$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
             this.handleSpeechError(error?.message ?? String(error));
         });
     }
-    //Update UI based on speech recognition state
     private updateUIFromSpeechState(state: SpeechRecognitionState): void {
         this.liveSubtitle = state.combinedTranscript;
         this.currentUserAnswer = state.finalTranscript;
@@ -156,15 +166,11 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.userWarningMessage = state.error;
         }
     }
-    // Handle speech recognition results
 
     private handleSpeechResult(result: any): void {
-        // Update live subtitle for interim results
         if (!result.isFinal) {
             this.liveSubtitle = this.speechRecognitionService.getCombinedTranscript();
         }
-
-        // Update current answer for final results
         if (result.isFinal) {
             this.currentUserAnswer = this.speechRecognitionService.getFinalTranscript();
             this.canSubmitAnswer = this.currentUserAnswer.trim().length > 0;
@@ -192,21 +198,29 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const minutes = now.getMinutes().toString().padStart(2, '0');
         this.currentTime = `${hours}:${minutes}`;
     }
+loadInterviewQuestions(): void {
+    const promptId = 1;
 
-    loadInterviewQuestions(): void {
-        const prompt = 'Give me 5 basic interview questions';
-        this.promptService.getQuestions(prompt).subscribe({
-            next: (questions) => {
-                this.questions = questions;
-                this.currentQuestionIndex = 0;
-                console.log('Loaded structured questions:', questions);
-            },
-            error: (err) => {
-                console.error('Failed to load structured interview questions:', err);
-                this.notify.showError('Error', 'Failed to load interview questions. Please refresh the page.');
-            }
-        });
+    if (!this.interviewToken) {
+        console.error('No interview token available');
+        this.notify.showError('Error', 'Interview token not found.');
+        return;
     }
+
+    console.log('Sending to prompt service:', { promptId, token: this.interviewToken });
+
+    this.promptService.getQuestions(promptId, this.interviewToken).subscribe({
+        next: (questions) => {
+            this.questions = questions;
+            this.currentQuestionIndex = 0;
+            console.log('Loaded structured questions:', questions);
+        },
+        error: (err) => {
+            console.error('Failed to load structured interview questions:', err);
+            this.notify.showError('Error', 'Failed to load interview questions. Please refresh the page.');
+        }
+    });
+}
 
     async requestCameraPermission(): Promise<void> {
         try {
@@ -352,10 +366,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     addCurrentQuestionToTranscript(): void {
         const currentQuestion = this.questions[this.currentQuestionIndex];
-        if (currentQuestion?.text) {
+        if (currentQuestion?.description) {
             this.transcriptMessages.push({
                 sender: 'AI',
-                text: currentQuestion.text,
+                text: currentQuestion.description,
                 align: 'left',
                 type: 'question'
             });
@@ -369,7 +383,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         if (!currentQuestion || !this.isInterviewInProgress) return;
 
         this.resetSpeechRecognitionData();
-        this.timeRemaining = currentQuestion.timeLimit;
+        this.timeRemaining = currentQuestion.durationInMinutes * 60;
         this.aiSpeaking = true;
         this.hideSubmissionControls();
 
@@ -377,7 +391,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.initializeQuestionTimer();
 
         try {
-            await this.tts.speak(currentQuestion.text);
+            await this.tts.speak(currentQuestion.description);
             this.aiSpeaking = false;
             this.isWaitingForAnswer = true;
             this.showSubmitButton = true;
@@ -430,10 +444,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.speechRecognitionService.start();
         console.log('Speech recognition started for question:', this.currentQuestionIndex + 1);
     }
-
     submitCurrentAnswer(): void {
-        const userAnswer = this.speechRecognitionService.getFinalTranscript().trim();
-        if (!userAnswer) {
+        const userAnswerText = this.speechRecognitionService.getFinalTranscript().trim();
+        if (!userAnswerText) {
             this.notify.showWarning('No Answer', 'Please provide an answer before submitting.');
             return;
         }
@@ -443,17 +456,23 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (currentQuestion) {
-            currentQuestion.answer = userAnswer;
+            const answerObject: Answer = {
+                id: Date.now().toString(),
+                description: userAnswerText,
+                durationInMinutes: Math.ceil((currentQuestion.durationInMinutes * 60 - this.timeRemaining) / 60)
+            };
+
+            currentQuestion.answer = answerObject;
         }
 
         this.transcriptMessages.push({
             sender: 'You',
-            text: userAnswer,
+            text: userAnswerText,
             align: 'right',
             type: 'answer'
         });
 
-        console.log('✅ Answer submitted:', userAnswer);
+        console.log('✅ Answer submitted:', userAnswerText);
         this.cdr.detectChanges();
         this.scrollTranscriptToBottom();
 
@@ -479,11 +498,21 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.clearQuestionTimer();
         this.hideSubmissionControls();
 
-        const userAnswer = this.speechRecognitionService.getFinalTranscript().trim();
+        const userAnswerText = this.speechRecognitionService.getFinalTranscript().trim();
 
-        if (userAnswer) {
+        if (userAnswerText) {
             this.submitCurrentAnswer();
         } else {
+            const currentQuestion = this.questions[this.currentQuestionIndex];
+            if (currentQuestion) {
+                const emptyAnswer: Answer = {
+                    id: Date.now().toString(),
+                    description: '',
+                    durationInMinutes: currentQuestion.durationInMinutes,
+                    question: currentQuestion
+                };
+                currentQuestion.answer = emptyAnswer;
+            }
             this.handleNoAnswerProvided();
         }
     }
@@ -536,6 +565,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         this.finalizeInterviewAndSaveEvaluation();
         this.cleanupInterviewResources();
+
+        console.log(
+            'Full Questions with Answers:',
+            this.questions.map((q) => ({
+                question: q.description,
+                answer: q.answer?.description || 'No answer provided',
+                duration: q.answer?.durationInMinutes || 0
+            }))
+        );
 
         console.log('Full Questions Array:', this.questions);
     }
@@ -659,12 +697,16 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.recognition.stop();
         }
 
-        // Clean up event listeners
         window.removeEventListener('beforeunload', this.preventUnload);
         document.removeEventListener('visibilitychange', this.handleTabSwitch);
         window.removeEventListener('resize', this.handleResize);
         this.destroy$.next();
         this.destroy$.complete();
         this.cleanupInterviewResources();
+    }
+    getFormattedTime(): string {
+        const minutes = Math.floor(this.timeRemaining / 60);
+        const seconds = this.timeRemaining % 60;
+        return `⏱ Time left: ${minutes}m ${seconds}s`;
     }
 }

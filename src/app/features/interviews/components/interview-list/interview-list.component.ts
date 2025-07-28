@@ -198,7 +198,7 @@ export class InterviewListComponent implements OnInit {
     }
 
     shouldShowEvaluation(interview: InterviewInstance): boolean {
-        return !!interview.endDate;
+        return !!interview.endTime;
     }
 
     openEvaluation(interview: InterviewInstance): void {
@@ -208,7 +208,7 @@ export class InterviewListComponent implements OnInit {
         window.open(url, '_blank');
     }
 
-    private handleGenerateAndSaveLinkError(err: Error): Observable<never> {
+    private handleGenerateAndSaveLinkError(err: Error):  Observable<never> {
         const message = err.message;
         if (
             message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||

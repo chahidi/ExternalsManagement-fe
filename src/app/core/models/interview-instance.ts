@@ -5,15 +5,17 @@ import { Evaluation } from './evaluation';
 import { Record } from './record';
 
 export interface InterviewInstance {
-    id: string;
-    questions: Question[];
-    candidate: Candidate;
-    offer: Offer;
-    evaluation: Evaluation;
-    link: string;
-    comment: string;
-    scheduledAt: Date;
-    startDate: Date;
-    endDate: Date | null;
-    record: Record;
+  id: string;
+  link: string;
+  scheduledAt: Date;
+  startTime: Date;
+  endTime: Date;
+  description: string;
+  feedbackGeneral: string;
+  comment: string;
+  candidate: Candidate;
+  offer: Offer;
+  questions: Question[];
+  evaluations: Evaluation[];
+  record: Record;
 }

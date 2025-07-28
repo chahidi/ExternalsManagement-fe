@@ -5,14 +5,21 @@ import { Question } from '../models/question';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PromptService {
-  private apiUrl = `${environment.apiInterviews}/v1/prompt`;
+    private apiUrl = `${environment.apiInterviews}/v1/prompt`;
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { }
 
-  getQuestions = (prompt: string): Observable<Question[]> => {
-    return this.http.post<Question[]>(`${this.apiUrl}/generateQuestions`, { prompt });
-  };
+    getQuestions = (promptId: number, token: string): Observable<Question[]> => {
+        const payload = {
+            promptId,
+            token
+        };
+
+        console.log('PromptService sending payload:', payload);
+
+        return this.http.post<Question[]>(`${this.apiUrl}/generateQuestions`, payload);
+    };
 }

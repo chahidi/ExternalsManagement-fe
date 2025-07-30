@@ -79,7 +79,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     }
 
     private loadEvaluations(): void {
-        this.evaluationService.getInterviewEvaluation(this.interview!.id).subscribe({
+        this.evaluationService.getInterviewEvaluations(this.interview!.id).subscribe({
             next: (data) => {
                 this.evaluations = Array.isArray(data) ? data : [data];
                 this.evaluations.forEach((evaluation) => {

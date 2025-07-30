@@ -18,7 +18,7 @@ export class InterviewEvaluationService {
   constructor(private http: HttpClient) { }
 
   // Updated to return array of evaluations instead of single evaluation
-  getInterviewEvaluation = (interviewId: string): Observable<Evaluation[]> => {
+  getInterviewEvaluations = (interviewId: string): Observable<Evaluation[]> => {
     return this.http.get<Evaluation[]>(`${this.apiUrl}/${interviewId}/evaluations/`)
       .pipe(
         retry(2),

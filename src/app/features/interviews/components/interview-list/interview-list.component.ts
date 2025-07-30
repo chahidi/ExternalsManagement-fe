@@ -56,7 +56,7 @@ export class InterviewListComponent implements OnInit {
         private offerService: OfferService,
         private router: Router,
         private notify: NotificationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -137,12 +137,12 @@ export class InterviewListComponent implements OnInit {
             }),
             catchError(err => this.handleGenerateAndSaveLinkError(err)),
 
-                switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
+            switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
 
-                finalize(() => {
-                    this.isGeneratingLink = false;
-                })
-            )
+            finalize(() => {
+                this.isGeneratingLink = false;
+            })
+        )
             .subscribe({
                 next: (res) => {
                     this.notify.showSuccess('Email Sent Successfully', res.message);
@@ -208,7 +208,7 @@ export class InterviewListComponent implements OnInit {
         window.open(url, '_blank');
     }
 
-    private handleGenerateAndSaveLinkError(err: Error):  Observable<never> {
+    private handleGenerateAndSaveLinkError(err: Error): Observable<never> {
         const message = err.message;
         if (
             message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
@@ -219,7 +219,7 @@ export class InterviewListComponent implements OnInit {
         ) {
             console.error('Failed to generate interview link:', err);
             this.notify.showError('Link Generation Error', message);
-        } else if(message.includes('save')){
+        } else if (message.includes('save')) {
             console.error('Failed To save the generated link');
             this.notify.showError('Saving Link Error', message);
         }

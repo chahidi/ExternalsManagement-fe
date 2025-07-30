@@ -89,7 +89,7 @@
                 <td>{{ interview.offer?.title || 'N/A' }}</td>
                 <td>{{ interview.comment || 'N/A' }}</td>
                 <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
-                <td>{{ interview.endDate ? (interview.endDate | date: 'dd-MM-yyyy') : '—' }}</td>
+                <td>{{ interview.endTime ? (interview.endTime | date: 'dd-MM-yyyy') : '—' }}</td>
                 <td>{{ getRemainingHours(interview.scheduledAt) }}</td>
                 <td>
                     <ng-container *ngIf="interview.record?.durationInSeconds; else noDuration"> {{ interview.record.durationInSeconds / 60 | number: '1.0-0' }} min </ng-container>

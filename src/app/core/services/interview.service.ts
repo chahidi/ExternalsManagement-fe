@@ -63,27 +63,13 @@ export class InterviewService {
     };
 
     sendEmail = (interview: InterviewInstance): Observable<{ message: string }> => {
-        const payload: SendInterviewEmailPayload = {
-            candidateFullName: interview.candidate.fullName,
-            offerTitle: interview.offer.title,
-            scheduledDate: interview.scheduledAt,
-            link: interview.link
-        };
+        const interviewId = interview.id;
 
-        if (!payload.candidateFullName || typeof payload.candidateFullName !== 'string') {
-            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME));
-        }
-        if (!payload.offerTitle || typeof payload.offerTitle !== 'string') {
-            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE));
-        }
-        if (!payload.scheduledDate || !(payload.scheduledDate instanceof Date || typeof payload.scheduledDate === 'string')) {
-            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE));
-        }
-        if (!payload.link || typeof payload.link !== 'string') {
-            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_LINK));
+        if(!interviewId || typeof interviewId!=='string' || interviewId.trim()===''){
+            return throwError(() => new Error(ERROR_MESSAGES.EMAIL.INVALID_INTERVIEWID));
         }
 
-        return this.http.post<{ message: string }>(`${this.apiUrl}/sendEmail`, payload).pipe(
+        return this.http.post<{ message: string }>(`${this.apiUrl}/${interviewId}/sendEmail`,{}).pipe(
             retry(2),
             catchError(this.handleError)
         );

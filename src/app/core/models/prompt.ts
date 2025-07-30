@@ -1,4 +1,6 @@
 export interface Prompt {
-  id: number;
-  textValue: string;
+  id: string; 
+  promptCode: string;
+  promptDesc: string;
+  schema: string;
 }

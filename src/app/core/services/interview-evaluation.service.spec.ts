@@ -11,8 +11,8 @@ import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 
 providers: [
-  { 
-    provide: ActivatedRoute, 
+  {
+    provide: ActivatedRoute,
     useValue: {
       paramMap: of({ get: (key: string) => 'someId' }),
       snapshot: {

@@ -1,25 +1,63 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Question } from '../models/question';
 import { environment } from '../../../environments/environment';
+import { Prompt } from '../models/prompt';
+import { Question } from '../models/question';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
+
 export class PromptService {
-    private apiUrl = `${environment.apiInterviews}/v1/prompt`;
+  private apiUrl = `${environment.apiUrl}/prompts`;
+  private mockApiInterviewsUrl = `${environment.apiInterviews}/v1/prompt`;
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    getQuestions = (promptId: number, token: string): Observable<Question[]> => {
-        const payload = {
-            promptId,
-            token
-        };
+  createPrompt(prompt: Prompt): Observable<Prompt> {
+    return this.http.post<Prompt>(this.apiUrl, prompt);
+  }
 
-        console.log('PromptService sending payload:', payload);
+  getPrompt(id: string): Observable<Prompt> {
+    return this.http.get<Prompt>(`${this.apiUrl}/${id}`);
+  }
 
-        return this.http.post<Question[]>(`${this.apiUrl}/generateQuestions`, payload);
+  getAllPrompts(): Observable<Prompt[]> {
+    return this.http.get<Prompt[]>(this.apiUrl);
+  }
+
+  getAllPromptsPaginated(page: number, size: number, sortField?: string, sortOrder?: number): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (sortField && sortOrder !== undefined) {
+      params = params.set('sort', `${sortField},${sortOrder === 1 ? 'asc' : 'desc'}`);
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/paginated`, { params });
+  }
+
+  updatePrompt(id: string, prompt: Prompt): Observable<Prompt> {
+    return this.http.put<Prompt>(`${this.apiUrl}/${id}`, prompt);
+  }
+
+  deletePrompt(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getQuestions = (promptId: number, token: string): Observable<Question[]> => {
+    const payload = {
+      promptId,
+      token
     };
+
+    console.log('PromptService sending payload:', payload);
+
+    return this.http.post<Question[]>(`${this.mockApiInterviewsUrl}/generateQuestions`, payload);
+  };
+
 }
+
+

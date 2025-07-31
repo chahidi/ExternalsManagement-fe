@@ -18,6 +18,12 @@ export const appRoutes: Routes = [
         loadChildren: () => import('./app/features/candidate/candidate-routes').then((m) => m.CANDIDATE_FORMS_ROUTES),
     },
     {
+        path: 'prompts',
+        component: LayoutComponent,
+        loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),
+
+    },
+    {
         path: 'interviews',
         component: LayoutComponent,
         loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
@@ -40,7 +46,12 @@ export const appRoutes: Routes = [
             import('./app/features/interviews/components/interview-cloture/interview-cloture.component').then(m => m.InterviewClotureComponent),
         title: 'Interview Evaluation'
     },
-
-    { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
-    { path: '**', redirectTo: '/notfound' }
+    {
+        path: 'auth',
+        loadChildren: () => import('./app/features/auth/auth.routes')
+    },
+    {
+        path: '**',
+        redirectTo: '/notfound'
+    }
 ];

@@ -16,11 +16,8 @@ export class CandidateService {
   constructor(private http: HttpClient) { }
 
 
-
-
   getCandidates(): Observable<Candidate[]> {
     return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
-
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );

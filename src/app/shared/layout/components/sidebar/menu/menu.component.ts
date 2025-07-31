@@ -18,13 +18,6 @@ export class MenuComponent {
                 items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/'] }]
             },
             {
-                label: 'Externals Management',
-                items: [
-                    { label: 'Cards View', icon: 'pi pi-fw pi-id-card', routerLink: ['/candidates/card-view'] },
-                    { label: 'List View', icon: 'pi pi-fw pi-table', routerLink: ['/candidates/grid-view'] }
-                ]
-            },
-            {
                 label: 'Candidates',
                 items: [
                     { label: 'New CV', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-cv'] },

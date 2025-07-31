@@ -281,24 +281,59 @@
             <button pButton type="button" label="Add Experience" icon="pi pi-plus" class="p-button-secondary" (click)="addExperience()"></button>
         </fieldset>
 
-        <!-- Skills -->
-        <fieldset class="mb-4 border rounded p-4">
-            <legend class="text-lg font-semibold">Skills</legend>
-            <div *ngFor="let skill of selectedCandidate.skills; let i=index" class="skill-item border-b pb-4 mb-4">
-                <div class="field field-grid">
-                    <label for="skillName_{{i}}" class="field-label">Skill Name</label>
-                    <input id="skillName_{{i}}" type="text" pInputText [(ngModel)]="skill.skillName" class="field-input" />
-                </div>
-                <div class="field field-grid">
-                    <label for="proficiencyLevel_{{i}}" class="field-label">Proficiency Level</label>
-                    <p-dropdown id="proficiencyLevel_{{i}}" [(ngModel)]="skill.proficiencyLevel" [options]="proficiencyLevelOptions" placeholder="Select Proficiency Level" class="field-input"></p-dropdown>
-                </div>
-                <div class="flex justify-end mt-2">
-                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeSkill(i)"></button>
+        <!-- Skills as Tags -->
+            <fieldset class="mb-4 border rounded p-4">
+            <legend class="text-lg font-semibold mb-4">Skills</legend> <!-- Added margin-bottom -->
+
+            <!-- Skills Tags Display -->
+            <div class="skills-tags-container mb-6"> <!-- Increased margin-bottom -->
+                <div *ngFor="let skill of selectedCandidate.skills; let i=index"
+                    class="skill-tag"
+                    [ngClass]="getProficiencyClass(skill.proficiencyLevel)">
+                <span class="skill-name">{{ skill.skillName }}</span>
+                <span class="skill-level">{{ getProficiencyLabel(skill.proficiencyLevel) }}</span>
+                <button type="button"
+                        pButton
+                        icon="pi pi-times"
+                        class="tag-close-button p-button-rounded p-button-text p-button-sm"
+                        (click)="removeSkill(i); $event.stopPropagation()"></button>
                 </div>
             </div>
-            <button pButton type="button" label="Add Skill" icon="pi pi-plus" class="p-button-secondary" (click)="addSkill()"></button>
-        </fieldset>
+
+            <!-- Add New Skill Form -->
+            <div class="add-skill-form p-fluid">
+                <div class="p-field p-grid" style="margin-bottom: 1.5rem;"> <!-- Added margin -->
+                <div class="p-col-6">
+                    <label for="newSkillName" class="block mb-2">Skill Name</label> <!-- Added margin -->
+                    <input id="newSkillName"
+                        type="text"
+                        pInputText
+                        [(ngModel)]="newSkillName"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="Enter skill name"
+                        class="w-full"/>
+                </div>
+                <div class="p-col-5">
+                    <label for="newSkillProficiency" class="block mb-2">Proficiency Level</label> <!-- Added margin -->
+                    <p-dropdown [options]="proficiencyLevelOptions"
+                                [(ngModel)]="newSkillProficiency"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="Select level"
+                                optionLabel="label"
+                                optionValue="value"
+                                class="w-full"></p-dropdown>
+                </div>
+                <div class="p-col-1 flex align-items-end">
+                    <button type="button"
+                            pButton
+                            icon="pi pi-plus"
+                            class="p-button-sm w-full mt-6"  
+                            [disabled]="!newSkillName || !newSkillProficiency"
+                            (click)="addSkill()"></button>
+                </div>
+                </div>
+            </div>
+            </fieldset>
 
         <!-- Educations -->
         <fieldset class="mb-4 border rounded p-4">

@@ -1,0 +1,56 @@
+<p-toast></p-toast>
+<p-dialog header="Update Prompt" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [contentStyle]="{ 'overflow-y': 'auto' }">
+    <form *ngIf="dialogVisible" class="form-layout">
+        <div class="form-field">
+            <label for="promptCode">Prompt Code</label>
+            <input type="text" id="promptCode" pInputText [(ngModel)]="selectedPrompt.promptCode" name="promptCode"/>
+        </div>
+
+        <div class="form-field">
+            <label for="promptDesc">Text (Required)</label>
+            <textarea id="promptDesc" pInputTextarea rows="4" [(ngModel)]="selectedPrompt.promptDesc" name="promptDesc" required></textarea>
+        </div>
+
+        <div class="form-field">
+            <label for="schema">Schema (JSON)</label>
+            <textarea id="schema" pInputTextarea rows="6" [(ngModel)]="selectedPrompt.schema" name="schema"></textarea>
+        </div>
+
+        <div class="form-footer">
+            <button pButton type="button" label="Update" class="p-button-info" (click)="updatePrompt()"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<h3>Prompt List</h3>
+
+<p-table [value]="prompts" [paginator]="true" [rows]="rows" [totalRecords]="totalRecords" [lazy]="true" (onLazyLoad)="loadPrompts($event)" [loading]="loading" [sortField]="sortField" [sortOrder]="sortOrder" [globalFilterFields]="['promptCode','promptDesc','schema']" class="custom-table">
+    <ng-template pTemplate="header">
+        <tr>
+            <th class="col-prompt-code">Prompt Code</th>
+            <th class="col-text">Text</th>
+            <th class="col-schema">Schema</th>
+            <th class="col-actions">Actions</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-prompt>
+        <tr>
+            <td class="col-prompt-code">{{ prompt.promptCode }}</td>
+            <td class="col-text">{{ prompt.promptDesc }}</td>
+            <td class="col-schema">{{ prompt.schema }}</td>
+            <td class="col-actions">
+                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="showUpdateDialog(prompt)"></button>
+                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="confirmDelete(prompt.id)"></button>
+            </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="4" style="text-align: center;">No prompts found.</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-confirmDialog></p-confirmDialog>

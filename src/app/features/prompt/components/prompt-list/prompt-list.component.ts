@@ -11,8 +11,6 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { LoaderService } from '../../../../core/services/loader.service';
-import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 
 
 @Component({
@@ -26,8 +24,7 @@ import { LoaderComponent } from '../../../../shared/layout/components/loader/loa
     DialogModule,
     FormsModule,
     InputTextModule,
-    ConfirmDialogModule,
-    LoaderComponent
+    ConfirmDialogModule
 ],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss',
@@ -45,23 +42,18 @@ export class PromptListComponent implements OnInit {
   dialogVisible = false;
   selectedPrompt: Prompt = { id: '', promptCode: '', promptDesc: '', schema: '' };
 
-  isLoading$;
-  loadingMessage$;
-
   constructor(
     private promptService: PromptService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private loaderService: LoaderService
-) { this.isLoading$ = this.loaderService.isLoading$;
-    this.loadingMessage$ = this.loaderService.loadingMessage$;}
+    private confirmationService: ConfirmationService
+) {}
 
   ngOnInit() {
     this.loadPrompts();
   }
 
   loadPrompts(event?: any) {
-    this.loaderService.show("Loading prompts...");
+    this.loading = true;
     const page = event ? event.first / event.rows : 0;
     const size = event ? event.rows : this.rows;
     const sortField = event ? event.sortField : this.sortField;
@@ -71,11 +63,11 @@ export class PromptListComponent implements OnInit {
       next: (data) => {
         this.prompts = data.content;
         this.totalRecords = data.totalElements;
-        this.loaderService.hide();
+        this.loading = false;
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-        this.loaderService.hide();
+        this.loading = false;
       },
     });
   }

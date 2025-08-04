@@ -10,7 +10,7 @@ import { Question } from '../models/question';
 })
 
 export class PromptService {
-  private apiUrl = `${environment.apiUrl}/prompts`;
+  private apiUrl = `${environment.apiUrl}/v1/prompts`;
   private mockApiInterviewsUrl = `${environment.apiInterviews}/v1/prompt`;
 
   constructor(private http: HttpClient) { }

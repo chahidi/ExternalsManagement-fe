@@ -22,6 +22,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { DatePicker } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 
 interface FilterCriteria {
   skills: any[];
@@ -54,7 +56,8 @@ interface DropdownOption {
     TextareaModule,
     ToastModule,
     DatePicker,
-    CheckboxModule
+    CheckboxModule,
+    LoaderComponent
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',
@@ -62,7 +65,8 @@ interface DropdownOption {
 })
 export class CandidateListComponent implements OnInit {
   candidates: Candidate[] = [];
-  loading: boolean = true;
+  isLoading$;
+  loadingMessage$;
   displayEditDialog: boolean = false;
   selectedCandidate: Candidate | null = null;
 
@@ -94,8 +98,10 @@ export class CandidateListComponent implements OnInit {
     private candidateService: CandidateService,
     private candidateFilterService: CandidateFilterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
-  ) {}
+    private messageService: MessageService,
+    private loaderService: LoaderService
+  ) { this.isLoading$ = this.loaderService.isLoading$;
+      this.loadingMessage$ = this.loaderService.loadingMessage$;}
 
   ngOnInit(): void {
     this.loadCandidates();
@@ -201,7 +207,7 @@ export class CandidateListComponent implements OnInit {
   }
 
   loadCandidates(): void {
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     this.candidateService.getCandidates().subscribe({
       next: (data) => {
         this.candidates = data || [];
@@ -214,11 +220,11 @@ export class CandidateListComponent implements OnInit {
         // Load filter options based on real candidate data
         this.loadFilterOptions();
 
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Error fetching candidates:', err);
-        this.loading = false;
+        this.loaderService.hide();
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -229,7 +235,7 @@ export class CandidateListComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     console.log('Applying filters:', this.filters);
 
     // Check if filters contain the expected data structure
@@ -268,7 +274,7 @@ export class CandidateListComponent implements OnInit {
       next: (data) => {
         console.log('Filtered candidates:', data.length);
         this.candidates = data || [];
-        this.loading = false;
+        this.loaderService.hide();
 
         if (data.length === 0) {
           this.messageService.add({
@@ -286,7 +292,7 @@ export class CandidateListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error filtering candidates:', err);
-        this.loading = false;
+        this.loaderService.hide();
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -479,7 +485,7 @@ addAddress(): void {
   saveCandidate(): void {
     if (!this.selectedCandidate) return;
 
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     this.candidateService.updateCandidate(this.selectedCandidate.id, this.selectedCandidate).subscribe({
       next: (updatedCandidate) => {
         const index = this.candidates.findIndex(c => c.id === updatedCandidate.id);
@@ -495,7 +501,7 @@ addAddress(): void {
 
         this.displayEditDialog = false;
         this.selectedCandidate = null;
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Error updating candidate:', err);
@@ -504,7 +510,7 @@ addAddress(): void {
           summary: 'Error',
           detail: err.message || 'Failed to update candidate.'
         });
-        this.loading = false;
+        this.loaderService.hide();
       }
     });
   }
@@ -521,7 +527,7 @@ addAddress(): void {
   }
 
   deleteCandidate(candidate: Candidate): void {
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     this.candidateService.deleteCandidate(candidate.id).subscribe({
       next: () => {
         this.candidates = this.candidates.filter(c => c.id !== candidate.id);
@@ -532,7 +538,7 @@ addAddress(): void {
           detail: 'Candidate deleted successfully'
         });
 
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Error deleting candidate:', err);
@@ -541,7 +547,7 @@ addAddress(): void {
           summary: 'Error',
           detail: err.message || 'Failed to delete candidate.'
         });
-        this.loading = false;
+        this.loaderService.hide();
       }
     });
   }

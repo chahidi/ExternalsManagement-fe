@@ -3,19 +3,28 @@ import { NewCvService } from '../../../../core/services/new-cv.service';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { Router } from '@angular/router';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-new-cv',
     standalone: true,
     templateUrl: './new-cv.component.html',
     styleUrls: ['./new-cv.component.scss'],
-    imports: [ButtonModule, FileUploadModule]
+    imports: [CommonModule, ButtonModule, FileUploadModule, LoaderComponent]
 })
 export class NewCvComponent {
     selectedFile: File | null = null;
     extractedData: string | null = null;
+    isLoading$;
+    loadingMessage$;
 
-    constructor(private newService: NewCvService, private router: Router) {}
+    constructor(private newService: NewCvService, private router: Router, private loaderService: LoaderService) {
+        this.isLoading$ = this.loaderService.isLoading$;
+        this.loadingMessage$ = this.loaderService.loadingMessage$;
+    }
+
 
     onFileSelected(event: any): void {
         if (event?.files?.length) {
@@ -28,6 +37,7 @@ export class NewCvComponent {
 
     uploadCv(): void {
         if (this.selectedFile) {
+            this.loaderService.show('Uploading CV...');
             const reader = new FileReader();
 
             reader.onloadend = () => {
@@ -42,6 +52,7 @@ export class NewCvComponent {
 
                 this.newService.uploadCv(payload).subscribe(
                     (response: any) => {
+                        this.loaderService.hide();
                         alert('CV uploaded successfully!');
                         console.log('Server response:', response);
 
@@ -50,6 +61,7 @@ export class NewCvComponent {
                         });
                     },
                     error => {
+                        this.loaderService.hide();
                         alert('Error uploading CV.');
                         console.error('Upload error:', error);
                     }

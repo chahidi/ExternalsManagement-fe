@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.local';
+import { Candidate } from '../models/candidate';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +15,9 @@ export class NewCvService {
 
   uploadCv(payload: { promptCode: string, mimeType: string, b64EFile: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/extract`, payload);
+  }
+  
+  saveCandidate(candidateData: Candidate): Observable<any> {
+    return this.http.post(`${this.apiUrl}/save`, candidateData);
   }
 }

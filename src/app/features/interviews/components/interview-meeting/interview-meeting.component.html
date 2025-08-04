@@ -1,0 +1,183 @@
+<p-toast position="top-center"></p-toast>
+
+<!-- Warning Message -->
+<p-message *ngIf="userWarningMessage" severity="error" [text]="userWarningMessage" [closable]="true" (onClose)="closeWarning()" styleClass="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-xl"> </p-message>
+
+<!-- INTERVIEW IN PROGRESS FULLSCREEN -->
+<ng-container *ngIf="isInterviewInProgress">
+    <div class="fixed inset-0 bg-[#1e1e1e] z-40 flex items-center p-4 gap-6" [@slideInInterview]>
+        <div class="relative flex-grow h-[90vh] flex items-center">
+            <div class="w-full h-full flex items-center justify-center relative">
+                <div class="relative w-[95%] h-full">
+                    <video #interviewVideo autoplay muted class="w-full h-full object-cover rounded-2xl shadow-2xl border-4 border-gray-800 transition-all duration-700 ease-in-out" [@cameraTransition]></video>
+
+                    <!-- Update the time remaining tag -->
+                    <p-tag [value]="getFormattedTime()" severity="warn" styleClass="absolute top-4 right-6 text-base font-semibold shadow-md z-50" [@fadeInControls]> </p-tag>
+                </div>
+            </div>
+
+            <!-- Subtitles -->
+            <div *ngIf="showSubtitles" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white text-xl font-medium bg-black bg-opacity-50 px-4 py-2 rounded" [@fadeInControls]>
+                {{ liveSubtitle }}
+            </div>
+
+            <div class="absolute bottom-6 right-20 z-50">
+                <div class="w-36 h-36 bg-white rounded-xl flex flex-col items-center justify-center shadow-xl border-2 border-gray-300">
+                    <p-avatar image="assets/layout/avatar.png" shape="circle" size="xlarge"> </p-avatar>
+                    <p class="mt-2 text-gray-700 font-semibold">Alex</p>
+                </div>
+            </div>
+
+            <!-- Submit Answer Button  -->
+            <div *ngIf="showSubmitButton" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
+                <p-button
+                    label="Submit Answer"
+                    icon="pi pi-check"
+                    severity="secondary"
+                    size="large"
+                    [disabled]="!canSubmitAnswer"
+                    (onClick)="submitCurrentAnswer()"
+                    styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
+                    pTooltip="Submit your current answer"
+                >
+                </p-button>
+            </div>
+
+            <div class="fixed bottom-4 right-[calc(14%+5rem)] z-50" [@fadeInControls]>
+                <p-button icon="pi pi-info-circle" [rounded]="true" [text]="true" severity="secondary" styleClass="text-white hover:bg-white/10"> </p-button>
+            </div>
+
+            <!-- Finish + Show Transcript -->
+            <div class="fixed bottom-4 right-[2.5%] flex gap-4 z-50 items-center" [@fadeInControls]>
+                <p-button icon="pi pi-times" [rounded]="true" severity="danger" (onClick)="finishInterview()" pTooltip="Finish Interview"> </p-button>
+
+                <!-- Show Transcript Button -->
+                <p-button *ngIf="!isTranscriptVisible" icon="pi pi-eye" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = true" pTooltip="Show Transcript"> </p-button>
+            </div>
+        </div>
+
+        <!-- Transcript Panel - Same Height as Camera Area -->
+        <div *ngIf="isTranscriptVisible" class="h-[90vh] mr-[2.5%] w-[320px] flex-shrink-0" [@slideInTranscript]>
+            <p-panel header="Live Transcript" [toggleable]="false" styleClass="w-[320px] shadow-xl rounded-2xl h-full">
+                <ng-template pTemplate="icons">
+                    <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = false"> </p-button>
+                </ng-template>
+
+                <p-scrollPanel #transcriptScroll [style]="{ height: 'calc(90vh - 120px)' }" styleClass="transcript-scroll-panel">
+                    <div class="space-y-2 text-base pb-4">
+                        <div *ngFor="let msg of transcriptMessages" [ngClass]="msg.align === 'right' ? 'flex justify-end' : 'flex justify-start'">
+                            <div
+                                [ngClass]="msg.type === 'question' ? 'bg-gray-200 text-gray-800 mr-10' : msg.align === 'right' ? 'bg-[#0084ff] text-white ml-10' : 'bg-gray-200 text-gray-800 mr-10'"
+                                class="px-5 py-3 rounded-xl max-w-[80%] text-[0.95rem] shadow-sm"
+                            >
+                                <strong>{{ msg.sender }}:</strong> {{ msg.text }}
+                            </div>
+                        </div>
+                    </div>
+                </p-scrollPanel>
+            </p-panel>
+        </div>
+
+        <div class="absolute bottom-6 left-[2.5%] text-white text-base md:text-lg font-semibold z-50" [@fadeInControls]>{{ currentTime }} | Developer AI Interview</div>
+    </div>
+</ng-container>
+
+<!-- FINALIZING SCREEN -->
+<ng-container *ngIf="isInterviewFinalizing">
+    <div class="flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-b from-gray-50 to-gray-100" [@fadeIn]>
+        <p-card styleClass="w-full max-w-md">
+            <ng-template pTemplate="content">
+                <div class="text-center">
+                    <p-progressSpinner styleClass="w-12 h-12 mb-4"></p-progressSpinner>
+                    <p class="text-lg font-medium text-gray-700">Finalizing your recording...</p>
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+</ng-container>
+
+<!-- RULES AND PREVIEW SCREEN -->
+<ng-container *ngIf="showRulesAndPreview && !isInterviewInProgress && !isInterviewFinalizing && !isInterviewCompleted">
+    <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-6" [@fadeIn]>
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-blue-800 mb-2">Welcome to Your Interview</h1>
+                <p class="text-gray-600 text-lg">Please review the rules and test your camera before starting</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="order-2 lg:order-1">
+                    <p-card header=" Camera Preview" styleClass="h-full">
+                        <ng-template pTemplate="content">
+                            <div class="space-y-4 h-full flex flex-col">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <p-tag [value]="isCameraReady ? 'Camera Ready' : 'Camera Not Ready'" [severity]="isCameraReady ? 'success' : 'danger'" icon="pi pi-camera"> </p-tag>
+                                </div>
+
+                                <div class="relative bg-gray-900 rounded-lg overflow-hidden aspect-video" [id]="'camera-preview-container'">
+                                    <video *ngIf="isCameraReady && previewMode" #previewVideo autoplay muted class="w-full h-full object-cover transition-all duration-700 ease-in-out" [id]="'camera-preview-video'"></video>
+
+                                    <!-- Camera Loading State -->
+                                    <div *ngIf="!isCameraReady" class="absolute inset-0 flex items-center justify-center bg-gray-800 text-white">
+                                        <div class="text-center">
+                                            <p-progressSpinner styleClass="w-8 h-8 mb-4"></p-progressSpinner>
+                                            <p>Initializing camera...</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center space-y-2">
+                                    <p class="text-sm text-gray-600">Make sure your camera is working properly and you are clearly visible</p>
+                                    <p-button *ngIf="!isCameraReady" label="Retry Camera Access" icon="pi pi-refresh" severity="secondary" (onClick)="requestCameraPermission()"> </p-button>
+                                </div>
+                                <div class="flex-grow"></div>
+                                <div class="pt-4 flex flex-col items-center gap-4">
+                                    <h3 class="text-xl font-semibold text-gray-800">Ready to join?</h3>
+                                    <p-avatar image="assets/layout/avatar.png" shape="circle" size="xlarge" styleClass="shadow-lg border border-gray-300"> </p-avatar>
+                                    <p class="text-sm text-gray-600 italic">Alex is waiting for you</p>
+                                    <p-button label="I'm Ready to Start" icon="pi pi-play" severity="success" size="large" [disabled]="!isCameraReady" (onClick)="startInterview()" styleClass="w-auto"> </p-button>
+
+                                    <p *ngIf="!isCameraReady" class="text-sm text-red-600">Please allow camera access to start the interview</p>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+
+                <!-- Rules and Start Section -->
+                <div class="order-1 lg:order-2">
+                    <p-card header="" styleClass="h-full">
+                        <ng-template pTemplate="content">
+                            <div class="space-y-6 h-full flex flex-col">
+                                <div class="space-y-4">
+                                    <div *ngFor="let rule of interviewRules" class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <i [class]="rule.icon" class="text-blue-600 text-xl relative top-3"></i>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-800 mb-1">{{ rule.title }}</h4>
+                                            <p class="text-sm text-gray-600 leading-relaxed">{{ rule.description }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p-divider></p-divider>
+                                <div class="flex-grow"></div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Interview Information</h4>
+                                    <ul class="text-sm text-blue-700 space-y-1">
+                                        <li>• Duration: Approximately 15-20 minutes</li>
+                                        <li>• Questions: {{ questions.length || 5 }} questions total</li>
+                                        <li>• Recording: Full session will be recorded</li>
+                                        <li>• Format: Video interview with live transcript</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+            </div>
+
+            <div class="text-center mt-8 text-gray-500 text-sm">
+                <p>Need help? Contact support at <span class="text-blue-600">support&#64;nttSm</span></p>
+            </div>
+        </div>
+    </div>
+</ng-container>

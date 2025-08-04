@@ -14,15 +14,16 @@ import { ActivatedRoute } from '@angular/router';
 import { PanelModule } from 'primeng/panel';
 import { StepsModule } from 'primeng/steps';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextarea } from 'primeng/inputtextarea';
+import { Textarea } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuItem } from 'primeng/api';
 import { Skill } from '../../../../core/models/skill';
 import { Language } from '../../../../core/models/language';
 import { Contact } from '../../../../core/models/contact';
+
 
 @Component({
   selector: 'app-candidate-form',
@@ -32,13 +33,13 @@ import { Contact } from '../../../../core/models/contact';
     PanelModule,
     StepsModule,
     InputTextModule,
-    InputTextarea,
+    Textarea,
     ButtonModule,
     CheckboxModule,
     ReactiveFormsModule,
-    DropdownModule,
+    SelectModule,
     RadioButtonModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']

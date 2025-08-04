@@ -1,0 +1,207 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.header-card {
+    margin-bottom: 2rem;
+
+    .interview-header {
+        text-align: center;
+
+        .interview-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+
+            .candidate-name {
+                color: var(--primary-color);
+            }
+        }
+
+        .interview-details {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+
+            .detail-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--text-color-secondary);
+
+                .detail-icon {
+                    color: var(--primary-color);
+                }
+            }
+        }
+    }
+}
+
+.evaluations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+@media (max-width: 900px) {
+    .evaluations-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.evaluation-card {
+    padding: 1rem;
+    border-radius: 12px;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.evaluation-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+
+    .evaluation-type-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-top: 1rem;
+    }
+}
+
+.score-circle-large {
+    --size: 100px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: conic-gradient(var(--score-color, #ccc) var(--progress-degrees, 0deg), #eee var(--progress-degrees, 0deg));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: white;
+        z-index: 1;
+    }
+
+    .score-value-large {
+        position: relative;
+        z-index: 2;
+        font-size: 1.5rem;
+        font-weight: bold;
+
+        &.score-excellent {
+            color: var(--green-600);
+        }
+
+        &.score-good {
+            color: var(--yellow-600);
+        }
+
+        &.score-average {
+            color: var(--orange-600);
+        }
+
+        &.score-poor {
+            color: var(--red-600);
+        }
+    }
+
+    &.animate {
+        animation: scoreRotate 2s ease-in-out;
+    }
+
+    &.pulse {
+        animation: scorePulse 1s ease-in-out;
+    }
+}
+
+.evaluation-content {
+    padding-top: 1rem;
+
+    .feedback-section {
+        margin-bottom: 0.5rem;
+
+        h4 {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-color-secondary);
+        }
+    }
+
+    .score-details {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+
+        .coefficient-label {
+            font-weight: 500;
+            margin-right: 0.3rem;
+            color: var(--text-color-secondary);
+        }
+
+        .coefficient-value {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+        }
+    }
+}
+
+// Color variants
+.score-75-100 {
+    border-left: 4px solid var(--green-500);
+}
+
+.score-50-75 {
+    border-left: 4px solid var(--yellow-500);
+}
+
+.score-25-50 {
+    border-left: 4px solid var(--orange-500);
+}
+
+.score-0-25 {
+    border-left: 4px solid var(--red-500);
+}
+
+// Animations
+@keyframes scoreRotate {
+    0% {
+        --progress-degrees: 0deg;
+    }
+    100% {
+        --progress-degrees: var(--final-degrees, 0deg);
+    }
+}
+
+@keyframes scorePulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}

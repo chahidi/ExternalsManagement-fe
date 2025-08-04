@@ -356,14 +356,14 @@
 
                 <div class="p-field">
                 <label for="level-{{ i }}">Level</label>
-                <p-dropdown
+                <p-select
                     id="level-{{ i }}"
                     [options]="languageLevels"
                     formControlName="level"
                     placeholder="Select Level"
                     optionLabel="label"
                     optionValue="value"
-                ></p-dropdown>
+                ></p-select>
                 </div>
 
                 <div class="p-field">
@@ -419,12 +419,12 @@
                     </div>
                     <div class="p-col-5">
                         <label for="newSkillProficiency">Proficiency</label>
-                        <p-dropdown [options]="skillProficiencies"
+                        <p-select [options]="skillProficiencies"
                                     [(ngModel)]="newSkillProficiency"
                                     [ngModelOptions]="{standalone: true}"
                                     placeholder="Select level"
                                     optionLabel="label"
-                                    optionValue="value"></p-dropdown>
+                                    optionValue="value"></p-select>
                     </div>
                     <div class="p-col-1" style="align-self: flex-end;">
                         <button type="button"
@@ -452,7 +452,7 @@
                 >
                 <div class="p-field">
                     <label for="contactType-{{ i }}">Contact Type</label>
-                    <p-dropdown
+                    <p-select
                     id="contactType-{{ i }}"
                     formControlName="contactType"
                     [options]="[
@@ -461,7 +461,7 @@
                         { label: 'linkedin', value: 'linkedin' }
                     ]"
                     placeholder="Select Contact Type"
-                    ></p-dropdown>
+                    ></p-select>
                     <small *ngIf="contactGroup.get('contactType')?.touched && contactGroup.get('contactType')?.invalid">
                     <i class="pi pi-times-circle"></i> Contact type is required.
                     </small>

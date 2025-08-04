@@ -10,15 +10,14 @@ import { environment } from '../../../environments/environment';
 })
 export class CandidateService {
 
-  private baseUrl = `${environment.apiUrl}/candidates`;
-  constructor(private http: HttpClient) {}
+    private baseUrl = `${environment.apiUrl}/v1/candidates`;
+    private apiUrl = `${environment.apiInterviews}/v1/candidates`;
 
-
+  constructor(private http: HttpClient) { }
 
 
   getCandidates(): Observable<Candidate[]> {
     return this.http.get<Candidate[]>(`${this.baseUrl}`).pipe(
-
       map(candidates => candidates.map(this.transformCandidate)),
       catchError(this.handleError)
     );
@@ -52,6 +51,7 @@ export class CandidateService {
     );
   }
 
+
   private cleanCandidate(candidate: Candidate): Candidate {
     const cleaned = {
       ...candidate,
@@ -79,22 +79,22 @@ export class CandidateService {
       ...candidate,
       id: candidate.id.toString(),
       addresses: candidate.address ? [{
-      id: candidate.address.id?.toString() || '',
-      street: candidate.address.street || '',
-      postalCode: candidate.address.postalCode || '',
-      fullAddress: candidate.address.fullAddress || '',
-      city: candidate.address.city ? {
-        id: candidate.address.city.id?.toString() || '',
-        name: candidate.address.city.name || '',
-        countryId: candidate.address.city.countryId || ''
-      } : null,
-      country: candidate.address.country ? {
-        id: candidate.address.country.id?.toString() || '',
-        name: candidate.address.country.name || '',
-        englishName: candidate.address.country.englishName || ''
-      } : null
-}] : []
-,
+        id: candidate.address.id?.toString() || '',
+        street: candidate.address.street || '',
+        postalCode: candidate.address.postalCode || '',
+        fullAddress: candidate.address.fullAddress || '',
+        city: candidate.address.city ? {
+          id: candidate.address.city.id?.toString() || '',
+          name: candidate.address.city.name || '',
+          countryId: candidate.address.city.countryId || ''
+        } : null,
+        country: candidate.address.country ? {
+          id: candidate.address.country.id?.toString() || '',
+          name: candidate.address.country.name || '',
+          englishName: candidate.address.country.englishName || ''
+        } : null
+      }] : []
+      ,
       contacts: candidate.contacts || [],
       experiences: candidate.experiences || [],
       skills: candidate.skills || [],
@@ -126,5 +126,10 @@ export class CandidateService {
 
     return throwError(() => new Error(errorMessage));
   }
+
+  getAllMainTech(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/main-techs`);
+  }
+
 }
 

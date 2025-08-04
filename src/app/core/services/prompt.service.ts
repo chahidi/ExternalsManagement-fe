@@ -3,14 +3,17 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Prompt } from '../models/prompt';
+import { Question } from '../models/question';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PromptService {
-  private apiUrl = `${environment.apiUrl}/prompts`;
 
-  constructor(private http: HttpClient) {}
+export class PromptService {
+  private apiUrl = `${environment.apiUrl}/v1/prompts`;
+  private mockApiInterviewsUrl = `${environment.apiInterviews}/v1/prompt`;
+
+  constructor(private http: HttpClient) { }
 
   createPrompt(prompt: Prompt): Observable<Prompt> {
     return this.http.post<Prompt>(this.apiUrl, prompt);
@@ -43,4 +46,18 @@ export class PromptService {
   deletePrompt(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-      }
+
+  getQuestions = (promptId: number, token: string): Observable<Question[]> => {
+    const payload = {
+      promptId,
+      token
+    };
+
+    console.log('PromptService sending payload:', payload);
+
+    return this.http.post<Question[]>(`${this.mockApiInterviewsUrl}/generateQuestions`, payload);
+  };
+
+}
+
+

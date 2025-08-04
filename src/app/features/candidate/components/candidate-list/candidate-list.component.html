@@ -15,9 +15,9 @@
             </div>
             <div class="field">
                 <label for="language" class="block mb-2">Language</label>
-                <p-dropdown id="language" [options]="languageOptions" [(ngModel)]="filters.language"
+                <p-select id="language" [options]="languageOptions" [(ngModel)]="filters.language"
                     optionLabel="name" placeholder="Select Language" [style]="{ width: '100%' }"
-                    [showClear]="true" [filter]="true"></p-dropdown>
+                    [showClear]="true" [filter]="true"></p-select>
             </div>
             <div class="field">
                 <label for="yearsOfExperience" class="block mb-2">Minimum Years of Experience</label>
@@ -180,7 +180,7 @@
             </div>
             <div class="field field-grid">
                 <label for="birthDate" class="field-label">Birth Date</label>
-                <p-calendar id="birthDate" [(ngModel)]="selectedCandidate.birthDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                <p-datepicker id="birthDate" [(ngModel)]="selectedCandidate.birthDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-datepicker>
             </div>
             <div class="field field-grid">
                 <label for="yearsOfExperience" class="field-label">Years of Experience</label>
@@ -188,7 +188,7 @@
             </div>
             <div class="field field-grid">
                 <label for="gender" class="field-label">Gender</label>
-                <p-dropdown id="gender" [(ngModel)]="selectedCandidate.gender" [options]="[{label: 'Male', value: 'M'}, {label: 'Female', value: 'F'}]" placeholder="Select Gender" class="field-input"></p-dropdown>
+                <p-select id="gender" [(ngModel)]="selectedCandidate.gender" [options]="[{label: 'Male', value: 'M'}, {label: 'Female', value: 'F'}]" placeholder="Select Gender" class="field-input"></p-select>
             </div>
             <div class="field field-grid">
                 <label for="mainTech" class="field-label">Main Technology</label>
@@ -218,11 +218,11 @@
         </div>
         <div class="field field-grid">
             <label for="city_{{i}}" class="field-label">City</label>
-            <p-dropdown id="city_{{i}}" [(ngModel)]="address.city" [options]="cities" optionLabel="name" placeholder="Select City" class="field-input" (onChange)="onCityChange(address)"></p-dropdown>
+            <p-select id="city_{{i}}" [(ngModel)]="address.city" [options]="cities" optionLabel="name" placeholder="Select City" class="field-input" (onChange)="onCityChange(address)"></p-select>
         </div>
         <div class="field field-grid">
             <label for="country_{{i}}" class="field-label">Country</label>
-            <p-dropdown id="country_{{i}}" [(ngModel)]="address.country" [options]="countries" optionLabel="name" placeholder="Select Country" class="field-input" (onChange)="onCountryChange(address)"></p-dropdown>
+            <p-select id="country_{{i}}" [(ngModel)]="address.country" [options]="countries" optionLabel="name" placeholder="Select Country" class="field-input" (onChange)="onCountryChange(address)"></p-select>
         </div>
         <div class="flex justify-end mt-2">
             <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeAddress(i)"></button>
@@ -237,7 +237,7 @@
             <div *ngFor="let contact of selectedCandidate.contacts; let i=index" class="contact-item border-b pb-4 mb-4">
                 <div class="field field-grid">
                     <label for="contactType_{{i}}" class="field-label">Contact Type</label>
-                    <p-dropdown id="contactType_{{i}}" [(ngModel)]="contact.contactType" [options]="[{label: 'Email', value: 'Email'}, {label: 'Phone', value: 'Phone'}]" placeholder="Select Contact Type" class="field-input"></p-dropdown>
+                    <p-select id="contactType_{{i}}" [(ngModel)]="contact.contactType" [options]="[{label: 'Email', value: 'Email'}, {label: 'Phone', value: 'Phone'}]" placeholder="Select Contact Type" class="field-input"></p-select>
                 </div>
                 <div class="field field-grid">
                     <label for="contactValue_{{i}}" class="field-label">Contact Value</label>
@@ -264,11 +264,11 @@
                 </div>
                 <div class="field field-grid">
                     <label for="startDate_{{i}}" class="field-label">Start Date</label>
-                    <p-calendar id="startDate_{{i}}" [(ngModel)]="experience.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                    <p-datepicker id="startDate_{{i}}" [(ngModel)]="experience.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-datepicker>
                 </div>
                 <div class="field field-grid">
                     <label for="endDate_{{i}}" class="field-label">End Date</label>
-                    <p-calendar id="endDate_{{i}}" [(ngModel)]="experience.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                    <p-datepicker id="endDate_{{i}}" [(ngModel)]="experience.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-datepicker>
                 </div>
                 <div class="field field-grid">
                     <label for="description_{{i}}" class="field-label">Description</label>
@@ -315,13 +315,13 @@
                 </div>
                 <div class="p-col-5">
                     <label for="newSkillProficiency" class="block mb-2">Proficiency Level</label> <!-- Added margin -->
-                    <p-dropdown [options]="proficiencyLevelOptions"
+                    <p-select [options]="proficiencyLevelOptions"
                                 [(ngModel)]="newSkillProficiency"
                                 [ngModelOptions]="{standalone: true}"
                                 placeholder="Select level"
                                 optionLabel="label"
                                 optionValue="value"
-                                class="w-full"></p-dropdown>
+                                class="w-full"></p-select>
                 </div>
                 <div class="p-col-1 flex align-items-end">
                     <button type="button"
@@ -349,11 +349,11 @@
                 </div>
                 <div class="field field-grid">
                     <label for="startDateEdu_{{i}}" class="field-label">Start Date</label>
-                    <p-calendar id="startDateEdu_{{i}}" [(ngModel)]="education.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                    <p-datepicker id="startDateEdu_{{i}}" [(ngModel)]="education.startDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-datepicker>
                 </div>
                 <div class="field field-grid">
                     <label for="endDateEdu_{{i}}" class="field-label">End Date</label>
-                    <p-calendar id="endDateEdu_{{i}}" [(ngModel)]="education.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-calendar>
+                    <p-datepicker id="endDateEdu_{{i}}" [(ngModel)]="education.endDate" dateFormat="yy-mm-dd" [showIcon]="true" [appendTo]="'body'" class="field-input"></p-datepicker>
                 </div>
                 <div class="field field-grid">
                     <label for="diploma_{{i}}" class="field-label">Diploma</label>
@@ -392,7 +392,7 @@
         </div>
         <div class="field field-grid">
             <label for="level_{{i}}" class="field-label">Level</label>
-            <p-dropdown id="level_{{i}}" [(ngModel)]="language.level" [options]="languageLevelOptions"  placeholder="Select Level" class="field-input"></p-dropdown>
+            <p-select id="level_{{i}}" [(ngModel)]="language.level" [options]="languageLevelOptions"  placeholder="Select Level" class="field-input"></p-select>
         </div>
         <div class="field field-grid">
             <label for="isNative_{{i}}" class="field-label">Native</label>

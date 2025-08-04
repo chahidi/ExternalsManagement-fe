@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment.local';
 })
 export class NewCvService {
 
-  readonly apiUrl = `${environment.apiUrl}/cv`;
+  readonly apiUrl = `${environment.apiUrl}/v1/cv`;
 
   constructor(private http: HttpClient) {}
 

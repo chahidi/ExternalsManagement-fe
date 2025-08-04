@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SliderModule } from 'primeng/slider';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -20,7 +20,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePicker } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 
 interface FilterCriteria {
@@ -45,7 +45,7 @@ interface DropdownOption {
     InputTextModule,
     TagModule,
     ProgressBarModule,
-    DropdownModule,
+    SelectModule,
     MultiSelectModule,
     SliderModule,
     InputNumberModule,
@@ -53,7 +53,7 @@ interface DropdownOption {
     DialogModule,
     TextareaModule,
     ToastModule,
-    CalendarModule,
+    DatePicker,
     CheckboxModule
   ],
   providers: [ConfirmationService, MessageService],

@@ -9,59 +9,62 @@
     </p-card>
   </div>
 
-  <p-tabView>
+  <p-tabs>
     <!-- Languages Tab -->
-    <p-tabPanel header="Languages">
-      <p-card class="chart-card">
-        <h3>Candidates by Language</h3>
-        <div *ngIf="!languageChartData" class="loading-indicator">
-          Loading language data...
-        </div>
-        <p-chart
-          *ngIf="languageChartData"
-          type="bar"
-          [data]="languageChartData"
-          [options]="chartOptions"
-          height="300px"
-          width="100%">
-        </p-chart>
-      </p-card>
-    </p-tabPanel>
+    <ng-template pTemplate="tab" let-index="index">
+      Languages
+    </ng-template>
+    <p-card class="chart-card">
+      <h3>Candidates by Language</h3>
+      <div *ngIf="!languageChartData" class="loading-indicator">
+        Loading language data...
+      </div>
+      <p-chart
+        *ngIf="languageChartData"
+        type="bar"
+        [data]="languageChartData"
+        [options]="chartOptions"
+        height="300px"
+        width="100%">
+      </p-chart>
+    </p-card>
 
     <!-- Skills Tab -->
-    <p-tabPanel header="Skills">
-      <p-card class="chart-card">
-        <h3>Candidates by Skill</h3>
-        <div *ngIf="!skillsChartData" class="loading-indicator">
-          Loading skill data...
-        </div>
-        <p-chart
-          *ngIf="skillsChartData"
-          type="pie"
-          [data]="skillsChartData"
-          [options]="chartOptions"
-          height="300px"
-          width="100%">
-        </p-chart>
-      </p-card>
-    </p-tabPanel>
+    <ng-template pTemplate="tab" let-index="index">
+      Skills
+    </ng-template>
+    <p-card class="chart-card">
+      <h3>Candidates by Skill</h3>
+      <div *ngIf="!skillsChartData" class="loading-indicator">
+        Loading skill data...
+      </div>
+      <p-chart
+        *ngIf="skillsChartData"
+        type="pie"
+        [data]="skillsChartData"
+        [options]="chartOptions"
+        height="300px"
+        width="100%">
+      </p-chart>
+    </p-card>
 
     <!-- Experience Tab -->
-    <p-tabPanel header="Experience">
-      <p-card class="chart-card">
-        <h3>Candidates by years of experience</h3>
-        <div *ngIf="!experienceChartData" class="loading-indicator">
-          Loading experience data...
-        </div>
-        <p-chart
-          *ngIf="experienceChartData"
-          type="bar"
-          [data]="experienceChartData"
-          [options]="chartOptions"
-          height="300px"
-          width="100%">
-        </p-chart>
-      </p-card>
-    </p-tabPanel>
-  </p-tabView>
+    <ng-template pTemplate="tab" let-index="index">
+      Experience
+    </ng-template>
+    <p-card class="chart-card">
+      <h3>Candidates by years of experience</h3>
+      <div *ngIf="!experienceChartData" class="loading-indicator">
+        Loading experience data...
+      </div>
+      <p-chart
+        *ngIf="experienceChartData"
+        type="bar"
+        [data]="experienceChartData"
+        [options]="chartOptions"
+        height="300px"
+        width="100%">
+      </p-chart>
+    </p-card>
+  </p-tabs>
 </div>

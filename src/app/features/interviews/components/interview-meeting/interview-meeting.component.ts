@@ -8,7 +8,6 @@ import { INTERVIEW_RULES, InterviewRule } from '../../../../core/constants/inter
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
-import { MessagesModule } from 'primeng/messages';
 import { InputTextModule } from 'primeng/inputtext';
 import { PanelModule } from 'primeng/panel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -45,7 +44,7 @@ import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, MessagesModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
     animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]

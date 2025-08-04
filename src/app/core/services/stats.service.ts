@@ -8,7 +8,7 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class StatsService {
-  private baseUrl = `${environment.apiUrl}`;
+  private baseUrl = `${environment.apiUrl}/v1`;
 
   constructor(private http: HttpClient) {}
 

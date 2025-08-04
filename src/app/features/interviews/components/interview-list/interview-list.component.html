@@ -10,15 +10,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="field">
                 <label for="mainTech" class="block mb-2">Main Tech</label>
-                <p-dropdown id="mainTech" [options]="techOptions" [(ngModel)]="mainTechFilter" placeholder="Select Tech" [style]="{ width: '100%' }"></p-dropdown>
+                <p-select id="mainTech" [options]="techOptions" [(ngModel)]="mainTechFilter" placeholder="Select Tech" [style]="{ width: '100%' }"></p-select>
             </div>
             <div class="field">
                 <label for="title" class="block mb-2">Title</label>
-                <p-dropdown id="title" [options]="titleOptions" [(ngModel)]="titleFilter" placeholder="Select Title" [style]="{ width: '100%' }"></p-dropdown>
+                <p-select id="title" [options]="titleOptions" [(ngModel)]="titleFilter" placeholder="Select Title" [style]="{ width: '100%' }"></p-select>
             </div>
             <div class="field">
                 <label for="scheduledDate" class="block mb-2">Scheduled Date</label>
-                <p-calendar id="scheduledDate" [(ngModel)]="scheduledDateFilter" dateFormat="yy-mm-dd" showIcon="true" [style]="{ width: '100%' }" inputStyleClass="w-full"></p-calendar>
+                <p-datepicker id="scheduledDate" [(ngModel)]="scheduledDateFilter" dateFormat="yy-mm-dd" showIcon="true" [style]="{ width: '100%' }" inputStyleClass="w-full"></p-datepicker>
             </div>
         </div>
         <div class="flex justify-end mt-4">

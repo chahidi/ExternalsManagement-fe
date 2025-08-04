@@ -10,8 +10,8 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
-import { CalendarModule } from 'primeng/calendar';
+import { Select } from 'primeng/select';
+import { DatePicker } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
@@ -25,7 +25,7 @@ import { Observable, EMPTY } from 'rxjs';
 @Component({
     selector: 'app-interview-list',
     standalone: true,
-    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, DropdownModule, CalendarModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule],
+    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, Select, DatePicker, ToastModule, DatePipe, ConfirmDialogModule, RouterModule],
     providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']

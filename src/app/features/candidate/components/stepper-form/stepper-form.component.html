@@ -507,13 +507,29 @@
             ></button>
         </div>
 
-
+          <p-confirmdialog #cd>
+              <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+                  <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
+                      <div
+                          class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20"
+                      >
+                          <i class="pi pi-question !text-5xl"></i>
+                      </div>
+                      <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
+                      <p class="mb-0">{{ message.message }}</p>
+                      <div class="flex items-center gap-2 mt-6">
+                          <p-button label="Yes" (onClick)="onAccept()" styleClass="w-32"></p-button>
+                          <p-button label="No" [outlined]="true" (onClick)="onReject()" styleClass="w-32"></p-button>
+                      </div>
+                  </div>
+              </ng-template>
+          </p-confirmdialog>
     <!-- Buttons -->
     <div class="p-mt-4 button-group">
     <button type="button" pButton label="Previous" icon="pi pi-arrow-left" iconPos="left" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
     <button type="button" pButton label="Clear" icon="pi pi-trash" iconPos="left" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
     <button type="button" pButton label="Next" icon="pi pi-arrow-right" iconPos="right" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-    <button type="submit" pButton label="Save" icon="pi pi-check" iconPos="right" title="Save and submit the form" (click)="onSubmit()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
+    <button type="submit" pButton label="Save" icon="pi pi-check" iconPos="right" title="Save and submit the form" (click)="confirmSave()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
   </div>
 
 

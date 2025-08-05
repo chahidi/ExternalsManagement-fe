@@ -19,7 +19,8 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { MenuItem } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { Skill } from '../../../../core/models/skill';
 import { Language } from '../../../../core/models/language';
 import { Contact } from '../../../../core/models/contact';
@@ -40,7 +41,9 @@ import { Contact } from '../../../../core/models/contact';
     SelectModule,
     RadioButtonModule,
     FormsModule,
+    ConfirmDialogModule
   ],
+  providers: [ConfirmationService],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']
 })
@@ -71,7 +74,7 @@ export class StepperFormComponent implements OnInit {
   contactsFormWrapper!: FormGroup;
   skillsFormWrapper!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
     this.steps = [
@@ -524,6 +527,16 @@ export class StepperFormComponent implements OnInit {
   clearCurrentSection(): void {
     this.getCurrentForm().reset();
   }
+
+  confirmSave(): void {
+        this.confirmationService.confirm({
+          message: `Are you sure you want to save?`,
+          header: 'Confirm to proceed',
+          accept: () => {
+            this.onSubmit();
+          }
+        });
+      }
 
   onSubmit(): void {
     if (this.areAllFormsValid()) {

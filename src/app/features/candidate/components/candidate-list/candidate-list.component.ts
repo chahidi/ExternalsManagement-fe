@@ -482,6 +482,16 @@ addAddress(): void {
     this.selectedCandidate.naturalLanguages.splice(index, 1);
   }
 
+  confirmSave(): void {
+      this.confirmationService.confirm({
+        message: `Are you sure you want to update this candidate?`,
+        header: 'Confirm Update',
+        accept: () => {
+          this.saveCandidate();
+        }
+      });
+    }
+
   saveCandidate(): void {
     if (!this.selectedCandidate) return;
 
@@ -519,7 +529,6 @@ addAddress(): void {
     this.confirmationService.confirm({
       message: `Are you sure you want to delete ${candidate.fullName}?`,
       header: 'Confirm Delete',
-      icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteCandidate(candidate);
       }

@@ -19,7 +19,7 @@
           Title is required.
         </small>
       </div>
-  
+
 
       <div class="p-field">
         <label for="description" class="block font-semibold mb-2">Description</label>
@@ -41,12 +41,12 @@
           Description is required.
         </small>
       </div>
-  
+
       <div class="p-grid p-formgrid gap-4">
-   
+
         <div class="p-col-12 p-md-6 p-field">
           <label for="type" class="block font-semibold mb-2">Type</label>
-          <p-dropdown
+          <p-select
             id="type"
             class="w-full"
             formControlName="type"
@@ -54,7 +54,7 @@
             placeholder="Select a type"
             aria-describedby="type-error"
             [class.p-invalid]="offerForm.get('type')?.touched && offerForm.get('type')?.hasError('required')"
-          ></p-dropdown>
+          ></p-select>
           <small
             id="type-error"
             *ngIf="offerForm.get('type')?.touched && offerForm.get('type')?.hasError('required')"
@@ -64,10 +64,10 @@
           </small>
         </div>
       </div>
-  
+
       <div class="p-field">
         <label for="department" class="block font-semibold mb-2">Department</label>
-        <p-dropdown
+        <p-select
           id="department"
           class="w-full"
           formControlName="department"
@@ -75,7 +75,7 @@
           placeholder="Select a department"
           aria-describedby="department-error"
           [class.p-invalid]="offerForm.get('department')?.touched && offerForm.get('department')?.hasError('required')"
-        ></p-dropdown>
+        ></p-select>
         <small
           id="department-error"
           *ngIf="offerForm.get('department')?.touched && offerForm.get('department')?.hasError('required')"
@@ -84,7 +84,7 @@
           Department is required.
         </small>
       </div>
-  
+
 
       <div class="p-dialog-footer flex justify-end gap-2 mt-4">
         <button
@@ -106,4 +106,3 @@
       </div>
     </form>
   </p-card>
-  

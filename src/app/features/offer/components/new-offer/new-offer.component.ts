@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { NgIf } from '@angular/common';
@@ -16,7 +16,7 @@ import { OfferService } from '../../../../core/services/offer.service';
     ReactiveFormsModule,
     InputNumberModule,
     InputTextModule,
-    DropdownModule,
+    Select,
     ButtonModule,
     PanelModule,
     NgIf

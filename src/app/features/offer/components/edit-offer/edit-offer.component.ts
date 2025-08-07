@@ -4,7 +4,7 @@ import { OfferService } from '../../../../core/services/offer.service';
 import { Offer } from '../../../../core/models/offer';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import {  CardModule } from 'primeng/card';
@@ -18,16 +18,16 @@ import { NgIf } from '@angular/common';
   selector: 'app-edit-offer',
   standalone: true,
   imports: [
-    NgIf, 
+    NgIf,
     CardModule,
     ReactiveFormsModule,
     InputTextModule,
     InputNumberModule,
-    DropdownModule,
+    Select,
     ButtonModule,
     ToastModule
-  ], 
-  providers  : [MessageService], 
+  ],
+  providers  : [MessageService],
   templateUrl: './edit-offer.component.html',
   styleUrls: ['./edit-offer.component.scss']
 })
@@ -58,8 +58,8 @@ export class EditOfferComponent {
     private fb: FormBuilder,
     private offerService: OfferService,
     public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig , 
-    private messageService : MessageService 
+    public config: DynamicDialogConfig ,
+    private messageService : MessageService
   ) {
     this.offer = this.config.data.offer;
 
@@ -76,7 +76,7 @@ export class EditOfferComponent {
         ...this.offer,
         ...this.offerForm.value
       };
-  
+
       this.offerService.updateOffer(updatedOffer).subscribe({
         next: () => {
           this.messageService.add({
@@ -98,5 +98,5 @@ export class EditOfferComponent {
       });
     }
   }
-  
+
 }

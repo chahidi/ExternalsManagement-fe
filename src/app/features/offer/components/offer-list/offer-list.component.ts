@@ -12,7 +12,7 @@ import { NgClass ,CommonModule } from '@angular/common';
 import { OfferFilterService } from '../../../../core/services/offer-filter.service';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { SliderModule } from 'primeng/slider';
 import { MultiSelectModule } from 'primeng/multiselect';
 
@@ -28,7 +28,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
     ConfirmDialogModule,
     DynamicDialogModule,
     FormsModule,
-    DropdownModule,
+    Select,
     SliderModule,
     ToastModule,
     MultiSelectModule,
@@ -157,7 +157,7 @@ export class OfferListComponent implements OnInit {
     });
   }
 
-  // filter & search 
+  // filter & search
   onSearch() {
     this.filteredOffers = this.filterService.searchOffers(this.offers, this.searchQuery);
   }
@@ -174,39 +174,39 @@ export class OfferListComponent implements OnInit {
   }
 
   applyAllFilters() {
-  
+
     this.filteredOffers = this.offers.filter(offer => {
       const offerDept = offer.department?.toLowerCase().trim() || '';
       const offerType = offer.type?.toLowerCase().trim() || '';
       const offerStatus = offer.status?.toLowerCase().trim() || '';
-  
+
       return (
-        (this.selectedDepartments.length === 0 || 
+        (this.selectedDepartments.length === 0 ||
          this.selectedDepartments.some(d => {
            console.log('Checking department:', d, 'against', offerDept);
            return d.toLowerCase().trim() === offerDept;
          })) &&
-  
-        (this.selectedTypes.length === 0 || 
+
+        (this.selectedTypes.length === 0 ||
          this.selectedTypes.some(t => {
            console.log('Checking type:', t, 'against', offerType);
            return t.toLowerCase().trim() === offerType;
          })) &&
-  
-        (!this.selectedStatut || 
+
+        (!this.selectedStatut ||
          this.selectedStatut.toLowerCase().trim() === offerStatus)
       );
     });
-  
+
     this.messageService.add({
       severity: 'info',
       summary: 'Filters Applied',
       detail: `${this.filteredOffers.length} offers matched your filters`
     });
   }
-  
-  
-  
+
+
+
 
   resetFilters() {
     this.selectedDepartments = [];

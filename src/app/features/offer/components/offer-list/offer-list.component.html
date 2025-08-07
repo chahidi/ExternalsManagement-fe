@@ -10,7 +10,7 @@
 
     <div class="field">
       <label class="block mb-2">Department</label>
-      <p-multiSelect 
+      <p-multiSelect
       [options]="departmentOptions"
       optionLabel="label"
       optionValue="value"
@@ -30,28 +30,28 @@
       placeholder="Select Types"
       class="w-full"
     ></p-multiSelect>
-    
+
     </div>
 
     <div class="field">
       <label class="block mb-2">Status</label>
-      <p-dropdown
+      <p-select
         [options]="statusOptions"
         [(ngModel)]="selectedStatut"
         placeholder="Select Status"
         class="w-full"
-      ></p-dropdown>
+      ></p-select>
     </div>
   </div>
 
   <div class="flex justify-end mt-4">
-    <p-button 
+    <p-button
       label="Reset"
       icon="pi pi-times"
       styleClass="p-button-outlined p-button-danger mr-2"
       (click)="resetFilters()"
     ></p-button>
-    <p-button 
+    <p-button
 
       label="Apply Filters"
       icon="pi pi-filter"
@@ -61,28 +61,28 @@
   </div>
 </div>
 
-<p-table #dt1 
-  [value]="filteredOffers" 
-  [paginator]="true" 
-  [rows]="5" 
+<p-table #dt1
+  [value]="filteredOffers"
+  [paginator]="true"
+  [rows]="5"
   responsiveLayout="scroll"
 >
   <ng-template pTemplate="caption">
     <div class="flex items-center gap-4 w-full">
-      <p-button 
-        label="Clear" 
-        [outlined]="true" 
-        icon="pi pi-filter-slash" 
-        (click)="clear(dt1)" 
+      <p-button
+        label="Clear"
+        [outlined]="true"
+        icon="pi pi-filter-slash"
+        (click)="clear(dt1)"
       ></p-button>
 
       <span class="inline-flex p-input-icon-left ml-auto w-full max-w-sm">
         <i class="pi pi-search my-3 text-lg"></i>
-        <input 
-          pInputText 
-          type="text" 
-          placeholder="Search offers..." 
-          [(ngModel)]="searchQuery" 
+        <input
+          pInputText
+          type="text"
+          placeholder="Search offers..."
+          [(ngModel)]="searchQuery"
           (input)="onSearch()"
           class="border rounded-lg h-12 px-3 py-3 w-full mx-3"
         />
@@ -110,7 +110,7 @@
       <td>{{ offer.department }}</td>
       <td>{{ offer.createdAt | date: 'yyyy-MM-dd' }}</td>
       <td>
-        <span 
+        <span
           class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
           [ngClass]="{
             'bg-green-100 text-green-800': offer.status === 'Open',
@@ -118,7 +118,7 @@
             'bg-yellow-100 text-yellow-800': offer.status === 'Pending'
           }"
         >
-          <i 
+          <i
             class="pi mr-2"
             [ngClass]="{
               'pi-check-circle': offer.status === 'Open',
@@ -129,33 +129,33 @@
           {{ offer.status }}
         </span>
       </td>
-      
+
       <td class="p-text-center">
         <div class="p-d-flex p-jc-center p-gap-2">
-          <button 
-            pButton 
-            type="button" 
-            icon="pi pi-eye" 
-            class="p-button-rounded p-button-text p-button-info" 
-            pTooltip="View Details" 
+          <button
+            pButton
+            type="button"
+            icon="pi pi-eye"
+            class="p-button-rounded p-button-text p-button-info"
+            pTooltip="View Details"
             tooltipPosition="top"
             (click)="goToDetails(offer.id)"
           ></button>
-          <button 
-            pButton 
-            type="button" 
-            icon="pi pi-pencil" 
-            class="p-button-rounded p-button-text p-button-warning" 
-            pTooltip="Edit Offer" 
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-text p-button-warning"
+            pTooltip="Edit Offer"
             tooltipPosition="top"
             (click)="openEditOffer(offer)"
           ></button>
-          <button 
-            pButton 
-            type="button" 
-            icon="pi pi-trash" 
-            class="p-button-rounded p-button-text p-button-danger" 
-            pTooltip="Delete Offer" 
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-text p-button-danger"
+            pTooltip="Delete Offer"
             tooltipPosition="top"
             (click)="deleteOffer(offer.id)"
           ></button>

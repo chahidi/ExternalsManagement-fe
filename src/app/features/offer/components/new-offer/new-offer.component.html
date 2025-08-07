@@ -3,14 +3,14 @@
 <p-panel header="Create New Offer" class="p-mb-5">
     <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid">
 
-      
+
           <div class="p-field p-mb-4">
             <label for="titre" class="p-text-bold p-mb-2 ">Title</label>
-            <input 
-              id="titre" 
-              type="text" 
-              pInputText 
-              formControlName="titre" 
+            <input
+              id="titre"
+              type="text"
+              pInputText
+              formControlName="titre"
               placeholder="e.g. Frontend Developer"
               class="p-inputtext w-full  my-3"
             />
@@ -18,14 +18,14 @@
                 Title is required!
             </small>
           </div>
-  
+
           <div class="p-field p-mb-4">
             <label for="department" class="p-text-bold p-mb-2">Department</label>
-            <input 
-              id="department" 
-              type="text" 
-              pInputText 
-              formControlName="department" 
+            <input
+              id="department"
+              type="text"
+              pInputText
+              formControlName="department"
               placeholder="e.g. Engineering"
               class="p-inputtext w-full my-3"
             />
@@ -33,46 +33,46 @@
             Department is required!
               </small>
           </div>
-  
+
           <div class="p-field p-mb-4">
             <label for="description" class="p-text-bold p-mb-2">Description</label>
-            <textarea 
-              id="description" 
-              pInputTextarea 
-              formControlName="description" 
+            <textarea
+              id="description"
+              pInputTextarea
+              formControlName="description"
               placeholder="Short summary"
               rows="5"
               class="p-inputtext w-full my-3"
             ></textarea>
             <small class="p-error" *ngIf="offerForm.get('description')?.invalid && offerForm.get('description')?.touched">
-                Description is required ! 
+                Description is required !
                   </small>
           </div>
-        
-    
-          
-          
-  
+
+
+
+
+
           <div class="p-field p-mb-4">
             <label for="type" class="p-text-bold p-mb-2">Type</label>
-            <p-dropdown 
+            <p-select
               inputId="type"
               [options]="types"
               formControlName="type"
               placeholder="Select type"
               class="p-inputtext w-full my-3"
-            ></p-dropdown>
+            ></p-select>
 
           </div>
-       
+
      <br>
-  
+
 
       <div class="p-d-flex p-jc-end p-mt-5">
-        <button 
-          pButton 
-          type="submit" 
-          label="Save Offer" 
+        <button
+          pButton
+          type="submit"
+          label="Save Offer"
           icon="pi pi-check"
           class="p-button p-button-lg"
           [disabled]="offerForm.invalid"

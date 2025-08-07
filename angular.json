@@ -26,6 +26,23 @@
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
                         "assets": [
+                            "src/assets",
+
+                            {
+                                "glob": "favicon.ico",
+                                "input": "src",
+                                "output": "."
+                            },
+                            {
+                                "glob": "robots.txt",
+                                "input": "src",
+                                "output": "."
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/@angular/material/prebuilt-themes",
+                                "output": "./material"
+                            },
                             {
                                 "glob": "**/*",
                                 "input": "public"
@@ -105,6 +122,22 @@
                         "tsConfig": "tsconfig.spec.json",
                         "inlineStyleLanguage": "scss",
                         "assets": [
+                            "src/assets",
+                            {
+                                "glob": "favicon.ico",
+                                "input": "src",
+                                "output": "."
+                            },
+                            {
+                                "glob": "robots.txt",
+                                "input": "src",
+                                "output": "."
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/@angular/material/prebuilt-themes",
+                                "output": "./material"
+                            },
                             {
                                 "glob": "**/*",
                                 "input": "public"

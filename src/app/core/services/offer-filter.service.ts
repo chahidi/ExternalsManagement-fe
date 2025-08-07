@@ -13,7 +13,7 @@ export class OfferFilterService {
     }
     const lowerQuery = query.toLowerCase();
     return offers.filter(offer =>
-      offer.titre.toLowerCase().includes(lowerQuery) ||
+      offer.title.toLowerCase().includes(lowerQuery) ||
       offer.description.toLowerCase().includes(lowerQuery)
     );
   }
@@ -52,5 +52,5 @@ export class OfferFilterService {
       (!status || o.status.toLowerCase().trim() === status.toLowerCase().trim())
     );
   }
-  
+
 }

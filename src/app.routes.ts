@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './app/shared/layout/layout.component';
 import { DashboardComponent } from './app/features/dashboard/dashboard.component';
+import('./app/features/interviews/components/interview-meeting/interview-meeting.component')
 
 export const appRoutes: Routes = [
     {
@@ -18,10 +19,44 @@ export const appRoutes: Routes = [
     },
     {
         path : 'offers' ,
-        component :LayoutComponent , 
+        component :LayoutComponent ,
         loadChildren : ()=>import('./app/features/offer/offer-routes').then((m)=>m.OFFER_ROUTES),
     },
+    {
+        path: 'prompts',
+        component: LayoutComponent,
+        loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),
 
-    { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
-    { path: '**', redirectTo: '/notfound' }
+    },
+    {
+        path: 'interviews',
+        component: LayoutComponent,
+        loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
+    },
+
+    {
+        path: 'interviews/:token',
+        loadComponent: () =>
+            import('./app/features/interviews/components/interview-meeting/interview-meeting.component')
+                .then(m => m.InterviewMeetingComponent)
+    }, {
+        path: 'evaluation/:id',
+        loadComponent: () =>
+            import('./app/features/interviews/components/interview-evaluation/interview-evaluation.component').then(m => m.InterviewEvaluationComponent),
+        title: 'Interview Evaluation'
+    },
+    {
+        path: 'interview-cloture',
+        loadComponent: () =>
+            import('./app/features/interviews/components/interview-cloture/interview-cloture.component').then(m => m.InterviewClotureComponent),
+        title: 'Interview Evaluation'
+    },
+    {
+        path: 'auth',
+        loadChildren: () => import('./app/features/auth/auth.routes')
+    },
+    {
+        path: '**',
+        redirectTo: '/notfound'
+    }
 ];

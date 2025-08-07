@@ -9,7 +9,7 @@ import { map, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CandidateFilterService {
-  private readonly baseUrl = `${environment.apiUrl}/v1/candidates/filter`;
+  private readonly baseUrl = `${environment.apiUrl}/v1/candidates`;
 
   constructor(private http: HttpClient) { }
 

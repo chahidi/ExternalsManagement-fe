@@ -1,7 +1,7 @@
 
 export interface Offer {
     id  : string ;
-    titre  : string ;
+    title  : string ;
     description : string ;
     createdAt?: string;
     status: 'open' | 'closed' | 'pending';

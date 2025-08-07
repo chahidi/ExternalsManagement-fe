@@ -8,7 +8,7 @@ import { Response } from '../../../../core/models/response';
 import { NgFor, NgIf } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { AccordionModule } from 'primeng/accordion';
+import { Accordion , AccordionContent , AccordionPanel , AccordionHeader } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
@@ -27,7 +27,10 @@ import { throwError } from 'rxjs';
     NgIf,
     CardModule,
     ButtonModule,
-    AccordionModule,
+    Accordion,
+    AccordionContent,
+    AccordionPanel,
+    AccordionHeader,
     TableModule,
     DividerModule,
     TagModule,
@@ -84,6 +87,6 @@ export class OfferDetailComponent implements OnInit {
         this.responses[question.id] = this.offerService.getResponsesByQuestionId(question.id);
       });
     });
-   
+
   }
 }

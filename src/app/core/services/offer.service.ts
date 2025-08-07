@@ -18,7 +18,8 @@ export class OfferService {
   private interviews: Interview[] = [];
   private questions: Question[] = [];
   private responses: Response[] = [];
-  private baseUrl = `${environment.apiUrl}/offers`;
+  private baseUrl = `${environment.apiUrl}/v1/offers`;
+  private apiUrl = `${environment.apiInterviews}/v1/offers`;
   private dataLoaded = new BehaviorSubject<boolean>(false);
 
   constructor(
@@ -27,6 +28,10 @@ export class OfferService {
   ) {
     this.loadOffersFromBackend(); // Initialize on service creation
   }
+
+  getAllTitles = (): Observable<string[]> => {
+        return this.http.get<string[]>(`${this.apiUrl}/titles`);
+    };
 
   isDataLoaded(): Observable<boolean> {
     return this.dataLoaded.asObservable();
@@ -60,7 +65,7 @@ export class OfferService {
     ).subscribe({
       next: candidates => {
         if (!candidates || candidates.length === 0) {
-          this.dataLoaded.next(true); 
+          this.dataLoaded.next(true);
           return;
         }
 
@@ -86,7 +91,8 @@ export class OfferService {
               const question: Question = {
                 id: crypto.randomUUID(),
                 description: faker.lorem.sentence(3),
-                interview: interview
+                interview: interview,
+                durationInMinutes: 60,
               };
               this.questions.push(question);
 
@@ -101,8 +107,8 @@ export class OfferService {
             }
           }
         }
-     
-        this.dataLoaded.next(true); 
+
+        this.dataLoaded.next(true);
       },
       error: err => {
         console.error('Error in generateRelatedFakerData:', err);

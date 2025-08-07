@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SliderModule } from 'primeng/slider';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -20,8 +20,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePicker } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 
 interface FilterCriteria {
   skills: any[];
@@ -45,7 +47,7 @@ interface DropdownOption {
     InputTextModule,
     TagModule,
     ProgressBarModule,
-    DropdownModule,
+    SelectModule,
     MultiSelectModule,
     SliderModule,
     InputNumberModule,
@@ -53,8 +55,9 @@ interface DropdownOption {
     DialogModule,
     TextareaModule,
     ToastModule,
-    CalendarModule,
-    CheckboxModule
+    DatePicker,
+    CheckboxModule,
+    LoaderComponent
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',
@@ -62,7 +65,8 @@ interface DropdownOption {
 })
 export class CandidateListComponent implements OnInit {
   candidates: Candidate[] = [];
-  loading: boolean = true;
+  isLoading$;
+  loadingMessage$;
   displayEditDialog: boolean = false;
   selectedCandidate: Candidate | null = null;
 
@@ -94,8 +98,10 @@ export class CandidateListComponent implements OnInit {
     private candidateService: CandidateService,
     private candidateFilterService: CandidateFilterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
-  ) {}
+    private messageService: MessageService,
+    private loaderService: LoaderService
+  ) { this.isLoading$ = this.loaderService.isLoading$;
+      this.loadingMessage$ = this.loaderService.loadingMessage$;}
 
   ngOnInit(): void {
     this.loadCandidates();
@@ -201,7 +207,7 @@ export class CandidateListComponent implements OnInit {
   }
 
   loadCandidates(): void {
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     this.candidateService.getCandidates().subscribe({
       next: (data) => {
         this.candidates = data || [];
@@ -214,11 +220,11 @@ export class CandidateListComponent implements OnInit {
         // Load filter options based on real candidate data
         this.loadFilterOptions();
 
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Error fetching candidates:', err);
-        this.loading = false;
+        this.loaderService.hide();
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -229,7 +235,7 @@ export class CandidateListComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     console.log('Applying filters:', this.filters);
 
     // Check if filters contain the expected data structure
@@ -268,7 +274,7 @@ export class CandidateListComponent implements OnInit {
       next: (data) => {
         console.log('Filtered candidates:', data.length);
         this.candidates = data || [];
-        this.loading = false;
+        this.loaderService.hide();
 
         if (data.length === 0) {
           this.messageService.add({
@@ -286,7 +292,7 @@ export class CandidateListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error filtering candidates:', err);
-        this.loading = false;
+        this.loaderService.hide();
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -421,15 +427,15 @@ addAddress(): void {
     this.selectedCandidate.experiences.splice(index, 1);
   }
 
-  addSkill(): void {
+  /*addSkill(): void {
     if (!this.selectedCandidate) return;
     this.selectedCandidate.skills = this.selectedCandidate.skills || [];
     this.selectedCandidate.skills.push({
       id: '',
       skillName: '',
-      proficiencyLevel: 'BEGINNER',
+      proficiencyLevel: '',
     });
-  }
+  }*/
 
   removeSkill(index: number): void {
     if (!this.selectedCandidate || !this.selectedCandidate.skills) return;
@@ -479,7 +485,7 @@ addAddress(): void {
   saveCandidate(): void {
     if (!this.selectedCandidate) return;
 
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     this.candidateService.updateCandidate(this.selectedCandidate.id, this.selectedCandidate).subscribe({
       next: (updatedCandidate) => {
         const index = this.candidates.findIndex(c => c.id === updatedCandidate.id);
@@ -495,7 +501,7 @@ addAddress(): void {
 
         this.displayEditDialog = false;
         this.selectedCandidate = null;
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Error updating candidate:', err);
@@ -504,7 +510,7 @@ addAddress(): void {
           summary: 'Error',
           detail: err.message || 'Failed to update candidate.'
         });
-        this.loading = false;
+        this.loaderService.hide();
       }
     });
   }
@@ -521,7 +527,7 @@ addAddress(): void {
   }
 
   deleteCandidate(candidate: Candidate): void {
-    this.loading = true;
+    this.loaderService.show("Loading candidates...");
     this.candidateService.deleteCandidate(candidate.id).subscribe({
       next: () => {
         this.candidates = this.candidates.filter(c => c.id !== candidate.id);
@@ -532,7 +538,7 @@ addAddress(): void {
           detail: 'Candidate deleted successfully'
         });
 
-        this.loading = false;
+        this.loaderService.hide();
       },
       error: (err) => {
         console.error('Error deleting candidate:', err);
@@ -541,7 +547,7 @@ addAddress(): void {
           summary: 'Error',
           detail: err.message || 'Failed to delete candidate.'
         });
-        this.loading = false;
+        this.loaderService.hide();
       }
     });
   }
@@ -550,4 +556,40 @@ addAddress(): void {
     const contact = contacts?.find(c => c.contactType === type);
     return contact ? contact.contactValue : 'N/A';
   }
+
+  // Add these properties
+newSkillName: string = '';
+newSkillProficiency: string = '';
+
+// Add these methods
+getProficiencyLabel(value: string): string {
+  const proficiency = this.proficiencyLevelOptions.find(p => p.value === value);
+  return proficiency ? proficiency.label : '';
+}
+
+getProficiencyClass(proficiency: string): string {
+  switch(proficiency) {
+    case 'BEGINNER': return 'beginner';
+    case 'INTERMEDIATE': return 'intermediate';
+    case 'ADVANCED': return 'advanced';
+    case 'EXPERT': return 'expert';
+    default: return '';
+  }
+}
+
+// Modify your addSkill method
+addSkill() {
+  if (this.newSkillName && this.newSkillProficiency) {
+    if (!this.selectedCandidate) return;
+    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+    this.selectedCandidate.skills.push({
+        id: '',
+      skillName: this.newSkillName,
+      proficiencyLevel: this.newSkillProficiency
+    });
+    this.newSkillName = '';
+    this.newSkillProficiency = '';
+  }
+}
+
 }

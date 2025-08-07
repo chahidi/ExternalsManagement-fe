@@ -1,0 +1,41 @@
+.email-popup {
+  .p-dialog-content {
+    padding-top: 1rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  textarea {
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+}
+
+::ng-deep .email-popup-flex-height {
+  width: 60vw !important;
+  max-height: 90vh !important;
+  overflow-y: auto;
+}
+
+::ng-deep .p-toast {
+  top: 2rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto;
+  min-width: 100px;
+  max-width: 500px;
+  z-index: 9999;
+}
+
+::ng-deep .p-toast-message {
+  font-size: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+::ng-deep .p-toast-icon-close {
+  font-size: 1.25rem;
+}

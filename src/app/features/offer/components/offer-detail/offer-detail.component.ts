@@ -8,7 +8,7 @@ import { Response } from '../../../../core/models/response';
 import { NgFor, NgIf } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { Accordion , AccordionContent , AccordionPanel , AccordionHeader } from 'primeng/accordion';
+import { Accordion , AccordionPanel  } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
@@ -28,9 +28,9 @@ import { throwError } from 'rxjs';
     CardModule,
     ButtonModule,
     Accordion,
-    AccordionContent,
+
     AccordionPanel,
-    AccordionHeader,
+
     TableModule,
     DividerModule,
     TagModule,

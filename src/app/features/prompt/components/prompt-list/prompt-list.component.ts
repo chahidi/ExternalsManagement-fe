@@ -84,7 +84,6 @@ export class PromptListComponent implements OnInit {
     this.confirmationService.confirm({
         message: 'Are you sure you want to delete this prompt?',
         header: 'Confirm Deletion',
-        icon: 'pi pi-exclamation-triangle',
         accept: () => {
         this.deletePrompt(id);
         }
@@ -107,6 +106,16 @@ export class PromptListComponent implements OnInit {
     this.selectedPrompt = { ...prompt };
     this.dialogVisible = true;
   }
+
+  confirmUpdate(): void {
+        this.confirmationService.confirm({
+          message: `Are you sure you want to update this prompt?`,
+          header: 'Confirm Update',
+          accept: () => {
+            this.updatePrompt();
+          }
+        });
+      }
 
   updatePrompt() {
     this.promptService.updatePrompt(this.selectedPrompt.id, this.selectedPrompt).subscribe({

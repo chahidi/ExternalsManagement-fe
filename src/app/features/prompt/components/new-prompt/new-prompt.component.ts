@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -14,7 +14,6 @@ import { RouterModule } from '@angular/router';
   selector: 'app-new-prompt',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     InputTextModule,
     ButtonModule,

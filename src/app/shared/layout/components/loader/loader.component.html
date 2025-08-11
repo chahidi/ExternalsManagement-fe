@@ -1,15 +1,17 @@
 <div class="loader-container" [class.with-overlay]="withOverlay">
-    <div class="loader-content">
-        <p-progressSpinner
-            styleClass="test-spinner"
-            [style]="{width: size, height: size}"
-            [strokeWidth]="strokeWidth"
-            fill="transparent"
-            [animationDuration]="animationDuration"
-            [style.color]="color"
-        ></p-progressSpinner>
+  <div class="loader-content">
+    <p-progressSpinner
+      styleClass="test-spinner"
+      [style]="{width: size, height: size}"
+      [strokeWidth]="strokeWidth"
+      fill="transparent"
+      [animationDuration]="animationDuration"
+      [style.color]="color"
+    ></p-progressSpinner>
 
-        <p class="message" *ngIf="message">{{ message }}</p>
-    </div>
+    @if (message) {
+      <p class="message">{{ message }}</p>
+    }
+  </div>
 </div>
 

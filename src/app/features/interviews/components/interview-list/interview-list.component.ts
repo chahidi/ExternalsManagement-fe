@@ -145,7 +145,7 @@ export class InterviewListComponent implements OnInit {
         )
             .subscribe({
                 next: (res) => {
-                    this.notify.showSuccess('Email Sent Successfully', res.message);
+                    this.notify.showSuccess('Email Sent Successfully', res);
                 }
             });
     }

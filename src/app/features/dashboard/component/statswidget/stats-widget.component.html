@@ -16,17 +16,20 @@
     </ng-template>
     <p-card class="chart-card">
       <h3>Candidates by Language</h3>
-      <div *ngIf="!languageChartData" class="loading-indicator">
-        Loading language data...
-      </div>
-      <p-chart
-        *ngIf="languageChartData"
-        type="bar"
-        [data]="languageChartData"
-        [options]="chartOptions"
-        height="300px"
-        width="100%">
-      </p-chart>
+      @if (!languageChartData) {
+        <div class="loading-indicator">
+          Loading language data...
+        </div>
+      }
+      @if (languageChartData) {
+        <p-chart
+          type="bar"
+          [data]="languageChartData"
+          [options]="chartOptions"
+          height="300px"
+          width="100%">
+        </p-chart>
+      }
     </p-card>
 
     <!-- Skills Tab -->
@@ -35,17 +38,20 @@
     </ng-template>
     <p-card class="chart-card">
       <h3>Candidates by Skill</h3>
-      <div *ngIf="!skillsChartData" class="loading-indicator">
-        Loading skill data...
-      </div>
-      <p-chart
-        *ngIf="skillsChartData"
-        type="pie"
-        [data]="skillsChartData"
-        [options]="chartOptions"
-        height="300px"
-        width="100%">
-      </p-chart>
+      @if (!skillsChartData) {
+        <div class="loading-indicator">
+          Loading skill data...
+        </div>
+      }
+      @if (skillsChartData) {
+        <p-chart
+          type="pie"
+          [data]="skillsChartData"
+          [options]="chartOptions"
+          height="300px"
+          width="100%">
+        </p-chart>
+      }
     </p-card>
 
     <!-- Experience Tab -->
@@ -54,17 +60,20 @@
     </ng-template>
     <p-card class="chart-card">
       <h3>Candidates by years of experience</h3>
-      <div *ngIf="!experienceChartData" class="loading-indicator">
-        Loading experience data...
-      </div>
-      <p-chart
-        *ngIf="experienceChartData"
-        type="bar"
-        [data]="experienceChartData"
-        [options]="chartOptions"
-        height="300px"
-        width="100%">
-      </p-chart>
+      @if (!experienceChartData) {
+        <div class="loading-indicator">
+          Loading experience data...
+        </div>
+      }
+      @if (experienceChartData) {
+        <p-chart
+          type="bar"
+          [data]="experienceChartData"
+          [options]="chartOptions"
+          height="300px"
+          width="100%">
+        </p-chart>
+      }
     </p-card>
   </p-tabs>
 </div>

@@ -13,13 +13,12 @@ import { handleError } from '../constants/http-const';
 export class InterviewEvaluationService {
 
   private baseUrl = `${environment.apiUrl}/v1/interviews`;
-  private apiUrl = `${environment.apiInterviews}/v1/interviews`;
+  private apiUrl = `${environment.apiUrl}/v1/evaluations`;
 
   constructor(private http: HttpClient) { }
 
-  // Updated to return array of evaluations instead of single evaluation
   getInterviewEvaluations = (interviewId: string): Observable<Evaluation[]> => {
-    return this.http.get<Evaluation[]>(`${this.apiUrl}/${interviewId}/evaluations/`)
+    return this.http.get<Evaluation[]>(`${this.baseUrl}/${interviewId}/evaluations`)
       .pipe(
         retry(2),
         catchError((error) => handleError("Fetching Interview Evaluations", error))
@@ -53,30 +52,6 @@ export class InterviewEvaluationService {
       );
   };
 
-  // Create multiple evaluations for an interview
-  createMultipleEvaluations = (interviewId: string, evaluations: Partial<Evaluation>[]): Observable<Evaluation[]> => {
-    return this.http.post<Evaluation[]>(`${this.apiUrl}/${interviewId}/evaluations`, { evaluations })
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Creating Multiple Evaluations", error))
-      );
-  };
 
-  // Update a specific evaluation
-  updateEvaluation = (interviewId: string, evaluationId: string, evaluation: Partial<Evaluation>): Observable<Evaluation> => {
-    return this.http.put<Evaluation>(`${this.apiUrl}/${interviewId}/evaluations/${evaluationId}`, evaluation)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Updating Evaluation", error))
-      );
-  };
-
-  // Delete a specific evaluation
-  deleteEvaluation = (interviewId: string, evaluationId: string): Observable<{ message: string }> => {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${interviewId}/evaluations/${evaluationId}`)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Deleting Evaluation", error))
-      );
-  };
+    
 }

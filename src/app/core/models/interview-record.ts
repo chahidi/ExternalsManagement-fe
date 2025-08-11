@@ -6,4 +6,4 @@ export interface InterviewRecord {
     fileName: string;
     fileUrl: string;
     uploaded: boolean;
-  }
+}

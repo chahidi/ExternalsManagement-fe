@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 
 @Component({
   selector: 'app-interview-cloture',
-  imports: [CommonModule, CardModule, DividerModule],
+  imports: [CardModule, DividerModule],
   templateUrl: './interview-cloture.component.html',
   styleUrl: './interview-cloture.component.scss',
   standalone: true,

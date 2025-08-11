@@ -2,9 +2,9 @@ import { InterviewInstance } from './interview-instance';
 import { Answer } from './answer';
 
 export interface Question {
-  id: string;
-  description: string;
-  durationInMinutes: number;
-  interview: InterviewInstance;
-  answer?: Answer;
+    id: string;
+    description: string;
+    durationInMinutes: number;
+    interview: InterviewInstance;
+    answer?: Answer;
 }

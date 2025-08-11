@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuItemComponent } from '../menuitem/menu-item.component';
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, MenuItemComponent, RouterModule],
+    imports: [MenuItemComponent, RouterModule],
     templateUrl: './menu.component.html'
 })
 export class MenuComponent {

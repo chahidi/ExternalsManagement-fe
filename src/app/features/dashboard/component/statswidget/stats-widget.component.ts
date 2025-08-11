@@ -6,12 +6,12 @@ import { TabsModule } from 'primeng/tabs';
 import { StatsService } from '../../../../core/services/stats.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-stats-widget',
   standalone: true,
-  imports: [CardModule, ChartModule, TabsModule, CommonModule],
+  imports: [CardModule, ChartModule, TabsModule],
   templateUrl: './stats-widget.component.html',
   styleUrls: ['./stats-widget.component.scss']
 })

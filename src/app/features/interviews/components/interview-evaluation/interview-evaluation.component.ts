@@ -34,6 +34,14 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         message: ''
     };
 
+    bundle: {
+        interviewId: string;
+        candidateFullName: string;
+        offerTitle: string;
+        scheduledAt: string;
+        estimatedDuration: number;
+        evaluations: Evaluation[];
+    } | null = null;
     animatedScores: { [key: string]: number } = {};
 
     constructor(
@@ -54,12 +62,14 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 if (storedInterview) {
                     try {
                         this.interview = JSON.parse(storedInterview);
+                        console.log('Interview loaded from sessionStorage:', this.interview);
                         sessionStorage.removeItem(`interview_${interviewId}`);
                     } catch (error) {
                         console.error('Error parsing stored interview data:', error);
                     }
                 }
             }
+        } else {
         }
 
         if (!this.interview) {
@@ -80,11 +90,12 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
 
     private loadEvaluations(): void {
         this.evaluationService.getInterviewEvaluations(this.interview!.id).subscribe({
-            next: (data) => {
-                this.evaluations = Array.isArray(data) ? data : [data];
-                this.evaluations.forEach((evaluation) => {
-                    this.animatedScores[evaluation.id] = 0;
-                });
+            next: (data: any) => {
+                console.log('Fetched bundle for interview', this.interview?.id, data);
+                this.bundle = data;
+                this.evaluations = data?.evaluations ?? [];
+
+                this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
                 this.loading = false;
                 setTimeout(() => this.animateAllScores(), 100);
             },

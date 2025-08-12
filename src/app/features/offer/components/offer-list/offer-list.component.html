@@ -3,44 +3,54 @@
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
+<!-- Top Filters: Interview Count • Offer Keywords • Skills Required -->
 <div class="card mb-4">
   <h3 class="text-lg font-semibold mb-3">Filter Offers</h3>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
+    <!-- Interview Count (range) -->
     <div class="field">
-      <label class="block mb-2">Department</label>
-      <p-multiSelect
-      [options]="departmentOptions"
-      optionLabel="label"
-      optionValue="value"
-      [(ngModel)]="selectedDepartments"
-      placeholder="Select Departments"
-      class="w-full"
-    ></p-multiSelect>
+      <label class="block mb-2">Interview Count</label>
+      <div class="flex items-center gap-3">
+        <span class="text-sm w-10 text-right">{{ interviewCountRange[0] }}</span>
+        <p-slider
+          [(ngModel)]="interviewCountRange"
+          [range]="true"
+          [min]="0"
+          [max]="maxInterviewCount"
+          styleClass="w-full"
+        ></p-slider>
+        <span class="text-sm w-10">{{ interviewCountRange[1] }}</span>
+      </div>
+      <small class="text-500">Show offers with between {{ interviewCountRange[0] }} and {{ interviewCountRange[1] }} interviews.</small>
     </div>
 
+    <!-- Offer Keywords -->
     <div class="field">
-      <label class="block mb-2">Type</label>
+      <label class="block mb-2">Offer Keywords</label>
       <p-multiSelect
-      [options]="typeOptions"
-      optionLabel="label"
-      optionValue="value"
-      [(ngModel)]="selectedTypes"
-      placeholder="Select Types"
-      class="w-full"
-    ></p-multiSelect>
-
-    </div>
-
-    <div class="field">
-      <label class="block mb-2">Status</label>
-      <p-select
-        [options]="statusOptions"
-        [(ngModel)]="selectedStatut"
-        placeholder="Select Status"
+        [options]="keywordOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="selectedKeywordFilters"
+        placeholder="Select keywords"
+        display="chip"
         class="w-full"
-      ></p-select>
+      ></p-multiSelect>
+    </div>
+
+    <!-- Skills Required -->
+    <div class="field">
+      <label class="block mb-2">Skills Required</label>
+      <p-multiSelect
+        [options]="skillOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="selectedSkillFilters"
+        placeholder="Select skills"
+        display="chip"
+        class="w-full"
+      ></p-multiSelect>
     </div>
   </div>
 
@@ -51,118 +61,224 @@
       styleClass="p-button-outlined p-button-danger mr-2"
       (click)="resetFilters()"
     ></p-button>
-    <p-button
 
+    <p-button
       label="Apply Filters"
       icon="pi pi-filter"
       (click)="applyAllFilters()"
-
     ></p-button>
   </div>
 </div>
 
-<p-table #dt1
+<!-- Table -->
+<p-table
+  #dt1
   [value]="filteredOffers"
   [paginator]="true"
   [rows]="5"
-  responsiveLayout="scroll"
->
+  [globalFilterFields]="['title','description']">
+
+  <!-- Caption (global search) -->
   <ng-template pTemplate="caption">
     <div class="flex items-center gap-4 w-full">
-      <p-button
-        label="Clear"
-        [outlined]="true"
-        icon="pi pi-filter-slash"
-        (click)="clear(dt1)"
-      ></p-button>
-
+      <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)"></p-button>
       <span class="inline-flex p-input-icon-left ml-auto w-full max-w-sm">
         <i class="pi pi-search my-3 text-lg"></i>
         <input
           pInputText
           type="text"
           placeholder="Search offers..."
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()"
+          (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
           class="border rounded-lg h-12 px-3 py-3 w-full mx-3"
         />
       </span>
     </div>
   </ng-template>
 
+  <!-- Header with per-column filters -->
   <ng-template pTemplate="header">
     <tr>
-      <th style="width: 15%;">Title</th>
-      <th style="width: 25%;">Description</th>
-      <th>Type</th>
-      <th>Department</th>
-      <th>Posted On</th>
-      <th>Status</th>
-      <th style="width: 15%;">Actions</th>
+      <!-- Title -->
+      <th style="width:22%;">
+        <div class="flex items-center gap-2">
+          <span>Title</span>
+          <p-columnFilter
+            field="title"
+            display="menu"
+            matchMode="contains"
+            [showMatchModes]="true"
+            [showOperator]="true"
+            [showAddButton]="true">
+          </p-columnFilter>
+        </div>
+      </th>
+
+      <!-- Description -->
+      <th style="width:30%;">
+        <div class="flex items-center gap-2">
+          <span>Description</span>
+          <p-columnFilter
+            field="description"
+            display="menu"
+            matchMode="contains"
+            [showMatchModes]="true"
+            [showOperator]="true"
+            [showAddButton]="true">
+          </p-columnFilter>
+        </div>
+      </th>
+
+      <!-- Interview Count (numeric) -->
+      <th style="width:12%;">
+        <div class="flex items-center gap-2">
+          <span>Interview Count</span>
+          <p-columnFilter
+            field="interviewCount"
+            display="menu"
+            type="numeric"
+            [matchModeOptions]="numericModes"
+            [showMatchModes]="true"
+            [showOperator]="true"
+            [showAddButton]="true">
+          </p-columnFilter>
+        </div>
+      </th>
+
+      <!-- Offer Keywords (custom multiselect + custom match mode) -->
+      <th style="width:18%;">
+        <div class="flex items-center gap-2">
+          <span>Offer Keywords</span>
+          <p-columnFilter
+            field="keywords"
+            display="menu"
+            matchMode="includesAny"
+            [showMatchModes]="false"
+            [showOperator]="false"
+            [showAddButton]="false">
+            <ng-template pTemplate="filter" let-filter="filterCallback">
+              <p-multiSelect
+                [options]="keywordOptions"
+                optionLabel="label"
+                optionValue="value"
+                [(ngModel)]="selectedKeywordFilters"
+                display="chip"
+                placeholder="Select keywords"
+                class="w-14rem"
+                (onChange)="filter(selectedKeywordFilters)">
+              </p-multiSelect>
+            </ng-template>
+          </p-columnFilter>
+        </div>
+      </th>
+
+      <!-- Skills Required (custom multiselect + custom match mode) -->
+      <th style="width:18%;">
+        <div class="flex items-center gap-2">
+          <span>Skills Required</span>
+          <p-columnFilter
+            field="skills"
+            display="menu"
+            matchMode="includesAny"
+            [showMatchModes]="false"
+            [showOperator]="false"
+            [showAddButton]="false">
+            <ng-template pTemplate="filter" let-filter="filterCallback">
+              <p-multiSelect
+                [options]="skillOptions"
+                optionLabel="label"
+                optionValue="value"
+                [(ngModel)]="selectedSkillFilters"
+                display="chip"
+                placeholder="Select skills"
+                class="w-14rem"
+                (onChange)="filter(selectedSkillFilters)">
+              </p-multiSelect>
+            </ng-template>
+          </p-columnFilter>
+        </div>
+      </th>
+
+      <th style="width:10%;">Actions</th>
     </tr>
   </ng-template>
 
+  <!-- Body -->
   <ng-template pTemplate="body" let-offer>
     <tr>
-      <td>{{ offer.titre }}</td>
-      <td class="p-text-truncate">{{ offer.description }}</td>
-      <td>{{ offer.type }}</td>
-      <td>{{ offer.department }}</td>
-      <td>{{ offer.createdAt | date: 'yyyy-MM-dd' }}</td>
+      <td class="font-medium">{{ offer.title }}</td>
+
       <td>
-        <span
-          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-          [ngClass]="{
-            'bg-green-100 text-green-800': offer.status === 'Open',
-            'bg-red-100 text-red-800': offer.status === 'Closed',
-            'bg-yellow-100 text-yellow-800': offer.status === 'Pending'
-          }"
-        >
-          <i
-            class="pi mr-2"
-            [ngClass]="{
-              'pi-check-circle': offer.status === 'Open',
-              'pi-times-circle': offer.status === 'Closed',
-              'pi-clock': offer.status === 'Pending'
-            }"
-          ></i>
-          {{ offer.status }}
-        </span>
+        <div class="desc-tooltip">
+          <span class="desc-teaser" (click)="openDescModal(offer)">
+            {{ teaser(offer.description) }}
+          </span>
+
+          <div class="desc-popup">
+            <div class="desc-popup-body">
+              <div class="desc-popup-title">View full description</div>
+              <div class="desc-popup-text">Click the text to see all details</div>
+            </div>
+            <div class="desc-popup-arrow"></div>
+          </div>
+        </div>
+      </td>
+
+      <td>
+        <span class="p-badge p-badge-info">{{ offer.interviewCount }}</span>
+      </td>
+
+      <td>
+        <ng-container *ngIf="offer.keywords as kws">
+          <p-chip *ngFor="let k of kws | slice:0:4" [label]="$any(k)" class="mr-1 mb-1"></p-chip>
+          <span *ngIf="kws.length > 4" class="text-500">+{{ kws.length - 4 }}</span>
+        </ng-container>
+      </td>
+
+      <td>
+        <ng-container *ngIf="offer.skills as skills">
+          <!-- ✅ remove the type assertion in *ngFor to fix the parser error -->
+          <p-chip *ngFor="let s of skills | slice:0:4" [label]="$any(s)" class="mr-1 mb-1"></p-chip>
+          <span *ngIf="skills.length > 4" class="text-500">+{{ skills.length - 4 }}</span>
+        </ng-container>
       </td>
 
       <td class="p-text-center">
-        <div class="p-d-flex p-jc-center p-gap-2">
-          <button
-            pButton
-            type="button"
-            icon="pi pi-eye"
+        <div class="flex gap-3 justify-center">
+          <button pButton type="button" icon="pi pi-eye"
             class="p-button-rounded p-button-text p-button-info"
-            pTooltip="View Details"
-            tooltipPosition="top"
-            (click)="goToDetails(offer.id)"
-          ></button>
-          <button
-            pButton
-            type="button"
-            icon="pi pi-pencil"
+            pTooltip="View Offer" tooltipPosition="top">
+          </button>
+          <button pButton type="button" icon="pi pi-pencil"
             class="p-button-rounded p-button-text p-button-warning"
-            pTooltip="Edit Offer"
-            tooltipPosition="top"
-            (click)="openEditOffer(offer)"
-          ></button>
-          <button
-            pButton
-            type="button"
-            icon="pi pi-trash"
+            pTooltip="Edit Offer" tooltipPosition="top"
+            (click)="openEditOffer(offer)">
+          </button>
+          <button pButton type="button" icon="pi pi-trash"
             class="p-button-rounded p-button-text p-button-danger"
-            pTooltip="Delete Offer"
-            tooltipPosition="top"
-            (click)="deleteOffer(offer.id)"
-          ></button>
+            pTooltip="Delete Offer" tooltipPosition="top"
+            (click)="deleteOffer(offer.id)">
+          </button>
         </div>
       </td>
     </tr>
   </ng-template>
 </p-table>
+
+<!-- Centered modal for FULL description -->
+<p-dialog
+  [(visible)]="descDialogVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="true"
+  [resizable]="false"
+  [draggable]="false"
+  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+  [style]="{ width: '52rem', maxHeight: '75vh' }"
+  header="{{ currentOffer?.title || 'Description' }}"
+>
+  <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
+    {{ currentOffer?.description }}
+  </div>
+</p-dialog>
 
 <router-outlet></router-outlet>

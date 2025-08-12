@@ -7,18 +7,13 @@ export const OFFER_ROUTES: Routes = [
         import('./components/offer-list/offer-list.component').then(m => m.OfferListComponent),
       title: 'Offer List'
     },
-    
-   
+
+
     {
-        path : 'new-offer' , 
+        path : 'new-offer' ,
         loadComponent : ()=>
             import('./components/new-offer/new-offer.component').then(m=>m.NewOfferComponent),
         title : 'New Offer'
     },
-    {
-    path: ':id',
-    loadComponent: () =>
-      import('./components/offer-detail/offer-detail.component').then(m => m.OfferDetailComponent),
-    title: 'Offer Details'
-  } 
+    
   ];

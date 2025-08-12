@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { Select } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 import { OfferService } from '../../../../core/services/offer.service';
 
@@ -14,11 +13,10 @@ import { OfferService } from '../../../../core/services/offer.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    InputNumberModule,
-    InputTextModule,
-    Select,
-    ButtonModule,
     PanelModule,
+    InputTextModule,
+    TextareaModule,
+    ButtonModule,
     NgIf
   ],
   templateUrl: './new-offer.component.html',
@@ -26,7 +24,6 @@ import { OfferService } from '../../../../core/services/offer.service';
 })
 export class NewOfferComponent {
   offerForm: FormGroup;
-  types = ['Full-Time', 'Part-Time', 'Contract', 'Internship'];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,10 +31,8 @@ export class NewOfferComponent {
     private offerService: OfferService
   ) {
     this.offerForm = this.formBuilder.group({
-      titre: ['', Validators.required],
-      description: ['', Validators.required],
-      type: ['', Validators.required],
-      department: ['', Validators.required]
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.required]]
     });
   }
 
@@ -47,15 +42,14 @@ export class NewOfferComponent {
       return;
     }
 
-    // Appel correct à addOffer avec subscribe
-    this.offerService.addOffer(this.offerForm.value).subscribe({
-      next: (createdOffer) => {
-        // Tu peux éventuellement afficher un message de succès ici
+    const payload = this.offerForm.value; // { title, description }
+
+    this.offerService.addOffer(payload).subscribe({
+      next: () => {
         this.router.navigate(['/offers']);
       },
       error: (err) => {
-        // Gestion simple de l'erreur, tu peux l'améliorer
-        console.error('Erreur lors de la création de l\'offre', err);
+        console.error('Error creating offer', err);
       }
     });
   }

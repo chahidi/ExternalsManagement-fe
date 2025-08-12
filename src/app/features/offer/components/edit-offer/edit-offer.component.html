@@ -1,108 +1,72 @@
 <p-card class="p-4">
-    <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid space-y-4">
-      <div class="p-field">
-        <label for="titre" class="block font-semibold mb-2">Title</label>
-        <input
-          id="titre"
-          pInputText
-          class="w-full"
-          formControlName="titre"
-          placeholder="Enter job title"
-          aria-describedby="titre-error"
-          [class.p-invalid]="offerForm.get('titre')?.touched && offerForm.get('titre')?.hasError('required')"
-        />
-        <small
-          id="titre-error"
-          *ngIf="offerForm.get('titre')?.touched && offerForm.get('titre')?.hasError('required')"
-          class="p-error block mt-1"
-        >
-          Title is required.
-        </small>
-      </div>
+  <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid space-y-4">
+    <!-- Title -->
+    <div class="p-field">
+      <label for="title" class="block font-semibold mb-2">Title</label>
+      <input
+        id="title"
+        pInputText
+        class="w-full"
+        formControlName="title"
+        placeholder="Enter job title"
+        aria-describedby="title-error"
+        [class.p-invalid]="offerForm.get('title')?.touched && offerForm.get('title')?.invalid"
+      />
+      <small
+        id="title-error"
+        *ngIf="offerForm.get('title')?.touched && offerForm.get('title')?.hasError('required')"
+        class="p-error block mt-1"
+      >
+        Title is required.
+      </small>
+      <small
+        *ngIf="offerForm.get('title')?.touched && offerForm.get('title')?.hasError('maxlength')"
+        class="p-error block mt-1"
+      >
+        Title must be at most 200 characters.
+      </small>
+    </div>
 
+    <!-- Description -->
+    <div class="p-field">
+      <label for="description" class="block font-semibold mb-2">Description</label>
+      <textarea
+        id="description"
+        pInputTextarea
+        class="border rounded-lg w-full px-2 py-2"
+        rows="8"
+        formControlName="description"
+        placeholder="Enter job description"
+        aria-describedby="description-error"
+        [class.p-invalid]="offerForm.get('description')?.touched && offerForm.get('description')?.invalid"
+      ></textarea>
+      <small
+        id="description-error"
+        *ngIf="offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')"
+        class="p-error block mt-1"
+      >
+        Description is required.
+      </small>
+    </div>
 
-      <div class="p-field">
-        <label for="description" class="block font-semibold mb-2">Description</label>
-        <textarea
-          id="description"
-          pInputTextarea
-          class=" border rounded-lg border-spacing-1 w-full px-2 py-2"
-          rows="4"
-          formControlName="description"
-          placeholder="Enter job description"
-          aria-describedby="description-error"
-          [class.p-invalid]="offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')"
-        ></textarea>
-        <small
-          id="description-error"
-          *ngIf="offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')"
-          class="p-error block mt-1"
-        >
-          Description is required.
-        </small>
-      </div>
-
-      <div class="p-grid p-formgrid gap-4">
-
-        <div class="p-col-12 p-md-6 p-field">
-          <label for="type" class="block font-semibold mb-2">Type</label>
-          <p-select
-            id="type"
-            class="w-full"
-            formControlName="type"
-            [options]="typeOptions"
-            placeholder="Select a type"
-            aria-describedby="type-error"
-            [class.p-invalid]="offerForm.get('type')?.touched && offerForm.get('type')?.hasError('required')"
-          ></p-select>
-          <small
-            id="type-error"
-            *ngIf="offerForm.get('type')?.touched && offerForm.get('type')?.hasError('required')"
-            class="p-error block mt-1"
-          >
-            Type is required.
-          </small>
-        </div>
-      </div>
-
-      <div class="p-field">
-        <label for="department" class="block font-semibold mb-2">Department</label>
-        <p-select
-          id="department"
-          class="w-full"
-          formControlName="department"
-          [options]="departmentOptions"
-          placeholder="Select a department"
-          aria-describedby="department-error"
-          [class.p-invalid]="offerForm.get('department')?.touched && offerForm.get('department')?.hasError('required')"
-        ></p-select>
-        <small
-          id="department-error"
-          *ngIf="offerForm.get('department')?.touched && offerForm.get('department')?.hasError('required')"
-          class="p-error block mt-1"
-        >
-          Department is required.
-        </small>
-      </div>
-
-
-      <div class="p-dialog-footer flex justify-end gap-2 mt-4">
-        <button
-          pButton
-          type="submit"
-          label="Save"
-          icon="pi pi-check"
-          class="p-button"
-          [disabled]="offerForm.invalid"
-        ></button>
-        <button
-          pButton
-          type="button"
-          label="Cancel"
-          icon="pi pi-times"
-          class="p-button p-button-secondary"
-          (click)="ref.close(false)"
-        ></button>
-      </div>
-    </form>
-  </p-card>
+    <!-- Actions -->
+    <div class="p-dialog-footer flex justify-end gap-2 mt-4">
+      <button
+        pButton
+        type="submit"
+        label="Save"
+        icon="pi pi-check"
+        class="p-button"
+        [disabled]="offerForm.invalid"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button p-button-secondary"
+        (click)="ref.close(false)"
+      ></button>
+    </div>
+  </form>
+</p-card>

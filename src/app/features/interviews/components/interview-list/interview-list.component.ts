@@ -56,7 +56,7 @@ export class InterviewListComponent implements OnInit {
         private offerService: OfferService,
         private router: Router,
         private notify: NotificationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -97,8 +97,8 @@ export class InterviewListComponent implements OnInit {
 
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
-            const matchTech = !this.mainTechFilter || interview.candidateMainTech === this.mainTechFilter;
-            const matchTitle = !this.titleFilter || interview.offerTitle === this.titleFilter;
+            const matchTech = !this.mainTechFilter || interview.candidate.mainTech === this.mainTechFilter;
+            const matchTitle = !this.titleFilter || interview.offer?.title === this.titleFilter;
             const matchDate = !this.scheduledDateFilter || this.formatDate(interview.scheduledAt) === this.formatDate(this.scheduledDateFilter);
             return matchTech && matchTitle && matchDate;
         });
@@ -130,21 +130,19 @@ export class InterviewListComponent implements OnInit {
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         this.isGeneratingLink = true;
 
-        this.interviewService
-            .generateAndSaveInterviewLink(interview)
-            .pipe(
-                tap((link) => {
-                    console.log('Generated Link:', link);
-                    interview.link = link;
-                }),
-                catchError((err) => this.handleGenerateAndSaveLinkError(err)),
+        this.interviewService.generateAndSaveInterviewLink(interview).pipe(
+            tap(link => {
+                console.log('Generated Link:', link);
+                interview.link = link;
+            }),
+            catchError(err => this.handleGenerateAndSaveLinkError(err)),
 
-                switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
+            switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
 
-                finalize(() => {
-                    this.isGeneratingLink = false;
-                })
-            )
+            finalize(() => {
+                this.isGeneratingLink = false;
+            })
+        )
             .subscribe({
                 next: (res) => {
                     this.notify.showSuccess('Email Sent Successfully', res);
@@ -204,7 +202,8 @@ export class InterviewListComponent implements OnInit {
     }
 
     openEvaluation(interview: InterviewInstance): void {
-        sessionStorage.setItem(`interview_id_${interview.id}`, interview.id.toString());
+        sessionStorage.setItem(`interview_${interview.id}`, JSON.stringify(interview));
+
         const url = this.router.serializeUrl(this.router.createUrlTree(['/evaluation', interview.id]));
         window.open(url, '_blank');
     }
@@ -223,7 +222,8 @@ export class InterviewListComponent implements OnInit {
         } else if (message.includes('save')) {
             console.error('Failed To save the generated link');
             this.notify.showError('Saving Link Error', message);
-        } else {
+        }
+        else {
             console.error('Unexpected error during link generation:', err);
             this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
         }

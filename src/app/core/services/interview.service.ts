@@ -16,7 +16,7 @@ export class InterviewService {
     constructor(private http: HttpClient) {}
 
     getInterviews = (): Observable<InterviewInstance[]> => {
-        return this.http.get<InterviewInstance[]>(`${this.apiUrl}`).pipe(retry(2), catchError(this.handleError));
+        return this.http.get<InterviewInstance[]>(`${this.apiUrl}/all`).pipe(retry(2), catchError(this.handleError));
     };
 
     deleteInterview = (id: string): Observable<{ message: string }> => {

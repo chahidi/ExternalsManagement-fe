@@ -1,72 +1,72 @@
 <p-toast position="top-center"></p-toast>
 
 @if (loading) {
-    <div class="loading-container">
-        <p-progressSpinner></p-progressSpinner>
-    </div>
+  <div class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
 }
 
 @if (!loading && error.happened) {
-    <div class="error-container">
-        <p-message severity="error" [text]="error.message"></p-message>
-    </div>
+  <div class="error-container">
+    <p-message severity="error" [text]="error.message"></p-message>
+  </div>
 }
 
 @if (!loading && !error.happened && interview) {
-    <div class="container">
-        <!-- HEADER CARD -->
-        <p-card class="header-card">
-            <div class="interview-header">
-                <h1 class="interview-title">
-                    Interview Evaluation for
-                    <span class="candidate-name">{{ interview.candidateFullName || 'Unknown' }}</span>
-                </h1>
-                <div class="interview-details">
-                    <div class="detail-item">
-                        <i class="pi pi-briefcase detail-icon"></i>
-                        <span>{{ interview.offerTitle }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="pi pi-calendar detail-icon"></i>
-                        <span>{{ interview.startTime | date: 'MMM d, y' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="pi pi-clock detail-icon"></i>
-                        <span>{{ bundle?.estimatedDuration }} min</span>
-                    </div>
-                </div>
-            </div>
-        </p-card>
-        <!-- SCORED EVALUATIONS -->
-        <div class="evaluations-container">
-            <div class="evaluations-grid">
-                @for (evaluation of evaluations; track trackByEvaluationId($index, evaluation)) {
-                    <p-card class="evaluation-card" [ngClass]="getScoreRangeClass(evaluation.score || 0)">
-                        <div class="evaluation-center">
-                            <div #scoreCircle class="score-circle-large" [style.--progress-degrees]="'0deg'" [style.--score-color]="getScoreColor(evaluation.score || 0)">
-                                <div class="score-value-large" [class]="getScoreTextClass(evaluation.score || 0)">
-                                    {{ evaluation.score != null ? getAnimatedScore(evaluation.id) : 'N/A' }}
-                                </div>
-                            </div>
-                            <h3 class="evaluation-type-title">
-                                {{ getEvaluationTypeDescription(evaluation) }}
-                            </h3>
-                        </div>
-                        <div class="evaluation-content">
-                            <div class="feedback-section">
-                                <h4>Feedback</h4>
-                                <p>{{ evaluation.feedback || 'No feedback available.' }}</p>
-                            </div>
-                            <div class="score-details">
-                                <span class="coefficient-label">Weight:</span>
-                                <span class="coefficient-value">
-                                    {{ evaluation.evaluationType.coefficient || 1 }}
-                                </span>
-                            </div>
-                        </div>
-                    </p-card>
-                }
-            </div>
+  <div class="container">
+    <!-- HEADER CARD -->
+    <p-card class="header-card">
+      <div class="interview-header">
+        <h1 class="interview-title">
+          Interview Evaluation for
+          <!-- <span class="candidate-name">{{interview.candidate.fullName || 'Unknown'}}</span> -->
+        </h1>
+        <div class="interview-details">
+          <div class="detail-item">
+            <i class="pi pi-briefcase detail-icon"></i>
+            <!-- <span>{{ interview.offer.title || 'No Title' }}</span> -->
+          </div>
+          <div class="detail-item">
+            <i class="pi pi-calendar detail-icon"></i>
+            <span>{{ interview.startTime | date: 'MMM d, y' }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="pi pi-clock detail-icon"></i>
+            <!-- <span>{{ interview.record.durationInSeconds / 60 | number: '1.0-0' }} min</span> -->
+          </div>
         </div>
+      </div>
+    </p-card>
+    <!-- SCORED EVALUATIONS -->
+    <div class="evaluations-container">
+      <div class="evaluations-grid">
+        @for (evaluation of evaluations; track trackByEvaluationId($index, evaluation)) {
+          <p-card class="evaluation-card" [ngClass]="getScoreRangeClass(evaluation.score || 0)">
+            <div class="evaluation-center">
+              <div #scoreCircle class="score-circle-large" [style.--progress-degrees]="'0deg'" [style.--score-color]="getScoreColor(evaluation.score || 0)">
+                <div class="score-value-large" [class]="getScoreTextClass(evaluation.score || 0)">
+                  {{ evaluation.score != null ? getAnimatedScore(evaluation.id) : 'N/A' }}
+                </div>
+              </div>
+              <h3 class="evaluation-type-title">
+                {{ getEvaluationTypeDescription(evaluation) }}
+              </h3>
+            </div>
+            <div class="evaluation-content">
+              <div class="feedback-section">
+                <h4>Feedback</h4>
+                <p>{{ evaluation.feedback || 'No feedback available.' }}</p>
+              </div>
+              <div class="score-details">
+                <span class="coefficient-label">Weight:</span>
+                <span class="coefficient-value">
+                  {{ evaluation.evaluationType.coefficient || 1 }}
+                </span>
+              </div>
+            </div>
+          </p-card>
+        }
+      </div>
     </div>
+  </div>
 }

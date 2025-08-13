@@ -16,7 +16,6 @@ export class OfferService {
   private offers: Offer[] = [];               // keep a lightweight cache if you want
   private interviews: InterviewInstance[] = [];
   private questions: Question[] = [];
-  private responses: Response[] = [];
 
   private baseUrl = `${environment.apiUrl}/v1/offers`;
   private apiUrl  = `${environment.apiInterviews}/v1/offers`;
@@ -26,7 +25,7 @@ export class OfferService {
     private candidateService: CandidateService
   ) {}
 
-  
+
   getAllTitles = (): Observable<string[]> => {
     return this.http.get<string[]>(`${this.apiUrl}/titles`);
   };

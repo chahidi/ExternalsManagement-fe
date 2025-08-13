@@ -113,7 +113,6 @@ export class OfferListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOffers();
-    console.log('OfferListComponent initialized');
     window.addEventListener('resize', () => {
     this.screenWidth = window.innerWidth;
   });
@@ -123,7 +122,7 @@ export class OfferListComponent implements OnInit {
   loadOffers() {
     this.offerService.getOffers().subscribe({
       next: (data) => {
-        console.log(data)
+
         this.offers = (data as Offer[]).map((o) => {
           const interviewCount = (o as any)?.interviews?.length ?? 0;
           const keywords = this.keywordsFromDescription(o.description, o.id);
@@ -132,7 +131,7 @@ export class OfferListComponent implements OnInit {
         });
 
         this.filteredOffers = this.offers;
-        console.log('Offers loaded:', this.filteredOffers)
+        
 
         const counts = this.offers.map((o) => o.interviewCount);
         this.maxInterviewCount = counts.length ? Math.max(...counts) : 10;

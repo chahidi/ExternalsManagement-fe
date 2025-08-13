@@ -131,7 +131,7 @@ export class OfferListComponent implements OnInit {
         });
 
         this.filteredOffers = this.offers;
-        
+
 
         const counts = this.offers.map((o) => o.interviewCount);
         this.maxInterviewCount = counts.length ? Math.max(...counts) : 10;

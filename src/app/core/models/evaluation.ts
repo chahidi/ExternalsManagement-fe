@@ -5,6 +5,6 @@ export interface Evaluation {
     id: string;
     score: number;
     feedback: string;
-    interview: InterviewInstance;
+    interviewId: string;
     evaluationType: EvaluationType;
 }

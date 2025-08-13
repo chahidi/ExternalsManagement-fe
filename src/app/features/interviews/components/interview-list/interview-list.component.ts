@@ -204,7 +204,7 @@ export class InterviewListComponent implements OnInit {
     }
 
     openEvaluation(interview: InterviewInstance): void {
-        sessionStorage.setItem(`interview_id_${interview.id}`, interview.id.toString());
+        sessionStorage.setItem(`interview_${interview.id}`, JSON.stringify(interview));
         const url = this.router.serializeUrl(this.router.createUrlTree(['/evaluation', interview.id]));
         window.open(url, '_blank');
     }

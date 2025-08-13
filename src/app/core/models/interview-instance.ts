@@ -13,8 +13,10 @@ export interface InterviewInstance {
     description: string;
     feedbackGeneral: string;
     comment: string;
-    candidate: Candidate;
-    offer: Offer;
+
+    candidateFullName: string;
+    candidateMainTech: string;
+    offerTitle: string;
     questions: Question[];
     evaluations: Evaluation[];
     record: Record;

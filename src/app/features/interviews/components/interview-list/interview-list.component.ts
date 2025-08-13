@@ -97,8 +97,8 @@ export class InterviewListComponent implements OnInit {
 
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
-            const matchTech = !this.mainTechFilter || interview.candidate.mainTech === this.mainTechFilter;
-            const matchTitle = !this.titleFilter || interview.offer?.title === this.titleFilter;
+            const matchTech = !this.mainTechFilter || interview.candidateMainTech === this.mainTechFilter;
+            const matchTitle = !this.titleFilter || interview.offerTitle === this.titleFilter;
             const matchDate = !this.scheduledDateFilter || this.formatDate(interview.scheduledAt) === this.formatDate(this.scheduledDateFilter);
             return matchTech && matchTitle && matchDate;
         });

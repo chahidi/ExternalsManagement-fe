@@ -16,7 +16,7 @@ export class InterviewService {
     constructor(private http: HttpClient) {}
 
     getInterviews = (): Observable<InterviewInstance[]> => {
-        return this.http.get<InterviewInstance[]>(`${this.apiUrl}/all`).pipe(retry(2), catchError(this.handleError));
+        return this.http.get<InterviewInstance[]>(`${this.apiUrl}`).pipe(retry(2), catchError(this.handleError));
     };
 
     deleteInterview = (id: string): Observable<{ message: string }> => {
@@ -62,7 +62,7 @@ export class InterviewService {
     };
 
     AddComment = (id: string, comment: string): Observable<any> => {
-        return this.http.put<any>(`${this.apiUrl}/${id}/addComment`, { comment }).pipe(retry(2), catchError(this.handleError));
+        return this.http.put<any>(`${this.apiUrl}/${id}/add-comment`, { comment }).pipe(retry(2), catchError(this.handleError));
     };
 
     private handleError = (error: HttpErrorResponse): Observable<never> => {

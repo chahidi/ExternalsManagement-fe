@@ -84,9 +84,9 @@
 
     <ng-template pTemplate="body" let-interview>
       <tr>
-        <td>{{ interview.candidate?.fullName }}</td>
-        <td>{{ interview.candidate?.mainTech || 'N/A' }}</td>
-        <td>{{ interview.offer?.title || 'N/A' }}</td>
+        <td>{{ interview.candidateFullName }}</td>
+        <td>{{ interview.candidateMainTech || 'N/A' }}</td>
+        <td>{{ interview.offerTitle || 'N/A' }}</td>
         <td>{{ interview.comment || 'N/A' }}</td>
         <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
         <td>{{ interview.endTime ? (interview.endTime | date: 'dd-MM-yyyy') : '—' }}</td>

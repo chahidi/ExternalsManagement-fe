@@ -241,4 +241,25 @@ export class InterviewListComponent implements OnInit {
         }
         return EMPTY;
     }
+
+    private toDate(v: Date | string | null | undefined): Date | null {
+        if (!v) return null;
+        const d = new Date(v);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    getDurationLabel(interview: InterviewInstance): string {
+        const end = this.toDate(interview.endTime);
+        const start = this.toDate(interview.startTime) ?? this.toDate(interview.scheduledAt);
+
+        if (!end || !start) return '—';
+
+        const diffMs = end.getTime() - start.getTime();
+        if (diffMs <= 0) return '—';
+
+        const totalMin = Math.round(diffMs / (1000 * 60));
+        const hours = Math.floor(totalMin / 60);
+        const mins = totalMin % 60;
+        return hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
+    }
 }

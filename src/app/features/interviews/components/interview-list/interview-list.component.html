@@ -91,13 +91,8 @@
                 <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
                 <td>{{ interview.endTime ? (interview.endTime | date: 'dd-MM-yyyy') : '—' }}</td>
                 <td>{{ getRemainingHours(interview.scheduledAt) }}</td>
-                <td>
-                    @if (interview.record?.durationInSeconds) {
-                        {{ interview.record.durationInSeconds / 60 | number: '1.0-0' }} min
-                    } @else {
-                        —
-                    }
-                </td>
+                <td>{{ getDurationLabel(interview) }}</td>
+
                 <td>
                     @if (shouldShowEvaluation(interview)) {
                         <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer"> View Evaluation </a>

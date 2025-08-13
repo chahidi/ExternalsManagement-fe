@@ -12,28 +12,34 @@
     </div>
 }
 
-@if (!loading && !error.happened && bundle) {
+@if (!loading && !error.happened && interviewEvaluation) {
     <div class="container">
         <!-- HEADER CARD -->
         <p-card class="header-card">
             <div class="interview-header">
                 <h1 class="interview-title">
                     Interview Evaluation for
-                    <span class="candidate-name">{{ bundle.candidateFullName || 'Unknown' }}</span>
+                    <span class="candidate-name">{{interviewEvaluation.candidateFullName || 'Unknown' }}</span>
                 </h1>
 
                 <div class="interview-details">
                     <div class="detail-item">
                         <i class="pi pi-briefcase detail-icon"></i>
-                        <span>{{ bundle.offerTitle }}</span>
+                        <span>{{ interviewEvaluation.offerTitle }}</span>
                     </div>
+
                     <div class="detail-item">
                         <i class="pi pi-calendar detail-icon"></i>
-                        <span>{{ bundle.scheduledAt | date: 'MMM d, y' }}</span>
+                        <span>{{ interviewEvaluation.scheduledAt | date: 'MMM d, y' }}</span>
                     </div>
-                    <div class="detail-item">
+                    <div class="detail-item" pTooltip="Estimated time" tooltipPosition="top">
                         <i class="pi pi-clock detail-icon"></i>
-                        <span>{{ bundle.estimatedDuration }} min</span>
+                        <span>{{ interviewEvaluation.estimatedDuration }} min</span>
+                    </div>
+
+                    <div class="detail-item" pTooltip="Real duration" tooltipPosition="top">
+                        <i class="pi pi-stopwatch detail-icon"></i>
+                        <span>{{ getRealDurationLabel() }}</span>
                     </div>
                 </div>
             </div>

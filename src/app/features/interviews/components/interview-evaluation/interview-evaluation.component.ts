@@ -9,6 +9,7 @@ import { BadgeModule } from 'primeng/badge';
 import { TagModule } from 'primeng/tag';
 import { AccordionModule } from 'primeng/accordion';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
@@ -21,7 +22,7 @@ import { InterviewInstance } from '../../../../core/models/interview-instance';
 @Component({
     selector: 'app-interview-evaluation',
     standalone: true,
-    imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule, ToastModule],
+    imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule, ToastModule, TooltipModule],
     providers: [MessageService, NotificationService],
     templateUrl: './interview-evaluation.component.html',
     styleUrls: ['./interview-evaluation.component.scss']
@@ -30,13 +31,11 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     @ViewChildren('scoreCircle') scoreCircles!: QueryList<ElementRef>;
 
     interview: InterviewInstance | null = null;
-
-    bundle: InterviewEvaluationDisplay | null = null;
+    interviewEvaluation?: InterviewEvaluationDisplay;
     evaluations: Evaluation[] = [];
 
     loading = true;
     error = { happened: false, message: '' };
-
     animatedScores: Record<string, number> = {};
 
     constructor(
@@ -50,13 +49,22 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.interview = history.state?.interview ?? null;
 
-        const interviewId = this.route.snapshot.paramMap.get('id');
-        if (!interviewId) {
+        const id = this.route.snapshot.paramMap.get('id');
+        if (!id) {
             this.loading = false;
             this.error = { happened: true, message: 'Missing interview id in the route.' };
             return;
         }
-        this.loadEvaluations(interviewId);
+        if (!this.interview) {
+            const stored = sessionStorage.getItem(`interview_${id}`);
+            if (stored) {
+                try {
+                    this.interview = JSON.parse(stored);
+                } catch {}
+            }
+        }
+
+        this.loadEvaluations(id);
     }
 
     ngAfterViewInit(): void {
@@ -66,7 +74,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     private loadEvaluations(interviewId: string): void {
         this.evaluationService.getInterviewEvaluations(interviewId).subscribe({
             next: (data: InterviewEvaluationDisplay) => {
-                this.bundle = data;
+                this.interviewEvaluation = data;
                 this.evaluations = data.evaluations ?? [];
                 this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
                 this.loading = false;
@@ -79,6 +87,26 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 this.error = { happened: true, message: 'Failed to load evaluation data.' };
             }
         });
+    }
+
+    private toDate(v: unknown): Date | null {
+        if (v == null) return null;
+        const d = new Date(v as any);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    getRealDurationLabel(): string {
+        const start = this.toDate(this.interview?.startTime) ?? this.toDate(this.interview?.scheduledAt);
+        const end = this.toDate(this.interview?.endTime);
+        if (!start || !end) return '—';
+
+        const diffMs = end.getTime() - start.getTime();
+        if (diffMs <= 0) return '—';
+
+        const minutes = Math.round(diffMs / 60000);
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return h > 0 ? `${h}h ${m}m` : `${m} min`;
     }
 
     getScoreRangeClass(score: number): string {
@@ -107,7 +135,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (els[i]) this.animateScore(els[i].nativeElement, evaluation);
         });
     }
-
     animateScore(scoreElement: HTMLElement, evaluation: Evaluation): void {
         if (!scoreElement || evaluation.score == null) return;
         const finalScore = evaluation.score;
@@ -118,7 +145,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         this.animateScoreNumber(evaluation.id, finalScore);
         setTimeout(() => scoreElement.classList.add('pulse'), 2000);
     }
-
     animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();
@@ -131,7 +157,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         };
         requestAnimationFrame(step);
     }
-
     triggerScoreAnimation(): void {
         if (!this.scoreCircles || !this.evaluations.length) return;
         const els = this.scoreCircles.toArray();
@@ -139,7 +164,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
         setTimeout(() => this.animateAllScores(), 100);
     }
-
     getEvaluationTypeDescription(e: Evaluation): string {
         return e.evaluationType?.description || 'General Evaluation';
     }

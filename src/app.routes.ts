@@ -18,6 +18,11 @@ export const appRoutes: Routes = [
         loadChildren: () => import('./app/features/candidate/candidate-routes').then((m) => m.CANDIDATE_FORMS_ROUTES),
     },
     {
+        path : 'offers' ,
+        component :LayoutComponent ,
+        loadChildren : ()=>import('./app/features/offer/offer-routes').then((m)=>m.OFFER_ROUTES),
+    },
+    {
         path: 'prompts',
         component: LayoutComponent,
         loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),

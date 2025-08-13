@@ -1,5 +1,4 @@
 import { EvaluationType } from './evaluation-type';
-import { InterviewInstance } from './interview-instance';
 
 export interface Evaluation {
     id: string;

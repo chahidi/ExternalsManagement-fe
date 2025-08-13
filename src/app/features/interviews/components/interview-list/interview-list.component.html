@@ -84,28 +84,34 @@
 
         <ng-template pTemplate="body" let-interview>
             <tr>
-                <td>{{ interview.candidate?.fullName }}</td>
-                <td>{{ interview.candidate?.mainTech || 'N/A' }}</td>
-                <td>{{ interview.offer?.title || 'N/A' }}</td>
+                <td>{{ interview.candidateFullName }}</td>
+                <td>{{ interview.candidateMainTech || 'N/A' }}</td>
+                <td>{{ interview.offerTitle || 'N/A' }}</td>
                 <td>{{ interview.comment || 'N/A' }}</td>
                 <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
                 <td>{{ interview.endTime ? (interview.endTime | date: 'dd-MM-yyyy') : '—' }}</td>
                 <td>{{ getRemainingHours(interview.scheduledAt) }}</td>
                 <td>
-                    <ng-container *ngIf="interview.record?.durationInSeconds; else noDuration"> {{ interview.record.durationInSeconds / 60 | number: '1.0-0' }} min </ng-container>
-                    <ng-template #noDuration>—</ng-template>
+                    @if (interview.record?.durationInSeconds) {
+                        {{ interview.record.durationInSeconds / 60 | number: '1.0-0' }} min
+                    } @else {
+                        —
+                    }
                 </td>
                 <td>
-                    <ng-container *ngIf="shouldShowEvaluation(interview); else noEvaluation">
+                    @if (shouldShowEvaluation(interview)) {
                         <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer"> View Evaluation </a>
-                    </ng-container>
-                    <ng-template #noEvaluation>
+                    } @else {
                         <span class="text-gray-400 italic">N/A</span>
-                    </ng-template>
+                    }
                 </td>
                 <td>
-                    <a *ngIf="interview.record?.fileUrl" [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
-                    <span *ngIf="!interview.record?.fileUrl" class="text-gray-400 italic">Not Available</span>
+                    @if (interview.record?.fileUrl) {
+                        <a [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
+                    }
+                    @if (!interview.record?.fileUrl) {
+                        <span class="text-gray-400 italic">Not Available</span>
+                    }
                 </td>
                 <td class="flex gap-1">
                     <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [pTooltip]="'Generate New Link'" tooltipPosition="top" (click)="generateLinkAndSendEmail(interview)"></button>

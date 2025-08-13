@@ -11,8 +11,7 @@ import { handleError } from '../constants/http-const';
 })
 export class OfferService {
 
-    private baseUrl = `${environment.apiUrl}/v1/offers`;
-    private apiUrl = `${environment.apiInterviews}/v1/offers`;
+    private apiUrl = `${environment.apiUrl}/v1/offers`;
 
     constructor(private http: HttpClient) { }
 

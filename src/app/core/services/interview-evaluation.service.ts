@@ -3,80 +3,33 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, retry } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Question } from '../models/question';
+import { InterviewEvaluationDisplay } from '../models/interview-evaluation-display';
 import { Evaluation } from '../models/evaluation';
+import { Question } from '../models/question';
 import { handleError } from '../constants/http-const';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class InterviewEvaluationService {
+  private readonly interviewsUrl = `${environment.apiUrl}/v1/interviews`;
+  private readonly evaluationsUrl = `${environment.apiUrl}/v1/evaluations`;
 
-  private baseUrl = `${environment.apiUrl}/v1/interviews`;
-  private apiUrl = `${environment.apiInterviews}/v1/interviews`;
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
+  getInterviewEvaluations(interviewId: string): Observable<InterviewEvaluationDisplay> {
+    return this.http
+      .get<InterviewEvaluationDisplay>(`${this.interviewsUrl}/${interviewId}/evaluations`)
+      .pipe(retry(2), catchError(err => handleError('Fetching Interview Evaluations', err)));
+  }
 
-  // Updated to return array of evaluations instead of single evaluation
-  getInterviewEvaluations = (interviewId: string): Observable<Evaluation[]> => {
-    return this.http.get<Evaluation[]>(`${this.apiUrl}/${interviewId}/evaluations/`)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Fetching Interview Evaluations", error))
-      );
-  };
+  getSingleEvaluation = (interviewId: string, evaluationId: string): Observable<Evaluation> =>
+    this.http.get<Evaluation>(`${this.interviewsUrl}/${interviewId}/evaluations/${evaluationId}`)
+      .pipe(retry(2), catchError(err => handleError('Fetching Single Evaluation', err)));
 
-  // Get single evaluation by ID (if needed for specific evaluation)
-  getSingleEvaluation = (interviewId: string, evaluationId: string): Observable<Evaluation> => {
-    return this.http.get<Evaluation>(`${this.apiUrl}/${interviewId}/evaluations/${evaluationId}`)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Fetching Single Evaluation", error))
-      );
-  };
+  getEvaluationsByType = (interviewId: string, evaluationTypeId: string): Observable<Evaluation[]> =>
+    this.http.get<Evaluation[]>(`${this.interviewsUrl}/${interviewId}/evaluations?type=${evaluationTypeId}`)
+      .pipe(retry(2), catchError(err => handleError('Fetching Evaluations by Type', err)));
 
-  // Get evaluations by type
-  getEvaluationsByType = (interviewId: string, evaluationTypeId: string): Observable<Evaluation[]> => {
-    return this.http.get<Evaluation[]>(`${this.apiUrl}/${interviewId}/evaluations?type=${evaluationTypeId}`)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Fetching Evaluations by Type", error))
-      );
-  };
-
-  prepareInterviewEvaluation = (prompt: string, questions: Question[]): Observable<Evaluation> => {
-    const body = { prompt, questions };
-    return this.http.post<Evaluation>(`${this.apiUrl}/evaluation`, body)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Saving Interview Evaluation", error))
-      );
-  };
-
-  // Create multiple evaluations for an interview
-  createMultipleEvaluations = (interviewId: string, evaluations: Partial<Evaluation>[]): Observable<Evaluation[]> => {
-    return this.http.post<Evaluation[]>(`${this.apiUrl}/${interviewId}/evaluations`, { evaluations })
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Creating Multiple Evaluations", error))
-      );
-  };
-
-  // Update a specific evaluation
-  updateEvaluation = (interviewId: string, evaluationId: string, evaluation: Partial<Evaluation>): Observable<Evaluation> => {
-    return this.http.put<Evaluation>(`${this.apiUrl}/${interviewId}/evaluations/${evaluationId}`, evaluation)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Updating Evaluation", error))
-      );
-  };
-
-  // Delete a specific evaluation
-  deleteEvaluation = (interviewId: string, evaluationId: string): Observable<{ message: string }> => {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${interviewId}/evaluations/${evaluationId}`)
-      .pipe(
-        retry(2),
-        catchError((error) => handleError("Deleting Evaluation", error))
-      );
-  };
+  prepareInterviewEvaluation = (prompt: string, questions: Question[]): Observable<Evaluation> =>
+    this.http.post<Evaluation>(`${this.evaluationsUrl}/evaluation`, { prompt, questions })
+      .pipe(retry(2), catchError(err => handleError('Saving Interview Evaluation', err)));
 }

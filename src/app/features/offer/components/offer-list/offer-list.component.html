@@ -227,19 +227,28 @@
         <span class="p-badge p-badge-info">{{ offer.interviewCount }}</span>
       </td>
 
+      <!-- Offer Keywords -->
       <td>
-        <ng-container *ngIf="offer.keywords as kws">
-          <p-chip *ngFor="let k of kws | slice:0:4" [label]="$any(k)" class="mr-1 mb-1"></p-chip>
-          <span *ngIf="kws.length > 4" class="text-500">+{{ kws.length - 4 }}</span>
-        </ng-container>
+        @if (offer.keywords) {
+          @for (k of (offer.keywords | slice:0:4); track $index) {
+            <p-chip [label]="$any(k)" class="mr-1 mb-1"></p-chip>
+          }
+          @if (offer.keywords.length > 4) {
+            <span class="text-500">+{{ offer.keywords.length - 4 }}</span>
+          }
+        }
       </td>
 
+      <!-- Skills Required -->
       <td>
-        <ng-container *ngIf="offer.skills as skills">
-          <!-- ✅ remove the type assertion in *ngFor to fix the parser error -->
-          <p-chip *ngFor="let s of skills | slice:0:4" [label]="$any(s)" class="mr-1 mb-1"></p-chip>
-          <span *ngIf="skills.length > 4" class="text-500">+{{ skills.length - 4 }}</span>
-        </ng-container>
+        @if (offer.skills ) {
+          @for (s of (offer.skills | slice:0:4); track $index) {
+            <p-chip [label]="$any(s)" class="mr-1 mb-1"></p-chip>
+          }
+          @if (offer.skills.length > 4) {
+            <span class="text-500">+{{ offer.skills.length - 4 }}</span>
+          }
+        }
       </td>
 
       <td class="p-text-center">

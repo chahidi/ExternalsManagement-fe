@@ -5,7 +5,6 @@ import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
 import { OfferService } from '../../../../core/services/offer.service';
 
 @Component({
@@ -16,8 +15,7 @@ import { OfferService } from '../../../../core/services/offer.service';
     PanelModule,
     InputTextModule,
     TextareaModule,
-    ButtonModule,
-    NgIf
+    ButtonModule
   ],
   templateUrl: './new-offer.component.html',
   styleUrls: ['./new-offer.component.scss']

@@ -8,13 +8,12 @@ import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CardModule } from 'primeng/card';
 import { MessageService } from 'primeng/api';
-import { NgIf } from '@angular/common';
+
 
 @Component({
   selector: 'app-edit-offer',
   standalone: true,
   imports: [
-    NgIf,
     CardModule,
     ReactiveFormsModule,
     InputTextModule,

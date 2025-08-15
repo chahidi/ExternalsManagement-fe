@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild,HostListener , ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Offer } from '../../../../core/models/offer';
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -12,24 +12,24 @@ import { CommonModule } from '@angular/common';
 import { OfferFilterService } from '../../../../core/services/offer-filter.service';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
-
 import { SliderModule } from 'primeng/slider';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Chip } from 'primeng/chip';
 import { Dialog } from 'primeng/dialog';
 
+// NEW: import constants (temporary local fallback until backend endpoint exists)
+import { SKILL_WORDS, KEYWORD_WORDS } from '../../../../core/constants/offer.const';
+
 @Component({
   selector: 'app-offer-list',
   standalone: true,
   imports: [
-
     RouterOutlet,
     TableModule,
     ButtonModule,
     ConfirmDialogModule,
     DynamicDialogModule,
     FormsModule,
-
     SliderModule,
     ToastModule,
     MultiSelectModule,
@@ -82,16 +82,6 @@ export class OfferListComponent implements OnInit {
   private skillsCache = new Map<string, string[]>();
   private keywordsCache = new Map<string, string[]>();
 
-  // dictionaries
-  private readonly SKILL_WORDS = [
-    'Docker', 'Kubernetes', 'TensorFlow', 'PyTorch', 'Scikit-learn', 'Keras',
-    'AWS', 'GCP', 'Azure', 'Git', 'CI/CD', 'Microservices', 'SQL', 'NoSQL', 'Python', 'Java', 'TypeScript'
-  ];
-  private readonly KEYWORD_WORDS = [
-    'MLOps', 'AI', 'Machine Learning', 'Deep Learning', 'Cloud', 'Data',
-    'DevOps', 'Security', 'Analytics', 'Backend', 'Frontend'
-  ];
-
   constructor(
     private cdr: ChangeDetectorRef,
     private offerService: OfferService,
@@ -114,15 +104,14 @@ export class OfferListComponent implements OnInit {
   ngOnInit(): void {
     this.loadOffers();
     window.addEventListener('resize', () => {
-    this.screenWidth = window.innerWidth;
-  });
+      this.screenWidth = window.innerWidth;
+    });
   }
 
   // Load rows and derive fields
   loadOffers() {
     this.offerService.getOffers().subscribe({
       next: (data) => {
-
         this.offers = (data as Offer[]).map((o) => {
           const interviewCount = (o as any)?.interviews?.length ?? 0;
           const keywords = this.keywordsFromDescription(o.description, o.id);
@@ -131,7 +120,6 @@ export class OfferListComponent implements OnInit {
         });
 
         this.filteredOffers = this.offers;
-
 
         const counts = this.offers.map((o) => o.interviewCount);
         this.maxInterviewCount = counts.length ? Math.max(...counts) : 10;
@@ -189,6 +177,7 @@ export class OfferListComponent implements OnInit {
       if (updated) this.loadOffers();
     });
   }
+
   @HostListener('window:resize')
   onResize() {
     this.screenWidth = window.innerWidth;
@@ -202,8 +191,8 @@ export class OfferListComponent implements OnInit {
     const compact = desc.trim().replace(/\s+/g, ' ');
 
     let len = 180;               // desktop
-    if (this.screenWidth < 640)  len = 60;    // mobile
-    else if (this.screenWidth < 1024) len = 100; // tablet
+    if (this.screenWidth < 640)  len = 60;        // mobile
+    else if (this.screenWidth < 1024) len = 100;  // tablet
 
     return compact.length > len ? compact.slice(0, len) + '…' : compact;
   }
@@ -212,7 +201,7 @@ export class OfferListComponent implements OnInit {
     if (!desc) return [];
     if (id && this.keywordsCache.has(id)) return this.keywordsCache.get(id)!;
     const lower = desc.toLowerCase();
-    const hits = this.KEYWORD_WORDS
+    const hits = KEYWORD_WORDS
       .filter((k) => lower.includes(k.toLowerCase()))
       .sort((a, b) => lower.indexOf(a.toLowerCase()) - lower.indexOf(b.toLowerCase()));
     if (id) this.keywordsCache.set(id, hits);
@@ -223,7 +212,7 @@ export class OfferListComponent implements OnInit {
     if (!desc) return [];
     if (id && this.skillsCache.has(id)) return this.skillsCache.get(id)!;
     const lower = desc.toLowerCase();
-    const hits = this.SKILL_WORDS
+    const hits = SKILL_WORDS
       .filter((s) => lower.includes(s.toLowerCase()))
       .sort((a, b) => lower.indexOf(a.toLowerCase()) - lower.indexOf(b.toLowerCase()));
     if (id) this.skillsCache.set(id, hits);
@@ -271,7 +260,6 @@ export class OfferListComponent implements OnInit {
     this.messageService.add({ severity: 'info', summary: 'Filters Applied', detail: `${this.filteredOffers.length} offers matched` });
   }
 
-
   resetFilters() {
     this.selectedKeywordFilters = [];
     this.selectedSkillFilters = [];
@@ -290,5 +278,9 @@ export class OfferListComponent implements OnInit {
   // Optional
   goToDetails(offerId: string): void {
     this.router.navigate(['/offers', offerId]);
+  }
+
+  get offerDescription(): string {
+    return this.currentOffer?.description || 'No description';
   }
 }

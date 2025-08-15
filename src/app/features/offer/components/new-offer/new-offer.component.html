@@ -16,14 +16,18 @@
         aria-describedby="title-error"
         [class.p-invalid]="offerForm.get('title')?.touched && offerForm.get('title')?.invalid"
       />
-      <small id="title-error" class="p-error"
-             *ngIf="offerForm.get('title')?.touched && offerForm.get('title')?.hasError('required')">
-        Title is required!
-      </small>
-      <small class="p-error"
-             *ngIf="offerForm.get('title')?.touched && offerForm.get('title')?.hasError('maxlength')">
-        Title must be at most 200 characters.
-      </small>
+
+      @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('required')) {
+        <small id="title-error" class="p-error">
+          Title is required!
+        </small>
+      }
+
+      @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('maxlength')) {
+        <small class="p-error">
+          Title must be at most 200 characters.
+        </small>
+      }
     </div>
 
     <!-- Description -->
@@ -39,10 +43,12 @@
         aria-describedby="description-error"
         [class.p-invalid]="offerForm.get('description')?.touched && offerForm.get('description')?.invalid"
       ></textarea>
-      <small id="description-error" class="p-error"
-             *ngIf="offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')">
-        Description is required!
-      </small>
+
+      @if (offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')) {
+        <small id="description-error" class="p-error">
+          Description is required!
+        </small>
+      }
     </div>
 
     <div class="p-d-flex p-jc-end p-mt-5">

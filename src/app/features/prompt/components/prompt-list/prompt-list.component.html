@@ -1,4 +1,9 @@
-<app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
+@if (isLoading$ | async) {
+<app-loader
+    [message]="loadingMessage$ | async"
+    [withOverlay]="true"
+></app-loader>
+}
 <p-toast></p-toast>
 <p-dialog header="Update Prompt" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [contentStyle]="{ 'overflow-y': 'auto' }">
     <form *ngIf="dialogVisible" class="form-layout">

@@ -1,4 +1,9 @@
-<app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
+@if (isLoading$ | async) {
+<app-loader
+    [message]="loadingMessage$ | async"
+    [withOverlay]="true"
+></app-loader>
+}
 <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Candidate List</h2>
 

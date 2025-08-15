@@ -1,4 +1,9 @@
-<app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
+@if (isLoading$ | async) {
+<app-loader
+    [message]="loadingMessage$ | async"
+    [withOverlay]="true"
+></app-loader>
+}
 <p-toast></p-toast>
 <p-confirmdialog #cd>
     <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">

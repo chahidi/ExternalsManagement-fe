@@ -531,7 +531,7 @@ export class StepperFormComponent implements OnInit {
   }
 
   confirmUpdate(): void {
-        this.confirmationModalService.confirmUpdate(() => {this.onSubmit();} );
+        this.confirmationModalService.confirmUpdate(() => {this.onSubmit();}, 'form' );
       }
 
   onSubmit(): void {

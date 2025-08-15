@@ -18,11 +18,12 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule, Router } from '@angular/router';
 import { tap, switchMap, catchError, finalize } from 'rxjs/operators';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { NotificationService } from '../../../../core/services/utils/notification.service';
 import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
 import { Observable, EMPTY } from 'rxjs';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 
 @Component({
     selector: 'app-interview-list',
@@ -59,9 +60,11 @@ export class InterviewListComponent implements OnInit {
         private offerService: OfferService,
         private router: Router,
         private notify: NotificationService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private confirmationModalService: ConfirmationModalService
     ) { this.isLoading$ = this.loaderService.isLoading$;
-        this.loadingMessage$ = this.loaderService.loadingMessage$;}
+        this.loadingMessage$ = this.loaderService.loadingMessage$;
+        this.confirmationModalService.setConfirmationService(this.confirmationService);}
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -183,12 +186,10 @@ export class InterviewListComponent implements OnInit {
         });
     }
 
-    confirmDeleteInterview(interview: InterviewInstance): void {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete this interview?',
-            header: 'Confirm Delete',
-            accept: () => this.deleteInterview(interview)
-        });
+    confirmDelete(interview: InterviewInstance): void {
+        this.confirmationModalService.confirmDelete(() => {
+            this.deleteInterview(interview);
+        }, 'interview');
     }
 
     deleteInterview(interview: InterviewInstance): void {

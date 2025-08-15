@@ -132,7 +132,7 @@
                 <td class="flex gap-1">
                     <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [pTooltip]="'Generate New Link'" tooltipPosition="top" (click)="generateLinkAndSendEmail(interview)"></button>
                     <button pButton icon="pi pi-comment" class="p-button-sm p-button-text" pTooltip="Add Comment" (click)="AddCommentPopup(interview)"></button>
-                    <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDeleteInterview(interview)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(interview)"></button>
                 </td>
             </tr>
         </ng-template>

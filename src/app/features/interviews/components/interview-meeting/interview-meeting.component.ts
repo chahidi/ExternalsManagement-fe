@@ -22,7 +22,7 @@ import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { NotificationService } from '../../../../core/services/utils/notification.service';
 import { SpeechRecognitionService } from '../../../../core/services/speech-recognition.service';
 import { Answer } from '../../../../core/models/answer';
 import { ActivatedRoute } from '@angular/router';

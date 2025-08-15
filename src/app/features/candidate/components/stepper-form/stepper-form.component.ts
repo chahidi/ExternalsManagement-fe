@@ -24,6 +24,7 @@ import { MenuItem, ConfirmationService } from 'primeng/api';
 import { Skill } from '../../../../core/models/skill';
 import { Language } from '../../../../core/models/language';
 import { Contact } from '../../../../core/models/contact';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 
 
 @Component({
@@ -74,7 +75,8 @@ export class StepperFormComponent implements OnInit {
   contactsFormWrapper!: FormGroup;
   skillsFormWrapper!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private confirmationService: ConfirmationService) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private confirmationService: ConfirmationService, private confirmationModalService: ConfirmationModalService) {
+      this.confirmationModalService.setConfirmationService(this.confirmationService);}
 
   ngOnInit() {
     this.steps = [
@@ -528,14 +530,8 @@ export class StepperFormComponent implements OnInit {
     this.getCurrentForm().reset();
   }
 
-  confirmSave(): void {
-        this.confirmationService.confirm({
-          message: `Are you sure you want to save?`,
-          header: 'Confirm to proceed',
-          accept: () => {
-            this.onSubmit();
-          }
-        });
+  confirmUpdate(): void {
+        this.confirmationModalService.confirmUpdate(() => {this.onSubmit();} );
       }
 
   onSubmit(): void {

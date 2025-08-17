@@ -18,14 +18,17 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule, Router } from '@angular/router';
 import { tap, switchMap, catchError, finalize } from 'rxjs/operators';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { NotificationService } from '../../../../core/services/utils/notification.service';
 import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
 import { Observable, EMPTY } from 'rxjs';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 
 @Component({
     selector: 'app-interview-list',
     standalone: true,
-    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, Select, DatePicker, ToastModule, DatePipe, ConfirmDialogModule, RouterModule],
+    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, Select, DatePicker, ToastModule, DatePipe, ConfirmDialogModule, RouterModule, LoaderComponent],
     providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
@@ -33,7 +36,8 @@ import { Observable, EMPTY } from 'rxjs';
 export class InterviewListComponent implements OnInit {
     interviews: InterviewInstance[] = [];
     filteredInterviews: InterviewInstance[] = [];
-    loading = true;
+    isLoading$;
+    loadingMessage$;
 
     mainTechFilter: string | null = null;
     titleFilter: string | null = null;
@@ -55,8 +59,12 @@ export class InterviewListComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private offerService: OfferService,
         private router: Router,
-        private notify: NotificationService
-    ) {}
+        private notify: NotificationService,
+        private loaderService: LoaderService,
+        private confirmationModalService: ConfirmationModalService
+    ) { this.isLoading$ = this.loaderService.isLoading$;
+        this.loadingMessage$ = this.loaderService.loadingMessage$;
+        this.confirmationModalService.setConfirmationService(this.confirmationService);}
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -88,12 +96,16 @@ export class InterviewListComponent implements OnInit {
     }
 
     loadInterviews(): void {
+        this.loaderService.show("Loading interviews...");
         this.interviewService.getInterviews().subscribe((data) => {
             this.interviews = data;
             this.filteredInterviews = this.interviews;
-            this.loading = false;
+            this.loaderService.hide();
         });
+
+
     }
+
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
             const matchTech = !this.mainTechFilter || interview.candidateMainTech === this.mainTechFilter;
@@ -129,21 +141,19 @@ export class InterviewListComponent implements OnInit {
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         this.isGeneratingLink = true;
 
-        this.interviewService
-            .generateAndSaveInterviewLink(interview)
-            .pipe(
-                tap((link) => {
-                    console.log('Generated Link:', link);
-                    interview.link = link;
-                }),
-                catchError((err) => this.handleGenerateAndSaveLinkError(err)),
+        this.interviewService.generateAndSaveInterviewLink(interview).pipe(
+            tap(link => {
+                console.log('Generated Link:', link);
+                interview.link = link;
+            }),
+            catchError(err => this.handleGenerateAndSaveLinkError(err)),
 
-                switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
+            switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
 
-                finalize(() => {
-                    this.isGeneratingLink = false;
-                })
-            )
+            finalize(() => {
+                this.isGeneratingLink = false;
+            })
+        )
             .subscribe({
                 next: (res) => {
                     this.notify.showSuccess('Email Sent Successfully', res);
@@ -176,13 +186,10 @@ export class InterviewListComponent implements OnInit {
         });
     }
 
-    confirmDeleteInterview(interview: InterviewInstance): void {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete this interview?',
-            header: 'Confirm Delete',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => this.deleteInterview(interview)
-        });
+    confirmDelete(interview: InterviewInstance): void {
+        this.confirmationModalService.confirmDelete(() => {
+            this.deleteInterview(interview);
+        }, 'interview');
     }
 
     deleteInterview(interview: InterviewInstance): void {
@@ -223,7 +230,8 @@ export class InterviewListComponent implements OnInit {
         } else if (message.includes('save')) {
             console.error('Failed To save the generated link');
             this.notify.showError('Saving Link Error', message);
-        } else {
+        }
+        else {
             console.error('Unexpected error during link generation:', err);
             this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
         }
@@ -241,25 +249,24 @@ export class InterviewListComponent implements OnInit {
         }
         return EMPTY;
     }
-
     private toDate(v: Date | string | null | undefined): Date | null {
-        if (!v) return null;
-        const d = new Date(v);
-        return isNaN(d.getTime()) ? null : d;
+            if (!v) return null;
+            const d = new Date(v);
+            return isNaN(d.getTime()) ? null : d;
     }
 
     getDurationLabel(interview: InterviewInstance): string {
-        const end = this.toDate(interview.endTime);
-        const start = this.toDate(interview.startTime) ?? this.toDate(interview.scheduledAt);
+            const end = this.toDate(interview.endTime);
+            const start = this.toDate(interview.startTime) ?? this.toDate(interview.scheduledAt);
 
-        if (!end || !start) return '—';
+            if (!end || !start) return '—';
 
-        const diffMs = end.getTime() - start.getTime();
-        if (diffMs <= 0) return '—';
+            const diffMs = end.getTime() - start.getTime();
+            if (diffMs <= 0) return '—';
 
-        const totalMin = Math.round(diffMs / (1000 * 60));
-        const hours = Math.floor(totalMin / 60);
-        const mins = totalMin % 60;
-        return hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
+            const totalMin = Math.round(diffMs / (1000 * 60));
+            const hours = Math.floor(totalMin / 60);
+            const mins = totalMin % 60;
+            return hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
     }
 }

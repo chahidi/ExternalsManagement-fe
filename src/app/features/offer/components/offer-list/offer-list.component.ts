@@ -1,30 +1,38 @@
 import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
-import { Offer } from '../../../../core/models/offer';
+import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
+
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { Router, RouterOutlet } from '@angular/router';
-import { OfferService } from '../../../../core/services/offer.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { EditOfferComponent } from '../edit-offer/edit-offer.component';
-import { CommonModule } from '@angular/common';
-import { OfferFilterService } from '../../../../core/services/offer-filter.service';
-import { FormsModule } from '@angular/forms';
+import { DynamicDialogModule, DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { ToastModule } from 'primeng/toast';
 import { SliderModule } from 'primeng/slider';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Chip } from 'primeng/chip';
 import { Dialog } from 'primeng/dialog';
+import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 
-// NEW: import constants (temporary local fallback until backend endpoint exists)
+import { finalize } from 'rxjs/operators';
+
+import { Offer } from '../../../../core/models/offer';
+import { OfferService } from '../../../../core/services/offer.service';
+import { OfferFilterService } from '../../../../core/services/offer-filter.service';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
+import { EditOfferComponent } from '../edit-offer/edit-offer.component';
+import { FormsModule } from '@angular/forms';
+
+// temporary local fallback until backend endpoint exists
 import { SKILL_WORDS, KEYWORD_WORDS } from '../../../../core/constants/offer.const';
 
 @Component({
   selector: 'app-offer-list',
   standalone: true,
   imports: [
-    RouterOutlet,
+    LoaderComponent,
+    CommonModule,
     TableModule,
     ButtonModule,
     ConfirmDialogModule,
@@ -33,7 +41,6 @@ import { SKILL_WORDS, KEYWORD_WORDS } from '../../../../core/constants/offer.con
     SliderModule,
     ToastModule,
     MultiSelectModule,
-    CommonModule,
     Chip,
     Dialog
   ],
@@ -44,10 +51,17 @@ import { SKILL_WORDS, KEYWORD_WORDS } from '../../../../core/constants/offer.con
 export class OfferListComponent implements OnInit {
   @ViewChild('dt1') dt1!: Table;
 
+  // loader streams (typed as any to match service shape)
+  isLoading!: any;
+  isLoading$!: any;
+  loadingMessage$!: any;
+
   // data
   offers: any[] = [];
   filteredOffers: any[] = [];
   ref: DynamicDialogRef | undefined;
+
+  // responsive
   screenWidth = window.innerWidth;
 
   // caption search
@@ -85,59 +99,77 @@ export class OfferListComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private offerService: OfferService,
+    private loaderService: LoaderService,
     private router: Router,
     private confirmationService: ConfirmationService,
+    private confirmationModalService: ConfirmationModalService,
     private dialogService: DialogService,
     private filterService: OfferFilterService,
     private messageService: MessageService,
     private primeFilterService: FilterService
-  ) {
-    // Register a custom match mode for arrays: "includesAny"
-    this.primeFilterService.register('includesAny', (value: any, filter: any): boolean => {
-      if (!filter || filter.length === 0) return true;
-      const hay: string[] = Array.isArray(value) ? value.map(v => String(v).toLowerCase()) : [];
-      const needles: string[] = Array.isArray(filter) ? filter.map((v: any) => String(v).toLowerCase()) : [];
-      return needles.some(n => hay.includes(n));
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.loadOffers();
-    window.addEventListener('resize', () => {
-      this.screenWidth = window.innerWidth;
-    });
+    try {
+      // Register a custom match mode for arrays: "includesAny"
+      this.primeFilterService.register('includesAny', (value: any, filter: any): boolean => {
+        if (!filter || filter.length === 0) return true;
+        const hay: string[] = Array.isArray(value) ? value.map(v => String(v).toLowerCase()) : [];
+        const needles: string[] = Array.isArray(filter) ? filter.map((v: any) => String(v).toLowerCase()) : [];
+        return needles.some(n => hay.includes(n));
+      });
+
+      // Wire the confirmation modal wrapper to PrimeNG's service
+      this.confirmationModalService.setConfirmationService(this.confirmationService);
+
+      // loader streams
+      this.isLoading$ = this.loaderService.isLoading$;
+      this.loadingMessage$ = this.loaderService.loadingMessage$;
+
+      // initial fetch
+      this.loadOffers();
+    } catch (e) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Initialization failed',
+        detail: 'Could not configure filters/services. Some features may be limited.'
+      });
+    }
   }
 
   // Load rows and derive fields
   loadOffers() {
-    this.offerService.getOffers().subscribe({
-      next: (data) => {
-        this.offers = (data as Offer[]).map((o) => {
-          const interviewCount = (o as any)?.interviews?.length ?? 0;
-          const keywords = this.keywordsFromDescription(o.description, o.id);
-          const skills = this.skillsFromDescription(o.description, o.id);
-          return { ...o, interviewCount, keywords, skills };
-        });
+    this.loaderService.show('Loading Offers...');
+    this.offerService.getOffers()
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: (data) => {
+          this.offers = (data as Offer[]).map((o) => {
+            const interviewCount = (o as any)?.interviews?.length ?? 0;
+            const keywords = this.keywordsFromDescription(o.description, o.id);
+            const skills = this.skillsFromDescription(o.description, o.id);
+            return { ...o, interviewCount, keywords, skills };
+          });
 
-        this.filteredOffers = this.offers;
+          this.filteredOffers = this.offers;
 
-        const counts = this.offers.map((o) => o.interviewCount);
-        this.maxInterviewCount = counts.length ? Math.max(...counts) : 10;
-        this.interviewCountRange = [0, this.maxInterviewCount];
+          const counts = this.offers.map((o) => o.interviewCount);
+          this.maxInterviewCount = counts.length ? Math.max(...counts) : 10;
+          this.interviewCountRange = [0, this.maxInterviewCount];
 
-        const keywordSet = new Set<string>();
-        const skillSet = new Set<string>();
-        for (const o of this.offers) {
-          (o.keywords as string[])?.forEach((k) => keywordSet.add(k));
-          (o.skills as string[])?.forEach((s) => skillSet.add(s));
+          const keywordSet = new Set<string>();
+          const skillSet = new Set<string>();
+          for (const o of this.offers) {
+            (o.keywords as string[])?.forEach((k) => keywordSet.add(k));
+            (o.skills as string[])?.forEach((s) => skillSet.add(s));
+          }
+          this.keywordOptions = Array.from(keywordSet).sort().map((v) => ({ label: v, value: v }));
+          this.skillOptions = Array.from(skillSet).sort().map((v) => ({ label: v, value: v }));
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load offers from server' });
         }
-        this.keywordOptions = Array.from(keywordSet).sort().map((v) => ({ label: v, value: v }));
-        this.skillOptions = Array.from(skillSet).sort().map((v) => ({ label: v, value: v }));
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load offers from server' });
-      }
-    });
+      });
   }
 
   // Modal
@@ -190,7 +222,7 @@ export class OfferListComponent implements OnInit {
     if (!desc) return '';
     const compact = desc.trim().replace(/\s+/g, ' ');
 
-    let len = 180;               // desktop
+    let len = 180;                     // desktop
     if (this.screenWidth < 640)  len = 60;        // mobile
     else if (this.screenWidth < 1024) len = 100;  // tablet
 
@@ -248,8 +280,8 @@ export class OfferListComponent implements OnInit {
     this.filteredOffers = this.offers.filter((o) => {
       const countOk = o.interviewCount >= minC && o.interviewCount <= maxC;
 
-      const offerKeywords = (o.keywords as string[]).map((v) => v.toLowerCase());
-      const offerSkills = (o.skills as string[]).map((v) => v.toLowerCase());
+      const offerKeywords = (o.keywords as string[])?.map((v) => v.toLowerCase()) ?? [];
+      const offerSkills = (o.skills as string[])?.map((v) => v.toLowerCase()) ?? [];
 
       const kwOk = selectedKeywords.size === 0 || offerKeywords.some((k) => selectedKeywords.has(k));
       const skOk = selectedSkills.size === 0 || offerSkills.some((s) => selectedSkills.has(s));
@@ -282,5 +314,11 @@ export class OfferListComponent implements OnInit {
 
   get offerDescription(): string {
     return this.currentOffer?.description || 'No description';
+  }
+
+  confirmDelete(id: string) {
+    this.confirmationModalService.confirmDelete(() => {
+      this.deleteOffer(id);
+    }, 'prompt');
   }
 }

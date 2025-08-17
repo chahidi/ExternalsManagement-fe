@@ -36,15 +36,42 @@
     min-width: 100px !important;
   }
 
-  .col-text {
-    width: 28% !important;
-    min-width: 100px !important;
-  }
+    .col-text {
+        width: 28% !important;
+        min-width: 100px !important;
+        max-width: 250px !important;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        transition: all 0.3s;
+    }
+    .col-text:hover {
+      max-width: 100%;
+      white-space: normal;
+      overflow: visible;
+      background: #f5f5f5;
+      z-index: 1;
+      position: relative;
+    }
 
-  .col-schema {
-    width: 42% !important;
-    min-width: 150px !important;
-  }
+    .col-schema {
+        width: 42% !important;
+        min-width: 150px !important;
+        max-width: 270px !important;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        transition: all 0.3s;
+    }
+    .col-schema:hover {
+          width: 42% !important;
+          max-width: 270px !important;
+          white-space: normal;
+          overflow: relative;
+          background: #f5f5f5;
+          z-index: 1;
+          position: relative;
+        }
 
   .col-actions {
     width: 15% !important;
@@ -130,12 +157,18 @@
 }
 
 
-button {
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
+  button {
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+
+::ng-deep .p-toast {
+  top: 2rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  }

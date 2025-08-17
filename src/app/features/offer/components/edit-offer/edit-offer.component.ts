@@ -7,9 +7,10 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CardModule } from 'primeng/card';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
-
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 @Component({
   selector: 'app-edit-offer',
   standalone: true,
@@ -18,9 +19,10 @@ import { MessageService } from 'primeng/api';
     ReactiveFormsModule,
     InputTextModule,
     TextareaModule,
-    ButtonModule
+    ButtonModule,
+    ConfirmDialogModule,                 // ← NEW
   ],
-  providers: [MessageService],
+  providers: [MessageService], // ← NEW
   templateUrl: './edit-offer.component.html',
   styleUrls: ['./edit-offer.component.scss']
 })
@@ -33,19 +35,30 @@ export class EditOfferComponent {
     private offerService: OfferService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private confirmationModalService: ConfirmationModalService
+
   ) {
     this.offer = this.config.data.offer as Offer;
-
+    this.confirmationModalService.setConfirmationService(this.confirmationService);
     this.offerForm = this.fb.group({
       title: [this.offer.title, [Validators.required, Validators.maxLength(200)]],
       description: [this.offer.description, [Validators.required]]
     });
   }
 
+  // unchanged signature & binding (still called by (ngSubmit))
   onSubmit() {
-    if (this.offerForm.invalid) return;
 
+      this.confirmationModalService.confirmUpdate(() => {
+        this.doSave();
+      }, 'offer');
+  }
+
+
+  // NEW: actual save logic moved here (was inside onSubmit)
+  private doSave() {
     const updatedOffer: Offer = {
       ...this.offer,
       ...this.offerForm.value

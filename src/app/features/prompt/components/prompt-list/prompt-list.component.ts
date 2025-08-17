@@ -13,6 +13,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 
 
 @Component({
@@ -52,9 +53,12 @@ export class PromptListComponent implements OnInit {
     private promptService: PromptService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private confirmationModalService: ConfirmationModalService
 ) { this.isLoading$ = this.loaderService.isLoading$;
-    this.loadingMessage$ = this.loaderService.loadingMessage$;}
+    this.loadingMessage$ = this.loaderService.loadingMessage$;
+    this.confirmationModalService.setConfirmationService(this.confirmationService);
+  }
 
   ngOnInit() {
     this.loadPrompts();
@@ -81,15 +85,10 @@ export class PromptListComponent implements OnInit {
   }
 
   confirmDelete(id: string) {
-    this.confirmationService.confirm({
-        message: 'Are you sure you want to delete this prompt?',
-        header: 'Confirm Deletion',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-        this.deletePrompt(id);
-        }
-    });
-    }
+    this.confirmationModalService.confirmDelete(() => {
+      this.deletePrompt(id);
+    }, 'prompt');
+  }
 
   deletePrompt(id: string) {
     this.promptService.deletePrompt(id).subscribe({
@@ -106,6 +105,12 @@ export class PromptListComponent implements OnInit {
   showUpdateDialog(prompt: Prompt) {
     this.selectedPrompt = { ...prompt };
     this.dialogVisible = true;
+  }
+
+  confirmUpdate(): void {
+    this.confirmationModalService.confirmUpdate(() => {
+      this.updatePrompt();
+    }, 'prompt');
   }
 
   updatePrompt() {

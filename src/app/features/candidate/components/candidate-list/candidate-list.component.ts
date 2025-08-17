@@ -24,6 +24,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 
 interface FilterCriteria {
   skills: any[];
@@ -99,9 +100,11 @@ export class CandidateListComponent implements OnInit {
     private candidateFilterService: CandidateFilterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private confirmationModalService: ConfirmationModalService
   ) { this.isLoading$ = this.loaderService.isLoading$;
-      this.loadingMessage$ = this.loaderService.loadingMessage$;}
+      this.loadingMessage$ = this.loaderService.loadingMessage$;
+      this.confirmationModalService.setConfirmationService(this.confirmationService);}
 
   ngOnInit(): void {
     this.loadCandidates();
@@ -482,6 +485,12 @@ addAddress(): void {
     this.selectedCandidate.naturalLanguages.splice(index, 1);
   }
 
+  confirmUpdate(): void {
+      this.confirmationModalService.confirmUpdate(() => {
+        this.saveCandidate();
+      }, 'candidate');
+  }
+
   saveCandidate(): void {
     if (!this.selectedCandidate) return;
 
@@ -516,14 +525,9 @@ addAddress(): void {
   }
 
   confirmDelete(candidate: Candidate): void {
-    this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${candidate.fullName}?`,
-      header: 'Confirm Delete',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.deleteCandidate(candidate);
-      }
-    });
+    this.confirmationModalService.confirmDelete(() => {
+          this.deleteCandidate(candidate);
+        }, 'candidate');
   }
 
   deleteCandidate(candidate: Candidate): void {

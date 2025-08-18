@@ -1,0 +1,26 @@
+.new-form-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.new-form-card-container {
+  width: 100%;
+  max-width: 750px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.new-form-card-container h3 {
+  font-size: 20px;
+  font-weight: 1000;
+  color: #333;
+  margin-bottom: 15px;
+}
+.new-form-card-container label{
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}

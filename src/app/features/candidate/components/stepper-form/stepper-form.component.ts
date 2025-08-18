@@ -75,8 +75,7 @@ export class StepperFormComponent implements OnInit {
   contactsFormWrapper!: FormGroup;
   skillsFormWrapper!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private confirmationService: ConfirmationService, private confirmationModalService: ConfirmationModalService) {
-      this.confirmationModalService.setConfirmationService(this.confirmationService);}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private confirmationService: ConfirmationService, private confirmationModalService: ConfirmationModalService) {}
 
   ngOnInit() {
     this.steps = [

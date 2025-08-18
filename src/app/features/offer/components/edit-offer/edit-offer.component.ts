@@ -47,11 +47,9 @@ export class EditOfferComponent {
       description: [this.offer.description, [Validators.required]]
     });
   }
-  ngOnInit() {
-    this.confirmationModalService.setConfirmationService(this.confirmationService);
-  }
+  ngOnInit() {}
 
-  
+
   onSubmit() {
 
       this.confirmationModalService.confirmUpdate(() => {

@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
+import { ConfirmationService } from 'primeng/api';
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmationModalService {
 
-  private confirmationService: any = null;
+  private confirmationService: ConfirmationService | null = null;
 
-  setConfirmationService(confirmationService: any) {
-    this.confirmationService = confirmationService;
+  setConfirmationService(confirmationService: ConfirmationService) {
+      this.confirmationService = confirmationService;
   }
 
-  private getConfirmationService(): any {
+  private getConfirmationService(): ConfirmationService {
     if (!this.confirmationService) {
       throw new Error('ConfirmationService not set. Call setConfirmationService() first.');
     }

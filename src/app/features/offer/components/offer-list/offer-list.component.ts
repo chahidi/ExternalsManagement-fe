@@ -119,8 +119,6 @@ export class OfferListComponent implements OnInit {
         return needles.some(n => hay.includes(n));
       });
 
-      // Wire the confirmation modal wrapper to PrimeNG's service
-      this.confirmationModalService.setConfirmationService(this.confirmationService);
 
       // loader streams
       this.isLoading$ = this.loaderService.isLoading$;
@@ -319,6 +317,6 @@ export class OfferListComponent implements OnInit {
   confirmDelete(id: string) {
     this.confirmationModalService.confirmDelete(() => {
       this.deleteOffer(id);
-    }, 'prompt');
+    }, 'offer');
   }
 }

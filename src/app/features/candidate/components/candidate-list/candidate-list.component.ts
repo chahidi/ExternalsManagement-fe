@@ -66,8 +66,8 @@ interface DropdownOption {
 })
 export class CandidateListComponent implements OnInit {
   candidates: Candidate[] = [];
-  isLoading$;
-  loadingMessage$;
+  isLoading$!: any;
+  loadingMessage$!: any;
   displayEditDialog: boolean = false;
   selectedCandidate: Candidate | null = null;
 
@@ -102,13 +102,14 @@ export class CandidateListComponent implements OnInit {
     private messageService: MessageService,
     private loaderService: LoaderService,
     private confirmationModalService: ConfirmationModalService
-  ) { this.isLoading$ = this.loaderService.isLoading$;
-      this.loadingMessage$ = this.loaderService.loadingMessage$;
-      this.confirmationModalService.setConfirmationService(this.confirmationService);}
+  ) { }
 
   ngOnInit(): void {
     this.loadCandidates();
     this.initFilterOptions();
+
+    this.isLoading$ = this.loaderService.isLoading$;
+    this.loadingMessage$ = this.loaderService.loadingMessage$;
 
     this.proficiencyLevelOptions = this.proficiencyLevels.map(level => ({
       label: level,

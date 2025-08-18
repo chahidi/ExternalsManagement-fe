@@ -46,8 +46,8 @@ export class PromptListComponent implements OnInit {
   dialogVisible = false;
   selectedPrompt: Prompt = { id: '', promptCode: '', promptDesc: '', schema: '' };
 
-  isLoading$;
-  loadingMessage$;
+  isLoading$!: any;
+  loadingMessage$!: any;
 
   constructor(
     private promptService: PromptService,
@@ -55,13 +55,13 @@ export class PromptListComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private loaderService: LoaderService,
     private confirmationModalService: ConfirmationModalService
-) { this.isLoading$ = this.loaderService.isLoading$;
-    this.loadingMessage$ = this.loaderService.loadingMessage$;
-    this.confirmationModalService.setConfirmationService(this.confirmationService);
-  }
+) {}
 
   ngOnInit() {
     this.loadPrompts();
+
+    this.isLoading$ = this.loaderService.isLoading$;
+    this.loadingMessage$ = this.loaderService.loadingMessage$;
   }
 
   loadPrompts(event?: any) {

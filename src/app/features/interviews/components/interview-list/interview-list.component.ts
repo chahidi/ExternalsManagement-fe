@@ -36,8 +36,8 @@ import { ConfirmationModalService } from '../../../../core/services/utils/confir
 export class InterviewListComponent implements OnInit {
     interviews: InterviewInstance[] = [];
     filteredInterviews: InterviewInstance[] = [];
-    isLoading$;
-    loadingMessage$;
+    isLoading$!: any;
+    loadingMessage$!: any;
 
     mainTechFilter: string | null = null;
     titleFilter: string | null = null;
@@ -62,15 +62,16 @@ export class InterviewListComponent implements OnInit {
         private notify: NotificationService,
         private loaderService: LoaderService,
         private confirmationModalService: ConfirmationModalService
-    ) { this.isLoading$ = this.loaderService.isLoading$;
-        this.loadingMessage$ = this.loaderService.loadingMessage$;
-        this.confirmationModalService.setConfirmationService(this.confirmationService);}
+    ) {}
 
     ngOnInit(): void {
         this.loadMainTechOptions();
         this.loadTitleOptions();
         this.loadInterviews();
         setInterval(() => (this.now = new Date()), 60000);
+
+        this.isLoading$ = this.loaderService.isLoading$;
+        this.loadingMessage$ = this.loaderService.loadingMessage$;
     }
 
     loadMainTechOptions(): void {

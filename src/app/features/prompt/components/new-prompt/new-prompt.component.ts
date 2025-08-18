@@ -9,6 +9,8 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
+import { CardModule } from 'primeng/card';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
   selector: 'app-new-prompt',
@@ -19,7 +21,9 @@ import { RouterModule } from '@angular/router';
     InputTextModule,
     ButtonModule,
     ToastModule,
-    RouterModule
+    RouterModule,
+    CardModule,
+    PanelModule
 ],
   templateUrl: './new-prompt.component.html',
   styleUrl: './new-prompt.component.scss',

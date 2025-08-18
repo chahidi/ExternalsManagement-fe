@@ -41,14 +41,17 @@ export class EditOfferComponent {
 
   ) {
     this.offer = this.config.data.offer as Offer;
-    this.confirmationModalService.setConfirmationService(this.confirmationService);
+
     this.offerForm = this.fb.group({
       title: [this.offer.title, [Validators.required, Validators.maxLength(200)]],
       description: [this.offer.description, [Validators.required]]
     });
   }
+  ngOnInit() {
+    this.confirmationModalService.setConfirmationService(this.confirmationService);
+  }
 
-  // unchanged signature & binding (still called by (ngSubmit))
+  
   onSubmit() {
 
       this.confirmationModalService.confirmUpdate(() => {

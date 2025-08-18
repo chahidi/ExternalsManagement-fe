@@ -1,6 +1,8 @@
-<h4>New Offer</h4>
-
-<p-panel header="Create New Offer" class="p-mb-5">
+<div class="prompt-wrapper">
+<p-panel class="p-mb-5 upload-container p-mt-20">
+    <ng-template pTemplate="header">
+      <h3>Create New Offer</h3>
+    </ng-template>
   <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid">
 
     <!-- Title -->
@@ -63,3 +65,4 @@
     </div>
   </form>
 </p-panel>
+</div>

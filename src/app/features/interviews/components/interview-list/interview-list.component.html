@@ -1,5 +1,11 @@
+@if (isLoading$ | async) {
+<app-loader
+    [message]="loadingMessage$ | async"
+    [withOverlay]="true"
+></app-loader>
+}
 <p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>
+
 
 <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Interview List</h2>
@@ -31,7 +37,6 @@
     <p-table
         #dt
         [value]="filteredInterviews"
-        [loading]="loading"
         [paginator]="true"
         [rows]="5"
         [rowsPerPageOptions]="[5, 10, 20]"
@@ -111,7 +116,7 @@
                 <td class="flex gap-1">
                     <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [pTooltip]="'Generate New Link'" tooltipPosition="top" (click)="generateLinkAndSendEmail(interview)"></button>
                     <button pButton icon="pi pi-comment" class="p-button-sm p-button-text" pTooltip="Add Comment" (click)="AddCommentPopup(interview)"></button>
-                    <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDeleteInterview(interview)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(interview)"></button>
                 </td>
             </tr>
         </ng-template>

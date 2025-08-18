@@ -1,0 +1,164 @@
+/* 1) Allow popups to escape the table cells/wrapper */
+:host ::ng-deep .p-datatable-wrapper,
+:host ::ng-deep .p-datatable-scrollable-body {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  overflow: visible !important;
+  position: relative; /* anchor for absolute children */
+}
+
+/* 2) Ensure paginator paints below the popup */
+:host ::ng-deep .p-datatable .p-paginator {
+  position: relative;
+  z-index: 1; /* popup will be much higher */
+}
+
+/* 3) Teaser + popup */
+.desc-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.desc-teaser {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  font-style: italic;
+  max-width: clamp(180px, 28vw, 360px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desc-teaser:hover {
+  text-decoration: underline;
+  font-style: normal;
+}
+
+.desc-teaser::after {
+  content: "";
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, rgba(255,255,255,0), var(--surface-color, #fff));
+  pointer-events: none;
+}
+
+/* The popup itself: smart positioning to avoid scrollbars */
+.desc-popup {
+  position: absolute;
+  /* Start by showing above by default to avoid scrollbars */
+  bottom: calc(100% + 8px);
+  left: 0;
+  min-width: 200px;
+  max-width: min(420px, calc(100vw - 32px));
+  background: var(--surface-overlay, #fff);
+  color: var(--text-color, #222);
+  border: 1px solid var(--surface-border, #e5e7eb);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  z-index: 10000; /* High z-index to appear above everything */
+  padding: 0.5rem;
+}
+
+/* Alternative approach using transform and viewport units */
+.desc-popup-alt {
+  position: absolute;
+  /* Dynamic positioning based on available space */
+  bottom: calc(100% + 8px); /* Show above the teaser by default */
+  left: 0;
+  min-width: 200px;
+  max-width: min(420px, calc(100vw - 32px));
+  background: var(--surface-overlay, #fff);
+  color: var(--text-color, #222);
+  border: 1px solid var(--surface-border, #e5e7eb);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  z-index: 10000;
+  padding: 0.5rem;
+}
+
+/* Arrow for upward popup */
+.desc-popup-arrow-up {
+  position: absolute;
+  bottom: -6px; /* Positioned at bottom when popup is above */
+  left: 14px;
+  width: 12px;
+  height: 12px;
+  background: var(--surface-overlay, #fff);
+  border-right: 1px solid var(--surface-border, #e5e7eb);
+  border-bottom: 1px solid var(--surface-border, #e5e7eb);
+  transform: rotate(45deg);
+}
+
+.desc-popup-arrow {
+  position: absolute;
+  bottom: -6px; /* Arrow points downward when popup is above */
+  left: 14px;
+  width: 12px;
+  height: 12px;
+  background: var(--surface-overlay, #fff);
+  border-right: 1px solid var(--surface-border, #e5e7eb);
+  border-bottom: 1px solid var(--surface-border, #e5e7eb);
+  transform: rotate(45deg);
+}
+
+.desc-popup-body {
+  font-size: .85rem;
+  line-height: 1.3;
+}
+
+.desc-popup-title {
+  font-weight: 600;
+  margin-bottom: .25rem;
+}
+
+.desc-popup-text {
+  color: var(--text-secondary-color, #6b7280);
+}
+
+/* Show on hover with smart positioning */
+.desc-tooltip:hover .desc-popup {
+  opacity: 1;
+  transform: translateY(2px); /* Slight downward movement when showing above */
+  pointer-events: auto;
+}
+
+.desc-tooltip:hover .desc-popup-alt {
+  opacity: 1;
+  transform: translateY(2px); /* Slight downward movement when showing above */
+  pointer-events: auto;
+}
+
+/* CSS-only solution: Use different popup positioning based on row position */
+/* For rows in the bottom half of the viewport, show popup above */
+.desc-tooltip:hover .desc-popup {
+  /* This will be handled by JavaScript for more precise control */
+}
+
+/* Alternative pure CSS solution using container queries (if supported) */
+@container (height > 300px) {
+  .desc-popup {
+    bottom: calc(100% + 8px);
+    top: auto;
+  }
+
+  .desc-popup-arrow {
+    top: auto;
+    bottom: -6px;
+    border-left: none;
+    border-top: none;
+    border-right: 1px solid var(--surface-border, #e5e7eb);
+    border-bottom: 1px solid var(--surface-border, #e5e7eb);
+  }
+}

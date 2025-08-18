@@ -151,3 +151,9 @@ legend {
 .intermediate { background-color: #673ab7; }
 .advanced { background-color: #009688; }
 .expert { background-color: #f44336; }
+
+::ng-deep .p-toast {
+  top: 2rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  }

@@ -1,4 +1,9 @@
-<app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
+@if (isLoading$ | async) {
+<app-loader
+    [message]="loadingMessage$ | async"
+    [withOverlay]="true"
+></app-loader>
+}
 <p-toast></p-toast>
 <p-dialog header="Update Prompt" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [contentStyle]="{ 'overflow-y': 'auto' }">
     <form *ngIf="dialogVisible" class="form-layout">
@@ -18,11 +23,11 @@
         </div>
 
         <div class="form-footer">
-            <button pButton type="button" label="Update" class="p-button-info" (click)="updatePrompt()"></button>
+            <p-button icon="pi pi-times" label="Cancel" (click)="dialogVisible = false" styleClass="p-button-text"></p-button>
+            <button pButton type="button" label="Update" class="p-button-info" (click)="confirmUpdate()"></button>
         </div>
     </form>
 </p-dialog>
-
 <h3>Prompt List</h3>
 
 <p-table [value]="prompts" [paginator]="true" [rows]="rows" [totalRecords]="totalRecords" [lazy]="true" (onLazyLoad)="loadPrompts($event)" [loading]="loading" [sortField]="sortField" [sortOrder]="sortOrder" [globalFilterFields]="['promptCode','promptDesc','schema']" class="custom-table">
@@ -41,8 +46,8 @@
             <td class="col-text">{{ prompt.promptDesc }}</td>
             <td class="col-schema">{{ prompt.schema }}</td>
             <td class="col-actions">
-                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="showUpdateDialog(prompt)"></button>
-                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="confirmDelete(prompt.id)"></button>
+                <button pButton icon="pi pi-pencil" class="p-button-sm p-button-info p-button-text" (click)="showUpdateDialog(prompt)"></button>
+                <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(prompt.id)"></button>
             </td>
         </tr>
     </ng-template>
@@ -54,4 +59,4 @@
     </ng-template>
 </p-table>
 
-<p-confirmDialog></p-confirmDialog>
+

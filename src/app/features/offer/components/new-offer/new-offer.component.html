@@ -1,0 +1,65 @@
+<h4>New Offer</h4>
+
+<p-panel header="Create New Offer" class="p-mb-5">
+  <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid">
+
+    <!-- Title -->
+    <div class="p-field p-mb-4">
+      <label for="title" class="p-text-bold p-mb-2">Title</label>
+      <input
+        id="title"
+        type="text"
+        pInputText
+        formControlName="title"
+        placeholder="e.g. Senior MLOps Engineer"
+        class="p-inputtext w-full my-3"
+        aria-describedby="title-error"
+        [class.p-invalid]="offerForm.get('title')?.touched && offerForm.get('title')?.invalid"
+      />
+
+      @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('required')) {
+        <small id="title-error" class="p-error">
+          Title is required!
+        </small>
+      }
+
+      @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('maxlength')) {
+        <small class="p-error">
+          Title must be at most 200 characters.
+        </small>
+      }
+    </div>
+
+    <!-- Description -->
+    <div class="p-field p-mb-4">
+      <label for="description" class="p-text-bold p-mb-2">Description</label>
+      <textarea
+        id="description"
+        pInputTextarea
+        formControlName="description"
+        placeholder="Paste the full job description…"
+        rows="8"
+        class="p-inputtext w-full my-3"
+        aria-describedby="description-error"
+        [class.p-invalid]="offerForm.get('description')?.touched && offerForm.get('description')?.invalid"
+      ></textarea>
+
+      @if (offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')) {
+        <small id="description-error" class="p-error">
+          Description is required!
+        </small>
+      }
+    </div>
+
+    <div class="p-d-flex p-jc-end p-mt-5">
+      <button
+        pButton
+        type="submit"
+        label="Save Offer"
+        icon="pi pi-check"
+        class="p-button p-button-lg"
+        [disabled]="offerForm.invalid"
+      ></button>
+    </div>
+  </form>
+</p-panel>

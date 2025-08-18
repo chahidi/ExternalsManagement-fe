@@ -13,7 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { NotificationService } from '../../../../core/services/utils/notification.service';
 
 import { Evaluation } from '../../../../core/models/evaluation';
 import { InterviewEvaluationDisplay } from '../../../../core/models/interview-evaluation-display';

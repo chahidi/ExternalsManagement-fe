@@ -19,10 +19,12 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { MenuItem } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { Skill } from '../../../../core/models/skill';
 import { Language } from '../../../../core/models/language';
 import { Contact } from '../../../../core/models/contact';
+import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 
 
 @Component({
@@ -40,7 +42,9 @@ import { Contact } from '../../../../core/models/contact';
     SelectModule,
     RadioButtonModule,
     FormsModule,
+    ConfirmDialogModule
   ],
+  providers: [ConfirmationService],
   templateUrl: './stepper-form.component.html',
   styleUrls: ['./stepper-form.component.scss']
 })
@@ -71,7 +75,7 @@ export class StepperFormComponent implements OnInit {
   contactsFormWrapper!: FormGroup;
   skillsFormWrapper!: FormGroup;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private confirmationService: ConfirmationService, private confirmationModalService: ConfirmationModalService) {}
 
   ngOnInit() {
     this.steps = [
@@ -524,6 +528,10 @@ export class StepperFormComponent implements OnInit {
   clearCurrentSection(): void {
     this.getCurrentForm().reset();
   }
+
+  confirmUpdate(): void {
+        this.confirmationModalService.confirmUpdate(() => {this.onSubmit();}, 'form' );
+      }
 
   onSubmit(): void {
     if (this.areAllFormsValid()) {

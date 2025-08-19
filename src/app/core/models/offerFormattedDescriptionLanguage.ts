@@ -1,4 +1,4 @@
 export interface OfferFormattedDescriptionLanguage{
-    language: string;
-    languageLevel: string
+    languageName: string;
+    level: string
 }

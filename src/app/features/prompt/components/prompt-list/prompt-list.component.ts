@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -14,6 +14,8 @@ import { ConfirmationService } from 'primeng/api';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
+import { PromptFilterService } from '../../../../core/services/prompt-filter.service';
+import { Table } from 'primeng/table';
 
 
 @Component({
@@ -35,7 +37,10 @@ import { ConfirmationModalService } from '../../../../core/services/utils/confir
   providers: [MessageService, ConfirmationService],
 })
 export class PromptListComponent implements OnInit {
+  @ViewChild('dt1') dt1!: Table;
+
   prompts: Prompt[] = [];
+  filteredPrompts: Prompt[] = [];
   totalRecords = 0;
   loading = false;
   first = 0;
@@ -43,8 +48,16 @@ export class PromptListComponent implements OnInit {
   sortField = '';
   sortOrder = 1;
 
+  // Search functionality
+  searchQuery = '';
+
   dialogVisible = false;
   selectedPrompt: Prompt = { id: '', promptCode: '', promptDesc: '', schema: '' };
+
+  // View dialogs for full text/schema
+  descDialogVisibleText = false;
+  descDialogVisibleSchema = false;
+  currentPrompt: Prompt | null = null;
 
   isLoading$!: any;
   loadingMessage$!: any;
@@ -54,7 +67,8 @@ export class PromptListComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private loaderService: LoaderService,
-    private confirmationModalService: ConfirmationModalService
+    private confirmationModalService: ConfirmationModalService,
+    private promptFilterService: PromptFilterService
 ) {}
 
   ngOnInit() {
@@ -74,6 +88,7 @@ export class PromptListComponent implements OnInit {
     this.promptService.getAllPromptsPaginated(page, size, sortField, sortOrder).subscribe({
       next: (data) => {
         this.prompts = data.content;
+        this.filteredPrompts = this.prompts;
         this.totalRecords = data.totalElements;
         this.loaderService.hide();
       },
@@ -82,6 +97,38 @@ export class PromptListComponent implements OnInit {
         this.loaderService.hide();
       },
     });
+  }
+
+  onSearch() {
+    this.filteredPrompts = this.promptFilterService.searchPrompts(this.prompts, this.searchQuery);
+  }
+
+  clear(dt: Table) {
+    this.searchQuery = '';
+    this.filteredPrompts = this.prompts;
+
+    if (dt && (dt as any).clear) {
+      (dt as any).clear();
+    }
+
+    this.messageService.add({ severity: 'info', summary: 'Clear', detail: 'The search is cleared!' });
+  }
+
+  openTextModal(prompt: Prompt) {
+    this.currentPrompt = prompt;
+    this.descDialogVisibleText = true;
+  }
+
+  openSchemaModal(prompt: Prompt) {
+    this.currentPrompt = prompt;
+    this.descDialogVisibleSchema = true;
+  }
+
+  teaserWords(source: string | null | undefined, maxWords: number = 5): string {
+    if (!source) return '';
+    const words = source.trim().split(/\s+/);
+    if (words.length <= maxWords) return source;
+    return words.slice(0, maxWords).join(' ') + '…';
   }
 
   confirmDelete(id: string) {

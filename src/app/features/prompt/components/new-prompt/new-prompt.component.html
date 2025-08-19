@@ -4,7 +4,7 @@
         <h3>Add New Prompt</h3>
       </ng-template>
 
-    <form (ngSubmit)="onSubmit()" class="p-fluid">
+    <form [formGroup]="promptForm" (ngSubmit)="onSubmit()" class="p-fluid">
 
       <div class="p-field p-mb-4">
         <label for="promptCode" class="p-text-bold p-mb-2">Prompt Code</label>
@@ -12,40 +12,57 @@
           id="promptCode"
           type="text"
           pInputText
-          [(ngModel)]="prompt.promptCode"
-          name="promptCode"
+          formControlName="promptCode"
           placeholder="e.g. PROMPT_001"
           class="p-inputtext w-full my-3"
-          required
+          [class.p-invalid]="promptForm.get('promptCode')?.touched && promptForm.get('promptCode')?.invalid"
+
         />
       </div>
+      @if (promptForm.get('promptCode')?.touched && promptForm.get('promptCode')?.hasError('required')) {
+        <small class="p-error new-custom-error">
+          promptCode is required!
+        </small>
+      }
 
       <div class="p-field p-mb-4">
         <label for="promptDesc" class="p-text-bold p-mb-2">Text (Required)</label>
         <textarea
           id="promptDesc"
           pInputTextarea
-          [(ngModel)]="prompt.promptDesc"
-          name="promptDesc"
+          formControlName="promptDesc"
           placeholder="Enter prompt description..."
           rows="6"
           class="p-inputtext w-full my-3"
-          required
+          [class.p-invalid]="promptForm.get('promptDesc')?.touched && promptForm.get('promptDesc')?.invalid"
+
         ></textarea>
       </div>
+      @if (promptForm.get('promptDesc')?.touched && promptForm.get('promptDesc')?.hasError('required')) {
+        <small id="title-error" class="p-error new-custom-error">
+          promptDesc is required!
+        </small>
+      }
 
       <div class="p-field p-mb-4">
         <label for="schema" class="p-text-bold p-mb-2">Schema (JSON)</label>
         <textarea
           id="schema"
           pInputTextarea
-          [(ngModel)]="prompt.schema"
-          name="schema"
+          formControlName="schema"
           placeholder='e.g. {"key":"value"}'
           rows="6"
           class="p-inputtext w-full my-3"
+          [class.p-invalid]="promptForm.get('schema')?.touched && promptForm.get('schema')?.invalid"
+
         ></textarea>
       </div>
+
+      @if (promptForm.get('schema')?.touched && promptForm.get('schema')?.hasError('required')) {
+        <small id="title-error" class="p-error new-custom-error">
+          schema is required!
+        </small>
+      }
 
       <div class="p-d-flex p-jc-end p-mt-5">
         <button
@@ -54,7 +71,7 @@
           label="Save Prompt"
           icon="pi pi-check"
           class="p-button p-button-lg p-button-info"
-          [disabled]="!prompt.promptCode || !prompt.promptDesc"
+          [disabled]="promptForm.invalid"
         ></button>
       </div>
 

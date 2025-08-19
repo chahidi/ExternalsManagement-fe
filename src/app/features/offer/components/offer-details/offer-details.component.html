@@ -1,1 +1,44 @@
-<p>offer-details works!</p>
+@if (isLoading$ | async) {
+<app-loader
+    [message]="loadingMessage$ | async"
+    [withOverlay]="true"
+></app-loader>
+}
+<div class="p-grid p-dir-col p-align-stretch p-m-3">
+
+  <div class="p-col">
+    <p-card header="Description">
+      <p>{{ offer.description }}</p>
+    </p-card>
+  </div>
+
+  <div class="p-col p-grid p-nogutter p-mt-2">
+    <div class="p-col-12 p-md-6">
+      <p-card header="Skills">
+        <ul>
+          <li *ngFor="let skill of offer.skills.split(',')">{{ skill }}</li>
+        </ul>
+      </p-card>
+    </div>
+
+    <div class="p-col-12 p-md-6">
+      <p-card header="Languages">
+        <ul>
+          <li *ngFor="let lang of offer.languages">{{ lang.name }} ({{ lang.level }})</li>
+        </ul>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="p-col p-mt-2">
+    <p-card header="Additional Information">
+      <p><strong>Main Tech:</strong> {{ offer.mainTech }}</p>
+      <p><strong>Years of Experience:</strong> {{ offer.yearsOfExperience }}</p>
+      <p><strong>Education:</strong> {{ offer.education }}</p>
+      <p><strong>Main Responsibilities:</strong> {{ offer.mainResponsibilities }}</p>
+      <p><strong>Keywords:</strong> {{ offer.keywords }}</p>
+    </p-card>
+  </div>
+
+</div>
+

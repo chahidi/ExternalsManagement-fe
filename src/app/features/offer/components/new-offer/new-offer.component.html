@@ -20,13 +20,13 @@
       />
 
       @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('required')) {
-        <small id="title-error" class="p-error">
+        <small id="title-error" class="p-error new-custom-error">
           Title is required!
         </small>
       }
 
       @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('maxlength')) {
-        <small class="p-error">
+        <small class="p-error new-custom-error">
           Title must be at most 200 characters.
         </small>
       }
@@ -47,7 +47,7 @@
       ></textarea>
 
       @if (offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')) {
-        <small id="description-error" class="p-error">
+        <small id="description-error" class="p-error new-custom-error">
           Description is required!
         </small>
       }

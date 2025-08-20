@@ -91,15 +91,17 @@
 .skills-list .education-card .responsibilities-card .languages-card {
     margin-left: 10px;
 }
+
 .job-description,
 .skills-section,
 .responsibilities-section,
 .education-section,
 .languages-section {
-  > div.flex > span {
-    color: var(--primary-color);
-  }
+    >div.flex>span {
+        color: var(--primary-color);
+    }
 }
+
 .keywords-title {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }

@@ -20,7 +20,7 @@ import { ListboxModule } from 'primeng/listbox';
 @Component({
   selector: 'app-offer-details',
   standalone: true,
-  imports: [LoaderComponent,CommonModule, TagModule, CardModule, ChipModule,ListboxModule],
+  imports: [LoaderComponent, CommonModule, TagModule, CardModule, ChipModule, ListboxModule],
   providers: [MessageService, NotificationService],
   templateUrl: './offer-details.component.html',
   styleUrls: ['./offer-details.component.scss']

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { CandidateFilterService } from '../../../../core/services/candidate-filter.service';
 import { Candidate } from '../../../../core/models/candidate';
-import { Contact} from '../../../../core/models/contact';
+import { Contact } from '../../../../core/models/contact';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { CommonModule } from '@angular/common';
@@ -76,7 +76,11 @@ export class CandidateListComponent implements OnInit {
   proficiencyLevels: string[] = ['BEGINNER', 'INTERMEDIATE', 'EXPERT'];
   proficiencyLevelOptions: DropdownOption[] = [];
   languageLevelOptions: DropdownOption[] = [];
-  languageLevels: string[] = ['BEGINNER', 'LOWER_INTERMEDIATE', 'INTERMEDIATE', 'UPPER_INTERMEDIATE', 'ADVANCED' ];
+  languageLevels: string[] = ['BEGINNER', 'LOWER_INTERMEDIATE', 'INTERMEDIATE', 'UPPER_INTERMEDIATE', 'ADVANCED'];
+
+  nameSortAsc: boolean = false;
+  mainTechSortAsc: boolean = false;
+  locationSortAsc: boolean = false;
 
   cities: any[] = [
     { id: '', name: 'Paris', country: null },
@@ -84,16 +88,16 @@ export class CandidateListComponent implements OnInit {
     { id: '', name: 'New York', country: null }
   ];
   countries: any[] = [
-    { id: '', name: 'France' , englishName:'France', cities :null},
-    { id: '', name: 'UK', englishName:'United Kingdom', cities :null },
-    { id: '', name: 'USA' ,  englishName:'United State', cities :null}
+    { id: '', name: 'France', englishName: 'France', cities: null },
+    { id: '', name: 'UK', englishName: 'United Kingdom', cities: null },
+    { id: '', name: 'USA', englishName: 'United State', cities: null }
   ];
 
-    filters: FilterCriteria = {
-      skills: [],
-      language: null,
-      yearsOfExperience: null,
-    };
+  filters: FilterCriteria = {
+    skills: [],
+    language: null,
+    yearsOfExperience: null,
+  };
 
   constructor(
     private candidateService: CandidateService,
@@ -116,9 +120,9 @@ export class CandidateListComponent implements OnInit {
       value: level
     }));
     this.languageLevelOptions = this.languageLevels.map(lang => ({
-        label :lang,
-        value: lang
-      }));
+      label: lang,
+      value: lang
+    }));
   }
 
   isArray(value: any): boolean {
@@ -266,7 +270,7 @@ export class CandidateListComponent implements OnInit {
     }
 
     if (this.filters.language) {
-      filterParams.language = {...this.filters.language};
+      filterParams.language = { ...this.filters.language };
     }
 
     if (this.filters.yearsOfExperience !== null) {
@@ -334,18 +338,19 @@ export class CandidateListComponent implements OnInit {
     });
   }
 
-  editCandidate(candidate: Candidate): void {this.selectedCandidate = { ...candidate };
-  this.selectedCandidate.addresses = this.selectedCandidate.addresses || [];
-  this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
-  this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
-  this.selectedCandidate.skills = this.selectedCandidate.skills || [];
-  this.selectedCandidate.educations = this.selectedCandidate.educations || [];
-  this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
-  // Synchroniser city.country pour les adresses existantes
-  this.selectedCandidate.addresses.forEach(addr => this.syncCityCountry(addr));
-  this.displayEditDialog = true;
-}
-addAddress(): void {
+  editCandidate(candidate: Candidate): void {
+    this.selectedCandidate = { ...candidate };
+    this.selectedCandidate.addresses = this.selectedCandidate.addresses || [];
+    this.selectedCandidate.contacts = this.selectedCandidate.contacts || [];
+    this.selectedCandidate.experiences = this.selectedCandidate.experiences || [];
+    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+    this.selectedCandidate.educations = this.selectedCandidate.educations || [];
+    this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
+    // Synchroniser city.country pour les adresses existantes
+    this.selectedCandidate.addresses.forEach(addr => this.syncCityCountry(addr));
+    this.displayEditDialog = true;
+  }
+  addAddress(): void {
     console.log('Adding new address');
     if (!this.selectedCandidate) return;
     const newAddress = {
@@ -487,9 +492,9 @@ addAddress(): void {
   }
 
   confirmUpdate(): void {
-      this.confirmationModalService.confirmUpdate(() => {
-        this.saveCandidate();
-      }, 'candidate');
+    this.confirmationModalService.confirmUpdate(() => {
+      this.saveCandidate();
+    }, 'candidate');
   }
 
   saveCandidate(): void {
@@ -527,8 +532,8 @@ addAddress(): void {
 
   confirmDelete(candidate: Candidate): void {
     this.confirmationModalService.confirmDelete(() => {
-          this.deleteCandidate(candidate);
-        }, 'candidate');
+      this.deleteCandidate(candidate);
+    }, 'candidate');
   }
 
   deleteCandidate(candidate: Candidate): void {
@@ -563,38 +568,73 @@ addAddress(): void {
   }
 
   // Add these properties
-newSkillName: string = '';
-newSkillProficiency: string = '';
+  newSkillName: string = '';
+  newSkillProficiency: string = '';
 
-// Add these methods
-getProficiencyLabel(value: string): string {
-  const proficiency = this.proficiencyLevelOptions.find(p => p.value === value);
-  return proficiency ? proficiency.label : '';
-}
-
-getProficiencyClass(proficiency: string): string {
-  switch(proficiency) {
-    case 'BEGINNER': return 'beginner';
-    case 'INTERMEDIATE': return 'intermediate';
-    case 'ADVANCED': return 'advanced';
-    case 'EXPERT': return 'expert';
-    default: return '';
+  // Add these methods
+  getProficiencyLabel(value: string): string {
+    const proficiency = this.proficiencyLevelOptions.find(p => p.value === value);
+    return proficiency ? proficiency.label : '';
   }
-}
 
-// Modify your addSkill method
-addSkill() {
-  if (this.newSkillName && this.newSkillProficiency) {
-    if (!this.selectedCandidate) return;
-    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
-    this.selectedCandidate.skills.push({
+  getProficiencyClass(proficiency: string): string {
+    switch (proficiency) {
+      case 'BEGINNER': return 'beginner';
+      case 'INTERMEDIATE': return 'intermediate';
+      case 'ADVANCED': return 'advanced';
+      case 'EXPERT': return 'expert';
+      default: return '';
+    }
+  }
+
+  // Modify your addSkill method
+  addSkill() {
+    if (this.newSkillName && this.newSkillProficiency) {
+      if (!this.selectedCandidate) return;
+      this.selectedCandidate.skills = this.selectedCandidate.skills || [];
+      this.selectedCandidate.skills.push({
         id: '',
-      skillName: this.newSkillName,
-      proficiencyLevel: this.newSkillProficiency
-    });
-    this.newSkillName = '';
-    this.newSkillProficiency = '';
+        skillName: this.newSkillName,
+        proficiencyLevel: this.newSkillProficiency
+      });
+      this.newSkillName = '';
+      this.newSkillProficiency = '';
+    }
   }
-}
+
+  sortCandidatesByName() {
+    this.nameSortAsc = !this.nameSortAsc;
+    this.candidates.sort((a, b) =>
+      this.nameSortAsc
+        ? a.fullName.localeCompare(b.fullName)
+        : b.fullName.localeCompare(a.fullName)
+    );
+  }
+
+  sortCandidatesByMainTech() {
+    this.mainTechSortAsc = !this.mainTechSortAsc;
+    this.candidates.sort((a, b) =>
+      this.mainTechSortAsc
+        ? a.mainTech.localeCompare(b.mainTech)
+        : b.mainTech.localeCompare(a.mainTech)
+    );
+  }
+
+  sortCandidatesByLocation() {
+    this.locationSortAsc = !this.locationSortAsc;
+
+    this.candidates.sort((a, b) => {
+      const aAddress = a.addresses && a.addresses.length > 0 ? a.addresses[0] : null;
+      const bAddress = b.addresses && b.addresses.length > 0 ? b.addresses[0] : null;
+
+      const aLocation = `${aAddress?.city?.name || ''}, ${aAddress?.country?.name || ''}`;
+      const bLocation = `${bAddress?.city?.name || ''}, ${bAddress?.country?.name || ''}`;
+
+      return this.locationSortAsc
+        ? aLocation.localeCompare(bLocation)
+        : bLocation.localeCompare(aLocation);
+    });
+  }
+
 
 }

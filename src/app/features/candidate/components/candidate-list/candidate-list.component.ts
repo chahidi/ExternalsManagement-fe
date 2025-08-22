@@ -81,6 +81,7 @@ export class CandidateListComponent implements OnInit {
   nameSortAsc: boolean = false;
   mainTechSortAsc: boolean = false;
   locationSortAsc: boolean = false;
+  educationSortAsc: boolean = false;
 
   cities: any[] = [
     { id: '', name: 'Paris', country: null },
@@ -633,6 +634,22 @@ export class CandidateListComponent implements OnInit {
       return this.locationSortAsc
         ? aLocation.localeCompare(bLocation)
         : bLocation.localeCompare(aLocation);
+    });
+  }
+
+  sortCandidatesByEducation() {
+    this.educationSortAsc = !this.educationSortAsc;
+
+    this.candidates.sort((a, b) => {
+      const aEducation = a.educations && a.educations.length > 0 ? a.educations[0] : null;
+      const bEducation = b.educations && b.educations.length > 0 ? b.educations[0] : null;
+
+      const aFormattedEducation = `${aEducation?.degree || ''}, ${aEducation?.institution || ''}`;
+      const bFormattedEducation = `${bEducation?.degree || ''}, ${bEducation?.institution || ''}`;
+
+      return this.educationSortAsc
+        ? aFormattedEducation.localeCompare(bFormattedEducation)
+        : bFormattedEducation.localeCompare(aFormattedEducation);
     });
   }
 

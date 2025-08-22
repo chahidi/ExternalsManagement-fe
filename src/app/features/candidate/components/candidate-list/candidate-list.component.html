@@ -62,7 +62,7 @@
                         <p-columnFilter type="text" field="fullName" display="menu"></p-columnFilter>
                     </div>
                 </th>
-                <th style="min-width: 10rem">
+                <th style="min-width: 13rem">
                     <div class="flex items-center">
                         <button type="button" pButton [icon]="mainTechSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="sortCandidatesByMainTech()">
@@ -82,6 +82,9 @@
                 </th>
                 <th style="min-width: 12rem">
                     <div class="flex items-center">
+                        <button type="button" pButton [icon]="educationSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1" (click)="sortCandidatesByEducation()">
+                        </button>
                         Education
                         <p-columnFilter type="text" field="educations.degree" display="menu"></p-columnFilter>
                     </div>

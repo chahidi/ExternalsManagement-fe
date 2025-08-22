@@ -53,6 +53,10 @@ export class InterviewListComponent implements OnInit {
 
     isGeneratingLink = false;
 
+    candidateNameSortAsc: boolean = true;
+    offerTitleSortAsc: boolean = true;
+    candidateMainTechSortAsc: boolean = true;
+
     constructor(
         private interviewService: InterviewService,
         private candidateService: CandidateService,
@@ -62,7 +66,7 @@ export class InterviewListComponent implements OnInit {
         private notify: NotificationService,
         private loaderService: LoaderService,
         private confirmationModalService: ConfirmationModalService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -251,23 +255,52 @@ export class InterviewListComponent implements OnInit {
         return EMPTY;
     }
     private toDate(v: Date | string | null | undefined): Date | null {
-            if (!v) return null;
-            const d = new Date(v);
-            return isNaN(d.getTime()) ? null : d;
+        if (!v) return null;
+        const d = new Date(v);
+        return isNaN(d.getTime()) ? null : d;
     }
 
     getDurationLabel(interview: InterviewInstance): string {
-            const end = this.toDate(interview.endTime);
-            const start = this.toDate(interview.startTime) ?? this.toDate(interview.scheduledAt);
+        const end = this.toDate(interview.endTime);
+        const start = this.toDate(interview.startTime) ?? this.toDate(interview.scheduledAt);
 
-            if (!end || !start) return '—';
+        if (!end || !start) return '—';
 
-            const diffMs = end.getTime() - start.getTime();
-            if (diffMs <= 0) return '—';
+        const diffMs = end.getTime() - start.getTime();
+        if (diffMs <= 0) return '—';
 
-            const totalMin = Math.round(diffMs / (1000 * 60));
-            const hours = Math.floor(totalMin / 60);
-            const mins = totalMin % 60;
-            return hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
+        const totalMin = Math.round(diffMs / (1000 * 60));
+        const hours = Math.floor(totalMin / 60);
+        const mins = totalMin % 60;
+        return hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
     }
+
+    sortInterviewsByCandidateName(asc: boolean = true) {
+        this.candidateNameSortAsc = !this.candidateNameSortAsc;
+
+        this.filteredInterviews.sort((a, b) =>
+            this.candidateNameSortAsc ? a.candidateFullName.localeCompare(b.candidateFullName) :
+                b.candidateFullName.localeCompare(a.candidateFullName)
+        );
+
+    }
+
+    sortInterviewsByCandidateMainTech() {
+        this.candidateMainTechSortAsc = !this.candidateMainTechSortAsc;
+        this.filteredInterviews.sort((a, b) =>
+            this.candidateMainTechSortAsc
+                ? a.candidateMainTech.localeCompare(b.candidateMainTech)
+                : b.candidateMainTech.localeCompare(a.candidateMainTech)
+        );
+    }
+
+    sortInterviewsByOfferTitle() {
+        this.offerTitleSortAsc = !this.offerTitleSortAsc;
+        this.filteredInterviews.sort((a, b) =>
+            this.offerTitleSortAsc
+                ? a.offerTitle.localeCompare(b.offerTitle)
+                : b.offerTitle.localeCompare(a.offerTitle)
+        );
+    }
+
 }

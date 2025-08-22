@@ -24,6 +24,7 @@ import { LoaderComponent } from '../../../../shared/layout/components/loader/loa
 import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DatePickerModule } from 'primeng/datepicker';
+import { InterviewFilterService } from '../../../../core/services/interview-filter.service';
 
 @Component({
     selector: 'app-interview-list',
@@ -44,6 +45,8 @@ export class InterviewListComponent implements OnInit {
     selectedTechFilters: any[] = [];
     selectedTitleFilters: any[] = [];
 
+    searchQuery = '';
+
     now: Date = new Date();
     techOptions: { label: string; value: string }[] = [];
     titleOptions: { label: string; value: string }[] = [];
@@ -55,6 +58,7 @@ export class InterviewListComponent implements OnInit {
     isGeneratingLink = false;
 
     constructor(
+        private interviewFilterService: InterviewFilterService,
         private interviewService: InterviewService,
         private candidateService: CandidateService,
         private confirmationService: ConfirmationService,
@@ -97,6 +101,10 @@ export class InterviewListComponent implements OnInit {
         });
     }
 
+    onSearch() {
+        this.filteredInterviews = this.interviewFilterService.searchInterviews(this.interviews, this.searchQuery);
+    }
+
     loadInterviews(): void {
         this.loaderService.show("Loading interviews...");
         this.interviewService.getInterviews().subscribe((data) => {
@@ -131,6 +139,10 @@ export class InterviewListComponent implements OnInit {
         this.selectedTitleFilters = [];
         this.scheduledDateFilter = null;
         this.filteredInterviews = this.interviews;
+    }
+
+    clear(): void{
+        this.searchQuery = '';
     }
 
     getRemainingHours(expiryDate?: Date): string {

@@ -82,14 +82,18 @@
         [globalFilterFields]="['candidate.fullName', 'candidate.mainTech', 'offer.title', 'comment']"
         responsiveLayout="scroll"
     >
+       
+
+
         <ng-template pTemplate="caption">
-            <div class="flex justify-between items-center">
-                <span class="font-semibold">Interview List</span>
-                <div class="flex items-center gap-2">
-                    <p-button icon="pi pi-filter-slash" class="p-button-sm" label="Clear Filters" (click)="dt.clear()"></p-button>
-                </div>
-            </div>
-        </ng-template>
+          <div class="flex">
+              <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear()"></p-button>
+              <div class="ml-auto flex items-center gap-2">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" placeholder="Search interviews..." [(ngModel)]="searchQuery" (input)="onSearch()" class="border rounded-md h-10 px-3 w-full">
+              </div>
+          </div>
+    </ng-template>
 
         <ng-template pTemplate="header">
             <tr>

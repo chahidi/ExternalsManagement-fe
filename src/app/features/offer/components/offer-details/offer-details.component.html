@@ -36,6 +36,19 @@
         </div>
         }
 
+        <div class="keywords-section mt-8 flex items-start col-span-1 md:col-span-2">
+          <span class="text-lg font-medium">
+            <i class="pi pi-tags detail-icon mr-2 text-primary text-3xl"></i>
+            <span class="font-bold text-xl mr-4 keywords-title">Keywords: </span>
+            @for (keyword of keywordsList; track keyword){
+            {{ keyword }}
+            @if(!$last){
+            <span>, </span>
+            }
+            }
+          </span>
+        </div>
+
         <div class="skills-section">
           <div class="flex items-center mb-4">
             <i class="pi pi-star text-3xl mr-4 text-primary"></i>
@@ -89,22 +102,6 @@
         } @else {
         <div></div>
         }
-
-
-        <div class="keywords-section mt-8 flex items-start col-span-1 md:col-span-2">
-          <span class="text-lg font-medium">
-            <i class="pi pi-tags detail-icon mr-2 text-primary text-3xl"></i>
-            <span class="font-bold text-xl mr-4 keywords-title">Keywords: </span>
-            @for (keyword of keywordsList; track keyword){
-            {{ keyword }}
-            @if(!$last){
-            <span>, </span>
-            }
-            }
-          </span>
-        </div>
-
-
       </div>
     </div>
   </p-card>

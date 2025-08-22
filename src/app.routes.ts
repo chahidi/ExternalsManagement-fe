@@ -23,6 +23,12 @@ export const appRoutes: Routes = [
         loadChildren : ()=>import('./app/features/offer/offer-routes').then((m)=>m.OFFER_ROUTES),
     },
     {
+        path: 'offer/:id',
+        loadComponent: () =>
+            import('./app/features/offer/components/offer-details/offer-details.component').then(m => m.OfferDetailsComponent),
+        title: 'Offer details'
+    },
+    {
         path: 'prompts',
         component: LayoutComponent,
         loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),

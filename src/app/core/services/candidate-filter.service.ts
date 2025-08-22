@@ -13,6 +13,42 @@ export class CandidateFilterService {
 
   constructor(private http: HttpClient) { }
 
+  private transformCandidate(candidate: any): Candidate {
+
+      return {
+        ...candidate,
+        id: candidate.id.toString(),
+        addresses: candidate.address ? [{
+          id: candidate.address.id?.toString() || '',
+          street: candidate.address.street || '',
+          postalCode: candidate.address.postalCode || '',
+          fullAddress: candidate.address.fullAddress || '',
+          city: candidate.address.city ? {
+            id: candidate.address.city.id?.toString() || '',
+            name: candidate.address.city.name || '',
+            countryId: candidate.address.city.countryId || ''
+          } : null,
+          country: candidate.address.country ? {
+            id: candidate.address.country.id?.toString() || '',
+            name: candidate.address.country.name || '',
+            englishName: candidate.address.country.englishName || ''
+          } : null
+        }] : []
+        ,
+        contacts: candidate.contacts || [],
+        experiences: candidate.experiences || [],
+        skills: candidate.skills || [],
+        educations: (candidate.educations || []).map((edu: any) => ({
+          ...edu,
+          candidate: undefined
+        })),
+        naturalLanguages: (candidate.naturalLanguages || []).map((lang: any) => ({
+          ...lang,
+          candidate: undefined
+        }))
+      };
+    }
+
   filterCandidates(filters: any): Observable<Candidate[]> {
     console.log('Filtering with params:', filters);
 
@@ -74,7 +110,7 @@ export class CandidateFilterService {
           console.log('After experience filter:', filteredCandidates.length);
         }
 
-        return filteredCandidates;
+        return filteredCandidates.map(candidate => this.transformCandidate(candidate));
       }),
       catchError(error => {
         console.error('Error while filtering candidates:', error);

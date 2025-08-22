@@ -305,9 +305,9 @@ export class OfferListComponent implements OnInit {
     this.messageService.add({ severity: 'info', summary: 'Reset', detail: 'Filters reset.' });
   }
 
-  // Optional
-  goToDetails(offerId: string): void {
-    this.router.navigate(['/offers', offerId]);
+  goToDetails(offer: Offer): void {
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/offer', offer.id]));
+    window.open(url, '_blank');
   }
 
   get offerDescription(): string {

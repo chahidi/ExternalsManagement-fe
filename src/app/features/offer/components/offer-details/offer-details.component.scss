@@ -1,0 +1,105 @@
+.offer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.bullet-list .p-listbox-item div {
+    position: relative;
+    padding-left: 1.2em;
+}
+
+.offer-header-card p-card {
+    padding: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.offer-general-details-line {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    font-size: 1.2rem;
+    gap: 1.5rem;
+}
+
+.offerTitle {
+    color: var(--primary-color);
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.detail-icon-title {
+    font-size: 1.5rem;
+    color: var(--primary-color)
+}
+
+.detail-icon {
+    color: var(--primary-color);
+    font-family: 3rem;
+}
+
+.job-description-title {
+    margin-bottom: 5px;
+}
+
+.job-description-title .title {
+    color: var(--primary-color)
+}
+
+.job-description-title .pi-info-circle {
+    font-size: 1.5rem;
+    margin-left: 6px;
+    color: var(--primary-color)
+}
+
+.offer-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 20px;
+}
+
+.offer-info-grid i {
+    font-size: 1.5rem;
+    margin-left: 6px;
+    color: var(--primary-color)
+}
+
+.title {
+    color: var(--primary-color)
+}
+
+@media (max-width: 768px) {
+    .offer-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.icon-and-title {
+    display: flex;
+}
+
+.skills-list .education-card .responsibilities-card .languages-card {
+    margin-left: 10px;
+}
+
+.job-description,
+.skills-section,
+.responsibilities-section,
+.education-section,
+.languages-section {
+    >div.flex>span {
+        color: var(--primary-color);
+    }
+}
+
+.keywords-title {
+    color: var(--primary-color);
+}

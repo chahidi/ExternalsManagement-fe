@@ -13,9 +13,7 @@ export class PromptFilterService {
     }
     const lowerQuery = query.toLowerCase();
     return prompts.filter(prompt =>
-      prompt.promptCode.toLowerCase().includes(lowerQuery) ||
-      prompt.promptDesc.toLowerCase().includes(lowerQuery) ||
-      (prompt.schema && prompt.schema.toLowerCase().includes(lowerQuery))
+      prompt.promptCode.toLowerCase().includes(lowerQuery)
     );
   }
 }

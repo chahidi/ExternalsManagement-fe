@@ -12,26 +12,65 @@
 
     <!-- Filter Panel -->
     <div class="card mb-4">
-        <h3 class="text-lg font-semibold mb-3">Filter Interviews</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="field">
-                <label for="mainTech" class="block mb-2">Main Tech</label>
-                <p-select id="mainTech" [options]="techOptions" [(ngModel)]="mainTechFilter" placeholder="Select Tech" [style]="{ width: '100%' }"></p-select>
-            </div>
-            <div class="field">
-                <label for="title" class="block mb-2">Title</label>
-                <p-select id="title" [options]="titleOptions" [(ngModel)]="titleFilter" placeholder="Select Title" [style]="{ width: '100%' }"></p-select>
-            </div>
-            <div class="field">
-                <label for="scheduledDate" class="block mb-2">Scheduled Date</label>
-                <p-datepicker id="scheduledDate" [(ngModel)]="scheduledDateFilter" dateFormat="yy-mm-dd" showIcon="true" [style]="{ width: '100%' }" inputStyleClass="w-full"></p-datepicker>
-            </div>
-        </div>
-        <div class="flex justify-end mt-4">
-            <p-button label="Reset" icon="pi pi-times" class="p-button-outlined p-button-danger mr-2" (click)="resetFilters()"></p-button>
-            <p-button label="Apply Filters" icon="pi pi-search" (click)="applyFilters()"></p-button>
-        </div>
+  <h3 class="text-lg font-semibold mb-3">Filter Interviews</h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Main Tech -->
+    <div class="field">
+      <label class="block mb-2">Main Tech</label>
+      <p-multiSelect
+        [options]="techOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="selectedTechFilters"
+        placeholder="Select Tech"
+        display="chip"
+        class="w-full">
+      </p-multiSelect>
     </div>
+
+    <!-- Title -->
+    <div class="field">
+      <label class="block mb-2">Title</label>
+      <p-multiSelect
+        [options]="titleOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="selectedTitleFilters"
+        placeholder="Select Title"
+        display="chip"
+        class="w-full">
+      </p-multiSelect>
+    </div>
+
+    <!-- Scheduled Date -->
+    <div class="field">
+      <label class="block mb-2">Scheduled Date</label>
+      <p-datepicker
+        [(ngModel)]="scheduledDateFilter"
+        dateFormat="yy-mm-dd"
+        showIcon="true"
+        class="w-full">
+      </p-datepicker>
+    </div>
+  </div>
+
+  <div class="flex justify-end mt-4">
+    <p-button
+      label="Reset"
+      icon="pi pi-times"
+      styleClass="p-button-outlined p-button-danger mr-2"
+      (click)="resetFilters()">
+    </p-button>
+
+    <p-button
+      label="Apply Filters"
+      icon="pi pi-search"
+      (click)="applyFilters()">
+    </p-button>
+  </div>
+</div>
+
 
     <!-- Interview Table -->
     <p-table

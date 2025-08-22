@@ -10,8 +10,6 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { DatePicker } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService } from 'primeng/api';
@@ -24,11 +22,13 @@ import { Observable, EMPTY } from 'rxjs';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
     selector: 'app-interview-list',
     standalone: true,
-    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, Select, DatePicker, ToastModule, DatePipe, ConfirmDialogModule, RouterModule, LoaderComponent],
+    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule, LoaderComponent, MultiSelectModule, DatePickerModule],
     providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
@@ -39,9 +39,10 @@ export class InterviewListComponent implements OnInit {
     isLoading$!: any;
     loadingMessage$!: any;
 
-    mainTechFilter: string | null = null;
-    titleFilter: string | null = null;
     scheduledDateFilter: Date | null = null;
+
+    selectedTechFilters: any[] = [];
+    selectedTitleFilters: any[] = [];
 
     now: Date = new Date();
     techOptions: { label: string; value: string }[] = [];
@@ -109,8 +110,8 @@ export class InterviewListComponent implements OnInit {
 
     applyFilters(): void {
         this.filteredInterviews = this.interviews.filter((interview) => {
-            const matchTech = !this.mainTechFilter || interview.candidateMainTech === this.mainTechFilter;
-            const matchTitle = !this.titleFilter || interview.offerTitle === this.titleFilter;
+            const matchTech = !this.selectedTechFilters || this.selectedTechFilters.length === 0 || this.selectedTechFilters.includes(interview.candidateMainTech);
+            const matchTitle = !this.selectedTitleFilters || this.selectedTitleFilters.length === 0 || this.selectedTitleFilters.includes(interview.offerTitle);
             const matchDate = !this.scheduledDateFilter || this.formatDate(interview.scheduledAt) === this.formatDate(this.scheduledDateFilter);
             return matchTech && matchTitle && matchDate;
         });
@@ -126,8 +127,8 @@ export class InterviewListComponent implements OnInit {
     }
 
     resetFilters(): void {
-        this.mainTechFilter = null;
-        this.titleFilter = null;
+        this.selectedTechFilters = [];
+        this.selectedTitleFilters = [];
         this.scheduledDateFilter = null;
         this.filteredInterviews = this.interviews;
     }

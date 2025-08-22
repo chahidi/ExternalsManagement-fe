@@ -252,7 +252,6 @@ export class OfferListComponent implements OnInit {
   // Top search + top filters
   onSearch() {
     this.filteredOffers = this.filterService.searchOffers(this.offers, this.searchQuery);
-    this.applyAllFilters();
   }
 
   clear(dt: Table) {

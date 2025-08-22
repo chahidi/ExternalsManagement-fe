@@ -2,4 +2,4 @@
 @use './tailwind.css';
 @use './assets/layout/layout.scss';
 @use 'primeicons/primeicons.css';
-@import 'app/shared/layout/layout.ccmponent.scss';
+@use 'app/shared/layout/layout.component.scss' as sharedLayout;

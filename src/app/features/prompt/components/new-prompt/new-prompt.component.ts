@@ -29,14 +29,16 @@ import { PanelModule } from 'primeng/panel';
   providers: [MessageService]
 })
 export class NewPromptComponent {
-  promptForm: FormGroup;
+  promptForm!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private promptService: PromptService,
     private messageService: MessageService,
     private router: Router
-  ) {
+  ) { }
+
+  ngOnInit(): void {
     this.promptForm = this.formBuilder.group({
       promptCode: ['', [Validators.required]],
       promptDesc: ['', [Validators.required]],

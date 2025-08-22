@@ -21,13 +21,15 @@ import { OfferService } from '../../../../core/services/offer.service';
   styleUrls: ['./new-offer.component.scss']
 })
 export class NewOfferComponent {
-  offerForm: FormGroup;
+  offerForm!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private offerService: OfferService
-  ) {
+  ) { }
+
+  ngOnInit(): void {
     this.offerForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.maxLength(200)]],
       description: ['', [Validators.required]]

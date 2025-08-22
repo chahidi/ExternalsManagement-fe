@@ -1,3 +1,4 @@
+<app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
 <div class="new-form-card-wrapper">
 <p-panel class="p-mb-5 new-form-card-container p-mt-20">
     <ng-template pTemplate="header">

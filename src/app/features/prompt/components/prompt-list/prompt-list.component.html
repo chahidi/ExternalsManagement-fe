@@ -28,9 +28,31 @@
         </div>
     </form>
 </p-dialog>
-<h3>Prompt List</h3>
+<h2>Prompt List</h2>
+<p-table
+    #dt1
+    [value]="filteredPrompts"
+    [paginator]="true"
+    [rows]="rows"
+    [rowsPerPageOptions]="[5,10,20]"
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    (onLazyLoad)="loadPrompts($event)"
+    [loading]="loading"
+    [sortField]="sortField"
+    [sortOrder]="sortOrder"
+    [globalFilterFields]="['promptCode','promptDesc','schema']"
+    class="custom-table">
 
-<p-table [value]="prompts" [paginator]="true" [rows]="rows" [totalRecords]="totalRecords" [lazy]="true" (onLazyLoad)="loadPrompts($event)" [loading]="loading" [sortField]="sortField" [sortOrder]="sortOrder" [globalFilterFields]="['promptCode','promptDesc','schema']" class="custom-table">
+    <ng-template pTemplate="caption">
+          <div class="flex">
+              <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)"></p-button>
+              <div class="ml-auto flex items-center gap-2">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" placeholder="Search prompts..." [(ngModel)]="searchQuery" (input)="onSearch()" class="border rounded-md h-10 px-3 w-full">
+              </div>
+          </div>
+    </ng-template>
     <ng-template pTemplate="header">
         <tr>
             <th class="col-prompt-code">Prompt Code</th>
@@ -43,8 +65,34 @@
     <ng-template pTemplate="body" let-prompt>
         <tr>
             <td class="col-prompt-code">{{ prompt.promptCode }}</td>
-            <td class="col-text">{{ prompt.promptDesc }}</td>
-            <td class="col-schema">{{ prompt.schema }}</td>
+            <td class="col-text">
+                <div class="desc-tooltip">
+                    <span class="desc-teaser" (click)="openTextModal(prompt)">
+                        {{ teaserWords(prompt.promptDesc, 5) }}
+                    </span>
+                    <div class="desc-popup">
+                        <div class="desc-popup-body">
+                            <div class="desc-popup-title">View full text</div>
+                            <div class="desc-popup-text">Click the text to see all details</div>
+                        </div>
+                        <div class="desc-popup-arrow"></div>
+                    </div>
+                </div>
+            </td>
+            <td class="col-schema">
+                <div class="desc-tooltip">
+                    <span class="desc-teaser" (click)="openSchemaModal(prompt)">
+                        {{ teaserWords(prompt.schema, 5) }}
+                    </span>
+                    <div class="desc-popup">
+                        <div class="desc-popup-body">
+                            <div class="desc-popup-title">View full schema</div>
+                            <div class="desc-popup-text">Click the text to see all details</div>
+                        </div>
+                        <div class="desc-popup-arrow"></div>
+                    </div>
+                </div>
+            </td>
             <td class="col-actions">
                 <button pButton icon="pi pi-pencil" class="p-button-sm p-button-info p-button-text" (click)="showUpdateDialog(prompt)"></button>
                 <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(prompt.id)"></button>
@@ -58,5 +106,36 @@
         </tr>
     </ng-template>
 </p-table>
+
+
+<p-dialog
+  [(visible)]="descDialogVisibleText"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="true"
+  [resizable]="false"
+  [draggable]="false"
+  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+  [style]="{ width: '52rem', maxHeight: '75vh' }"
+  header="{{ currentPrompt?.promptCode || 'Text' }}">
+  <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
+    {{ currentPrompt?.promptDesc }}
+  </div>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="descDialogVisibleSchema"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="true"
+  [resizable]="false"
+  [draggable]="false"
+  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+  [style]="{ width: '52rem', maxHeight: '75vh' }"
+  header="{{ (currentPrompt?.promptCode || 'Schema') + ' - Schema' }}">
+  <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
+    {{ currentPrompt?.schema }}
+  </div>
+</p-dialog>
 
 

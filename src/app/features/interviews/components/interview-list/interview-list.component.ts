@@ -53,9 +53,9 @@ export class InterviewListComponent implements OnInit {
 
     isGeneratingLink = false;
 
-    candidateNameSortAsc: boolean = true;
-    offerTitleSortAsc: boolean = true;
-    candidateMainTechSortAsc: boolean = true;
+    candidateNameSortAsc: boolean = false;
+    offerTitleSortAsc: boolean = false;
+    candidateMainTechSortAsc: boolean = false;
 
     constructor(
         private interviewService: InterviewService,

@@ -51,25 +51,33 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>
-                    <button type="button" pButton
-                        [icon]="candidateNameSortAsc ? 'pi pi-sort-alt' : 'pi pi-sort-alt pi-flip'"
-                        class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByCandidateName()">
+                    <div class="flex ">
+                        <button type="button" pButton
+                            [icon]="candidateNameSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByCandidateName()">
+                        </button>
                         Candidate Name
                         <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter>
+                    </div>
                 </th>
                 <th>
-                    <button type="button" pButton
-                        [icon]="candidateNameSortAsc ? 'pi pi-sort-alt' : 'pi pi-sort-alt pi-flip'"
-                        class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByCandidateMainTech()">
+                    <div class="flex">
+                        <button type="button" pButton
+                            [icon]="candidateMainTechSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1"
+                            (click)="sortInterviewsByCandidateMainTech()"></button>
                         Main Tech
                         <p-columnFilter field="candidate.mainTech" matchMode="contains" display="menu"></p-columnFilter>
+                    </div>
                 </th>
                 <th>
-                    <button type="button" pButton
-                        [icon]="candidateNameSortAsc ? 'pi pi-sort-alt' : 'pi pi-sort-alt pi-flip'"
-                        class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByOfferTitle()">
+                    <div>
+                        <button type="button" pButton [icon]="offerTitleSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByOfferTitle()"></button>
                         Title
+
                         <p-columnFilter field="offer.title" matchMode="contains" display="menu"></p-columnFilter>
+                    </div>
                 </th>
                 <th>
                     Comment

@@ -22,46 +22,23 @@
     </p-card>
   </div>
 
-  <p-card class="job-offer-card p-6 flex justify-center">
+  <p-card class="job-offer-card p-6 flex justify-center mb-4">
     <div class="flex justify-center px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full justify-items-sart">
 
+
+
         @if (description) {
-        <div class="job-description mb-8 col-span-1 md:col-span-2 ">
+        <div class="job-description mb-2 col-span-1 md:col-span-2 ">
           <div class="flex items-center mb-4">
             <i class="pi pi-info-circle text-5xl mr-4 text-primary"></i>
             <span class="font-bold text-xl">Job Description</span>
           </div>
-          <p class="text-lg ml-8 font-medium">{{ description }}</p>
+          <p class="text-lg ml-8 font-medium text-justify">{{ description }}</p>
         </div>
         }
 
-        <div class="keywords-section mt-8 flex items-start col-span-1 md:col-span-2">
-          <span class="text-lg font-medium">
-            <i class="pi pi-tags detail-icon mr-2 text-primary text-3xl"></i>
-            <span class="font-bold text-xl mr-4 keywords-title">Keywords: </span>
-            @for (keyword of keywordsList; track keyword){
-            {{ keyword }}
-            @if(!$last){
-            <span>, </span>
-            }
-            }
-          </span>
-        </div>
-
-        <div class="skills-section">
-          <div class="flex items-center mb-4">
-            <i class="pi pi-star text-3xl mr-4 text-primary"></i>
-            <span class="font-bold text-xl">Required Skills</span>
-          </div>
-          <ul class="list-disc ml-16 text-lg space-y-2">
-            @for (skill of skillsList; track skill) {
-            <li class="font-medium">{{ skill.trim() }}</li>
-            }
-          </ul>
-        </div>
-
-        <div class="responsibilities-section">
+        <div class="responsibilities-section col-span-1 md:col-span-2">
           <div class="flex items-center mb-4">
             <i class="pi pi-list text-3xl mr-4 text-primary"></i>
             <span class="font-bold text-xl">Main Responsibilities</span>
@@ -102,6 +79,31 @@
         } @else {
         <div></div>
         }
+
+        <div class="skills-section">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-star text-3xl mr-4 text-primary"></i>
+            <span class="font-bold text-xl">Required Skills</span>
+          </div>
+          <ul class="list-disc ml-16 text-lg space-y-2">
+            @for (skill of skillsList; track skill) {
+            <li class="font-medium">{{ skill.trim() }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="keywords-section ">
+          <span class="text-lg font-medium">
+            <i class="pi pi-tags detail-icon mr-2 text-primary text-3xl"></i>
+            <span class="font-bold text-xl mr-4 keywords-title">Keywords: </span>
+          </span>
+          <ul class="list-disc ml-16 text-lg space-y-2">
+            @for (keyword of keywordsList; track keyword) {
+            <li class="font-medium">{{ keyword.trim() }}</li>
+            }
+          </ul>
+        </div>
+
       </div>
     </div>
   </p-card>

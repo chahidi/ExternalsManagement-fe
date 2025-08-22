@@ -6,13 +6,14 @@ import { Router } from '@angular/router';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { CommonModule } from '@angular/common';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
     selector: 'app-new-cv',
     standalone: true,
     templateUrl: './new-cv.component.html',
     styleUrls: ['./new-cv.component.scss'],
-    imports: [CommonModule, ButtonModule, FileUploadModule, LoaderComponent]
+    imports: [CommonModule, ButtonModule, FileUploadModule, LoaderComponent,PanelModule]
 })
 export class NewCvComponent {
     selectedFile: File | null = null;

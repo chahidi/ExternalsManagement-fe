@@ -93,11 +93,11 @@
     >
         <ng-template pTemplate="caption">
             <div class="flex">
-                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
-                <span class="p-input-icon-left ml-auto">
-                    <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="onFilterInput($event, dt1)" placeholder="Search keyword" />
-                </span>
+                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)"></p-button>
+                <div class="ml-auto flex items-center gap-2">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" placeholder="Search prompts..." (input)="onFilterInput($event, dt1)" class="border rounded-md h-10 px-3 w-full">
+                </div>
             </div>
         </ng-template>
 

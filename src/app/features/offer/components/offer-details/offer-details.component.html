@@ -12,92 +12,100 @@
       <div class="offer-general-details-line">
         <div class="detail-item">
           <i class="pi pi-code detail-icon mr-2"></i>
-          <span>{{ mainTech }}</span>
+          <span class="text-lg">{{ mainTech }}</span>
         </div>
         <div class="detail-item">
           <i class="pi pi-clock detail-icon mr-2"></i>
-          <span>{{ yearsOfExperience }}+ Years Experience</span>
+          <span class="text-lg">{{ yearsOfExperience }}+ Years Experience</span>
         </div>
       </div>
     </p-card>
   </div>
 
+  <p-card class="job-offer-card p-6 flex justify-center">
+    <div class="flex justify-center px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full justify-items-sart">
 
-  <p-card class="job-offer-card p-6">
-    @if (description) {
-    <div class="job-description mb-8">
-      <div class="flex items-center mb-4">
-        <i class="pi pi-info-circle text-5xl mr-4 text-primary"></i>
-        <span class="font-bold text-2xl">Job Description</span>
-      </div>
-      <p class="ml-10 text-xl font-medium">{{ description }}</p>
-    </div>
-    }
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="skills-section">
-        <div class="flex items-center mb-4">
-          <i class="pi pi-star text-3xl mr-4 text-primary"></i>
-          <span class="font-bold text-2xl">Required Skills</span>
+        @if (description) {
+        <div class="job-description mb-8 col-span-1 md:col-span-2 ">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-info-circle text-5xl mr-4 text-primary"></i>
+            <span class="font-bold text-xl">Job Description</span>
+          </div>
+          <p class="text-lg ml-8 font-medium">{{ description }}</p>
         </div>
-        <ul class="list-disc pl-12 text-xl space-y-2">
-          @for (skill of skillsList; track skill) {
-          <li class="font-medium">{{ skill.trim() }}</li>
-          }
-        </ul>
-      </div>
-
-      <div class="responsibilities-section">
-        <div class="flex items-center mb-4">
-          <i class="pi pi-list text-3xl mr-4 text-primary"></i>
-          <span class="font-bold text-2xl">Main Responsibilities</span>
-        </div>
-        <ul class="list-disc pl-12 text-xl space-y-2">
-          @for (responsibility of mainResponsibilitiesList; track responsibility) {
-          <li class="font-medium">{{ responsibility.trim() }}</li>
-          } @empty {
-          <li>No responsibilities available.</li>
-          }
-        </ul>
-      </div>
-
-      <div class="education-section">
-        <div class="flex items-center mb-4">
-          <i class="pi pi-book text-3xl mr-4 text-primary"></i>
-          <span class="font-bold text-2xl">Education & Qualifications</span>
-        </div>
-        <ul class="list-disc pl-12 text-xl space-y-2">
-          @for (edu of educationList; track edu) {
-          <li class="font-medium">{{ edu.trim() }}</li>
-          }
-        </ul>
-      </div>
-
-      @if (languages.length > 0) {
-      <div class="languages-section">
-        <div class="flex items-center mb-4">
-          <i class="pi pi-globe text-3xl mr-4 text-primary"></i>
-          <span class="font-bold text-2xl">Language Requirements</span>
-        </div>
-        <ul class="list-disc pl-12 text-xl space-y-2">
-          @for (lang of languages; track lang) {
-          <li class="font-medium">{{ lang.languageName }} - {{ lang.level }}</li>
-          }
-        </ul>
-      </div>
-      }
-    </div>
-    <div class="keywords-section mt-8 flex items-start">
-      <span class="text-xl font-medium">
-        <i class="pi pi-tags detail-icon mr-2 text-primary text-3xl"></i>
-        <span class="font-bold text-2xl mr-4 keywords-title">Keywords: </span>
-        @for (keyword of keywordsList; track keyword){
-        {{ keyword }}
-        @if(!$last){
-        <span>, </span>
         }
+
+        <div class="skills-section">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-star text-3xl mr-4 text-primary"></i>
+            <span class="font-bold text-xl">Required Skills</span>
+          </div>
+          <ul class="list-disc ml-16 text-lg space-y-2">
+            @for (skill of skillsList; track skill) {
+            <li class="font-medium">{{ skill.trim() }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="responsibilities-section">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-list text-3xl mr-4 text-primary"></i>
+            <span class="font-bold text-xl">Main Responsibilities</span>
+          </div>
+          <ul class="list-disc ml-16 text-lg space-y-2">
+            @for (responsibility of mainResponsibilitiesList; track responsibility) {
+            <li class="font-medium">{{ responsibility.trim() }}</li>
+            } @empty {
+            <li>No responsibilities available.</li>
+            }
+          </ul>
+        </div>
+
+        <div class="education-section">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-book text-3xl mr-4 text-primary"></i>
+            <span class="font-bold text-xl">Education & Qualifications</span>
+          </div>
+          <ul class="list-disc ml-16 text-lg space-y-2">
+            @for (edu of educationList; track edu) {
+            <li class="font-medium">{{ edu.trim() }}</li>
+            }
+          </ul>
+        </div>
+
+        @if (languages.length > 0) {
+        <div class="languages-section">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-globe text-3xl mr-4 text-primary"></i>
+            <span class="font-bold text-xl">Language Requirements</span>
+          </div>
+          <ul class="list-disc ml-16 text-lg space-y-2">
+            @for (lang of languages; track lang) {
+            <li class="font-medium">{{ lang.languageName }} - {{ lang.level }}</li>
+            }
+          </ul>
+        </div>
+        } @else {
+        <div></div>
         }
-      </span>
+
+
+        <div class="keywords-section mt-8 flex items-start col-span-1 md:col-span-2">
+          <span class="text-lg font-medium">
+            <i class="pi pi-tags detail-icon mr-2 text-primary text-3xl"></i>
+            <span class="font-bold text-xl mr-4 keywords-title">Keywords: </span>
+            @for (keyword of keywordsList; track keyword){
+            {{ keyword }}
+            @if(!$last){
+            <span>, </span>
+            }
+            }
+          </span>
+        </div>
+
+
+      </div>
     </div>
   </p-card>
 

@@ -28,7 +28,7 @@ import { ConfirmationModalService } from '../../../../core/services/utils/confir
 
 interface FilterCriteria {
   skills: any[];
-  language: any;
+  language: any[];
   yearsOfExperience: number | null;
 }
 
@@ -91,7 +91,7 @@ export class CandidateListComponent implements OnInit {
 
     filters: FilterCriteria = {
       skills: [],
-      language: null,
+      language: [],
       yearsOfExperience: null,
     };
 
@@ -250,14 +250,6 @@ export class CandidateListComponent implements OnInit {
       });
     }
 
-    if (this.filters.language) {
-      console.log('Language filter:', this.filters.language.name, this.filters.language.code);
-    }
-
-    if (this.filters.yearsOfExperience !== null) {
-      console.log('Years of experience filter:', this.filters.yearsOfExperience);
-    }
-
     const filterParams: any = {};
 
     // Clone the filters to ensure we're passing the complete objects
@@ -265,9 +257,7 @@ export class CandidateListComponent implements OnInit {
       filterParams.skills = [...this.filters.skills];
     }
 
-    if (this.filters.language) {
-      filterParams.language = {...this.filters.language};
-    }
+    filterParams.language = [...this.filters.language];
 
     if (this.filters.yearsOfExperience !== null) {
       // Ensure we're passing a number value for years of experience
@@ -309,7 +299,7 @@ export class CandidateListComponent implements OnInit {
   resetFilters(): void {
     this.filters = {
       skills: [],
-      language: null,
+      language: [],
       yearsOfExperience: null,
     };
     this.loadCandidates();

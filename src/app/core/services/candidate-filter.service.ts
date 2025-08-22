@@ -25,8 +25,7 @@ export class CandidateFilterService {
         // Filter by skills
         if (filters.skills && filters.skills.length > 0) {
           console.log('Filtering by skills');
-          const selectedSkills = filters.skills.map((skill: any) => skill.code.toLowerCase());
-
+          const selectedSkills = filters.skills.map((skill: string) => skill.toLowerCase());
           filteredCandidates = filteredCandidates.filter(candidate => {
             if (!candidate.skills || !candidate.skills.length) return false;
 
@@ -40,29 +39,21 @@ export class CandidateFilterService {
         }
 
         // Filter by language
-        if (filters.language) {
-          console.log('Filtering by language:', filters.language.code);
+        if (filters.language && filters.language.length > 0) {
+            const selectedLanguages = filters.language.map((lang: string) => lang.toLowerCase());
 
           filteredCandidates = filteredCandidates.filter(candidate => {
             if (!candidate.naturalLanguages || !candidate.naturalLanguages.length) return false;
 
-            // Check if any of the candidate's languages match the selected language
-            // Try multiple language fields to increase the chance of a match
             return candidate.naturalLanguages.some(lang => {
-              if (!lang) return false;
-
-              const searchLanguage = filters.language.code.toLowerCase();
-
-              // Check multiple fields for matching language
-              return (
-                (lang.language && lang.language.toLowerCase() === searchLanguage) ||
-                (lang.languageInEnglish && lang.languageInEnglish.toLowerCase() === searchLanguage) ||
-                (lang.englishDescription && lang.englishDescription.toLowerCase() === searchLanguage)
-              );
+              const candidateLangs = [
+                lang.language?.toLowerCase(),
+                lang.languageInEnglish?.toLowerCase(),
+                lang.englishDescription?.toLowerCase()
+              ];
+              return candidateLangs.some(l => selectedLanguages.includes(l!));
             });
           });
-
-          console.log('After language filter:', filteredCandidates.length);
         }
 
         // Filter by years of experience

@@ -78,6 +78,8 @@ export class OfferListComponent implements OnInit {
   keywordOptions: { label: string; value: string }[] = [];
   skillOptions: { label: string; value: string }[] = [];
 
+  titleSortAsc: boolean = false;
+
   // numeric filter modes for column filter
   numericModes = [
     { label: 'Equals', value: 'equals' },
@@ -318,4 +320,13 @@ export class OfferListComponent implements OnInit {
       this.deleteOffer(id);
     }, 'offer');
   }
+
+  sortOffersByTitle() {
+        this.titleSortAsc = !this.titleSortAsc;
+        this.filteredOffers.sort((a, b) =>
+            this.titleSortAsc
+                ? a.title.localeCompare(b.title)
+                : b.title.localeCompare(a.title)
+        );
+    }
 }

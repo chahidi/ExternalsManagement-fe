@@ -1,8 +1,5 @@
 @if (isLoading$ | async) {
-<app-loader
-    [message]="loadingMessage$ | async"
-    [withOverlay]="true"
-></app-loader>
+<app-loader [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
 }
 <p-toast></p-toast>
 
@@ -73,12 +70,7 @@
 
 
     <!-- Interview Table -->
-    <p-table
-        #dt
-        [value]="filteredInterviews"
-        [paginator]="true"
-        [rows]="5"
-        [rowsPerPageOptions]="[5, 10, 20]"
+    <p-table #dt [value]="filteredInterviews" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]"
         [globalFilterFields]="['candidate.fullName', 'candidate.mainTech', 'offer.title', 'comment']"
         responsiveLayout="scroll"
     >
@@ -98,16 +90,33 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>
-                    Candidate Name
-                    <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter>
+                    <div class="flex ">
+                        <button type="button" pButton
+                            [icon]="candidateNameSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByCandidateName()">
+                        </button>
+                        Candidate Name
+                        <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter>
+                    </div>
                 </th>
                 <th>
-                    Main Tech
-                    <p-columnFilter field="candidate.mainTech" matchMode="contains" display="menu"></p-columnFilter>
+                    <div class="flex">
+                        <button type="button" pButton
+                            [icon]="candidateMainTechSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1"
+                            (click)="sortInterviewsByCandidateMainTech()"></button>
+                        Main Tech
+                        <p-columnFilter field="candidate.mainTech" matchMode="contains" display="menu"></p-columnFilter>
+                    </div>
                 </th>
                 <th>
-                    Title
-                    <p-columnFilter field="offer.title" matchMode="contains" display="menu"></p-columnFilter>
+                    <div>
+                        <button type="button" pButton [icon]="offerTitleSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+                            class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByOfferTitle()"></button>
+                        Title
+
+                        <p-columnFilter field="offer.title" matchMode="contains" display="menu"></p-columnFilter>
+                    </div>
                 </th>
                 <th>
                     Comment
@@ -117,7 +126,8 @@
                     Scheduled On
                     <p-columnFilter field="scheduledAt" matchMode="equals" display="menu" [showOperator]="false">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <input type="date" class="p-inputtext p-component w-full" [ngModel]="value" (ngModelChange)="filter($event)" />
+                            <input type="date" class="p-inputtext p-component w-full" [ngModel]="value"
+                                (ngModelChange)="filter($event)" />
                         </ng-template>
                     </p-columnFilter>
                 </th>
@@ -143,34 +153,43 @@
 
                 <td>
                     @if (shouldShowEvaluation(interview)) {
-                        <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer"> View Evaluation </a>
+                    <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer"> View
+                        Evaluation </a>
                     } @else {
-                        <span class="text-gray-400 italic">N/A</span>
+                    <span class="text-gray-400 italic">N/A</span>
                     }
                 </td>
                 <td>
                     @if (interview.record?.fileUrl) {
-                        <a [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View Recording</a>
+                    <a [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View
+                        Recording</a>
                     }
                     @if (!interview.record?.fileUrl) {
-                        <span class="text-gray-400 italic">Not Available</span>
+                    <span class="text-gray-400 italic">Not Available</span>
                     }
                 </td>
                 <td class="flex gap-1">
-                    <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text" [pTooltip]="'Generate New Link'" tooltipPosition="top" (click)="generateLinkAndSendEmail(interview)"></button>
-                    <button pButton icon="pi pi-comment" class="p-button-sm p-button-text" pTooltip="Add Comment" (click)="AddCommentPopup(interview)"></button>
-                    <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(interview)"></button>
+                    <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text"
+                        [pTooltip]="'Generate New Link'" tooltipPosition="top"
+                        (click)="generateLinkAndSendEmail(interview)"></button>
+                    <button pButton icon="pi pi-comment" class="p-button-sm p-button-text" pTooltip="Add Comment"
+                        (click)="AddCommentPopup(interview)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text"
+                        (click)="confirmDelete(interview)"></button>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 
     <!-- Add Comment Dialog -->
-    <p-dialog header="Add Comment" [(visible)]="showCommentDialog" [modal]="true" [style]="{ width: '500px' }" [dismissableMask]="true">
+    <p-dialog header="Add Comment" [(visible)]="showCommentDialog" [modal]="true" [style]="{ width: '500px' }"
+        [dismissableMask]="true">
         <div class="p-fluid p-3">
             <div class="field mb-3">
                 <label for="comment" class="font-semibold block mb-2">Comment:</label>
-                <textarea id="comment" pInputTextarea [(ngModel)]="tempComment" rows="6" autoResize="true" class="p-inputtext w-full border border-gray-300 rounded" placeholder="Enter your comment here..."></textarea>
+                <textarea id="comment" pInputTextarea [(ngModel)]="tempComment" rows="6" autoResize="true"
+                    class="p-inputtext w-full border border-gray-300 rounded"
+                    placeholder="Enter your comment here..."></textarea>
             </div>
         </div>
 

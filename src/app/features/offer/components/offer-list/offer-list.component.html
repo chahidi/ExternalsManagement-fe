@@ -1,9 +1,7 @@
 <!-- Loader (same as Interview List) -->
 @if (isLoading$ | async) {
-  <app-loader
-    [message]="loadingMessage$ | async"
-    [withOverlay]="true">
-  </app-loader>
+<app-loader [message]="loadingMessage$ | async" [withOverlay]="true">
+</app-loader>
 }
 
 <p-toast></p-toast>
@@ -22,11 +20,7 @@
         <label class="block mb-2">Interview Count</label>
         <div class="flex items-center gap-3">
           <span class="text-sm w-10 text-right">{{ interviewCountRange[0] }}</span>
-          <p-slider
-            [(ngModel)]="interviewCountRange"
-            [range]="true"
-            [min]="0"
-            [max]="maxInterviewCount"
+          <p-slider [(ngModel)]="interviewCountRange" [range]="true" [min]="0" [max]="maxInterviewCount"
             styleClass="w-full">
           </p-slider>
           <span class="text-sm w-10">{{ interviewCountRange[1] }}</span>
@@ -38,57 +32,33 @@
       <!-- Offer Keywords -->
       <div class="field">
         <label class="block mb-2">Offer Keywords</label>
-        <p-multiSelect
-          [options]="keywordOptions"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="selectedKeywordFilters"
-          placeholder="Select keywords"
-          display="chip"
-          class="w-full">
+        <p-multiSelect [options]="keywordOptions" optionLabel="label" optionValue="value"
+          [(ngModel)]="selectedKeywordFilters" placeholder="Select keywords" display="chip" class="w-full">
         </p-multiSelect>
       </div>
 
       <!-- Skills Required -->
       <div class="field">
         <label class="block mb-2">Skills Required</label>
-        <p-multiSelect
-          [options]="skillOptions"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="selectedSkillFilters"
-          placeholder="Select skills"
-          display="chip"
-          class="w-full">
+        <p-multiSelect [options]="skillOptions" optionLabel="label" optionValue="value"
+          [(ngModel)]="selectedSkillFilters" placeholder="Select skills" display="chip" class="w-full">
         </p-multiSelect>
       </div>
     </div>
 
     <div class="flex justify-end mt-4">
-      <p-button
-        label="Reset"
-        icon="pi pi-times"
-        styleClass="p-button-outlined p-button-danger mr-2"
+      <p-button label="Reset" icon="pi pi-times" styleClass="p-button-outlined p-button-danger mr-2"
         (click)="resetFilters()">
       </p-button>
 
-      <p-button
-        label="Apply Filters"
-        icon="pi pi-search"
-        (click)="applyAllFilters()">
+      <p-button label="Apply Filters" icon="pi pi-search" (click)="applyAllFilters()">
       </p-button>
     </div>
   </div>
 
   <!-- Table (styles aligned with Interview List) -->
-  <p-table
-    #dt1
-    [value]="filteredOffers"
-    [paginator]="true"
-    [rows]="5"
-    [rowsPerPageOptions]="[5,10,20]"
-    [globalFilterFields]="['title','description','keywords','skills']"
-    responsiveLayout="scroll">
+  <p-table #dt1 [value]="filteredOffers" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]"
+    [globalFilterFields]="['title','description','keywords','skills']" responsiveLayout="scroll">
 
     <!-- Caption -->
      <ng-template pTemplate="caption">
@@ -105,8 +75,13 @@
     <ng-template pTemplate="header">
       <tr>
         <th>
-          Offer Title
-          <p-columnFilter field="title" display="menu" matchMode="contains"></p-columnFilter>
+          <div>
+            <button type="button" pButton [icon]="titleSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+              class="p-button-text p-button-sm ml-1" (click)="sortOffersByTitle()">
+            </button>
+            Title
+            <p-columnFilter field="title" display="menu" matchMode="contains"></p-columnFilter>
+          </div>
         </th>
 
         <th>
@@ -116,26 +91,17 @@
 
         <th>
           Interview Count
-          <p-columnFilter
-            field="interviewCount"
-            display="menu"
-            type="numeric"
-            [matchModeOptions]="numericModes">
+          <p-columnFilter field="interviewCount" display="menu" type="numeric" [matchModeOptions]="numericModes">
           </p-columnFilter>
         </th>
 
         <th>
           Offer Keywords
-          <p-columnFilter field="keywords" display="menu" matchMode="includesAny" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+          <p-columnFilter field="keywords" display="menu" matchMode="includesAny" [showMatchModes]="false"
+            [showOperator]="false" [showAddButton]="false">
             <ng-template pTemplate="filter" let-filter="filterCallback">
-              <p-multiSelect
-                [options]="keywordOptions"
-                optionLabel="label"
-                optionValue="value"
-                [(ngModel)]="selectedKeywordFilters"
-                display="chip"
-                placeholder="Select keywords"
-                class="w-14rem"
+              <p-multiSelect [options]="keywordOptions" optionLabel="label" optionValue="value"
+                [(ngModel)]="selectedKeywordFilters" display="chip" placeholder="Select keywords" class="w-14rem"
                 (onChange)="filter(selectedKeywordFilters)">
               </p-multiSelect>
             </ng-template>
@@ -144,16 +110,11 @@
 
         <th>
           Skills Required
-          <p-columnFilter field="skills" display="menu" matchMode="includesAny" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+          <p-columnFilter field="skills" display="menu" matchMode="includesAny" [showMatchModes]="false"
+            [showOperator]="false" [showAddButton]="false">
             <ng-template pTemplate="filter" let-filter="filterCallback">
-              <p-multiSelect
-                [options]="skillOptions"
-                optionLabel="label"
-                optionValue="value"
-                [(ngModel)]="selectedSkillFilters"
-                display="chip"
-                placeholder="Select skills"
-                class="w-14rem"
+              <p-multiSelect [options]="skillOptions" optionLabel="label" optionValue="value"
+                [(ngModel)]="selectedSkillFilters" display="chip" placeholder="Select skills" class="w-14rem"
                 (onChange)="filter(selectedSkillFilters)">
               </p-multiSelect>
             </ng-template>
@@ -190,60 +151,42 @@
 
         <td>
           @if (offer.keywords?.length) {
-            @for (k of (offer.keywords | slice:0:4); track $index) {
-              <p-chip [label]="$any(k)" class="mr-1 mb-1"></p-chip>
-            }
-            @if (offer.keywords.length > 4) {
-              <span class="text-500">+{{ offer.keywords.length - 4 }}</span>
-            }
+          @for (k of (offer.keywords | slice:0:4); track $index) {
+          <p-chip [label]="$any(k)" class="mr-1 mb-1"></p-chip>
+          }
+          @if (offer.keywords.length > 4) {
+          <span class="text-500">+{{ offer.keywords.length - 4 }}</span>
+          }
           } @else {
-            <span class="text-gray-400 italic">—</span>
+          <span class="text-gray-400 italic">—</span>
           }
         </td>
 
         <td>
           @if (offer.skills?.length) {
-            @for (s of (offer.skills | slice:0:4); track $index) {
-              <p-chip [label]="$any(s)" class="mr-1 mb-1"></p-chip>
-            }
-            @if (offer.skills.length > 4) {
-              <span class="text-500">+{{ offer.skills.length - 4 }}</span>
-            }
+          @for (s of (offer.skills | slice:0:4); track $index) {
+          <p-chip [label]="$any(s)" class="mr-1 mb-1"></p-chip>
+          }
+          @if (offer.skills.length > 4) {
+          <span class="text-500">+{{ offer.skills.length - 4 }}</span>
+          }
           } @else {
-            <span class="text-gray-400 italic">—</span>
+          <span class="text-gray-400 italic">—</span>
           }
         </td>
 
         <td class="p-text-center">
           <div class="flex gap-3 justify-center">
-            <button
-              pButton
-              type="button"
-              icon="pi pi-eye"
-              class="p-button-sm p-button-text p-button-info"
-              pTooltip="View Offer"
-              tooltipPosition="top"
-              (click)="goToDetails(offer)">
+            <button pButton type="button" icon="pi pi-eye" class="p-button-sm p-button-text p-button-info"
+              pTooltip="View Offer" tooltipPosition="top" (click)="goToDetails(offer)">
             </button>
 
-            <button
-              pButton
-              type="button"
-              icon="pi pi-pencil"
-              class="p-button-sm p-button-text p-button-warning"
-              pTooltip="Edit Offer"
-              tooltipPosition="top"
-              (click)="openEditOffer(offer)">
+            <button pButton type="button" icon="pi pi-pencil" class="p-button-sm p-button-text p-button-warning"
+              pTooltip="Edit Offer" tooltipPosition="top" (click)="openEditOffer(offer)">
             </button>
 
-            <button
-              pButton
-              type="button"
-              icon="pi pi-trash"
-              class="p-button-sm p-button-danger p-button-text"
-              pTooltip="Delete Offer"
-              tooltipPosition="top"
-              (click)="confirmDelete(offer)">
+            <button pButton type="button" icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text"
+              pTooltip="Delete Offer" tooltipPosition="top" (click)="confirmDelete(offer)">
             </button>
           </div>
         </td>
@@ -252,16 +195,9 @@
   </p-table>
 
   <!-- Full description dialog -->
-  <p-dialog
-    [(visible)]="descDialogVisible"
-    [modal]="true"
-    [dismissableMask]="true"
-    [closeOnEscape]="true"
-    [resizable]="false"
-    [draggable]="false"
-    [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-    [style]="{ width: '52rem', maxHeight: '75vh' }"
-    header="{{ currentOffer?.title || 'Description' }}">
+  <p-dialog [(visible)]="descDialogVisible" [modal]="true" [dismissableMask]="true" [closeOnEscape]="true"
+    [resizable]="false" [draggable]="false" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+    [style]="{ width: '52rem', maxHeight: '75vh' }" header="{{ currentOffer?.title || 'Description' }}">
     <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
       {{ currentOffer?.description }}
     </div>

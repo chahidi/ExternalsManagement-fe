@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './app/shared/layout/layout.component';
 import { DashboardComponent } from './app/features/dashboard/dashboard.component';
-import('./app/features/interviews/components/interview-meeting/interview-meeting.component')
+import { InterviewTokenGuard } from './app/core/guards/interview-token.guard';
 
 export const appRoutes: Routes = [
     {
@@ -26,20 +26,20 @@ export const appRoutes: Routes = [
         path: 'prompts',
         component: LayoutComponent,
         loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),
-
     },
     {
         path: 'interviews',
         component: LayoutComponent,
         loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
     },
-
     {
         path: 'interviews/:token',
+        canActivate: [InterviewTokenGuard],
         loadComponent: () =>
             import('./app/features/interviews/components/interview-meeting/interview-meeting.component')
                 .then(m => m.InterviewMeetingComponent)
-    }, {
+    },
+    {
         path: 'evaluation/:id',
         loadComponent: () =>
             import('./app/features/interviews/components/interview-evaluation/interview-evaluation.component').then(m => m.InterviewEvaluationComponent),
@@ -50,6 +50,12 @@ export const appRoutes: Routes = [
         loadComponent: () =>
             import('./app/features/interviews/components/interview-cloture/interview-cloture.component').then(m => m.InterviewClotureComponent),
         title: 'Interview Evaluation'
+    },
+    {
+        path: 'token-error',
+        loadComponent: () =>
+            import('./app/features/interviews/token-error/token-error.component').then(m => m.TokenErrorComponent),
+        title: 'Invalid Token'
     },
     {
         path: 'auth',

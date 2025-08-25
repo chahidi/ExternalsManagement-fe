@@ -1,1 +1,99 @@
-<p>token-error works!</p>
+<div class="error-page">
+    <!-- Animated Background -->
+    <div class="background-container">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+
+        <!-- Floating particles -->
+        <div class="particles">
+            <div class="particle" *ngFor="let i of [].constructor(30); let idx = index"></div>
+        </div>
+
+        <!-- Grid pattern -->
+        <div class="grid-pattern"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <div class="error-card">
+            <!-- Status Icon Section -->
+            <div class="status-section">
+                <div class="icon-container">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring ring-2"></div>
+                    <div class="pulse-ring ring-3"></div>
+                    <div class="main-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message Section -->
+            <div class="message-section">
+                <div class="title-container">
+                    <h1 class="error-title">
+                        <span class="title-word">Link</span>
+                        <span class="title-word">Expired</span>
+                    </h1>
+                    <div class="title-underline"></div>
+                </div>
+
+                <p class="error-description">The interview link you're trying to access has expired or is no longer valid. This may happen if the session has timed out or been deactivated.</p>
+            </div>
+
+            <!-- Solutions Section -->
+            <div class="solutions-section">
+                <div class="section-header">
+                    <div class="header-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="section-title">What you can do</h3>
+                </div>
+
+                <div class="solutions-grid">
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="solution-content">
+                            <h4 class="solution-title">Check your email</h4>
+                            <p class="solution-desc">Look for the latest interview invitation with a fresh link</p>
+                        </div>
+                    </div>
+
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="solution-content">
+                            <h4 class="solution-title">Verify timing</h4>
+                            <p class="solution-desc">Ensure you're joining within the scheduled interview window</p>
+                        </div>
+                    </div>
+
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-refresh"></i>
+                        </div>
+                        <div class="solution-content">
+                            <h4 class="solution-title">Request new link</h4>
+                            <p class="solution-desc">Contact the interviewer for a fresh invitation link</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="help-section">
+                <div class="help-content">
+                    <i class="fas fa-question-circle"></i>
+                    <div class="help-text">
+                        <span class="help-title">Need immediate assistance?</span>
+                        <span class="help-desc">Contact details are provided in your interview email</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

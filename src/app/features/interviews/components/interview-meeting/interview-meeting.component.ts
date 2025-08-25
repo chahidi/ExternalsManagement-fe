@@ -26,6 +26,8 @@ import { NotificationService } from '../../../../core/services/utils/notificatio
 import { SpeechRecognitionService } from '../../../../core/services/speech-recognition.service';
 import { Answer } from '../../../../core/models/answer';
 import { ActivatedRoute } from '@angular/router';
+import { InterviewService } from '../../../../core/services/interview.service';
+import { TokenValidationService } from '../../../../core/services/token-validation.service';
 
 type SpeechRecognitionState = {
     isListening: boolean;
@@ -107,7 +109,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private speechRecognitionService: SpeechRecognitionService,
         private cdr: ChangeDetectorRef,
         private router: Router,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private interviewService: InterviewService,
+        private tokenValidationService: TokenValidationService
     ) {}
 
     ngOnInit(): void {
@@ -121,28 +125,39 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }, 500);
     }
 
-    // Update your initializeComponent method
-private initializeComponent(): void {
-    // Extract token from route params first
-    this.activatedRoute.params.subscribe(params => {
-        const token = params['token'];
-        if (token) {
-            this.interviewToken = token;
-            console.log('Extracted interview token:', token);
-            // Load questions after we have the token
-            this.loadInterviewQuestions();
-        } else {
-            console.error('No interview token found in route');
-            this.notify.showError('Error', 'Invalid interview link.');
-            this.router.navigate(['/']);
-        }
-    });
+    private initializeComponent(): void {
+        this.activatedRoute.params.subscribe((params) => {
+            const token = params['token'];
+            if (token) {
+                this.interviewToken = token;
+                console.log('Extracted interview token:', token);
+                this.loadInterviewFromToken(token);
+            } else {
+                console.error('No interview token found in route');
+                this.notify.showError('Error', 'Invalid interview link.');
+                this.router.navigate(['/']);
+            }
+        });
 
-    this.updateClock();
-    setInterval(() => this.updateClock(), 1000);
-    this.checkSpeechRecognitionSupport();
-    this.isCameraReady = true;
-}
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
+        this.checkSpeechRecognitionSupport();
+        this.isCameraReady = true;
+    }
+    private loadInterviewFromToken(token: string): void {
+        this.tokenValidationService.getInterviewIdFromToken(token).subscribe({
+            next: (interviewId) => {
+                console.log('Retrieved interview ID:', interviewId);
+                this.loadInterviewQuestions(interviewId);
+            },
+            error: (err) => {
+                console.error('Failed to get interview ID from token:', err);
+                this.notify.showError('Error', 'Failed to retrieve interview information.');
+                this.router.navigate(['/token-error']);
+            }
+        });
+    }
+
     private subscribesToSpeechRecognition(): void {
         this.speechRecognitionService.state$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
             this.speechRecognitionState = state;
@@ -197,29 +212,20 @@ private initializeComponent(): void {
         const minutes = now.getMinutes().toString().padStart(2, '0');
         this.currentTime = `${hours}:${minutes}`;
     }
-loadInterviewQuestions(): void {
-    const promptId = 1;
-
-    if (!this.interviewToken) {
-        console.error('No interview token available');
-        this.notify.showError('Error', 'Interview token not found.');
-        return;
+    private loadInterviewQuestions(interviewId: string): void {
+        console.log('Loading questions for interview ID:', interviewId);
+        this.interviewService.getInterviewQuestions(interviewId).subscribe({
+            next: (questions) => {
+                this.questions = questions;
+                this.currentQuestionIndex = 0;
+                console.log('Loaded interview questions:', questions);
+            },
+            error: (err) => {
+                console.error('Failed to load interview questions:', err);
+                this.notify.showError('Error', 'Failed to load interview questions. Please refresh the page.');
+            }
+        });
     }
-
-    console.log('Sending to prompt service:', { promptId, token: this.interviewToken });
-
-    this.promptService.getQuestions(promptId, this.interviewToken).subscribe({
-        next: (questions) => {
-            this.questions = questions;
-            this.currentQuestionIndex = 0;
-            console.log('Loaded structured questions:', questions);
-        },
-        error: (err) => {
-            console.error('Failed to load structured interview questions:', err);
-            this.notify.showError('Error', 'Failed to load interview questions. Please refresh the page.');
-        }
-    });
-}
 
     async requestCameraPermission(): Promise<void> {
         try {

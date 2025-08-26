@@ -20,6 +20,7 @@ export class NewCvComponent {
     extractedData: string | null = null;
     isLoading$;
     loadingMessage$;
+    successMessage: string | null = null;
 
     constructor(private newService: NewCvService, private router: Router, private loaderService: LoaderService) {
         this.isLoading$ = this.loaderService.isLoading$;
@@ -31,9 +32,15 @@ export class NewCvComponent {
         if (event?.files?.length) {
             this.selectedFile = event.files[0];
             console.log('File Selected', this.selectedFile);
+            this.successMessage = `CV "${this.selectedFile?.name}" selected successfully!`;
         } else {
             console.error('No files selected');
+            this.successMessage = null;
         }
+    }
+    onFileCleared(): void {
+        this.selectedFile = null;
+        this.successMessage = null;
     }
 
     uploadCv(): void {

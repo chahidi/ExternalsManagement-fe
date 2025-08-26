@@ -165,7 +165,7 @@
                 <td class="flex gap-1">
                     <button pButton icon="pi pi-eye" class="p-button-sm p-button-text"
                         [pTooltip]="'View More Details'" tooltipPosition="top"
-                        ></button>
+                        (click)="ViewInterviewPopup(interview)"></button>
                     <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text"
                         [pTooltip]="'Generate New Link'" tooltipPosition="top"
                         (click)="generateLinkAndSendEmail(interview)"></button>
@@ -197,4 +197,71 @@
             </div>
         </ng-template>
     </p-dialog>
+
+    <!-- View Interview Details Dialog -->
+    <p-dialog header="Interview Details" [(visible)]="showDetailsDialog" [modal]="true" [style]="{ width: '600px' }">
+        <ng-container *ngIf="selectedInterview">
+            <div class="p-4 space-y-4">
+                
+                <!-- Basic Info -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p><strong>Candidate:</strong> {{ selectedInterview?.candidateFullName }}</p>
+                        <p><strong>Main Tech:</strong> {{ selectedInterview?.candidateMainTech || 'N/A' }}</p>
+                        <p><strong>Title:</strong> {{ selectedInterview?.offerTitle || 'N/A' }}</p>
+                    </div>
+                    <div>
+                        <p><strong>Scheduled:</strong> {{ selectedInterview?.scheduledAt | date:'dd-MM-yyyy HH:mm' }}</p>
+                        <p><strong>End Time:</strong> {{ selectedInterview?.endTime ? (selectedInterview?.endTime | date:'dd-MM-yyyy HH:mm') : '—' }}</p>
+                        <p><strong>Duration:</strong> {{ getDurationLabel(selectedInterview) }}</p>
+                    </div>
+                </div>
+                
+
+                <!-- Recording -->
+                <div class="border-t pt-4">
+                    <p><strong>Recording:</strong></p>
+                    <div *ngIf="selectedInterview?.record?.fileUrl; else noRecording" class="mt-2">
+                        <a [href]="selectedInterview?.record?.fileUrl" target="_blank" 
+                        class="text-blue-600 underline">View Recording</a>
+                    </div>
+                    <ng-template #noRecording>
+                        <p class="text-gray-500 text-sm">Not available</p>
+                    </ng-template>
+                </div>
+
+                <!-- Evaluation -->
+                <div class="border-t pt-4">
+                    <p><strong>Evaluation:</strong></p>
+                    <div *ngIf="shouldShowEvaluation(selectedInterview); else noEval" class="mt-2">
+                        <button pButton label="View Evaluation" icon="pi pi-eye" class="p-button-sm"
+                                (click)="openEvaluation(selectedInterview)"></button>
+                    </div>
+                    <ng-template #noEval>
+                        <p class="text-gray-500 text-sm">Not available</p>
+                    </ng-template>
+                </div>
+
+                <!-- Comment -->
+                <div class="border-t pt-4">
+                    <p><strong>Comment:</strong></p>
+                    <p class="mt-1 text-sm">{{ selectedInterview?.comment || 'No comments' }}</p>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <ng-template pTemplate="footer">
+            <div class="flex justify-end gap-2">
+                <button pButton label="Generate Link" icon="pi pi-refresh" class="p-button-outlined"
+                        (click)="generateLinkAndSendEmail(selectedInterview)"></button>
+                <button pButton label="Close" class="p-button-secondary" 
+                        (click)="showDetailsDialog = false"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+
+
+
 </div>

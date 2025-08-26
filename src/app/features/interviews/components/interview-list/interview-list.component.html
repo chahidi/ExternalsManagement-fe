@@ -131,9 +131,6 @@
                         </ng-template>
                     </p-columnFilter>
                 </th>
-                <th>Passed On</th>
-                <th>Remaining Time</th>
-                <th>Duration</th>
                 <th>Evaluation</th>
                 <th>Recording Link</th>
                 <th>Actions</th>
@@ -147,9 +144,6 @@
                 <td>{{ interview.offerTitle || 'N/A' }}</td>
                 <td>{{ interview.comment || 'N/A' }}</td>
                 <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
-                <td>{{ interview.endTime ? (interview.endTime | date: 'dd-MM-yyyy') : '—' }}</td>
-                <td>{{ getRemainingHours(interview.scheduledAt) }}</td>
-                <td>{{ getDurationLabel(interview) }}</td>
 
                 <td>
                     @if (shouldShowEvaluation(interview)) {

@@ -169,6 +169,9 @@
                     }
                 </td>
                 <td class="flex gap-1">
+                    <button pButton icon="pi pi-eye" class="p-button-sm p-button-text"
+                        [pTooltip]="'View More Details'" tooltipPosition="top"
+                        ></button>
                     <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text"
                         [pTooltip]="'Generate New Link'" tooltipPosition="top"
                         (click)="generateLinkAndSendEmail(interview)"></button>

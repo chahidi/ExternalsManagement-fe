@@ -94,16 +94,16 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>
-                    <div class="flex items-center">
+                    <div class=" items-center">
                         <button type="button" pButton [icon]="nameSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="  sortCandidatesByName()">
                         </button>
-                        Full Name
+                        Name
                         <p-columnFilter type="text" field="fullName" display="menu"></p-columnFilter>
                     </div>
                 </th>
-                <th style="min-width: 13rem">
-                    <div class="flex items-center">
+                <th >
+                    <div class=" items-center w-32">
                         <button type="button" pButton [icon]="mainTechSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="sortCandidatesByMainTech()">
                         </button>
@@ -112,7 +112,7 @@
                     </div>
                 </th>
                 <th >
-                    <div class="flex items-center">
+                    <div class=" items-center">
                         <button type="button" pButton [icon]="locationSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="sortCandidatesByLocation()">
                         </button>
@@ -121,7 +121,7 @@
                     </div>
                 </th>
                 <th >
-                    <div class="flex items-center">
+                    <div class=" items-center">
                         <button type="button" pButton [icon]="educationSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="sortCandidatesByEducation()">
                         </button>
@@ -130,22 +130,22 @@
                     </div>
                 </th>
                 <th >
-                    <div class="flex items-center">
+                    <div class=" items-center">
                         Experience
                         <p-columnFilter type="text" field="experiences.companyName" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th >
-                    <div class="flex items-center">
+                    <div class=" items-center">
                         Skills
                         <p-columnFilter type="text" field="skills.skillName" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th >
-                    <div class="flex items-center">Contact</div>
+                    <div class=" items-center">Contact</div>
                 </th>
                 <th >
-                    <div class="flex items-center">Actions</div>
+                    <div class="items-center">Actions</div>
                 </th>
             </tr>
         </ng-template>

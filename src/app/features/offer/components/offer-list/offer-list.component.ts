@@ -78,6 +78,8 @@ export class OfferListComponent implements OnInit {
   keywordOptions: { label: string; value: string }[] = [];
   skillOptions: { label: string; value: string }[] = [];
 
+  titleSortAsc: boolean = false;
+
   // numeric filter modes for column filter
   numericModes = [
     { label: 'Equals', value: 'equals' },
@@ -252,7 +254,6 @@ export class OfferListComponent implements OnInit {
   // Top search + top filters
   onSearch() {
     this.filteredOffers = this.filterService.searchOffers(this.offers, this.searchQuery);
-    this.applyAllFilters();
   }
 
   clear(dt: Table) {
@@ -305,9 +306,9 @@ export class OfferListComponent implements OnInit {
     this.messageService.add({ severity: 'info', summary: 'Reset', detail: 'Filters reset.' });
   }
 
-  // Optional
-  goToDetails(offerId: string): void {
-    this.router.navigate(['/offers', offerId]);
+  goToDetails(offer: Offer): void {
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/offer', offer.id]));
+    window.open(url, '_blank');
   }
 
   get offerDescription(): string {
@@ -319,4 +320,13 @@ export class OfferListComponent implements OnInit {
       this.deleteOffer(id);
     }, 'offer');
   }
+
+  sortOffersByTitle() {
+        this.titleSortAsc = !this.titleSortAsc;
+        this.filteredOffers.sort((a, b) =>
+            this.titleSortAsc
+                ? a.title.localeCompare(b.title)
+                : b.title.localeCompare(a.title)
+        );
+    }
 }

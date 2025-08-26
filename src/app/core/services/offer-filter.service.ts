@@ -17,5 +17,4 @@ export class OfferFilterService {
       offer.description.toLowerCase().includes(lowerQuery)
     );
   }
-
 }

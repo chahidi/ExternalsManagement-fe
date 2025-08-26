@@ -13,6 +13,42 @@ export class CandidateFilterService {
 
   constructor(private http: HttpClient) { }
 
+  private transformCandidate(candidate: any): Candidate {
+
+      return {
+        ...candidate,
+        id: candidate.id.toString(),
+        addresses: candidate.address ? [{
+          id: candidate.address.id?.toString() || '',
+          street: candidate.address.street || '',
+          postalCode: candidate.address.postalCode || '',
+          fullAddress: candidate.address.fullAddress || '',
+          city: candidate.address.city ? {
+            id: candidate.address.city.id?.toString() || '',
+            name: candidate.address.city.name || '',
+            countryId: candidate.address.city.countryId || ''
+          } : null,
+          country: candidate.address.country ? {
+            id: candidate.address.country.id?.toString() || '',
+            name: candidate.address.country.name || '',
+            englishName: candidate.address.country.englishName || ''
+          } : null
+        }] : []
+        ,
+        contacts: candidate.contacts || [],
+        experiences: candidate.experiences || [],
+        skills: candidate.skills || [],
+        educations: (candidate.educations || []).map((edu: any) => ({
+          ...edu,
+          candidate: undefined
+        })),
+        naturalLanguages: (candidate.naturalLanguages || []).map((lang: any) => ({
+          ...lang,
+          candidate: undefined
+        }))
+      };
+    }
+
   filterCandidates(filters: any): Observable<Candidate[]> {
     console.log('Filtering with params:', filters);
 
@@ -25,8 +61,7 @@ export class CandidateFilterService {
         // Filter by skills
         if (filters.skills && filters.skills.length > 0) {
           console.log('Filtering by skills');
-          const selectedSkills = filters.skills.map((skill: any) => skill.code.toLowerCase());
-
+          const selectedSkills = filters.skills.map((skill: string) => skill.toLowerCase());
           filteredCandidates = filteredCandidates.filter(candidate => {
             if (!candidate.skills || !candidate.skills.length) return false;
 
@@ -40,29 +75,21 @@ export class CandidateFilterService {
         }
 
         // Filter by language
-        if (filters.language) {
-          console.log('Filtering by language:', filters.language.code);
+        if (filters.language && filters.language.length > 0) {
+            const selectedLanguages = filters.language.map((lang: string) => lang.toLowerCase());
 
           filteredCandidates = filteredCandidates.filter(candidate => {
             if (!candidate.naturalLanguages || !candidate.naturalLanguages.length) return false;
 
-            // Check if any of the candidate's languages match the selected language
-            // Try multiple language fields to increase the chance of a match
             return candidate.naturalLanguages.some(lang => {
-              if (!lang) return false;
-
-              const searchLanguage = filters.language.code.toLowerCase();
-
-              // Check multiple fields for matching language
-              return (
-                (lang.language && lang.language.toLowerCase() === searchLanguage) ||
-                (lang.languageInEnglish && lang.languageInEnglish.toLowerCase() === searchLanguage) ||
-                (lang.englishDescription && lang.englishDescription.toLowerCase() === searchLanguage)
-              );
+              const candidateLangs = [
+                lang.language?.toLowerCase(),
+                lang.languageInEnglish?.toLowerCase(),
+                lang.englishDescription?.toLowerCase()
+              ];
+              return candidateLangs.some(l => selectedLanguages.includes(l!));
             });
           });
-
-          console.log('After language filter:', filteredCandidates.length);
         }
 
         // Filter by years of experience
@@ -83,7 +110,7 @@ export class CandidateFilterService {
           console.log('After experience filter:', filteredCandidates.length);
         }
 
-        return filteredCandidates;
+        return filteredCandidates.map(candidate => this.transformCandidate(candidate));
       }),
       catchError(error => {
         console.error('Error while filtering candidates:', error);

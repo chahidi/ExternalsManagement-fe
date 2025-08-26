@@ -5,9 +5,10 @@ import { CandidateService } from './candidate.service';
 import { Offer } from '../models/offer';
 import { Question } from '../models/question';
 
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, retry } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { OfferFormattedDescription } from '../models/offerFormattedDescription';
 
 @Injectable({
   providedIn: 'root'
@@ -70,5 +71,10 @@ export class OfferService {
         this.offers = this.offers.filter(o => o.id !== offerId);
       })
     );
+  }
+
+  getOfferFormattedDescription(offerId: string): Observable<OfferFormattedDescription> {
+    return this.http.get<OfferFormattedDescription>(`${this.apiUrl}/${offerId}/formatted-description`)
+    .pipe(retry(2));
   }
 }

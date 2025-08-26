@@ -1,6 +1,9 @@
 <app-loader *ngIf="isLoading$ | async" [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
-<div class="upload-container">
-    <h3>Advanced New Curriculum Vitae</h3>
+<div class="new-form-card-wrapper">
+<p-panel class="p-mb-5 new-form-card-container p-mt-20">
+    <ng-template pTemplate="header">
+      <h3>Advanced New Curriculum Vitae</h3>
+    </ng-template>
     <p-fileUpload
       name="cv"
       customUpload="true"
@@ -19,4 +22,5 @@
         </div>
       </ng-template>
     </p-fileUpload>
-  </div>
+</p-panel>
+</div>

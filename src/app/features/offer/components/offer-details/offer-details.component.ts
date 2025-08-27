@@ -14,13 +14,14 @@ import { LoaderService } from '../../../../core/services/loader.service';
 import { Observable } from 'rxjs';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { ListboxModule } from 'primeng/listbox';
+import { RecommendedCandidatesComponent } from '../recommended-candidates/recommended-candidates.component';
 
 
 
 @Component({
   selector: 'app-offer-details',
   standalone: true,
-  imports: [LoaderComponent, CommonModule, TagModule, CardModule, ChipModule, ListboxModule],
+  imports: [LoaderComponent, CommonModule, TagModule, CardModule, ChipModule, ListboxModule , RecommendedCandidatesComponent],
   providers: [MessageService, NotificationService],
   templateUrl: './offer-details.component.html',
   styleUrls: ['./offer-details.component.scss']
@@ -38,6 +39,8 @@ export class OfferDetailsComponent implements OnInit {
   description: string = '';
   mainTech: string = '';
   yearsOfExperience: number = 0;
+  offerId!: string;
+
 
 
   constructor(
@@ -58,6 +61,9 @@ export class OfferDetailsComponent implements OnInit {
       this.notify.showError('Error', 'Did not find the id of the offer, please return to the previous page');
       return;
     }
+
+    this.offerId = id;
+
 
     this.loader.show('Loading offer details...');
     this.loadOfferFormattedDescriptionAndOfferTitle(id);

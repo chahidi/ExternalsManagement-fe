@@ -157,3 +157,16 @@ legend {
   left: 50% !important;
   transform: translateX(-50%) !important;
   }
+
+
+
+::ng-deep .p-datatable thead th {
+  white-space: nowrap; 
+}
+::ng-deep .p-datatable thead th > div {
+  align-items: center;
+  white-space: nowrap;
+}
+::ng-deep .p-datatable-tbody > tr > th {
+  text-align: center ;
+}

@@ -61,6 +61,9 @@ export class InterviewListComponent implements OnInit {
     offerTitleSortAsc: boolean = false;
     candidateMainTechSortAsc: boolean = false;
 
+    showDetailsDialog = false;
+    selectedInterview: any = null;
+
     constructor(
         private interviewFilterService: InterviewFilterService,
         private interviewService: InterviewService,
@@ -183,6 +186,11 @@ export class InterviewListComponent implements OnInit {
         this.tempComment = interview.comment || '';
         this.selectedCommentInterview = interview;
         this.showCommentDialog = true;
+    }
+
+    ViewInterviewPopup(interview: InterviewInstance): void {
+        this.selectedInterview = interview;
+        this.showDetailsDialog = true;
     }
 
     saveComment(): void {

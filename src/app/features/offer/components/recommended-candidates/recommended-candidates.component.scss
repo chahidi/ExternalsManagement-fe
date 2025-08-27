@@ -148,3 +148,20 @@
   border: none !important;
   box-shadow: none !important;
 }
+
+.convocate-btn {
+  color: #0C3C78 !important;        /* text + icon in navy blue */
+  border: none !important;
+  background: transparent !important;
+
+  .pi {                             /* icon color */
+    color: #0C3C78 !important;
+  }
+
+  &:hover {
+    color: #0a3263 !important;      /* darker navy on hover */
+    .pi {
+      color: #0a3263 !important;
+    }
+  }
+}

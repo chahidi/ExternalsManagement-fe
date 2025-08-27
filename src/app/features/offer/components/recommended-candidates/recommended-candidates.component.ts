@@ -5,18 +5,23 @@ import { CandidateOffer } from '../../../../core/models/candidate-offer';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
+import { TooltipModule } from 'primeng/tooltip';
+
 
 @Component({
   selector: 'app-recommended-candidates',
   standalone: true,
   imports: [
+    TooltipModule   ,
     CommonModule,
     CardModule,
     TableModule,
     ButtonModule,
+    DialogModule,
     LoaderComponent
   ],
   templateUrl: './recommended-candidates.component.html',
@@ -26,11 +31,16 @@ export class RecommendedCandidatesComponent implements OnInit {
   @Input() offerId!: string;
 
   candidates: CandidateOffer[] = [];
-  isLoading$! : any;
-    loadingMessage$! : any;
+  isLoading$!: any;
+  loadingMessage$!: any;
 
+  // Sorting flags
   nameSortAsc = true;
   techSortAsc = true;
+
+  // Dialog state
+  displayDetailsDialog = false;
+  selectedCandidate: CandidateOffer | null = null;
 
   constructor(
     private candidateService: CandidateService,
@@ -40,11 +50,13 @@ export class RecommendedCandidatesComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading$ = this.loader.isLoading$;
-  this.loadingMessage$ = this.loader.loadingMessage$;
+    this.loadingMessage$ = this.loader.loadingMessage$;
+
     if (!this.offerId) {
       this.notify.showError('Error', 'Did not find the id of the offer, please return to the previous page');
       return;
     }
+
     this.loadRecommendedCandidatesForOffer(this.offerId);
   }
 
@@ -79,8 +91,21 @@ export class RecommendedCandidatesComponent implements OnInit {
         : (b.mainTech || '').localeCompare(a.mainTech || '')
     );
   }
+
   onGlobalFilter(event: Event, dt: any) {
-  const input = event.target as HTMLInputElement;
-  dt.filterGlobal(input.value, 'contains');
-}
+    const input = event.target as HTMLInputElement;
+    dt.filterGlobal(input.value, 'contains');
+  }
+
+  // Open popup with candidate details
+  viewCandidateDetails(candidate: CandidateOffer) {
+    this.selectedCandidate = candidate;
+    this.displayDetailsDialog = true;
+  }
+
+  // Convocate action
+  convocateForInterview(candidate: CandidateOffer) {
+    this.notify.showSuccess('Interview', `${candidate.fullName} has been convocated for interview.`);
+    // TODO: integrate with backend interview scheduling
+  }
 }

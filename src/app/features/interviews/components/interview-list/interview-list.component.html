@@ -74,7 +74,7 @@
         [globalFilterFields]="['candidate.fullName', 'candidate.mainTech', 'offer.title', 'comment']"
         responsiveLayout="scroll"
     >
-       
+
 
 
         <ng-template pTemplate="caption">
@@ -202,7 +202,7 @@
     <p-dialog header="Interview Details" [(visible)]="showDetailsDialog" [modal]="true" [style]="{ width: '600px' }">
         <ng-container *ngIf="selectedInterview">
             <div class="p-4 space-y-4">
-                
+
                 <!-- Basic Info -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -216,13 +216,13 @@
                         <p><strong>Duration:</strong> {{ getDurationLabel(selectedInterview) }}</p>
                     </div>
                 </div>
-                
+
 
                 <!-- Recording -->
                 <div class="border-t pt-4">
                     <p><strong>Recording:</strong></p>
                     <div *ngIf="selectedInterview?.record?.fileUrl; else noRecording" class="mt-2">
-                        <a [href]="selectedInterview?.record?.fileUrl" target="_blank" 
+                        <a [href]="selectedInterview?.record?.fileUrl" target="_blank"
                         class="text-blue-600 underline">View Recording</a>
                     </div>
                     <ng-template #noRecording>
@@ -253,7 +253,7 @@
 
         <ng-template pTemplate="footer">
             <div class="flex justify-end gap-2">
-                <button pButton label="Close" class="p-button-secondary" 
+                <button pButton label="Close" class="p-button-secondary"
                         (click)="showDetailsDialog = false"></button>
             </div>
         </ng-template>

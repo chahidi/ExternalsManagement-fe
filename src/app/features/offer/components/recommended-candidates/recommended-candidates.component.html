@@ -99,13 +99,13 @@
 
                 <!-- Convocate -->
                 <button
-  pButton
-  type="button"
-  icon="pi pi-calendar-plus"
-  class="p-button-sm p-button-text convocate-btn"
-  pTooltip="Convocate for Interview" tooltipPosition="top"
-  (click)="convocateForInterview(candidate)">
-</button>
+                pButton
+                type="button"
+                icon="pi pi-calendar-plus"
+                class="p-button-sm p-button-text convocate-btn"
+                pTooltip="Convocate for Interview" tooltipPosition="top"
+                (click)="convocateForInterview(candidate)">
+                </button>
 
 
               </td>
@@ -136,8 +136,8 @@
           <p><strong>Years of Experience:</strong> {{ selectedCandidate.yearsOfExperience || 0 }} yrs</p>
         </div>
         <div>
-          <p><strong>City:</strong> {{ selectedCandidate.address?.city?.name || 'Unknown City' }}</p>
-          <p><strong>Country:</strong> {{ selectedCandidate.address?.country?.name || 'Unknown Country' }}</p>
+          <p><strong>City:</strong> {{ selectedCandidate.address.city?.name || 'Unknown City' }}</p>
+          <p><strong>Country:</strong> {{ selectedCandidate.address.country?.name || 'Unknown Country' }}</p>
         </div>
       </div>
 

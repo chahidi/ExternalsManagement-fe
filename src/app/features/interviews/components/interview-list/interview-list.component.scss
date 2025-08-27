@@ -39,3 +39,16 @@
 ::ng-deep .p-toast-icon-close {
   font-size: 1.25rem;
 }
+
+::ng-deep .p-datatable thead th {
+  white-space: nowrap; 
+}
+::ng-deep .p-datatable thead th > div {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; 
+  white-space: nowrap;
+}
+::ng-deep .p-datatable-thead > tr > th {
+  text-align: center;
+}

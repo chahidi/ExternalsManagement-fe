@@ -4,6 +4,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Candidate } from '../models/candidate';
 import { environment } from '../../../environments/environment';
+import { CandidateOffer } from '../models/candidate-offer';
+
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +130,12 @@ export class CandidateService {
 
   getAllMainTech(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/main-techs`);
+  }
+
+  getRecommendedCandidates(offerId: string): Observable<CandidateOffer[]> {
+  return this.http.get<CandidateOffer[]>(`${this.baseUrl}/recommended-candidates/${offerId}`).pipe(
+    catchError(this.handleError)
+  );
   }
 
 }

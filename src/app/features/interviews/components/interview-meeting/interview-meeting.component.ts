@@ -20,7 +20,6 @@ import { RecordService } from '../../../../core/services/record.service';
 import { Record } from '../../../../core/models/record';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
-import { TextToSpeechService } from '../../../../core/services/text-to-speech.service';
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
 import { SpeechRecognitionService } from '../../../../core/services/speech-recognition.service';
@@ -68,7 +67,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     showSubmitButton = false;
     canSubmitAnswer = false;
     isWaitingForAnswer = false;
-    aiSpeaking = false;
     speechRecognitionState: SpeechRecognitionState = {
         isListening: false,
         isSupported: false,
@@ -103,7 +101,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     constructor(
         private recordService: RecordService,
         private promptService: PromptService,
-        private tts: TextToSpeechService,
+        // Removed: private tts: TextToSpeechService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
         private speechRecognitionService: SpeechRecognitionService,
@@ -144,6 +142,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.checkSpeechRecognitionSupport();
         this.isCameraReady = true;
     }
+
     private loadInterviewFromToken(token: string): void {
         this.tokenValidationService.getInterviewIdFromToken(token).subscribe({
             next: (interviewId) => {
@@ -171,6 +170,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.handleSpeechError(error?.message ?? String(error));
         });
     }
+
     private updateUIFromSpeechState(state: SpeechRecognitionState): void {
         this.liveSubtitle = state.combinedTranscript;
         this.currentUserAnswer = state.finalTranscript;
@@ -212,6 +212,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const minutes = now.getMinutes().toString().padStart(2, '0');
         this.currentTime = `${hours}:${minutes}`;
     }
+
     private loadInterviewQuestions(interviewId: string): void {
         console.log('Loading questions for interview ID:', interviewId);
         this.interviewService.getInterviewQuestions(interviewId).subscribe({
@@ -389,24 +390,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         this.resetSpeechRecognitionData();
         this.timeRemaining = currentQuestion.durationInMinutes * 60;
-        this.aiSpeaking = true;
         this.hideSubmissionControls();
 
         this.addCurrentQuestionToTranscript();
         this.initializeQuestionTimer();
 
-        try {
-            await this.tts.speak(currentQuestion.description);
-            this.aiSpeaking = false;
-            this.isWaitingForAnswer = true;
-            this.showSubmitButton = true;
-            console.log('✅ AI finished speaking, waiting before recognition...');
-
-            this.scheduleDelayedSpeechRecognition();
-        } catch (error) {
-            console.error('TTS error:', error);
-            this.handleTTSError();
-        }
+        console.log('✅ Question displayed, waiting before recognition...');
+        this.isWaitingForAnswer = true;
+        this.showSubmitButton = true;
+        this.scheduleDelayedSpeechRecognition();
     }
 
     private resetSpeechRecognitionData(): void {
@@ -423,13 +415,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 this.beginSpeechRecognition();
             }
         }, 2000);
-    }
-
-    private handleTTSError(): void {
-        this.aiSpeaking = false;
-        this.isWaitingForAnswer = true;
-        this.showSubmitButton = true;
-        this.scheduleDelayedSpeechRecognition();
     }
 
     private initializeQuestionTimer(): void {
@@ -449,6 +434,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.speechRecognitionService.start();
         console.log('Speech recognition started for question:', this.currentQuestionIndex + 1);
     }
+
     submitCurrentAnswer(): void {
         const userAnswerText = this.speechRecognitionService.getFinalTranscript().trim();
         if (!userAnswerText) {
@@ -550,10 +536,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     finishInterview(): void {
         this.isInterviewInProgress = false;
         this.isInterviewFinalizing = true;
-        this.aiSpeaking = false;
         this.hideSubmissionControls();
         this.stopSpeechRecognition();
-        this.tts.stop();
         this.clearQuestionTimer();
 
         if (this.isCameraEnabled && this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
@@ -633,7 +617,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     private cleanupInterviewResources(): void {
         this.stopSpeechRecognition();
-        this.tts.stop();
         this.clearQuestionTimer();
         this.releaseMediaStream();
         this.removeEventListeners();
@@ -691,6 +674,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }
         }, 100);
     }
+
     ngOnDestroy() {
         if (this.stream) {
             this.stream.getTracks().forEach((track) => track.stop());
@@ -709,6 +693,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.destroy$.complete();
         this.cleanupInterviewResources();
     }
+
     getFormattedTime(): string {
         const minutes = Math.floor(this.timeRemaining / 60);
         const seconds = this.timeRemaining % 60;

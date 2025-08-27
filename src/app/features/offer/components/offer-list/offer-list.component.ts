@@ -180,11 +180,6 @@ export class OfferListComponent implements OnInit {
 
   // Actions
   deleteOffer(offerId: string) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this offer?',
-      header: 'Confirm Delete',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
         this.offerService.deleteOffer(offerId).subscribe({
           next: () => {
             this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'Offer has been deleted successfully!' });
@@ -194,8 +189,6 @@ export class OfferListComponent implements OnInit {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete offer.' });
           }
         });
-      }
-    });
   }
 
   openEditOffer(offer: Offer) {
@@ -315,9 +308,9 @@ export class OfferListComponent implements OnInit {
     return this.currentOffer?.description || 'No description';
   }
 
-  confirmDelete(id: string) {
+  confirmDelete(offer: Offer) {
     this.confirmationModalService.confirmDelete(() => {
-      this.deleteOffer(id);
+      this.deleteOffer(offer.id);
     }, 'offer');
   }
 

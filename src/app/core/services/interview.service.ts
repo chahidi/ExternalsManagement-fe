@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { InterviewInstance } from '../models/interview-instance';
 import { GenerateInterviewLinkPayload, SendInterviewEmailPayload } from '../api/interview-payload';
 import { ERROR_MESSAGES } from '../constants/error-messages.const';
+import { Question } from '../models/question';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
@@ -77,4 +78,8 @@ export class InterviewService {
         console.error('[InterviewService Error]', errorMessage);
         return throwError(() => new Error(errorMessage));
     };
+
+  getInterviewQuestions(interviewId: string): Observable<Question[]> {
+    return this.http.get<Question[]>(`${this.apiUrl}/${interviewId}/questions`);
+  }
 }

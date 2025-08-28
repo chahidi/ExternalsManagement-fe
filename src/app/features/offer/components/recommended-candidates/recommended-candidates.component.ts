@@ -6,22 +6,33 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { DatePickerModule } from 'primeng/datepicker';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
 import { TooltipModule } from 'primeng/tooltip';
-
+import { FormsModule } from '@angular/forms';
+import {EvaluationTypeService } from '../../../../core/services/evaluation-type.service';
+import { EvaluationType } from '../../../../core/models/evaluation-type';
 
 @Component({
   selector: 'app-recommended-candidates',
   standalone: true,
   imports: [
-    TooltipModule   ,
     CommonModule,
+    FormsModule,
+    TooltipModule,
     CardModule,
     TableModule,
     ButtonModule,
     DialogModule,
+    DatePickerModule,
+    MultiSelectModule,
+    InputNumberModule,
+    InputTextModule,
     LoaderComponent
   ],
   templateUrl: './recommended-candidates.component.html',
@@ -34,18 +45,32 @@ export class RecommendedCandidatesComponent implements OnInit {
   isLoading$!: any;
   loadingMessage$!: any;
 
-  // Sorting flags
+  // sorting flags
   nameSortAsc = true;
   techSortAsc = true;
 
-  // Dialog state
   displayDetailsDialog = false;
+  showConvocateDialog = false;
+  showNewEvalDialog = false;
+
   selectedCandidate: CandidateOffer | null = null;
+
+  evaluationTypes: EvaluationType[] = [];
+  newEvaluationType: EvaluationType = { id: '', description: '', coefficient: 1 };
+
+  interviewConfig = {
+    description: '',
+    schedule: null as Date | null,
+    criteria: [] as EvaluationType[],
+    totalQuestions: 10,
+    duration: 30
+  };
 
   constructor(
     private candidateService: CandidateService,
     private loader: LoaderService,
-    private notify: NotificationService
+    private notify: NotificationService,
+    private evaluationTypeService: EvaluationTypeService
   ) {}
 
   ngOnInit(): void {
@@ -53,11 +78,41 @@ export class RecommendedCandidatesComponent implements OnInit {
     this.loadingMessage$ = this.loader.loadingMessage$;
 
     if (!this.offerId) {
-      this.notify.showError('Error', 'Did not find the id of the offer, please return to the previous page');
+      this.notify.showError('Error', 'Did not find the id of the offer.');
       return;
     }
 
     this.loadRecommendedCandidatesForOffer(this.offerId);
+    this.loadEvaluationTypes();
+  }
+
+  private loadEvaluationTypes(): void {
+    this.evaluationTypeService.getAllEvaluationTypes().subscribe({
+      next: (types) => (this.evaluationTypes = types),
+      error: () => this.notify.showError('Error', 'Failed to load evaluation types')
+    });
+  }
+
+  createEvaluationType(): void {
+    if (!this.newEvaluationType.description) {
+      this.notify.showError('Validation Error', 'Description is required.');
+      return;
+    }
+
+    this.evaluationTypeService.createEvaluationType(this.newEvaluationType).subscribe({
+      next: (created) => {
+        this.evaluationTypes.push(created);
+        this.notify.showSuccess('Success', 'Evaluation type created.');
+        this.showNewEvalDialog = false;
+        this.newEvaluationType = { id: '', description: '', coefficient: 1 };
+      },
+      error: () => this.notify.showError('Error', 'Failed to create evaluation type')
+    });
+  }
+
+  onGlobalFilter(event: Event, dt: any) {
+    const input = event.target as HTMLInputElement;
+    dt.filterGlobal(input.value, 'contains');
   }
 
   private loadRecommendedCandidatesForOffer(offerId: string): void {
@@ -68,7 +123,7 @@ export class RecommendedCandidatesComponent implements OnInit {
         this.loader.hide();
       },
       error: () => {
-        this.notify.showError('Error', 'Failed to load recommended candidates');
+        this.notify.showError('Error', 'Failed to load candidates');
         this.loader.hide();
       }
     });
@@ -77,9 +132,7 @@ export class RecommendedCandidatesComponent implements OnInit {
   sortByName() {
     this.nameSortAsc = !this.nameSortAsc;
     this.candidates = [...this.candidates].sort((a, b) =>
-      this.nameSortAsc
-        ? a.fullName.localeCompare(b.fullName)
-        : b.fullName.localeCompare(a.fullName)
+      this.nameSortAsc ? a.fullName.localeCompare(b.fullName) : b.fullName.localeCompare(a.fullName)
     );
   }
 
@@ -92,20 +145,28 @@ export class RecommendedCandidatesComponent implements OnInit {
     );
   }
 
-  onGlobalFilter(event: Event, dt: any) {
-    const input = event.target as HTMLInputElement;
-    dt.filterGlobal(input.value, 'contains');
-  }
-
-  // Open popup with candidate details
   viewCandidateDetails(candidate: CandidateOffer) {
     this.selectedCandidate = candidate;
     this.displayDetailsDialog = true;
   }
 
-  // Convocate action
   convocateForInterview(candidate: CandidateOffer) {
-    this.notify.showSuccess('Interview', `${candidate.fullName} has been convocated for interview.`);
-    // TODO: integrate with backend interview scheduling
+    this.selectedCandidate = candidate;
+    this.resetInterviewConfig();
+    this.showConvocateDialog = true;
+  }
+
+  private resetInterviewConfig() {
+    this.interviewConfig = {
+      description: '',
+      schedule: null,
+      criteria: [],
+      totalQuestions: 10,
+      duration: 30
+    };
+  }
+
+  confirmConvocation() {
+
   }
 }

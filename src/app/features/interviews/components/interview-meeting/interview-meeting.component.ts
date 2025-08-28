@@ -605,7 +605,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             questionDescription: q.description,
             answerDescription: q.answer?.description || '',
             estimatedAnswerTime: q.durationInMinutes ?? undefined,
-            realAnswerTime: q.answer ? Math.ceil((q.durationInMinutes * 60 - this.timeRemaining) / 60) : undefined
+            realAnswerTime: q.answer?.durationInMinutes ?? undefined
         }));
 
         this.evaluationService.prepareInterviewEvaluation(this.interviewId,questionsAndAnswers).subscribe({

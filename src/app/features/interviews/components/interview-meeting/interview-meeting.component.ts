@@ -41,6 +41,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { Router } from '@angular/router';
 import { cameraTransition, slideInInterview, fadeInControls, slideInTranscript } from '../../../../shared/layout/animations/interview-meeting.animations';
 import { fadeIn } from '../../../../shared/layout/animations/common.animation';
+import { QuestionsAndAnswersForEvaluationDTO } from '../../../../core/models/interview-evaluation';
 
 @Component({
     selector: 'app-interview-meeting',
@@ -93,6 +94,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     questionInterval: any;
     transcriptions: string[] = [];
     currentTime: string = '';
+    interviewId!: string;
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
     private destroy$ = new Subject<void>();
     private eventListenersRegistered = false;
@@ -147,6 +149,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.tokenValidationService.getInterviewIdFromToken(token).subscribe({
             next: (interviewId) => {
                 console.log('Retrieved interview ID:', interviewId);
+                this.interviewId = interviewId;
                 this.loadInterviewQuestions(interviewId);
             },
             error: (err) => {
@@ -598,9 +601,14 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.isInterviewFinalizing = false;
         this.isInterviewCompleted = true;
         window.scrollTo(0, 0);
+        const questionsAndAnswers: QuestionsAndAnswersForEvaluationDTO[] = this.questions.map(q => ({
+            questionDescription: q.description,
+            answerDescription: q.answer?.description || '',
+            estimatedAnswerTime: q.durationInMinutes ?? undefined,
+            realAnswerTime: q.answer ? Math.ceil((q.durationInMinutes * 60 - this.timeRemaining) / 60) : undefined
+        }));
 
-        const prompt = 'Evaluate this interview';
-        this.evaluationService.prepareInterviewEvaluation(prompt, this.questions).subscribe({
+        this.evaluationService.prepareInterviewEvaluation(this.interviewId,questionsAndAnswers).subscribe({
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');

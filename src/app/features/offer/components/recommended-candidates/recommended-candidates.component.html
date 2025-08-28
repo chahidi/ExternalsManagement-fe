@@ -101,50 +101,51 @@
         </p-table>
 
         <!-- Convocate Dialog -->
+<!-- Convocate Dialog -->
 <p-dialog header="Convocate Candidate" [(visible)]="showConvocateDialog" [modal]="true" [style]="{ width: '600px' }">
   <ng-container *ngIf="selectedCandidate">
-    <div class="p-4 space-y-4">
+    <div class="p-4 space-y-6">
       <p><strong>Candidate:</strong> {{ selectedCandidate.fullName }}</p>
 
       <div class="field">
-        <label>Description</label>
+        <label class="block mb-2 font-medium">Description</label>
         <input pInputText [(ngModel)]="interviewConfig.description" class="w-full" placeholder="Interview description"/>
       </div>
 
       <div class="field">
-  <label class="block mb-2">Schedule</label>
-  <p-datepicker
-    [(ngModel)]="interviewConfig.schedule"
-    dateFormat="yy-mm-dd"
-    showIcon="true"
-    [appendTo]="'body'"
-    class="w-full">
-  </p-datepicker>
-</div>
+        <label class="block mb-2 font-medium">Schedule</label>
+        <p-datepicker
+          [(ngModel)]="interviewConfig.schedule"
+          dateFormat="yy-mm-dd"
+          showIcon="true"
+          [appendTo]="'body'"
+          class="w-full">
+        </p-datepicker>
+      </div>
 
       <div class="field">
-        <label>Evaluation Criteria</label>
+        <label class="block mb-2 font-medium">Evaluation Criteria</label>
         <p-multiSelect
-    [options]="evaluationTypes"
-    optionLabel="description"
-    optionValue="id"
-    [(ngModel)]="interviewConfig.criteria"
-    placeholder="Select Criteria"
-    display="chip"
-    [appendTo]="'body'"
-    class="w-full">
-  </p-multiSelect>
-        <button pButton label="Add New Type" icon="pi pi-plus" class="p-button-text mt-2"
+          [options]="evaluationTypes"
+          optionLabel="description"
+          optionValue="id"
+          [(ngModel)]="interviewConfig.criteria"
+          placeholder="Select Criteria"
+          display="chip"
+          [appendTo]="'body'"
+          class="w-full">
+        </p-multiSelect>
+        <button pButton label="Add New Type" icon="pi pi-plus" class="p-button-text mt-3"
                 (click)="showNewEvalDialog = true"></button>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-2 gap-6">
         <div>
-          <label>Total Questions</label>
+          <label class="block mb-2 font-medium">Total Questions</label>
           <p-inputNumber [(ngModel)]="interviewConfig.totalQuestions" [min]="5" [max]="100" class="w-full"></p-inputNumber>
         </div>
         <div>
-          <label>Duration (mins)</label>
+          <label class="block mb-2 font-medium">Duration (mins)</label>
           <p-inputNumber [(ngModel)]="interviewConfig.duration" [min]="10" [max]="300" class="w-full"></p-inputNumber>
         </div>
       </div>
@@ -158,6 +159,7 @@
     </div>
   </ng-template>
 </p-dialog>
+
 
 <!-- Create New Evaluation Type Dialog -->
 <p-dialog header="Create Evaluation Type" [(visible)]="showNewEvalDialog" [modal]="true" [style]="{ width: '400px' }">

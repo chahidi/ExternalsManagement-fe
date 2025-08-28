@@ -22,7 +22,7 @@
           responsiveLayout="scroll"
           class="no-borders">
 
-          <!-- Caption with search -->
+          <!-- Search -->
           <ng-template pTemplate="caption">
             <div class="flex">
               <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="dt.clear()"></p-button>
@@ -38,7 +38,7 @@
             </div>
           </ng-template>
 
-          <!-- Table Header -->
+          <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
               <th>
@@ -46,10 +46,8 @@
                   <button type="button" pButton
                           [icon]="nameSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                           class="p-button-text p-button-sm ml-1"
-                          (click)="sortByName()">
-                  </button>
+                          (click)="sortByName()"></button>
                   Full Name
-                  <p-columnFilter type="text" field="fullName" display="menu"></p-columnFilter>
                 </div>
               </th>
               <th>
@@ -57,25 +55,17 @@
                   <button type="button" pButton
                           [icon]="techSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                           class="p-button-text p-button-sm ml-1"
-                          (click)="sortByTech()">
-                  </button>
+                          (click)="sortByTech()"></button>
                   Main Tech
-                  <p-columnFilter type="text" field="mainTech" display="menu"></p-columnFilter>
                 </div>
               </th>
-              <th>
-                Location
-                <p-columnFilter type="text" field="address.city.name" display="menu"></p-columnFilter>
-              </th>
-              <th>
-                Years of Experience
-                <p-columnFilter type="numeric" field="yearsOfExperience" display="menu"></p-columnFilter>
-              </th>
+              <th>Location</th>
+              <th>Years of Experience</th>
               <th>Actions</th>
             </tr>
           </ng-template>
 
-          <!-- Table Body -->
+          <!-- Body -->
           <ng-template pTemplate="body" let-candidate>
             <tr class="my-2">
               <td>{{ candidate.fullName || 'N/A' }}</td>
@@ -86,33 +76,21 @@
               </td>
               <td>{{ candidate.yearsOfExperience || 0 }} yrs</td>
               <td class="flex gap-2">
-                <!-- View Details -->
-                <button
-                    pButton
-                    type="button"
-                    icon="pi pi-eye"
-                    class="p-button-sm p-button-text p-button-info"
-                    pTooltip="View Details"
-                    tooltipPosition="top"
-                    (click)="viewCandidateDetails(candidate)">
-                </button>
+                <!-- View -->
+                <button pButton icon="pi pi-eye" class="p-button-sm p-button-text p-button-info"
+                        pTooltip="View Details" tooltipPosition="top"
+                        (click)="viewCandidateDetails(candidate)"></button>
 
                 <!-- Convocate -->
-                <button
-                pButton
-                type="button"
-                icon="pi pi-calendar-plus"
-                class="p-button-sm p-button-text convocate-btn"
-                pTooltip="Convocate for Interview" tooltipPosition="top"
-                (click)="convocateForInterview(candidate)">
-                </button>
-
-
+                <button pButton icon="pi pi-calendar-plus"
+                        class="p-button-sm p-button-text convocate-btn"
+                        pTooltip="Convocate for Interview" tooltipPosition="top"
+                        (click)="convocateForInterview(candidate)"></button>
               </td>
             </tr>
           </ng-template>
 
-          <!-- Empty Message -->
+          <!-- Empty -->
           <ng-template pTemplate="emptymessage">
             <tr>
               <td colspan="5" class="text-center text-gray-500">
@@ -122,102 +100,84 @@
           </ng-template>
         </p-table>
 
-        <!-- Details Dialog -->
-        <!-- Candidate Details Dialog -->
-<p-dialog header="Candidate Details" [(visible)]="displayDetailsDialog" [modal]="true" [style]="{ width: '600px' }">
+        <!-- Convocate Dialog -->
+<!-- Convocate Dialog -->
+<p-dialog header="Convocate Candidate" [(visible)]="showConvocateDialog" [modal]="true" [style]="{ width: '600px' }">
   <ng-container *ngIf="selectedCandidate">
-    <div class="p-4 space-y-4">
+    <div class="p-4 space-y-6">
+      <p><strong>Candidate:</strong> {{ selectedCandidate.fullName }}</p>
 
-      <!-- Basic Info -->
-      <div class="grid grid-cols-2 gap-4">
+      <div class="field">
+        <label class="block mb-2 font-medium">Description</label>
+        <input pInputText [(ngModel)]="interviewConfig.description" class="w-full" placeholder="Interview description"/>
+      </div>
+
+      <div class="field">
+        <label class="block mb-2 font-medium">Schedule</label>
+        <p-datepicker
+          [(ngModel)]="interviewConfig.schedule"
+          dateFormat="yy-mm-dd"
+          showIcon="true"
+          [appendTo]="'body'"
+          class="w-full">
+        </p-datepicker>
+      </div>
+
+      <div class="field">
+        <label class="block mb-2 font-medium">Evaluation Criteria</label>
+        <p-multiSelect
+          [options]="evaluationTypes"
+          optionLabel="description"
+          optionValue="id"
+          [(ngModel)]="interviewConfig.criteria"
+          placeholder="Select Criteria"
+          display="chip"
+          [appendTo]="'body'"
+          class="w-full">
+        </p-multiSelect>
+        <button pButton label="Add New Type" icon="pi pi-plus" class="p-button-text mt-3"
+                (click)="showNewEvalDialog = true"></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-6">
         <div>
-          <p><strong>Full Name:</strong> {{ selectedCandidate.fullName }}</p>
-          <p><strong>Main Tech:</strong> {{ selectedCandidate.mainTech || 'N/A' }}</p>
-          <p><strong>Years of Experience:</strong> {{ selectedCandidate.yearsOfExperience || 0 }} yrs</p>
+          <label class="block mb-2 font-medium">Total Questions</label>
+          <p-inputNumber [(ngModel)]="interviewConfig.totalQuestions" [min]="5" [max]="100" class="w-full"></p-inputNumber>
         </div>
         <div>
-          <p><strong>City:</strong> {{ selectedCandidate.address.city?.name || 'Unknown City' }}</p>
-          <p><strong>Country:</strong> {{ selectedCandidate.address.country?.name || 'Unknown Country' }}</p>
+          <label class="block mb-2 font-medium">Duration (mins)</label>
+          <p-inputNumber [(ngModel)]="interviewConfig.duration" [min]="10" [max]="300" class="w-full"></p-inputNumber>
         </div>
       </div>
-
-      <!-- Skills -->
-      <div class="border-t pt-4">
-        <p><strong>Skills:</strong></p>
-        <ul class="list-none p-0 mt-2 flex flex-wrap gap-2">
-          <li *ngFor="let skill of selectedCandidate.skills">
-            <span class="inline-block px-2 py-1 text-xs rounded"
-              [ngClass]="{
-                'bg-blue-100': skill.proficiencyLevel === 'BEGINNER',
-                'bg-blue-200': skill.proficiencyLevel === 'INTERMEDIATE',
-                'bg-blue-400 text-white': skill.proficiencyLevel === 'EXPERT'
-              }">
-              {{ skill.skillName }}
-            </span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Languages -->
-      <div class="border-t pt-4">
-        <p><strong>Languages:</strong></p>
-        <ul class="list-none p-0 mt-2 flex flex-wrap gap-2">
-          <li *ngFor="let lang of selectedCandidate.languages">
-            <span class="inline-block px-2 py-1 text-xs rounded"
-              [ngClass]="{
-                'bg-blue-100': lang.level === 'BEGINNER',
-                'bg-blue-200': lang.level === 'LOWER_INTERMEDIATE',
-                'bg-blue-300': lang.level === 'INTERMEDIATE',
-                'bg-blue-400': lang.level === 'UPPER_INTERMEDIATE',
-                'bg-blue-500 text-white': lang.level === 'ADVANCED'
-              }">
-              {{ lang.languageInEnglish }}
-            </span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Education -->
-      <div class="border-t pt-4">
-        <p><strong>Education:</strong></p>
-        <ul class="list-disc ml-6 mt-2 text-sm">
-          <li *ngFor="let edu of selectedCandidate.educations">
-            {{ edu.degree }} - {{ edu.institution }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- Experiences -->
-      <div class="border-t pt-4">
-        <p><strong>Experiences:</strong></p>
-        <ul class="list-disc ml-6 mt-2 text-sm">
-          <li *ngFor="let exp of selectedCandidate.experiences">
-            {{ exp.position }} at {{ exp.companyName }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- Contacts -->
-      <div class="border-t pt-4">
-        <p><strong>Contacts:</strong></p>
-        <div class="mt-2">
-          <div *ngFor="let contact of selectedCandidate.contacts">
-            <span *ngIf="contact.contactType === 'Email'">
-              <i class="pi pi-envelope mr-1"></i>{{ contact.contactValue }}
-            </span>
-            <span *ngIf="contact.contactType === 'Phone'">
-              <i class="pi pi-phone mr-1"></i>{{ contact.contactValue }}
-            </span>
-          </div>
-        </div>
-      </div>
-
     </div>
   </ng-container>
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
-      <button pButton label="Close" class="p-button-secondary" (click)="displayDetailsDialog = false"></button>
+      <button pButton label="Cancel" class="p-button-secondary" (click)="showConvocateDialog = false"></button>
+      <button pButton label="Confirm" class="p-button-primary" (click)="confirmConvocation()"></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<!-- Create New Evaluation Type Dialog -->
+<p-dialog header="Create Evaluation Type" [(visible)]="showNewEvalDialog" [modal]="true" [style]="{ width: '400px' }">
+  <div class="p-4 space-y-4">
+    <div class="field">
+      <label>Description</label>
+      <input pInputText [(ngModel)]="newEvaluationType.description" class="w-full" placeholder="Description"/>
+    </div>
+    <div class="field">
+      <label>Coefficient</label>
+      <p-inputNumber [(ngModel)]="newEvaluationType.coefficient" [min]="1" [max]="10" class="w-full"></p-inputNumber>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <button pButton label="Cancel" class="p-button-secondary" (click)="showNewEvalDialog = false"></button>
+      <button pButton label="Create" class="p-button-primary" (click)="createEvaluationType()"></button>
     </div>
   </ng-template>
 </p-dialog>

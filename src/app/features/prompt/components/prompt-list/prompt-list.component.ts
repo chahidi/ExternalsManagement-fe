@@ -172,4 +172,14 @@ export class PromptListComponent implements OnInit {
       },
     });
   }
+  prettySchema(raw: string | null | undefined): string {
+    if (!raw) return '';
+    try {
+      const parsed = JSON.parse(raw);
+      return JSON.stringify(parsed, null, 2);
+    } catch {
+      return raw;
+    }
+  }
 }
+  

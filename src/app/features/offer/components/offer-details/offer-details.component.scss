@@ -94,12 +94,17 @@
 .skills-section,
 .responsibilities-section,
 .education-section,
+.keywords-section,
 .languages-section {
-    >div.flex>span {
+    >div.flex {
         color: var(--primary-color);
     }
 }
 
 .keywords-title {
+    color: var(--primary-color);
+}
+
+ul li::marker {
     color: var(--primary-color);
 }

@@ -17,6 +17,9 @@ import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
 import {EvaluationTypeService } from '../../../../core/services/evaluation-type.service';
 import { EvaluationType } from '../../../../core/models/evaluation-type';
+import { InterviewService } from '../../../../core/services/interview.service';
+import { CreateInterview } from '../../../../core/models/create-interview';
+import { switchMap, finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recommended-candidates',
@@ -53,7 +56,7 @@ export class RecommendedCandidatesComponent implements OnInit {
   showConvocateDialog = false;
   showNewEvalDialog = false;
 
-  selectedCandidate: CandidateOffer | null = null;
+  selectedCandidate!: CandidateOffer;
 
   evaluationTypes: EvaluationType[] = [];
   newEvaluationType: EvaluationType = { id: '', description: '', coefficient: 1 };
@@ -70,7 +73,8 @@ export class RecommendedCandidatesComponent implements OnInit {
     private candidateService: CandidateService,
     private loader: LoaderService,
     private notify: NotificationService,
-    private evaluationTypeService: EvaluationTypeService
+    private evaluationTypeService: EvaluationTypeService,
+    private interviewService: InterviewService
   ) {}
 
   ngOnInit(): void {
@@ -167,6 +171,42 @@ export class RecommendedCandidatesComponent implements OnInit {
   }
 
   confirmConvocation() {
+  if (!this.selectedCandidate) return;
 
+  if (!this.interviewConfig.description || !this.interviewConfig.schedule) {
+    this.notify.showError('Validation Error', 'Please provide description and schedule.');
+    return;
   }
+
+  const payload = {
+    scheduledAt: this.interviewConfig.schedule,
+    description: this.interviewConfig.description,
+    feedbackGeneral: '',
+    comment: '',
+    estimatedDuration: this.interviewConfig.duration,
+    candidateId: this.selectedCandidate.id,
+    offerId: this.offerId,
+    numberOfQuestions: this.interviewConfig.totalQuestions
+  };
+
+  this.loader.show('Creating interview...');
+
+  this.interviewService.createInterview(payload).pipe(
+    switchMap(createdInterview =>
+      this.interviewService.generateAndSaveInterviewLink(createdInterview).pipe(
+        switchMap(() => this.interviewService.sendEmail(createdInterview)),
+        tap(() => {
+          this.notify.showSuccess('Success', 'Interview created, link generated, and email sent.');
+          this.showConvocateDialog = false;
+        })
+      )
+    ),
+    finalize(() => this.loader.hide())
+  ).subscribe({
+    error: () => this.notify.showError('Error', 'Something went wrong during interview convocation')
+  });
+}
+
+
+
 }

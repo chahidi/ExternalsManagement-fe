@@ -7,6 +7,8 @@ import { InterviewInstance } from '../models/interview-instance';
 import { GenerateInterviewLinkPayload, SendInterviewEmailPayload } from '../api/interview-payload';
 import { ERROR_MESSAGES } from '../constants/error-messages.const';
 import { Question } from '../models/question';
+import { CreateInterview } from '../models/create-interview';
+import { GenerateInterviewQuestionsRequest } from '../models/generate-interview-questions-request';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
@@ -15,6 +17,24 @@ export class InterviewService {
     public loading$ = this.loadingSubject.asObservable();
 
     constructor(private http: HttpClient) {}
+
+    createInterview(payload: CreateInterview): Observable<InterviewInstance> {
+        return this.http.post<InterviewInstance>(`${this.apiUrl}`, payload).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    }
+
+    generateInterviewQuestions(
+        interviewId: string,
+        payload: GenerateInterviewQuestionsRequest
+        ): Observable<Question[]> {
+        return this.http.post<Question[]>(`${this.apiUrl}/${interviewId}/generateQuestions`, payload).pipe(
+            retry(2),
+            catchError(this.handleError)
+        );
+    }
+
 
     getInterviews = (): Observable<InterviewInstance[]> => {
         return this.http.get<InterviewInstance[]>(`${this.apiUrl}`).pipe(retry(2), catchError(this.handleError));

@@ -5,6 +5,6 @@ export interface Question {
   id: string;
   description: string;
   durationInMinutes: number;
-  interview: InterviewInstance;
+  interviewId: string;
   answer?: Answer;
 }

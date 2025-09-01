@@ -22,7 +22,7 @@ export const INTERVIEW_RULES: InterviewRule[] = [
   },
   {
     icon: 'pi pi-globe',
-    title: 'Browser Requirements',
+    title: 'Browser Requirements (Chrome or Edge)',
     description: 'Use only Chrome or Edge browser for optimal performance and compatibility.'
   },
   {

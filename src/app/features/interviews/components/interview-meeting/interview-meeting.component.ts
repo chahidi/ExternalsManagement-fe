@@ -596,6 +596,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
 
         this.finalizeInterviewAndSaveEvaluation();
+        this.recordingService.mergeChunks(this.interviewId,"");
         this.cleanupInterviewResources();
 
         console.log(

@@ -7,6 +7,7 @@ import { InterviewEvaluationDisplay } from '../models/interview-evaluation-displ
 import { Evaluation } from '../models/evaluation';
 import { Question } from '../models/question';
 import { handleError } from '../constants/http-const';
+import { QuestionsAndAnswersForEvaluationDTO } from '../models/interview-evaluation';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewEvaluationService {
@@ -29,7 +30,7 @@ export class InterviewEvaluationService {
     this.http.get<Evaluation[]>(`${this.interviewsUrl}/${interviewId}/evaluations?type=${evaluationTypeId}`)
       .pipe(retry(2), catchError(err => handleError('Fetching Evaluations by Type', err)));
 
-  prepareInterviewEvaluation = (prompt: string, questions: Question[]): Observable<Evaluation> =>
-    this.http.post<Evaluation>(`${this.evaluationsUrl}/evaluation`, { prompt, questions })
+  prepareInterviewEvaluation = (interviewId: string, questionsAndAnswers: QuestionsAndAnswersForEvaluationDTO[]): Observable<String> =>
+    this.http.post(`${this.interviewsUrl}/${interviewId}/evaluations`, { questionsAndAnswers },{ responseType: 'text' })
       .pipe(retry(2), catchError(err => handleError('Saving Interview Evaluation', err)));
 }

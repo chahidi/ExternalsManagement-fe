@@ -20,6 +20,7 @@ import { EvaluationType } from '../../../../core/models/evaluation-type';
 import { InterviewService } from '../../../../core/services/interview.service';
 import { CreateInterview } from '../../../../core/models/create-interview';
 import { switchMap, finalize, tap } from 'rxjs/operators';
+import { GenerateInterviewQuestionsRequest } from '../../../../core/models/generate-interview-questions-request';
 
 @Component({
   selector: 'app-recommended-candidates',
@@ -178,7 +179,7 @@ export class RecommendedCandidatesComponent implements OnInit {
     return;
   }
 
-  const payload = {
+  const payload : CreateInterview = {
     scheduledAt: this.interviewConfig.schedule,
     description: this.interviewConfig.description,
     feedbackGeneral: '',
@@ -191,22 +192,34 @@ export class RecommendedCandidatesComponent implements OnInit {
 
   this.loader.show('Creating interview...');
 
+  const evaluationtypeIds: GenerateInterviewQuestionsRequest = {
+    evaluationTypesIds: this.interviewConfig.criteria.map(c => c.id)
+  };
+
   this.interviewService.createInterview(payload).pipe(
     switchMap(createdInterview =>
-      this.interviewService.generateAndSaveInterviewLink(createdInterview).pipe(
-        switchMap(() => this.interviewService.sendEmail(createdInterview)),
-        tap(() => {
-          this.notify.showSuccess('Success', 'Interview created, link generated, and email sent.');
-          this.showConvocateDialog = false;
-        })
+      this.interviewService.generateInterviewQuestions(
+        createdInterview.id,
+        evaluationtypeIds
+      ).pipe(
+        switchMap(() =>
+          this.interviewService.generateAndSaveInterviewLink(createdInterview).pipe(
+            switchMap(() => this.interviewService.sendEmail(createdInterview)),
+            tap(() => {
+              this.notify.showSuccess(
+                'Success',
+                'Interview created, questions generated, link generated, and email sent.'
+              );
+              this.showConvocateDialog = false;
+            })
+          )
+        )
       )
     ),
     finalize(() => this.loader.hide())
   ).subscribe({
-    error: () => this.notify.showError('Error', 'Something went wrong during interview convocation')
+    error: () =>
+      this.notify.showError('Error', 'Something went wrong during interview convocation')
   });
-}
-
-
-
+  }
 }

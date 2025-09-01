@@ -15,7 +15,7 @@ export class RecordingService {
   private retryDelay = 1000;
   private failedRequestsAfterMaxRetries: UploadChunkRequest[] = [];
 
-  private apiUrl = `${environment.apiInterviews}/v1/recordings`;
+  private apiUrl = `${environment.apiUrl}/v1/recordings`;
 
 
   constructor(private http: HttpClient) { }
@@ -27,9 +27,13 @@ export class RecordingService {
   uploadChunk = (request: UploadChunkRequest): Observable<string> => {
     const headers = new HttpHeaders();
 
+    const formData = new FormData();
+    formData.append('interviewId', request.interviewId);
+    formData.append('sequence', request.sequence.toString());
+    formData.append('chunk', request.chunk);
     return this.http.post<string>(
       `${this.apiUrl}/upload`,
-      request
+      formData
     );
   }
 
@@ -106,7 +110,7 @@ export class RecordingService {
     return this.http.post<string>(
       `${this.apiUrl}/merge`,
       request
-    ).pipe(catchError((err)=>handleError("Interview",err)));
+    ).pipe(catchError((err) => handleError("Interview", err)));
     // I passed interview as the entity because in the merge function we fecth the interview not the recording
   }
 

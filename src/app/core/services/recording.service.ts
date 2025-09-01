@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Record } from '../models/record';
-import { firstValueFrom, Observable, retry,catchError, throwError } from 'rxjs';
+import { firstValueFrom, Observable, retry, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UploadChunkRequest } from '../models/uploadChunkRequest';
 
@@ -22,10 +22,10 @@ export class RecordingService {
     return this.http.post<Record>(this.apiUrl, record);
   }
 
-  uploadChunk = (request: UploadChunkRequest): Observable<any> => {
+  uploadChunk = (request: UploadChunkRequest): Observable<string> => {
     const headers = new HttpHeaders();
 
-    return this.http.post(
+    return this.http.post<string>(
       `${this.apiUrl}/upload`,
       request
     );
@@ -38,11 +38,7 @@ export class RecordingService {
       try {
         const response = await firstValueFrom(this.uploadChunk(request));
 
-        if (response && response.success) {
-          return true;
-        } else {
-          throw new Error('Server did not confirm success');
-        }
+        return true;
       } catch (err: any) {
         retryCount++;
         console.error(`Failed to upload chunk ${request.sequence}, attempt ${retryCount}:`, err);
@@ -52,11 +48,14 @@ export class RecordingService {
           const errMsg = typeof err === 'string'
             ? err
             : (err?.error?.message || err?.message || 'Unknown error');
+          console.error(errMsg);
+          this.failedRequestsAfterMaxRetries.push(request);
+          throw Error(errMsg);
         }
       }
     }
 
-    this.failedRequestsAfterMaxRetries.push(request);
+
     return false;
   }
 
@@ -82,7 +81,7 @@ export class RecordingService {
       } catch (err) {
         failedNow.push(chunk);
         console.error('Unexpected error while retrying chunk:', err);
-        throw Error('Unexpected error while retrying chunk: '+err) 
+        throw Error('Unexpected error while retrying chunk: ' + err)
       }
     }
 

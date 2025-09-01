@@ -4,6 +4,8 @@ import { Record } from '../models/record';
 import { firstValueFrom, Observable, retry, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UploadChunkRequest } from '../models/uploadChunkRequest';
+import { MergeRecordings } from '../models/merge-recordings';
+import { handleError } from '../constants/http-const';
 
 @Injectable({
   providedIn: 'root'
@@ -94,4 +96,18 @@ export class RecordingService {
       throw Error(`Still ${this.failedRequestsAfterMaxRetries.length} chunks failed after retry.`)
     }
   }
+
+  mergeChunks = (interviewId: string, transcript: string): Observable<string> => {
+    const request: MergeRecordings = {
+      interviewId: interviewId,
+      transcript: transcript
+    }
+
+    return this.http.post<string>(
+      `${this.apiUrl}/merge`,
+      request
+    ).pipe(catchError((err)=>handleError("Interview",err)));
+    // I passed interview as the entity because in the merge function we fecth the interview not the recording
+  }
+
 }

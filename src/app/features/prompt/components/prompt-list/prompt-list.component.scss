@@ -276,3 +276,47 @@
 ::ng-deep .p-datatable-thead > tr > th {
   text-align: center;
 }
+
+// Enhanced prompt text display
+.prompt-text-display {
+  padding: 20px;
+  background: #ffffff;
+
+  .formatted-content {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.7;
+    color: #2c3e50;
+    font-size: 14px;
+
+    p {
+      margin: 0 0 16px 0;
+      text-align: justify;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &.structured {
+      p {
+        margin-bottom: 12px;
+
+        &:has(br:first-child) {
+          margin-top: 8px;
+        }
+      }
+
+      br + br {
+        margin-top: 8px;
+      }
+    }
+
+    br {
+      line-height: 1.8;
+    }
+
+    &:contains('#') {
+      font-weight: 500;
+    }
+  }
+}

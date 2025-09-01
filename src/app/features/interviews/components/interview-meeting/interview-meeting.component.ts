@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
-import { RecordService } from '../../../../core/services/recording.service';
+import { RecordingService } from '../../../../core/services/recording.service';
 import { Record } from '../../../../core/models/record';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
@@ -42,6 +42,7 @@ import { Router } from '@angular/router';
 import { cameraTransition, slideInInterview, fadeInControls, slideInTranscript } from '../../../../shared/layout/animations/interview-meeting.animations';
 import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 import { QuestionsAndAnswersForEvaluationDTO } from '../../../../core/models/interview-evaluation';
+import { UploadChunkRequest } from '../../../../core/models/uploadChunkRequest';
 
 @Component({
     selector: 'app-interview-meeting',
@@ -102,9 +103,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     chunkTimer: any;
     // with this the chunks will be sent each 100 seconds you can change it based on your needs
     private chunkInterval = 100000;
+    private chunkSequence = 0;
 
     constructor(
-        private recordService: RecordService,
+        private recordingService: RecordingService,
         private promptService: PromptService,
         // Removed: private tts: TextToSpeechService,
         private evaluationService: InterviewEvaluationService,
@@ -114,8 +116,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private interviewService: InterviewService,
-        private tokenValidationService: TokenValidationService
-    ) {}
+        private tokenValidationService: TokenValidationService,
+    ) { }
 
     ngOnInit(): void {
         this.initializeComponent();
@@ -321,6 +323,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     private setupMediaRecorder(): void {
         this.recordedChunks = [];
+        this.chunkSequence = 0;
+
         this.mediaRecorder = new MediaRecorder(this.stream!, {
             mimeType: 'video/webm;codecs=vp9'
         });
@@ -328,7 +332,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
             if (event.data.size > 0) {
+                console.log(` Chunk ${this.chunkSequence} received, size: ${event.data.size} bytes`);
+
                 this.recordedChunks.push(event.data);
+                this.uploadChunkImmediately(event.data);
             }
         };
 
@@ -339,14 +346,34 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.startChunkRecording();
     }
 
-    private startChunkRecording():void{
+    private startChunkRecording(): void {
         this.mediaRecorder.start();
 
-        this.chunkTimer = setInterval(() =>{
-            if(this.mediaRecorder && this.mediaRecorder.state==='recording'){
+        this.chunkTimer = setInterval(() => {
+            if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
                 this.mediaRecorder.requestData();
             }
         }, this.chunkInterval)
+    }
+
+    private async uploadChunkImmediately(chunkBlob: Blob): Promise<void> {
+
+        const req: UploadChunkRequest = {
+            interviewId: this.interviewId,
+            chunk: chunkBlob,
+            sequence: this.chunkInterval
+        }
+        try {
+            const success = await this.recordingService.uploadChunkWithRetry(req);
+            if (!success) {
+                console.error(`Failed to upload chunk with sequence ${req.sequence}`);
+                this.notify.showError('Error', 'Failed to upload chunk with sequence ${req.sequence}')
+            }
+            this.chunkSequence++;
+        }
+        catch (error: any) {
+            this.notify.showError("Error", error)
+        }
     }
 
     private processRecordedData(): void {
@@ -365,7 +392,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             transcriptionFileUrl: ''
         };
 
-        this.recordService.saveRecord(this.interviewRecord).subscribe({
+        this.recordingService.saveRecord(this.interviewRecord).subscribe({
             next: () => {
                 console.log('✅ Record saved');
                 this.finalizeRecording();
@@ -599,13 +626,21 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    finalizeRecording(): void {
+    async finalizeRecording(): Promise<void> {
         this.isInterviewFinalizing = false;
         this.isInterviewCompleted = true;
         console.log(
             'All answers captured via speech:',
             this.questions.map((q) => q.answer)
         );
+
+        try {
+            await this.recordingService.retryFailedUploads();
+        } catch (err) {
+            console.error('Error retrying failed uploads:', err);
+            const errorMsg = err instanceof Error ? err.message : String(err);
+            this.notify.showError('Error retrying failed uploads', errorMsg);
+        }
         window.scrollTo(0, 0);
         this.notify.showSuccess('Interview Completed', 'Your interview has been successfully recorded and saved.');
     }
@@ -621,7 +656,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             realAnswerTime: q.answer?.durationInMinutes ?? undefined
         }));
 
-        this.evaluationService.prepareInterviewEvaluation(this.interviewId,questionsAndAnswers).subscribe({
+        this.evaluationService.prepareInterviewEvaluation(this.interviewId, questionsAndAnswers).subscribe({
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');
@@ -639,6 +674,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     private cleanupInterviewResources(): void {
         this.stopSpeechRecognition();
         this.clearQuestionTimer();
+        if (this.chunkTimer) {
+            clearInterval(this.chunkTimer);
+            this.chunkTimer = null;
+        }
         this.releaseMediaStream();
         this.removeEventListeners();
         this.exitFullscreenMode();

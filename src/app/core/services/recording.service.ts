@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class RecordService {
   // Mockoon endpoint
-  private apiUrl = `${environment.apiInterviews}/records`;
+  private apiUrl = `${environment.apiInterviews}/recordings`;
 
 
   constructor(private http: HttpClient) { }

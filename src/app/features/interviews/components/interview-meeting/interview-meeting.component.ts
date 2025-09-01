@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
-import { RecordService } from '../../../../core/services/record.service';
+import { RecordService } from '../../../../core/services/recording.service';
 import { Record } from '../../../../core/models/record';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
@@ -99,6 +99,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     private destroy$ = new Subject<void>();
     private eventListenersRegistered = false;
     interviewToken: any;
+    chunkTimer: any;
+    // with this the chunks will be sent each 100 seconds you can change it based on your needs
+    private chunkInterval = 100000;
 
     constructor(
         private recordService: RecordService,
@@ -333,7 +336,17 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.processRecordedData();
         };
 
+        this.startChunkRecording();
+    }
+
+    private startChunkRecording():void{
         this.mediaRecorder.start();
+
+        this.chunkTimer = setInterval(() =>{
+            if(this.mediaRecorder && this.mediaRecorder.state==='recording'){
+                this.mediaRecorder.requestData();
+            }
+        }, this.chunkInterval)
     }
 
     private processRecordedData(): void {

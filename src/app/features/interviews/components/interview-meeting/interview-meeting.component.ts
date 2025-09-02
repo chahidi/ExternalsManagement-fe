@@ -500,7 +500,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             durationInMinutes: actualDurationMinutes
         };
 
-        this.answerService.createAnswer(answerData).subscribe({
+        this.answerService.createAnswerForQuestion(answerData).subscribe({
             next: (response) => {
                 console.log('Answer saved to backend:', response);
             },
@@ -562,7 +562,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             durationInMinutes: actualDurationMinutes
         };
 
-        this.answerService.createAnswer(answerData).subscribe({
+        this.answerService.createAnswerForQuestion(answerData).subscribe({
             next: (response) => {
                 console.log('Empty answer saved:', response);
             },

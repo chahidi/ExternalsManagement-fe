@@ -8,15 +8,21 @@ export interface CreateAnswerRequest {
   durationInMinutes: number;
 }
 
+export interface AnswerResponse {
+  id: string;
+  description: string;
+  durationInMinutes: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AnswerService {
-  private readonly baseUrl = `http://localhost:3001/answers`;
+  private readonly baseUrl = `http://localhost:8080/api/v1/answers`;
 
   constructor(private http: HttpClient) {}
 
-  createAnswer(answerData: CreateAnswerRequest): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/create`, answerData);
+  createAnswerForQuestion(answerData: CreateAnswerRequest): Observable<AnswerResponse> {
+    return this.http.post<AnswerResponse>(`${this.baseUrl}/for-question`, answerData);
   }
 }

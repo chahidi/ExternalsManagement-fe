@@ -3,7 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { INTERVIEW_RULES, InterviewRule } from '../../../../core/constants/interview-rules.const';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -104,6 +104,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     // with this the chunks will be sent each 100 seconds you can change it based on your needs
     private chunkInterval = 100000;
     private chunkSequence = 0;
+    private lastChunkBlob: Blob | null = null;
+    private inflight = new Set<Promise<any>>();
 
     constructor(
         private recordingService: RecordingService,
@@ -335,12 +337,22 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 console.log(` Chunk ${this.chunkSequence} received, size: ${event.data.size} bytes`);
 
                 this.recordedChunks.push(event.data);
-                this.uploadChunkImmediately(event.data);
+                this.lastChunkBlob = event.data;
+                if (this.mediaRecorder.state === 'recording') {
+                    this.uploadChunkImmediately(event.data);
+                }
+
+                this.chunkSequence++;
             }
         };
 
         this.mediaRecorder.onstop = () => {
-            this.processRecordedData();
+            clearInterval(this.chunkTimer);
+            this.mediaRecorder.requestData();
+            setTimeout(async () => {
+                await this.mergeChunksAfterMediaRecorderStop();
+                console.log('All chunks merged and interview finalized.');
+            }, 100);
         };
 
         this.startChunkRecording();
@@ -361,47 +373,55 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const req: UploadChunkRequest = {
             interviewId: this.interviewId,
             chunk: chunkBlob,
-            sequence: this.chunkInterval
+            sequence: this.chunkSequence
         }
-        try {
-            const success = await this.recordingService.uploadChunkWithRetry(req);
-            if (!success) {
-                console.error(`Failed to upload chunk with sequence ${req.sequence}`);
-                this.notify.showError('Error', 'Failed to upload chunk with sequence ${req.sequence}')
-            }
-            this.chunkSequence++;
-        }
-        catch (error: any) {
-            this.notify.showError("Error", error)
-        }
+
+        const uploadPromise = this.recordingService.uploadChunkWithRetry(req)
+            .catch((error) => {
+                console.error('Chunk upload failed:', error);
+                this.notify.showError("Error", error);
+            })
+            .finally(() => {
+                this.inflight.delete(uploadPromise);
+            });
+
+        this.inflight.add(uploadPromise);
+
+        await uploadPromise;
     }
 
-    private processRecordedData(): void {
-        const blob = new Blob(this.recordedChunks, { type: 'video/webm' });
-        this.recordedBlobUrl = URL.createObjectURL(blob);
-        const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
+    private async mergeChunksAfterMediaRecorderStop() {
+        try {
+            await this.recordingService.retryFailedUploads();
 
-        this.interviewRecord = {
-            id: Date.now().toString(),
-            interviewId: 1,
-            recordedAt: new Date(),
-            durationInSeconds: duration,
-            fileName: `interview-${Date.now()}.webm`,
-            fileUrl: this.recordedBlobUrl,
-            uploaded: false,
-            transcriptionFileUrl: ''
-        };
-
-        this.recordingService.saveRecord(this.interviewRecord).subscribe({
-            next: () => {
-                console.log('✅ Record saved');
-                this.finalizeRecording();
-            },
-            error: (err) => {
-                console.error('❌ Error saving record:', err);
-                this.finalizeRecording();
+            if (this.inflight.size > 0) {
+                console.log(`Waiting for ${this.inflight.size} pending uploads to complete...`);
+                await Promise.all(this.inflight);
             }
-        });
+
+            if (this.lastChunkBlob) {
+                try {
+
+                    await firstValueFrom(
+                        this.recordingService.mergeChunks(
+                            this.interviewId,
+                            '',
+                            this.lastChunkBlob
+                        )
+                    );
+                } catch (error) {
+                    console.error('Final chunk processing failed:', error);
+                }
+            }
+
+        } catch (error) {
+            console.error('Final processing failed:', error);
+            this.notify.showError(
+                'Merge Error',
+                `Failed to merge interview chunks: ${error instanceof Error ? error.message : error}`
+            );
+
+        }
     }
 
     private attachEventListeners(): void {
@@ -596,7 +616,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
 
         this.finalizeInterviewAndSaveEvaluation();
-        this.recordingService.mergeChunks(this.interviewId,"");
+
         this.cleanupInterviewResources();
 
         console.log(
@@ -635,13 +655,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.questions.map((q) => q.answer)
         );
 
-        try {
-            await this.recordingService.retryFailedUploads();
-        } catch (err) {
-            console.error('Error retrying failed uploads:', err);
-            const errorMsg = err instanceof Error ? err.message : String(err);
-            this.notify.showError('Error retrying failed uploads', errorMsg);
-        }
         window.scrollTo(0, 0);
         this.notify.showSuccess('Interview Completed', 'Your interview has been successfully recorded and saved.');
     }

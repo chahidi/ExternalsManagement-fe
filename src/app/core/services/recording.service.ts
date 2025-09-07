@@ -101,10 +101,11 @@ export class RecordingService {
     }
   }
 
-  mergeChunks = (interviewId: string, transcript: string): Observable<string> => {
+  mergeChunks = (interviewId: string, transcript: string, lastChunk: Blob): Observable<string> => {
     const request: MergeRecordings = {
       interviewId: interviewId,
-      transcript: transcript
+      transcript: transcript,
+      chunk: lastChunk
     }
 
     return this.http.post<string>(

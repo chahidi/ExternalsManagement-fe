@@ -21,6 +21,8 @@ import { InterviewService } from '../../../../core/services/interview.service';
 import { CreateInterview } from '../../../../core/models/create-interview';
 import { switchMap, finalize, tap } from 'rxjs/operators';
 import { GenerateInterviewQuestionsRequest } from '../../../../core/models/generate-interview-questions-request';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-recommended-candidates',
@@ -38,10 +40,12 @@ import { GenerateInterviewQuestionsRequest } from '../../../../core/models/gener
     InputTextModule,
     LoaderComponent,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    ToastModule
   ],
   templateUrl: './recommended-candidates.component.html',
-  styleUrls: ['./recommended-candidates.component.scss']
+  styleUrls: ['./recommended-candidates.component.scss'],
+  providers:[MessageService]
 })
 export class RecommendedCandidatesComponent implements OnInit {
   @Input() offerId!: string;
@@ -65,6 +69,8 @@ export class RecommendedCandidatesComponent implements OnInit {
 
 
   interviewForm!:FormGroup;
+  isCreating = false;
+
 
   constructor(
     private candidateService: CandidateService,
@@ -72,7 +78,8 @@ export class RecommendedCandidatesComponent implements OnInit {
     private notify: NotificationService,
     private evaluationTypeService: EvaluationTypeService,
     private interviewService: InterviewService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private messageService: MessageService,
   ) {}
 
   ngOnInit(): void {
@@ -191,14 +198,12 @@ export class RecommendedCandidatesComponent implements OnInit {
     offerId: this.offerId,
     numberOfQuestions: this.interviewForm.value.totalQuestions
   };
-  console.log("payload = ");
-  console.log(payload);
-
-  this.loader.show('Creating interview...');
 
   const evaluationtypeIds: GenerateInterviewQuestionsRequest = {
     evaluationTypesIds: this.interviewForm.value.criteria
   };
+
+  this.isCreating = true;
 
   this.interviewService.createInterview(payload).pipe(
     switchMap(createdInterview =>
@@ -214,16 +219,26 @@ export class RecommendedCandidatesComponent implements OnInit {
                 'Success',
                 'Interview created, questions generated, link generated, and email sent.'
               );
+              this.messageService.add({ 
+                severity: 'success', 
+                summary: 'Success', 
+                detail: 'Interview created successfully!' 
+              });
+
               this.showConvocateDialog = false;
             })
           )
         )
       )
     ),
-    finalize(() => this.loader.hide())
+    finalize(() => this.isCreating = false)
   ).subscribe({
     error: () =>
-      this.notify.showError('Error', 'Something went wrong during interview convocation')
+     this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Failed', 
+        detail: 'An error occurred during the creation of the interview.' 
+      })
   });
   }
 }

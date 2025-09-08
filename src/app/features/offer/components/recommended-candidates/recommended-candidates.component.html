@@ -1,6 +1,7 @@
 @if (isLoading$ | async) {
-  <app-loader [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
-} @else {
+  <app-loader  [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
+}
+<p-toast></p-toast>
   <div class="offer-container">
     <p-card class="shadow-md rounded-2xl border border-gray-200 p-6 mb-6 transition hover:shadow-lg">
       <div class="flex flex-col w-full px-4">
@@ -271,7 +272,7 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <button pButton label="Cancel" class="p-button-secondary" (click)="showConvocateDialog = false"></button>
-      <button pButton label="Confirm" class="p-button-primary" [disabled]="interviewForm.invalid" (click)="confirmConvocation()"></button>
+      <button pButton label="Confirm" class="p-button-primary"  [loading]="isCreating" [disabled]="interviewForm.invalid" (click)="confirmConvocation()"></button>
     </div>
   </ng-template>
 </p-dialog>
@@ -302,4 +303,3 @@
       </div>
     </p-card>
   </div>
-}

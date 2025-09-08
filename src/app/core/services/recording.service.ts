@@ -102,15 +102,14 @@ export class RecordingService {
   }
 
   mergeChunks = (interviewId: string, transcript: string, lastChunk: Blob): Observable<string> => {
-    const request: MergeRecordings = {
-      interviewId: interviewId,
-      transcript: transcript,
-      chunk: lastChunk
-    }
+    const formData = new FormData();
+    formData.append("interviewId",interviewId)
+    formData.append("transcript",transcript)
+    formData.append("chunk",lastChunk)
 
     return this.http.post<string>(
       `${this.apiUrl}/merge`,
-      request
+      formData
     ).pipe(catchError((err) => handleError("Interview", err)));
     // I passed interview as the entity because in the merge function we fecth the interview not the recording
   }

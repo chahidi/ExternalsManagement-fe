@@ -348,7 +348,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         this.mediaRecorder.onstop = () => {
             clearInterval(this.chunkTimer);
-            this.mediaRecorder.requestData();
             setTimeout(async () => {
                 await this.mergeChunksAfterMediaRecorderStop();
                 console.log('All chunks merged and interview finalized.');

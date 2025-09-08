@@ -203,49 +203,66 @@
 <!-- Convocate Dialog -->
 <p-dialog header="Convocate Candidate" [(visible)]="showConvocateDialog" [modal]="true" [style]="{ width: '600px' }">
   <ng-container *ngIf="selectedCandidate">
-    <div class="p-4 space-y-6">
+    <div class="p-4 space-y-6" [formGroup]="interviewForm">
       <p><strong>Candidate:</strong> {{ selectedCandidate.fullName }}</p>
 
+      <!-- Description -->
       <div class="field">
         <label class="block mb-2 font-medium">Description</label>
-        <input pInputText [(ngModel)]="interviewConfig.description" class="w-full" placeholder="Interview description"/>
+        <input pInputText formControlName="description" class="w-full" placeholder="Interview description"/>
+        <small *ngIf="interviewForm.get('description')?.invalid && interviewForm.get('description')?.touched"
+               class="text-red-500 pt-1 block">
+          Description is required.
+        </small>
       </div>
 
+      <!-- Schedule -->
       <div class="field">
         <label class="block mb-2 font-medium">Schedule</label>
-        <p-datepicker
-          [(ngModel)]="interviewConfig.schedule"
-          dateFormat="yy-mm-dd"
-          showIcon="true"
-          [appendTo]="'body'"
-          class="w-full">
-        </p-datepicker>
+        <p-datepicker formControlName="schedule" dateFormat="yy-mm-dd" showIcon="true" [appendTo]="'body'" class="w-full"></p-datepicker>
+        <small *ngIf="interviewForm.get('schedule')?.invalid && interviewForm.get('schedule')?.touched"
+               class="text-red-500 pt-1 block">
+          Schedule is required.
+        </small>
       </div>
 
+      <!-- Evaluation Criteria -->
       <div class="field">
         <label class="block mb-2 font-medium">Evaluation Criteria</label>
-        <p-multiSelect
-          [options]="evaluationTypes"
-          optionLabel="description"
-          optionValue="id"
-          [(ngModel)]="interviewConfig.criteria"
-          placeholder="Select Criteria"
-          display="chip"
-          [appendTo]="'body'"
-          class="w-full">
+        <p-multiSelect [options]="evaluationTypes"
+                       optionLabel="description"
+                       optionValue="id"
+                       formControlName="criteria"
+                       placeholder="Select Criteria"
+                       display="chip"
+                       [appendTo]="'body'"
+                       class="w-full">
         </p-multiSelect>
+        <small *ngIf="interviewForm.get('criteria')?.invalid && interviewForm.get('criteria')?.touched"
+               class="text-red-500 pt-1 block">
+          Select at least one criteria.
+        </small>
         <button pButton label="Add New Type" icon="pi pi-plus" class="p-button-text mt-3"
                 (click)="showNewEvalDialog = true"></button>
       </div>
 
+      <!-- Total Questions & Duration -->
       <div class="grid grid-cols-2 gap-6">
         <div>
           <label class="block mb-2 font-medium">Total Questions</label>
-          <p-inputNumber [(ngModel)]="interviewConfig.totalQuestions" [min]="5" [max]="100" class="w-full"></p-inputNumber>
+          <p-inputNumber formControlName="totalQuestions" [min]="5" [max]="100" class="w-full"></p-inputNumber>
+          <small *ngIf="interviewForm.get('totalQuestions')?.invalid && interviewForm.get('totalQuestions')?.touched"
+                 class="text-red-500 pt-1 block">
+            Must be at least 5 question.
+          </small>
         </div>
         <div>
           <label class="block mb-2 font-medium">Duration (mins)</label>
-          <p-inputNumber [(ngModel)]="interviewConfig.duration" [min]="10" [max]="300" class="w-full"></p-inputNumber>
+          <p-inputNumber formControlName="duration" [min]="10" [max]="300" class="w-full"></p-inputNumber>
+          <small *ngIf="interviewForm.get('duration')?.invalid && interviewForm.get('duration')?.touched"
+                 class="text-red-500 pt-1 block">
+            Must be between at least 10 minute.
+          </small>
         </div>
       </div>
     </div>
@@ -254,10 +271,11 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <button pButton label="Cancel" class="p-button-secondary" (click)="showConvocateDialog = false"></button>
-      <button pButton label="Confirm" class="p-button-primary" (click)="confirmConvocation()"></button>
+      <button pButton label="Confirm" class="p-button-primary" [disabled]="interviewForm.invalid" (click)="confirmConvocation()"></button>
     </div>
   </ng-template>
 </p-dialog>
+
 
 
 <!-- Create New Evaluation Type Dialog -->

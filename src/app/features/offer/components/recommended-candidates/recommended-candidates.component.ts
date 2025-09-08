@@ -14,7 +14,7 @@ import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
 import { TooltipModule } from 'primeng/tooltip';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {EvaluationTypeService } from '../../../../core/services/evaluation-type.service';
 import { EvaluationType } from '../../../../core/models/evaluation-type';
 import { InterviewService } from '../../../../core/services/interview.service';
@@ -27,7 +27,6 @@ import { GenerateInterviewQuestionsRequest } from '../../../../core/models/gener
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     TooltipModule,
     CardModule,
     TableModule,
@@ -37,7 +36,9 @@ import { GenerateInterviewQuestionsRequest } from '../../../../core/models/gener
     MultiSelectModule,
     InputNumberModule,
     InputTextModule,
-    LoaderComponent
+    LoaderComponent,
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './recommended-candidates.component.html',
   styleUrls: ['./recommended-candidates.component.scss']
@@ -62,20 +63,16 @@ export class RecommendedCandidatesComponent implements OnInit {
   evaluationTypes: EvaluationType[] = [];
   newEvaluationType: EvaluationType = { id: '', description: '', coefficient: 1 };
 
-  interviewConfig = {
-    description: '',
-    schedule: null as Date | null,
-    criteria: [] as EvaluationType[],
-    totalQuestions: 10,
-    duration: 30
-  };
+
+  interviewForm!:FormGroup;
 
   constructor(
     private candidateService: CandidateService,
     private loader: LoaderService,
     private notify: NotificationService,
     private evaluationTypeService: EvaluationTypeService,
-    private interviewService: InterviewService
+    private interviewService: InterviewService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +86,13 @@ export class RecommendedCandidatesComponent implements OnInit {
 
     this.loadRecommendedCandidatesForOffer(this.offerId);
     this.loadEvaluationTypes();
+    this.interviewForm = this.fb.group({
+      description: ['',Validators.required],
+      schedule: [null,Validators.required],
+      criteria: [[],[Validators.required,Validators.minLength(1)]],
+      totalQuestions: [10,[Validators.required,Validators.min(5)]],
+      duration: [30,[Validators.required,Validators.min(10)]]
+    })
   }
 
   private loadEvaluationTypes(): void {
@@ -162,38 +166,38 @@ export class RecommendedCandidatesComponent implements OnInit {
   }
 
   private resetInterviewConfig() {
-    this.interviewConfig = {
+    this.interviewForm.reset({
       description: '',
       schedule: null,
       criteria: [],
       totalQuestions: 10,
       duration: 30
-    };
+    });
   }
 
   confirmConvocation() {
-  if (!this.selectedCandidate) return;
-
-  if (!this.interviewConfig.description || !this.interviewConfig.schedule) {
-    this.notify.showError('Validation Error', 'Please provide description and schedule.');
-    return;
-  }
+    if (this.interviewForm.invalid) {
+      this.notify.showError('Validation Error', 'Please fill in all required fields.');
+      return;
+    }
 
   const payload : CreateInterview = {
-    scheduledAt: this.interviewConfig.schedule,
-    description: this.interviewConfig.description,
+    scheduledAt: this.interviewForm.value.schedule,
+    description: this.interviewForm.value.description,
     feedbackGeneral: '',
     comment: '',
-    estimatedDuration: this.interviewConfig.duration,
+    estimatedDuration: this.interviewForm.value.duration,
     candidateId: this.selectedCandidate.id,
     offerId: this.offerId,
-    numberOfQuestions: this.interviewConfig.totalQuestions
+    numberOfQuestions: this.interviewForm.value.totalQuestions
   };
+  console.log("payload = ");
+  console.log(payload);
 
   this.loader.show('Creating interview...');
 
   const evaluationtypeIds: GenerateInterviewQuestionsRequest = {
-    evaluationTypesIds: this.interviewConfig.criteria.map(c => c.id)
+    evaluationTypesIds: this.interviewForm.value.criteria
   };
 
   this.interviewService.createInterview(payload).pipe(

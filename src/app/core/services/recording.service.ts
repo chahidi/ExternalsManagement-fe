@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders , HttpErrorResponse} from '@angular/common/http';
 import { Record } from '../models/record';
-import { firstValueFrom, Observable, retry, catchError, throwError } from 'rxjs';
+import { firstValueFrom, Observable, retry, catchError, map ,of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UploadChunkRequest } from '../models/uploadChunkRequest';
-import { MergeRecordings } from '../models/merge-recordings';
 import { handleError } from '../constants/http-const';
 
 @Injectable({
@@ -31,9 +30,10 @@ export class RecordingService {
     formData.append('interviewId', request.interviewId);
     formData.append('sequence', request.sequence.toString());
     formData.append('chunk', request.chunk);
-    return this.http.post<string>(
+    return this.http.post(
       `${this.apiUrl}/upload`,
-      formData
+      formData,
+      { responseType: 'text' }
     );
   }
 
@@ -101,16 +101,26 @@ export class RecordingService {
     }
   }
 
-  mergeChunks = (interviewId: string, transcript: string, lastChunk: Blob): Observable<string> => {
+  mergeChunks = (interviewId: string, transcript: string, lastChunk: Blob): Observable<string | null> => {
     const formData = new FormData();
-    formData.append("interviewId",interviewId)
-    formData.append("transcript",transcript)
-    formData.append("chunk",lastChunk)
+    formData.append("interviewId", interviewId)
+    formData.append("transcript", transcript)
+    formData.append("chunk", lastChunk)
 
-    return this.http.post<string>(
+    return this.http.post(
       `${this.apiUrl}/merge`,
-      formData
-    ).pipe(catchError((err) => handleError("Interview", err)));
+      formData,
+      { responseType: 'text' }
+    ).pipe(
+      retry(3),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 404) {
+          console.warn(`Interview not found`);
+          return of(null); 
+        }
+        return handleError("Interview", err); 
+      })
+    );
     // I passed interview as the entity because in the merge function we fecth the interview not the recording
   }
 

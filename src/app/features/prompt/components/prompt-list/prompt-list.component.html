@@ -118,8 +118,12 @@
   [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
   [style]="{ width: '52rem', maxHeight: '75vh' }"
   header="{{ currentPrompt?.promptCode || 'Text' }}">
-  <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
-    {{ currentPrompt?.promptDesc }}
+  <div class="prompt-text-display" style="overflow:auto; max-height: 60vh;">
+    <div 
+      [innerHTML]="renderFormattedText(currentPrompt?.promptDesc)"
+      class="formatted-content"
+      [class.structured]="hasStructuredContent(currentPrompt?.promptDesc)">
+    </div>
   </div>
 </p-dialog>
 
@@ -133,8 +137,8 @@
   [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
   [style]="{ width: '52rem', maxHeight: '75vh' }"
   header="{{ (currentPrompt?.promptCode || 'Schema') + ' - Schema' }}">
-  <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
-    {{ currentPrompt?.schema }}
+  <div class="whitespace-pre-wrap text-base" style="overflow:auto; max-height: 60vh;">
+    {{ prettySchema(currentPrompt?.schema) }}
   </div>
 </p-dialog>
 

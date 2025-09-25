@@ -47,7 +47,7 @@ import { Observable, EMPTY } from 'rxjs';
   ],
   templateUrl: './recommended-candidates.component.html',
   styleUrls: ['./recommended-candidates.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService,NotificationService]
 })
 export class RecommendedCandidatesComponent implements OnInit {
   @Input() offerId!: string;
@@ -247,11 +247,10 @@ export class RecommendedCandidatesComponent implements OnInit {
       finalize(() => this.isCreating = false)
     ).subscribe({
       error: () =>
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: 'An error occurred during the creation of the interview.'
-        })
+        this.notify.showError(
+          'Failed',
+          'An error occurred during the creation of the interview.'
+        )
     });
   }
 

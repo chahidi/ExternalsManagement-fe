@@ -1,3 +1,4 @@
+
 import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -38,6 +39,8 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     error = { happened: false, message: '' };
     animatedScores: Record<string, number> = {};
 
+    overallEvaluation?: Evaluation;
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -77,6 +80,13 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 this.interviewEvaluation = data;
                 this.evaluations = data.evaluations ?? [];
                 this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
+                 this.overallEvaluation = this.evaluations.find(
+                e => e.evaluationType?.description === 'OverAll'
+            );
+
+            // Debug log
+            console.log('Evaluations loaded:', this.evaluations);
+            console.log('Overall evaluation:', this.overallEvaluation);
                 this.loading = false;
                 setTimeout(() => this.animateAllScores(), 100);
             },

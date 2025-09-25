@@ -45,6 +45,39 @@
             </div>
         </p-card>
 
+        <!-- OVERALL EVALUATION -->
+        @if (overallEvaluation) {
+        <p-card class="evaluation-card overall-card"
+                [ngClass]="getScoreRangeClass(overallEvaluation.score || 0)">
+            <div class="evaluation-center">
+                <div #overallScoreCircle
+                    class="score-circle-large"
+                    [style.--progress-degrees]="'0deg'"
+                    [style.--score-color]="getScoreColor(overallEvaluation.score || 0)">
+                    <div class="score-value-large"
+                        [class]="getScoreTextClass(overallEvaluation.score || 0)">
+                        {{ overallEvaluation.score != null
+                            ? getAnimatedScore(overallEvaluation.id)
+                            : 'N/A' }}
+                    </div>
+                </div>
+                <h3 class="evaluation-type-title">Overall Evaluation</h3>
+            </div>
+
+            <div class="evaluation-content">
+                <div class="feedback-section">
+                    <h4>Feedback</h4>
+                    <p>{{ overallEvaluation.feedback || 'No feedback available.' }}</p>
+                </div>
+                <div class="score-details">
+                    <span class="coefficient-label">Weight:</span>
+                    <span class="coefficient-value">{{ overallEvaluation.evaluationType.coefficient }}</span>
+                </div>
+            </div>
+        </p-card>
+        }
+
+
         <!-- SCORED EVALUATIONS -->
         <div class="evaluations-container">
             <div class="evaluations-grid">

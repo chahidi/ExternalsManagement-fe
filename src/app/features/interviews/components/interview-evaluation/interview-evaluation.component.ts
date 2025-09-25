@@ -105,6 +105,12 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         return isNaN(d.getTime()) ? null : d;
     }
 
+    getProgressDegrees(score: number): string {
+        const degrees = (score / 100) * 360; 
+        return degrees + 'deg';
+    }
+
+
     getRealDurationLabel(): string {
         const start = this.toDate(this.interview?.startTime) ?? this.toDate(this.interview?.scheduledAt);
         const end = this.toDate(this.interview?.endTime);
@@ -148,10 +154,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     animateScore(scoreElement: HTMLElement, evaluation: Evaluation): void {
         if (!scoreElement || evaluation.score == null) return;
         const finalScore = evaluation.score;
-        const finalDegrees = (finalScore / 100) * 360;
-        scoreElement.style.setProperty('--progress-degrees', `${finalDegrees}deg`);
-        scoreElement.style.setProperty('--score-color', this.getScoreColor(finalScore));
-        scoreElement.classList.add('animate', this.getScoreRangeClass(finalScore));
         this.animateScoreNumber(evaluation.id, finalScore);
         setTimeout(() => scoreElement.classList.add('pulse'), 2000);
     }

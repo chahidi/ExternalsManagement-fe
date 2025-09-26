@@ -44,22 +44,7 @@ type SpeechRecognitionState = {
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule,
-        ButtonModule,
-        CardModule,
-        MessageModule,
-        InputTextModule,
-        PanelModule,
-        ProgressSpinnerModule,
-        ToastModule,
-        DividerModule,
-        TagModule,
-        SkeletonModule,
-        AvatarModule,
-        ScrollPanelModule
-    ],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
     animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]
@@ -114,7 +99,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         sender: string;
         text: string;
         align: 'left' | 'right';
-        type: 'question' | 'answer'
+        type: 'question' | 'answer';
     }[] = [];
     currentTime: string = '';
     interviewRules: InterviewRule[] = INTERVIEW_RULES;
@@ -173,7 +158,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     private subscribeToTTSState(): void {
-        this.tts.isSpeaking$.pipe(takeUntil(this.destroy$)).subscribe(isSpeaking => {
+        this.tts.isSpeaking$.pipe(takeUntil(this.destroy$)).subscribe((isSpeaking) => {
             this.aiSpeaking = isSpeaking;
             this.cdr.detectChanges();
         });
@@ -212,7 +197,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     private smartPreloadInitialQuestions(): void {
         if (this.questions && this.questions.length > 0) {
-            const questionTexts = this.questions.map(q => q.description);
+            const questionTexts = this.questions.map((q) => q.description);
             this.tts.smartPreload(questionTexts, 0);
             console.log('Smart preloading started for first 3 questions');
         }
@@ -273,9 +258,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
-        this.currentTime = `${hours}:${minutes}`;
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        this.currentTime = `${hours}:${minutes}:${seconds}`;
     }
-
     async requestCameraPermission(): Promise<void> {
         try {
             console.log('Requesting camera permission...');
@@ -408,7 +393,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     private preloadUpcomingQuestions(): void {
         if (this.questions.length > 0) {
-            const questionTexts = this.questions.map(q => q.description);
+            const questionTexts = this.questions.map((q) => q.description);
             this.tts.smartPreload(questionTexts, this.currentQuestionIndex);
             const stats = this.tts.getCacheStats();
             console.log(`Cache stats: ${stats.size} items cached`);
@@ -603,7 +588,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         this.finalizeInterviewAndSaveEvaluation();
         this.cleanupInterviewResources();
-
     }
 
     finalizeInterviewAndSaveEvaluation(): void {
@@ -617,7 +601,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             return;
         }
 
-        const questionsAndAnswers: QuestionsAndAnswersForEvaluationDTO[] = this.questions.map(question => ({
+        const questionsAndAnswers: QuestionsAndAnswersForEvaluationDTO[] = this.questions.map((question) => ({
             questionDescription: question.description,
             answerDescription: question.answer?.description || '',
             estimatedAnswerTime: question.durationInMinutes,

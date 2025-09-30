@@ -44,7 +44,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         private evaluationService: InterviewEvaluationService,
         private messageService: MessageService,
         private notify: NotificationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.interview = history.state?.interview ?? null;
@@ -60,7 +60,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (stored) {
                 try {
                     this.interview = JSON.parse(stored);
-                } catch {}
+                } catch { }
             }
         }
 
@@ -135,16 +135,39 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (els[i]) this.animateScore(els[i].nativeElement, evaluation);
         });
     }
+
     animateScore(scoreElement: HTMLElement, evaluation: Evaluation): void {
         if (!scoreElement || evaluation.score == null) return;
         const finalScore = evaluation.score;
         const finalDegrees = (finalScore / 100) * 360;
-        scoreElement.style.setProperty('--progress-degrees', `${finalDegrees}deg`);
-        scoreElement.style.setProperty('--score-color', this.getScoreColor(finalScore));
-        scoreElement.classList.add('animate', this.getScoreRangeClass(finalScore));
-        this.animateScoreNumber(evaluation.id, finalScore);
-        setTimeout(() => scoreElement.classList.add('pulse'), 2000);
+
+        let start: number | null = null;
+        const duration = 2000;
+
+        const step = (ts: number) => {
+            if (!start) start = ts;
+            const progress = Math.min((ts - start) / duration, 1);
+            const eased = progress < 0.5
+                ? 4 * progress * progress * progress
+                : (progress - 1) * (2 * progress - 2) * (2 * progress - 2) + 1;
+
+            const currentDeg = eased * finalDegrees;
+            scoreElement.style.setProperty('--progress-degrees', `${currentDeg}deg`);
+            scoreElement.style.setProperty('--score-color', this.getScoreColor(finalScore));
+
+            this.animatedScores[evaluation.id] = Math.round(eased * finalScore);
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                this.animatedScores[evaluation.id] = finalScore;
+            }
+        };
+
+        requestAnimationFrame(step);
     }
+
+
     animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();

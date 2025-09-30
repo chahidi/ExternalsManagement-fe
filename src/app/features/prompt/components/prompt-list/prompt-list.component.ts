@@ -131,6 +131,25 @@ export class PromptListComponent implements OnInit {
     return words.slice(0, maxWords).join(' ') + '…';
   }
 
+  renderFormattedText(content: string | null | undefined): string {
+    if (!content) return '';
+    
+    if (content.includes('<') && content.includes('>')) {
+      return content;
+    }
+    return content
+      .replace(/\n\n/g, '</p><p>') 
+      .replace(/\n/g, '<br>') 
+      .replace(/^/, '<p>') 
+      .replace(/$/, '</p>')  
+      .replace(/<p><\/p>/g, '<p>&nbsp;</p>');
+  }
+
+  hasStructuredContent(content: string | null | undefined): boolean {
+    if (!content) return false;
+    return content.includes('\n\n') || content.includes('•') || content.includes('-') || content.includes('#');
+  }
+
   confirmDelete(id: string) {
     this.confirmationModalService.confirmDelete(() => {
       this.deletePrompt(id);
@@ -172,4 +191,14 @@ export class PromptListComponent implements OnInit {
       },
     });
   }
+  prettySchema(raw: string | null | undefined): string {
+    if (!raw) return '';
+    try {
+      const parsed = JSON.parse(raw);
+      return JSON.stringify(parsed, null, 2);
+    } catch {
+      return raw;
+    }
+  }
 }
+  

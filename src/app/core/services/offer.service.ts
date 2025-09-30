@@ -77,4 +77,10 @@ export class OfferService {
     return this.http.get<OfferFormattedDescription>(`${this.apiUrl}/${offerId}/formatted-description`)
     .pipe(retry(2));
   }
+
+  prepareOfferFormattedDescription(offerId: string): Observable<OfferFormattedDescription> {
+    return this.http.post<OfferFormattedDescription>(`${this.apiUrl}/${offerId}/prepare-formatted-description`,{})
+    .pipe(retry(2));
+  }
+
 }

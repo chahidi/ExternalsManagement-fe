@@ -1,7 +1,7 @@
 @if (isLoading$ | async) {
   <app-loader  [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
 }
-<p-toast></p-toast>
+<p-toast position="top-center"></p-toast>
   <div class="offer-container">
     <p-card class="shadow-md rounded-2xl border border-gray-200 p-6 mb-6 transition hover:shadow-lg">
       <div class="flex flex-col w-full px-4">

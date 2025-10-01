@@ -47,7 +47,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         private evaluationService: InterviewEvaluationService,
         private messageService: MessageService,
         private notify: NotificationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.interview = history.state?.interview ?? null;
@@ -63,7 +63,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (stored) {
                 try {
                     this.interview = JSON.parse(stored);
-                } catch {}
+                } catch { }
             }
         }
 
@@ -151,12 +151,15 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (els[i]) this.animateScore(els[i].nativeElement, evaluation);
         });
     }
+
     animateScore(scoreElement: HTMLElement, evaluation: Evaluation): void {
         if (!scoreElement || evaluation.score == null) return;
         const finalScore = evaluation.score;
         this.animateScoreNumber(evaluation.id, finalScore);
         setTimeout(() => scoreElement.classList.add('pulse'), 2000);
     }
+
+
     animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();

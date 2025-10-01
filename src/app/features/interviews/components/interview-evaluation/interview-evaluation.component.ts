@@ -185,4 +185,8 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     trackByEvaluationId(_: number, e: Evaluation): string {
         return e.id;
     }
+
+    get nonOverallEvaluations() {
+        return this.evaluations.filter(e => this.getEvaluationTypeDescription(e) !== 'OverAll');
+    }
 }

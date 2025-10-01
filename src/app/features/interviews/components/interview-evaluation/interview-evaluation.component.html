@@ -16,6 +16,12 @@
     <div class="container">
         <!-- HEADER CARD -->
         <p-card class="header-card">
+            <div class="card-header">
+                <div class="header-badge category-badge">
+                    <i class="pi pi-bookmark"></i>
+                    <span>OverAll</span>
+                </div>
+            </div>
             <div class="interview-header">
                 <h1 class="interview-title">
                     Interview Evaluation for
@@ -32,6 +38,7 @@
                         <i class="pi pi-calendar detail-icon"></i>
                         <span>{{ interviewEvaluation.scheduledAt | date: 'MMM d, y' }}</span>
                     </div>
+
                     <div class="detail-item" pTooltip="Estimated time" tooltipPosition="top">
                         <i class="pi pi-clock detail-icon"></i>
                         <span>{{ interviewEvaluation.estimatedDuration }} min</span>
@@ -41,45 +48,8 @@
                         <i class="pi pi-stopwatch detail-icon"></i>
                         <span>{{ getRealDurationLabel() }}</span>
                     </div>
-                </div>
-            </div>
-        </p-card>
-
-       <!-- OVERALL EVALUATION -->
-       @if (overallEvaluation) {
-        <div class="evaluations-container">
-            <div class="section-title">
-                <h2>OverAll Evaluation</h2>
-                <div class="section-divider"></div>
-            </div>
-            
-        <p-card class="evaluation-card overall-card modern-card"
-                [ngClass]="getScoreRangeClass(overallEvaluation.score || 0)">
-
-            <div class="card-header">
-                <div class="header-badge category-badge">
-                    <i class="pi pi-bookmark"></i>
-                    <span>{{ getEvaluationTypeDescription(overallEvaluation) }}</span>
-                </div>
-            </div>
-
-            <!-- FLEX CONTAINER: LEFT INFO | RIGHT SCORE -->
-            <div class="evaluation-row">
-
-                <div class="evaluation-info">
-                    <div class="feedback-section">
-                        <div class="section-header">
-                            <i class="pi pi-comment"></i>
-                            <h4>Feedback</h4>
-                        </div>
-                        <div class="feedback-content">
-                            <p>{{ overallEvaluation.feedback || 'No feedback available.' }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RIGHT: Score Circle -->
-                <div class="evaluation-score">
+                     @if (overallEvaluation) {
+                        <div class="evaluation-score">
                     <div #scoreCircle
                         class="score-circle-large enhanced-circle"
                         [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(overallEvaluation.id))"
@@ -89,28 +59,47 @@
                                 [class]="getScoreTextClass(overallEvaluation.score || 0)">
                                 {{ overallEvaluation.score != null ? getAnimatedScore(overallEvaluation.id) : 'N/A' }}
                             </div>
-                            <div class="score-label">score</div>
                         </div>
                         
                     </div>
                     
                 </div>
+                     }
+                    
+                </div>
+
+                <hr>
+                <!-- INLINE SCORE + FEEDBACK -->
+                @if (overallEvaluation) {
+                    <div class="evaluations-container">
+            
+        
+
+            
+
+            <!-- FLEX CONTAINER: LEFT INFO | RIGHT SCORE -->
+            <div class="evaluation-row">
+
+                <div class="evaluation-info">
+                    <div class="feedback-section">
+                        <p>{{ overallEvaluation.feedback || 'No feedback available.' }}</p>
+                    </div>
+                </div>
+
+               
+            </div>
+
+        </div>
+                }
             </div>
         </p-card>
-        </div>
-        }
 
 
         <!-- SCORED EVALUATIONS -->
         <div class="evaluations-container">
-            <div class="section-title">
-                <h2>Detailed Evaluations</h2>
-                <div class="section-divider"></div>
-            </div>
             
             <div class="evaluations-grid">
-                @for (evaluation of evaluations; track trackByEvaluationId($index, evaluation)) {
-                    <p-card class="evaluation-card modern-card" [ngClass]="getScoreRangeClass(evaluation.score || 0)">
+                    <p-card *ngFor="let evaluation of nonOverallEvaluations; trackBy: trackByEvaluationId" class="evaluation-card" [ngClass]="getScoreRangeClass(evaluation.score || 0)">
                         <div class="card-header">
                             <div class="header-badge category-badge">
                                 <i class="pi pi-bookmark"></i>
@@ -120,24 +109,19 @@
                         
                         <div class="evaluation-center">
                             <div #scoreCircle
-                                class="score-circle-large enhanced-circle"
+                                class="score-circle-large enhanced-circle card-score-top-right"
                                 [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(evaluation.id))"
-
                                 [style.--score-color]="getScoreColor(evaluation.score || 0)">
                                 <div class="score-inner">
                                     <div class="score-value-large" 
                                         [class]="getScoreTextClass(evaluation.score || 0)">
                                         {{ evaluation.score != null ? getAnimatedScore(evaluation.id) : 'N/A' }}
                                     </div>
-                                    <div class="score-label">score</div>
                                 </div>
                             </div>
 
-                            <div class="score-status">
-                                <div class="status-indicator" 
-                                     [style.background-color]="getScoreColor(evaluation.score || 0)"></div>
-                                <span class="status-text">{{ getScoreTextClass(evaluation.score || 0) }}</span>
-                            </div>
+
+                           
                         </div>
 
                         <div class="evaluation-content">
@@ -146,7 +130,7 @@
                                     <i class="pi pi-comment"></i>
                                     <h4>Feedback</h4>
                                 </div>
-                                <div class="feedback-content">
+                                <div class="">
                                     <p>{{ evaluation.feedback || 'No feedback available.' }}</p>
                                 </div>
                             </div>
@@ -161,7 +145,6 @@
                             </div>
                         </div>
                     </p-card>
-                }
             </div>
         </div>
     </div>

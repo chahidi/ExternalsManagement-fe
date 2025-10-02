@@ -78,7 +78,7 @@
             </p-panel>
         </div>
 
-        <div class="absolute bottom-6 left-[2.5%] text-white text-base md:text-lg font-semibold z-50" [@fadeInControls]>{{ currentTime }} | Developer AI Interview</div>
+        <div class="absolute bottom-6 left-[2.5%] text-white text-base md:text-lg font-semibold z-50" [@fadeInControls]>{{ currentTime }} | {{ candidateName || 'Candidate' }} | {{ offerTitle || 'Position' }}</div>
     </div>
 </ng-container>
 

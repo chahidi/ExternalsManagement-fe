@@ -82,4 +82,7 @@ export class InterviewService {
   getInterviewQuestions(interviewId: string): Observable<Question[]> {
     return this.http.get<Question[]>(`${this.apiUrl}/${interviewId}/questions`);
   }
+    getInterviewById(interviewId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${interviewId}`);
+}
 }

@@ -31,6 +31,8 @@ import { Router } from '@angular/router';
 import { cameraTransition, slideInInterview, fadeInControls, slideInTranscript } from '../../../../shared/layout/animations/interview-meeting.animations';
 import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 import { QuestionsAndAnswersForEvaluationDTO } from '../../../../core/models/interview-evaluation';
+import { OfferService } from '../../../../core/services/offer.service';
+import { CandidateService } from '../../../../core/services/candidate.service';
 
 type SpeechRecognitionState = {
     isListening: boolean;
@@ -107,6 +109,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewId: string = '';
     interviewStartTime = 0;
     questionStartTime = 0;
+    candidateName: string = '';
+    offerTitle: string = '';
 
     // Observables
     private destroy$ = new Subject<void>();
@@ -122,7 +126,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private interviewService: InterviewService,
         private tokenValidationService: TokenValidationService,
-        private answerService: AnswerService
+        private answerService: AnswerService,
+        private candidateService: CandidateService,
+        private offerService: OfferService
     ) {}
 
     ngOnInit(): void {
@@ -169,7 +175,41 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             next: (interviewId) => {
                 console.log('Retrieved interview ID:', interviewId);
                 this.interviewId = interviewId;
-                this.loadInterviewQuestions(interviewId);
+
+                // Load interview details
+                this.interviewService.getInterviewById(interviewId).subscribe({
+                    next: (interview) => {
+                        console.log('Interview details:', interview);
+
+                        if (interview.candidateId) {
+                            this.candidateService.getCandidate(interview.candidateId).subscribe({
+                                next: (candidate) => {
+                                    this.candidateName = candidate.fullName || '';
+                                    console.log('Candidate name:', this.candidateName);
+                                },
+                                error: (err) => console.error('Failed to load candidate:', err)
+                            });
+                        }
+
+                        if (interview.offerId) {
+                            this.offerService.getOfferById(interview.offerId).subscribe({
+                                next: (offer) => {
+                                    this.offerTitle = offer.title || '';
+                                    console.log('Offer title:', this.offerTitle);
+                                },
+                                error: (err) => console.error('Failed to load offer:', err)
+                            });
+                        }
+
+                        // Load questions
+                        this.loadInterviewQuestions(interviewId);
+                    },
+                    error: (err) => {
+                        console.error('Failed to load interview:', err);
+                        // Still try to load questions
+                        this.loadInterviewQuestions(interviewId);
+                    }
+                });
             },
             error: (err) => {
                 console.error('Failed to get interview ID from token:', err);
@@ -178,7 +218,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }
         });
     }
-
     private loadInterviewQuestions(interviewId: string): void {
         console.log('Loading questions for interview ID:', interviewId);
         this.interviewService.getInterviewQuestions(interviewId).subscribe({

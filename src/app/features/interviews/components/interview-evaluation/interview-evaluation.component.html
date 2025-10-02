@@ -14,85 +14,67 @@
 
 @if (!loading && !error.happened && interviewEvaluation) {
     <div class="container">
-        <!-- HEADER CARD -->
-        <p-card class="header-card">
-            <div class="card-header">
-                <div class="header-badge category-badge">
-                    <i class="pi pi-bookmark"></i>
-                    <span>OverAll</span>
-                </div>
-            </div>
-            <div class="interview-header">
-                <h1 class="interview-title">
-                    Interview Evaluation for
-                    <span class="candidate-name">{{interviewEvaluation.candidateFullName || 'Unknown' }}</span>
-                </h1>
-
-                <div class="interview-details">
-                    <div class="detail-item">
-                        <i class="pi pi-briefcase detail-icon"></i>
+        <!-- HEADER SECTION -->
+        <div class="top-section">
+            <!-- LEFT: Interview Info -->
+            <div class="info-section">
+                    <h1 class="interview-title">
+                        Interview evaluation for
+                        <span class="candidate-name">{{interviewEvaluation.candidateFullName || 'Unknown' }}</span>
+                    </h1>
+                <div class="interview-metadata-score">
+                    <div class="interview-metadata">
+                    <div class="metadata-item">
+                        <i class="pi pi-briefcase"></i>
                         <span>{{ interviewEvaluation.offerTitle }}</span>
                     </div>
 
-                    <div class="detail-item">
-                        <i class="pi pi-calendar detail-icon"></i>
+                    <div class="metadata-item">
+                        <i class="pi pi-calendar"></i>
                         <span>{{ interviewEvaluation.scheduledAt | date: 'MMM d, y' }}</span>
                     </div>
 
-                    <div class="detail-item" pTooltip="Estimated time" tooltipPosition="top">
-                        <i class="pi pi-clock detail-icon"></i>
-                        <span>{{ interviewEvaluation.estimatedDuration }} min</span>
-                    </div>
-
-                    <div class="detail-item" pTooltip="Real duration" tooltipPosition="top">
-                        <i class="pi pi-stopwatch detail-icon"></i>
+                    <div class="metadata-item">
+                        <i class="pi pi-clock"></i>
                         <span>{{ getRealDurationLabel() }}</span>
                     </div>
-                     @if (overallEvaluation) {
-                        <div class="evaluation-score">
-                    <div #scoreCircle
-                        class="score-circle-large enhanced-circle"
-                        [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(overallEvaluation.id))"
-                        [style.--score-color]="getScoreColor(getAnimatedScore(overallEvaluation.id))">
-                        <div class="score-inner">
-                            <div class="score-value-large"
-                                [class]="getScoreTextClass(overallEvaluation.score || 0)">
-                                {{ overallEvaluation.score != null ? getAnimatedScore(overallEvaluation.id) : 'N/A' }}
+
+                    <div class="metadata-item">
+                        <i class="pi pi-check-circle"></i>
+                        <span>No signs of unfairness detected</span>
+                    </div>
+                    </div>
+                    @if (overallEvaluation) {
+                        <div class="score-card">
+                            <h3 class="score-card-title">Overall Score</h3>
+                            <div #scoreCircle
+                                class="score-circle-large enhanced-circle"
+                                [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(overallEvaluation.id))"
+                                [style.--score-color]="getScoreColor(getAnimatedScore(overallEvaluation.id))">
+                                <div class="score-inner">
+                                    <div class="score-value-large"
+                                        [class]="getScoreTextClass(overallEvaluation.score || 0)">
+                                        {{ overallEvaluation.score != null ? getAnimatedScore(overallEvaluation.id) : 'N/A' }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
-                    </div>
-                    
+                    }
                 </div>
-                     }
-                    
-                </div>
-
-                <hr>
-                <!-- INLINE SCORE + FEEDBACK -->
-                @if (overallEvaluation) {
-                    <div class="evaluations-container">
+                <!-- RIGHT: Overall Score Card -->
             
-        
-
-            
-
-            <!-- FLEX CONTAINER: LEFT INFO | RIGHT SCORE -->
-            <div class="evaluation-row">
-
-                <div class="evaluation-info">
-                    <div class="feedback-section">
-                        <p>{{ overallEvaluation.feedback || 'No feedback available.' }}</p>
-                    </div>
-                </div>
-
-               
             </div>
 
+            
         </div>
-                }
+
+        <!-- OVERALL FEEDBACK SECTION -->
+        @if (overallEvaluation) {
+            <div class="overall-feedback-section">
+                <h3 class="feedback-title">Overall Feedback</h3>
+                <p class="feedback-text">{{ overallEvaluation.feedback || 'No feedback available.' }}</p>
             </div>
-        </p-card>
+        }
 
 
         <!-- SCORED EVALUATIONS -->

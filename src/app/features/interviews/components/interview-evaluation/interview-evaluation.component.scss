@@ -423,3 +423,122 @@
     top: 1rem;
     right: 1rem;
 }
+/* Info Section - Full Width */
+.info-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.interview-metadata-score {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%;
+}
+
+
+/* Top Section Layout - Feedback left, Score right */
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.title-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+}
+
+.interview-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    text-align: center; 
+
+    .candidate-name {
+        color: var(--primary-color);
+        font-weight: 800;
+    }
+}
+
+
+.interview-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: black;
+    font-size: 1rem;
+
+    i {
+        color: black;
+        font-size: 1rem;
+    }
+}
+
+/* Score Card */
+.score-card {
+    flex-shrink: 0;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-width: 240px;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: right;
+}
+
+.score-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
+    margin: 0;
+    text-align: center;
+}
+
+/* Overall Feedback Section */
+.overall-feedback-section {
+    flex: 1;
+    padding: 2rem 0;
+    min-width: 0;
+}
+
+.feedback-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+    position: relative;
+    
+   
+}
+
+.feedback-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #374151;
+    margin: 0;
+    font-weight: 400;
+    text-align: justify;
+    letter-spacing: 0.01em;
+}

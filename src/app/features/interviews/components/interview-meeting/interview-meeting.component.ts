@@ -376,6 +376,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     addCurrentQuestionToTranscript(): void {
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (currentQuestion?.description) {
+            const questionTime = this.getRelativeTime();
+            this.transcriptions.push(`AI - ${questionTime}:${currentQuestion.description} || `);
             this.transcriptMessages.push({
                 sender: 'AI',
                 text: currentQuestion.description,

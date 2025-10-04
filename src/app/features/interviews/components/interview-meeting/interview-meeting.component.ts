@@ -387,6 +387,19 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    private getRelativeTime(): string {
+        if (!this.interviewStartTime) return '00:00:00';
+        const msecondes = Date.now() - this.interviewStartTime;
+        const totalSeconds = Math.floor(msecondes / 1000);
+
+        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
+
     async startNextQuestion(): Promise<void> {
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (!currentQuestion || !this.isInterviewInProgress) return;

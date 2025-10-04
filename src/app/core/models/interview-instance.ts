@@ -9,7 +9,6 @@ export interface InterviewInstance {
     startTime: Date;
     endTime: Date;
     description: string;
-    feedbackGeneral: string;
     comment: string;
     candidateFullName: string;
     candidateMainTech: string;

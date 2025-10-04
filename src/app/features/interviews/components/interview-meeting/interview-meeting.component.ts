@@ -16,8 +16,6 @@ import { MessageService } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
-import { RecordService } from '../../../../core/services/record.service';
-import { Record } from '../../../../core/models/record';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { Question } from '../../../../core/models/question';
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';

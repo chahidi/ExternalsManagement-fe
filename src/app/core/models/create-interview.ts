@@ -1,6 +1,5 @@
 import { Question } from './question';
 import { Evaluation } from './evaluation';
-import { Record } from './record';
 
 export interface CreateInterview {
     scheduledAt: Date;

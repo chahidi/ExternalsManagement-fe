@@ -377,7 +377,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (currentQuestion?.description) {
             const questionTime = this.getRelativeTime();
-            this.transcriptions.push(`AI - ${questionTime}:${currentQuestion.description} || `);
+            this.transcriptions.push(`AI - ${questionTime} : ${currentQuestion.description} || `);
             this.transcriptMessages.push({
                 sender: 'AI',
                 text: currentQuestion.description,
@@ -473,7 +473,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
             currentQuestion.answer = answerObject;
         }
-
+        const formatedAnswer = `Candidate - ${this.getRelativeTime()} : ${userAnswerText}`;
+        this.transcriptions[this.transcriptions.length-1]+=formatedAnswer;
         this.transcriptMessages.push({
             sender: 'You',
             text: userAnswerText,

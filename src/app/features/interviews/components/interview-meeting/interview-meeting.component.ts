@@ -62,8 +62,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     userWarningMessage: string | null = null;
     stream: MediaStream | null = null;
     private preventResizeOnce = false;
-    isCameraReady = false;
-    isCameraEnabled = false;
     showRulesAndPreview = true;
     showSubmitButton = false;
     canSubmitAnswer = false;
@@ -76,14 +74,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         interimTranscript: '',
         combinedTranscript: ''
     };
-    @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
-    @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild('transcriptScroll') scrollPanel!: any;
-    mediaRecorder!: MediaRecorder;
-    recordedChunks: Blob[] = [];
-    recordedBlobUrl: string | null = null;
     interviewStartTime = 0;
-    interviewRecord!: Record;
     showSubtitles = false;
     liveSubtitle = '';
     recognition!: any;
@@ -99,11 +91,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     private destroy$ = new Subject<void>();
     private eventListenersRegistered = false;
     interviewToken: any;
+    isCameraReady = true;
 
     constructor(
-        private recordService: RecordService,
         private promptService: PromptService,
-        // Removed: private tts: TextToSpeechService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
         private speechRecognitionService: SpeechRecognitionService,
@@ -112,7 +103,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private interviewService: InterviewService,
         private tokenValidationService: TokenValidationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.initializeComponent();
@@ -121,7 +112,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.requestCameraPermission();
+            this.requestMicrophonePermission();
         }, 500);
     }
 
@@ -142,7 +133,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
         this.checkSpeechRecognitionSupport();
-        this.isCameraReady = true;
     }
 
     private loadInterviewFromToken(token: string): void {
@@ -231,54 +221,17 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    async requestCameraPermission(): Promise<void> {
+    async requestMicrophonePermission(): Promise<void> {
         try {
-            console.log('Requesting camera permission...');
+            console.log('Requesting microphone permission...');
             this.stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    facingMode: 'user'
-                },
                 audio: true
             });
 
-            console.log('Camera stream obtained:', this.stream);
-            this.isCameraEnabled = true;
+            console.log('Micro stream obtained:', this.stream);
             this.previewMode = true;
-            this.configureCameraPreview();
         } catch (error) {
-            console.warn('Camera permission denied or failed:', error);
-            this.handleCameraInitializationFailure();
-        }
-    }
-
-    private configureCameraPreview(): void {
-        setTimeout(() => {
-            this.attachStreamToVideoElement(this.previewVideo?.nativeElement);
-        }, 100);
-    }
-
-    private attachStreamToVideoElement(videoElement: HTMLVideoElement | undefined): void {
-        if (videoElement && this.stream) {
-            videoElement.srcObject = this.stream;
-            videoElement.muted = true;
-            videoElement.playsInline = true;
-            videoElement.autoplay = true;
-            videoElement.onloadedmetadata = () => {
-                videoElement.play().catch((e) => console.error('Video play error:', e));
-            };
-        }
-    }
-
-    private handleCameraInitializationFailure(): void {
-        this.isCameraEnabled = false;
-        this.previewMode = false;
-    }
-
-    private configureInterviewVideo(): void {
-        if (this.interviewVideo?.nativeElement && this.stream) {
-            this.attachStreamToVideoElement(this.interviewVideo.nativeElement);
+            console.warn('Micro permission denied or failed:', error);
         }
     }
 
@@ -297,71 +250,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             console.warn('Could not enter fullscreen mode:', error);
         }
 
-        if (this.isCameraEnabled) {
-            setTimeout(() => {
-                this.configureInterviewVideo();
-            }, 100);
-        }
 
-        if (this.isCameraEnabled && this.stream) {
-            this.setupMediaRecorder();
-        } else {
-            this.interviewStartTime = Date.now();
-        }
+        this.interviewStartTime = Date.now();
+
 
         this.preventResizeOnce = true;
         setTimeout(() => (this.preventResizeOnce = false), 1000);
 
         this.attachEventListeners();
         this.startNextQuestion();
-    }
-
-    private setupMediaRecorder(): void {
-        this.recordedChunks = [];
-        this.mediaRecorder = new MediaRecorder(this.stream!, {
-            mimeType: 'video/webm;codecs=vp9'
-        });
-        this.interviewStartTime = Date.now();
-
-        this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
-            if (event.data.size > 0) {
-                this.recordedChunks.push(event.data);
-            }
-        };
-
-        this.mediaRecorder.onstop = () => {
-            this.processRecordedData();
-        };
-
-        this.mediaRecorder.start();
-    }
-
-    private processRecordedData(): void {
-        const blob = new Blob(this.recordedChunks, { type: 'video/webm' });
-        this.recordedBlobUrl = URL.createObjectURL(blob);
-        const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
-
-        this.interviewRecord = {
-            id: Date.now().toString(),
-            interviewId: 1,
-            recordedAt: new Date(),
-            durationInSeconds: duration,
-            fileName: `interview-${Date.now()}.webm`,
-            fileUrl: this.recordedBlobUrl,
-            uploaded: false,
-            transcriptionFileUrl: ''
-        };
-
-        this.recordService.saveRecord(this.interviewRecord).subscribe({
-            next: () => {
-                console.log('✅ Record saved');
-                this.finalizeRecording();
-            },
-            error: (err) => {
-                console.error('❌ Error saving record:', err);
-                this.finalizeRecording();
-            }
-        });
     }
 
     private attachEventListeners(): void {
@@ -398,7 +295,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.addCurrentQuestionToTranscript();
         this.initializeQuestionTimer();
 
-        console.log('✅ Question displayed, waiting before recognition...');
+        console.log('Question displayed, waiting before recognition...');
         this.isWaitingForAnswer = true;
         this.showSubmitButton = true;
         this.scheduleDelayedSpeechRecognition();
@@ -408,7 +305,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.speechRecognitionService.reset();
         this.liveSubtitle = '';
         this.currentUserAnswer = '';
-        console.log('🧹 Speech recognition data reset');
+        console.log('Speech recognition data reset');
     }
 
     private scheduleDelayedSpeechRecognition(): void {
@@ -466,7 +363,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             type: 'answer'
         });
 
-        console.log('✅ Answer submitted:', userAnswerText);
+        console.log('Answer submitted:', userAnswerText);
         this.cdr.detectChanges();
         this.scrollTranscriptToBottom();
 
@@ -488,7 +385,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     }
 
     private handleQuestionTimeExpired(): void {
-        console.log('⏰ Question time limit reached');
+        console.log('Question time limit reached');
         this.clearQuestionTimer();
         this.hideSubmissionControls();
 
@@ -543,18 +440,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.stopSpeechRecognition();
         this.clearQuestionTimer();
 
-        if (this.isCameraEnabled && this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-            this.mediaRecorder.stop();
-            setTimeout(() => {
-                if (this.isInterviewFinalizing && !this.isInterviewCompleted) {
-                    this.finalizeRecording();
-                }
-            }, 5000);
-        } else {
-            this.createInterviewRecordWithoutCamera();
-            this.finalizeRecording();
-        }
 
+        this.finalizeInterview();
         this.finalizeInterviewAndSaveEvaluation();
         this.cleanupInterviewResources();
 
@@ -570,23 +457,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         console.log('Full Questions Array:', this.questions);
     }
 
-    private createInterviewRecordWithoutCamera(): void {
-        if (!this.isCameraEnabled) {
-            const duration = Math.floor((Date.now() - this.interviewStartTime) / 1000);
-            this.interviewRecord = {
-                id: Date.now().toString(),
-                interviewId: 1,
-                recordedAt: new Date(),
-                durationInSeconds: duration,
-                fileName: `interview-audio-${Date.now()}.txt`,
-                fileUrl: '',
-                uploaded: false,
-                transcriptionFileUrl: ''
-            };
-        }
-    }
-
-    finalizeRecording(): void {
+    finalizeInterview(): void {
         this.isInterviewFinalizing = false;
         this.isInterviewCompleted = true;
         console.log(
@@ -595,6 +466,8 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         );
         window.scrollTo(0, 0);
         this.notify.showSuccess('Interview Completed', 'Your interview has been successfully recorded and saved.');
+
+
     }
 
     finalizeInterviewAndSaveEvaluation(): void {
@@ -608,7 +481,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             realAnswerTime: q.answer?.durationInMinutes ?? undefined
         }));
 
-        this.evaluationService.prepareInterviewEvaluation(this.interviewId,questionsAndAnswers).subscribe({
+        this.evaluationService.prepareInterviewEvaluation(this.interviewId, questionsAndAnswers).subscribe({
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');

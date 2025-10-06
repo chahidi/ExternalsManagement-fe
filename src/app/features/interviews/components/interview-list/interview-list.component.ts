@@ -55,6 +55,10 @@ export class InterviewListComponent implements OnInit {
     tempComment: string = '';
     selectedCommentInterview: InterviewInstance | null = null;
 
+    // New properties for comment modal
+    commentDialogVisible: boolean = false;
+    currentCommentInterview: InterviewInstance | null = null;
+
     isGeneratingLink = false;
 
     candidateNameSortAsc: boolean = false;
@@ -119,8 +123,6 @@ export class InterviewListComponent implements OnInit {
             this.filteredInterviews = this.interviews;
             this.loaderService.hide();
         });
-
-
     }
 
     applyFilters(): void {
@@ -148,7 +150,7 @@ export class InterviewListComponent implements OnInit {
         this.filteredInterviews = this.interviews;
     }
 
-    clear(): void{
+    clear(): void {
         this.searchQuery = '';
     }
 
@@ -191,6 +193,20 @@ export class InterviewListComponent implements OnInit {
     ViewInterviewPopup(interview: InterviewInstance): void {
         this.selectedInterview = interview;
         this.showDetailsDialog = true;
+    }
+
+    // New method to open comment modal
+    openCommentModal(interview: InterviewInstance): void {
+        this.currentCommentInterview = interview;
+        this.commentDialogVisible = true;
+    }
+
+    // Method to truncate text to specified word count
+    teaserWords(text: string, wordCount: number): string {
+        if (!text) return '';
+        const words = text.split(' ');
+        if (words.length <= wordCount) return text;
+        return words.slice(0, wordCount).join(' ') + '...';
     }
 
     saveComment(): void {
@@ -275,6 +291,7 @@ export class InterviewListComponent implements OnInit {
         }
         return EMPTY;
     }
+
     private toDate(v: Date | string | null | undefined): Date | null {
         if (!v) return null;
         const d = new Date(v);
@@ -303,7 +320,6 @@ export class InterviewListComponent implements OnInit {
             this.candidateNameSortAsc ? a.candidateFullName.localeCompare(b.candidateFullName) :
                 b.candidateFullName.localeCompare(a.candidateFullName)
         );
-
     }
 
     sortInterviewsByCandidateMainTech() {
@@ -323,5 +339,4 @@ export class InterviewListComponent implements OnInit {
                 : b.offerTitle.localeCompare(a.offerTitle)
         );
     }
-
 }

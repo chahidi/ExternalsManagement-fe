@@ -1,3 +1,4 @@
+
 import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -38,13 +39,15 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     error = { happened: false, message: '' };
     animatedScores: Record<string, number> = {};
 
+    overallEvaluation?: Evaluation;
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private evaluationService: InterviewEvaluationService,
         private messageService: MessageService,
         private notify: NotificationService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.interview = history.state?.interview ?? null;
@@ -60,7 +63,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (stored) {
                 try {
                     this.interview = JSON.parse(stored);
-                } catch {}
+                } catch { }
             }
         }
 
@@ -77,6 +80,13 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 this.interviewEvaluation = data;
                 this.evaluations = data.evaluations ?? [];
                 this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
+                 this.overallEvaluation = this.evaluations.find(
+                e => e.evaluationType?.description === 'OverAll'
+            );
+
+            // Debug log
+            console.log('Evaluations loaded:', this.evaluations);
+            console.log('Overall evaluation:', this.overallEvaluation);
                 this.loading = false;
                 setTimeout(() => this.animateAllScores(), 100);
             },
@@ -94,6 +104,12 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         const d = new Date(v as any);
         return isNaN(d.getTime()) ? null : d;
     }
+
+    getProgressDegrees(score: number): string {
+        const degrees = (score / 100) * 360; 
+        return degrees + 'deg';
+    }
+
 
     getRealDurationLabel(): string {
         const start = this.toDate(this.interview?.startTime) ?? this.toDate(this.interview?.scheduledAt);
@@ -135,16 +151,15 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             if (els[i]) this.animateScore(els[i].nativeElement, evaluation);
         });
     }
+
     animateScore(scoreElement: HTMLElement, evaluation: Evaluation): void {
         if (!scoreElement || evaluation.score == null) return;
         const finalScore = evaluation.score;
-        const finalDegrees = (finalScore / 100) * 360;
-        scoreElement.style.setProperty('--progress-degrees', `${finalDegrees}deg`);
-        scoreElement.style.setProperty('--score-color', this.getScoreColor(finalScore));
-        scoreElement.classList.add('animate', this.getScoreRangeClass(finalScore));
         this.animateScoreNumber(evaluation.id, finalScore);
         setTimeout(() => scoreElement.classList.add('pulse'), 2000);
     }
+
+
     animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();
@@ -172,5 +187,9 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     }
     trackByEvaluationId(_: number, e: Evaluation): string {
         return e.id;
+    }
+
+    get nonOverallEvaluations() {
+        return this.evaluations.filter(e => this.getEvaluationTypeDescription(e) !== 'OverAll');
     }
 }

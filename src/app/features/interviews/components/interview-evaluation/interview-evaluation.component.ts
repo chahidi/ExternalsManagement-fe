@@ -71,9 +71,12 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
 
         this.loadEvaluations(id);
         this.evaluationService.getInterviewTranscription(id).subscribe({
-            next: (transcription) => (this.transcription = transcription),
+            next: (transcription) => {
+                this.transcription = transcription as unknown as string[];
+            },
             error: (err) => console.error('Failed to load transcription', err)
         });
+
 
     }
 
@@ -189,6 +192,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     getEvaluationTypeDescription(e: Evaluation): string {
         return e.evaluationType?.description || 'General Evaluation';
     }
+
     getAnimatedScore(id: string): number {
         return this.animatedScores[id] || 0;
     }
@@ -199,4 +203,56 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     get nonOverallEvaluations() {
         return this.evaluations.filter(e => this.getEvaluationTypeDescription(e) !== 'OverAll');
     }
+
+   getTranscriptEntries(): Array<{speaker: string, time: string, message: string, type: 'interviewer' | 'candidate'}> {
+        const entries: Array<{speaker: string, time: string, message: string, type: 'interviewer' | 'candidate'}> = [];
+        
+        this.transcription.forEach(entry => {
+            const parts = entry.split('||');
+            
+            // Parse AI/Interviewer part (Question)
+            if (parts[0]) {
+            const aiPart = parts[0].trim();
+            const aiTimeMatch = aiPart.match(/(\d{2}:\d{2}:\d{2})/);
+            // Match everything after the last colon to get the actual message
+            const aiMessageMatch = aiPart.match(/:\s*(.+)$/);
+            
+            if (aiTimeMatch && aiMessageMatch) {
+                let message = aiMessageMatch[1].trim();
+                // Remove the duplicate time at the beginning of the message (format "01:00 : ")
+                message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
+                
+                entries.push({
+                speaker: 'Interviewer',
+                time: aiTimeMatch[1],
+                message: message,
+                type: 'interviewer'
+                });
+            }
+            }
+            
+            // Parse Candidate part (Answer)
+            if (parts[1]) {
+            const candidatePart = parts[1].trim();
+            const candidateTimeMatch = candidatePart.match(/(\d{2}:\d{2}:\d{2})/);
+            const candidateMessageMatch = candidatePart.match(/:\s*(.+)$/);
+            const candidateNameMatch = candidatePart.match(/^([^-]+)\s*-/);
+            
+            if (candidateTimeMatch && candidateMessageMatch) {
+                let message = candidateMessageMatch[1].trim();
+                // Remove the duplicate time at the beginning of the message (format "20:30 : ")
+                message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
+                
+                entries.push({
+                speaker: candidateNameMatch ? candidateNameMatch[1].trim() : 'Candidate',
+                time: candidateTimeMatch[1],
+                message: message,
+                type: 'candidate'
+                });
+            }
+            }
+        });
+        
+        return entries;
+        }
 }

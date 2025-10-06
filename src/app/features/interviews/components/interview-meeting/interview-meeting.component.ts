@@ -624,7 +624,9 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             realAnswerTime: q.answer?.durationInMinutes ?? undefined
         }));
 
-        this.evaluationService.saveInterviewTranscription(this.interviewId,this.transcriptions).subscribe({
+        const transcriptionString = JSON.stringify(this.transcriptions);
+
+        this.evaluationService.saveInterviewTranscription(this.interviewId,transcriptionString).subscribe({
             next: (interview) => {
                 console.log('Interview Transcription saved');
                 console.log('Interview : ', interview);

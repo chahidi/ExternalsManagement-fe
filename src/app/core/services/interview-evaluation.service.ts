@@ -33,4 +33,8 @@ export class InterviewEvaluationService {
   prepareInterviewEvaluation = (interviewId: string, questionsAndAnswers: QuestionsAndAnswersForEvaluationDTO[]): Observable<String> =>
     this.http.post(`${this.interviewsUrl}/${interviewId}/evaluations`, { questionsAndAnswers },{ responseType: 'text' })
       .pipe(retry(2), catchError(err => handleError('Saving Interview Evaluation', err)));
+
+  saveInterviewTranscription = (interviewId: string, transcription: string[]): Observable<any> =>
+    this.http.post(`${this.interviewsUrl}/${interviewId}/transcription`, { transcription }, { responseType: 'text' })
+      .pipe(retry(2), catchError(err => handleError('Saving Interview Transcription', err)));
 }

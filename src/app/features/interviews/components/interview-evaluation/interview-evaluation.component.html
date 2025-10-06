@@ -129,5 +129,26 @@
                     </p-card>
             </div>
         </div>
+
+        <!-- TRANSCRIPT SECTION -->
+        @if (transcription && transcription.length > 0) {
+            <div class="transcript-section">
+                <h3 class="section-title">
+                    <i class="pi pi-file-edit"></i>
+                    Transcript
+                </h3>
+                <div class="transcript-container">
+                    <div *ngFor="let entry of getTranscriptEntries(); let i = index" 
+                         class="transcript-entry"
+                         [ngClass]="entry.type === 'interviewer' ? 'interviewer-entry' : 'candidate-entry'">
+                        <div class="transcript-header">
+                            <span class="transcript-time">[{{ entry.time }}]</span>
+                            <span class="transcript-speaker">{{ entry.speaker }}</span>
+                        </div>
+                        <div class="transcript-text" [innerHTML]="entry.message"></div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 }

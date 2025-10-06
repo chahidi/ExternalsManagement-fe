@@ -542,3 +542,106 @@
     text-align: justify;
     letter-spacing: 0.01em;
 }
+
+.transcript-section {
+  margin-top: 2rem;
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+  
+  i {
+    color: var(--primary-color);
+  }
+}
+
+.transcript-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+    
+    &:hover {
+      background: #999;
+    }
+  }
+}
+
+.transcript-entry {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.interviewer-entry {
+  background-color: white;
+  border-left: 3px solid var(--primary-color);
+}
+
+.candidate-entry {
+  background-color: white;
+  border-left: 3px solid #22c55e;
+}
+
+.transcript-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.transcript-time {
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.transcript-speaker {
+  color: #374151;
+}
+
+.interviewer-entry .transcript-speaker {
+  color: var(--primary-color);
+}
+
+.candidate-entry .transcript-speaker {
+  color: #059669;
+}
+
+.transcript-text {
+  color: black;
+  line-height: 1.6;
+  font-size: 1rem;
+  padding-left: 0.5rem;
+}

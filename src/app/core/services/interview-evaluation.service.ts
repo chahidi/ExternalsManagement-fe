@@ -38,7 +38,7 @@ export class InterviewEvaluationService {
     this.http.post(`${this.interviewsUrl}/${interviewId}/transcription`, { transcription }, { responseType: 'text' })
       .pipe(retry(2), catchError(err => handleError('Saving Interview Transcription', err)));
 
-  getInterviewTranscription = (interviewId: string): Observable<String[]> =>
-    this.http.get<String[]>(`${this.interviewsUrl}/${interviewId}/transcription`)
+  getInterviewTranscription = (interviewId: string): Observable<string[]> =>
+    this.http.get<string[]>(`${this.interviewsUrl}/${interviewId}/transcription`)
       .pipe(retry(2), catchError(err => handleError('Fetching Interview Transcription', err)));
 }

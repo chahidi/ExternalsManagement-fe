@@ -41,6 +41,8 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
 
     overallEvaluation?: Evaluation;
 
+    transcription: string[] = [];
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -68,6 +70,11 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         }
 
         this.loadEvaluations(id);
+        this.evaluationService.getInterviewTranscription(id).subscribe({
+            next: (transcription) => (this.transcription = transcription),
+            error: (err) => console.error('Failed to load transcription', err)
+        });
+
     }
 
     ngAfterViewInit(): void {

@@ -33,6 +33,7 @@ import { fadeIn } from '../../../../shared/layout/animations/common.animation';
 import { QuestionsAndAnswersForEvaluationDTO } from '../../../../core/models/interview-evaluation';
 import { OfferService } from '../../../../core/services/offer.service';
 import { CandidateService } from '../../../../core/services/candidate.service';
+import { DialogModule } from 'primeng/dialog';
 
 type SpeechRecognitionState = {
     isListening: boolean;
@@ -46,7 +47,7 @@ type SpeechRecognitionState = {
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
+    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, DialogModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
     animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]
@@ -67,6 +68,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     isWaitingForAnswer = false;
     aiSpeaking = false;
     showSubtitles = false;
+    showRulesDialog = false;
 
     // User interaction
     currentUserAnswer: string = '';
@@ -141,6 +143,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         setTimeout(() => {
             this.requestCameraPermission();
         }, 500);
+    }
+      // Add this method to show the rules
+    showInterviewRules(): void {
+        this.showRulesDialog = true;
+    }
+
+    // Add this method to hide the rules
+    hideInterviewRules(): void {
+        this.showRulesDialog = false;
     }
 
     private initializeComponent(): void {

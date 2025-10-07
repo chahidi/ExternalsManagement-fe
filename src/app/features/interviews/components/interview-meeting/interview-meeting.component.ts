@@ -110,7 +110,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.requestMicrophonePermission();
+            this.requestCameraAndMicrophonePermission();
         }, 500);
     }
 
@@ -219,10 +219,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    async requestMicrophonePermission(): Promise<void> {
+    async requestCameraAndMicrophonePermission(): Promise<void> {
         try {
             console.log('Requesting microphone permission...');
             this.stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'user'
+                },
                 audio: true
             });
 

@@ -133,11 +133,12 @@
         <!-- TRANSCRIPT SECTION -->
         @if (transcription && transcription.length > 0) {
             <div class="transcript-section">
-                <h3 class="section-title">
+               <h3 class="section-title" (click)="showTranscript = !showTranscript">
                     <i class="pi pi-file-edit"></i>
-                    Transcript
+                    <span class="title-text">Transcript</span>
+                    <i class="pi pi-angle-down arrow" [ngClass]="{'rotated': showTranscript}"></i>
                 </h3>
-                <div class="transcript-container">
+                <div class="transcript-container" *ngIf="showTranscript">
                     <div *ngFor="let entry of getTranscriptEntries(); let i = index" 
                          class="transcript-entry"
                          [ngClass]="entry.type === 'interviewer' ? 'interviewer-entry' : 'candidate-entry'">

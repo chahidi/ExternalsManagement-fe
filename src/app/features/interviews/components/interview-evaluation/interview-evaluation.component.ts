@@ -43,6 +43,8 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
 
     transcription: string[] = [];
 
+    showTranscript = true;
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,

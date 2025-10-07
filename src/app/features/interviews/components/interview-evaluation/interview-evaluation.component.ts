@@ -236,6 +236,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             const candidateTimeMatch = candidatePart.match(/(\d{2}:\d{2}:\d{2})/);
             const candidateMessageMatch = candidatePart.match(/:\s*(.+)$/);
             const candidateNameMatch = candidatePart.match(/^([^-]+)\s*-/);
+            const candidateName = this.interviewEvaluation?.candidateFullName || 'Candidate';
             
             if (candidateTimeMatch && candidateMessageMatch) {
                 let message = candidateMessageMatch[1].trim();
@@ -243,7 +244,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
                 
                 entries.push({
-                speaker: candidateNameMatch ? candidateNameMatch[1].trim() : 'Candidate',
+                speaker: candidateName,
                 time: candidateTimeMatch[1],
                 message: message,
                 type: 'candidate'

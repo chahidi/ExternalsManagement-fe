@@ -192,9 +192,8 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     getEvaluationTypeDescription(e: Evaluation): string {
         return e.evaluationType?.description || 'General Evaluation';
     }
-
     getAnimatedScore(id: string): number {
-        return this.animatedScores[id] || 0;
+        return Math.round(this.animatedScores[id]) || 0;
     }
     trackByEvaluationId(_: number, e: Evaluation): string {
         return e.id;

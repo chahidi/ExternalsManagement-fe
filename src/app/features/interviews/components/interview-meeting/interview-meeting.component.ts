@@ -91,9 +91,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     interviewToken: any;
     isCameraReady = true;
     @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
+    isCameraEnabled = false;
+    @ViewChild('interviewVideo') interviewVideo!: ElementRef<HTMLVideoElement>;
 
     constructor(
-        private promptService: PromptService,
         private evaluationService: InterviewEvaluationService,
         private notify: NotificationService,
         private speechRecognitionService: SpeechRecognitionService,
@@ -232,17 +233,42 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 audio: true
             });
 
-            const videoElement = this.previewVideo?.nativeElement;
-            if (videoElement) {
-                videoElement.srcObject = this.stream;
-                this.isCameraReady = true;
-                this.previewMode = true;
-            }
-
-            console.log('Micro stream obtained:', this.stream);
+            console.log('Camera stream obtained:', this.stream);
+            this.isCameraEnabled = true;
             this.previewMode = true;
+            this.configureCameraPreview();
         } catch (error) {
             console.warn('Micro permission denied or failed:', error);
+            this.handleCameraInitializationFailure();
+        }
+    }
+
+    private configureCameraPreview(): void {
+        setTimeout(() => {
+            this.attachStreamToVideoElement(this.previewVideo?.nativeElement);
+        }, 100);
+    }
+
+    private attachStreamToVideoElement(videoElement: HTMLVideoElement | undefined): void {
+        if (videoElement && this.stream) {
+            videoElement.srcObject = this.stream;
+            videoElement.muted = true;
+            videoElement.playsInline = true;
+            videoElement.autoplay = true;
+            videoElement.onloadedmetadata = () => {
+                videoElement.play().catch((e) => console.error('Video play error:', e));
+            };
+        }
+    }
+
+    private handleCameraInitializationFailure(): void {
+        this.isCameraEnabled = false;
+        this.previewMode = false;
+    }
+
+    private configureInterviewVideo(): void {
+        if (this.interviewVideo?.nativeElement && this.stream) {
+            this.attachStreamToVideoElement(this.interviewVideo.nativeElement);
         }
     }
 
@@ -261,6 +287,11 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             console.warn('Could not enter fullscreen mode:', error);
         }
 
+        if (this.isCameraEnabled) {
+            setTimeout(() => {
+                this.configureInterviewVideo();
+            }, 100);
+        }
 
         this.interviewStartTime = Date.now();
 

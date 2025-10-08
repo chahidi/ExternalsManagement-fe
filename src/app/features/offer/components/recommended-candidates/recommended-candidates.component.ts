@@ -195,7 +195,6 @@ export class RecommendedCandidatesComponent implements OnInit {
     const payload: CreateInterview = {
       scheduledAt: schedule,
       description,
-      feedbackGeneral: '',
       comment: '',
       estimatedDuration: duration,
       candidateId: this.selectedCandidate.id,

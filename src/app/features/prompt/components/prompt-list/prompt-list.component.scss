@@ -1,40 +1,40 @@
 :host {
-  display: block;
+    display: block;
 }
 
 .custom-table {
-  background-color: #f5f7fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  width: 100%;
-  table-layout: fixed !important;
-  overflow: hidden;
-
-  .p-datatable-header {
-    font-size: 24px;
-    font-weight: 700;
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  tr > th {
-    font-weight: 700;
-  }
-
-  .p-datatable-thead > tr > th,
-  .p-datatable-tbody > tr > td {
-    padding: 10px 15px;
+    background-color: #f5f7fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    table-layout: fixed !important;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 
-  .col-prompt-code {
-    width: 15% !important;
-    min-width: 100px !important;
-  }
+    .p-datatable-header {
+        font-size: 24px;
+        font-weight: 700;
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    tr > th {
+        font-weight: 700;
+    }
+
+    .p-datatable-thead > tr > th,
+    .p-datatable-tbody > tr > td {
+        padding: 10px 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .col-prompt-code {
+        width: 15% !important;
+        min-width: 100px !important;
+    }
 
     .col-text {
         width: 28% !important;
@@ -46,12 +46,12 @@
         transition: all 0.3s;
     }
     .col-text:hover {
-      max-width: 100%;
-      white-space: normal;
-      overflow: visible;
-      background: #f5f5f5;
-      z-index: 1;
-      position: relative;
+        max-width: 100%;
+        white-space: normal;
+        overflow: visible;
+        background: #f5f5f5;
+        z-index: 1;
+        position: relative;
     }
 
     .col-schema {
@@ -64,127 +64,131 @@
         transition: all 0.3s;
     }
     .col-schema:hover {
-          width: 42% !important;
-          max-width: 270px !important;
-          white-space: normal;
-          overflow: relative;
-          background: #f5f5f5;
-          z-index: 1;
-          position: relative;
-        }
+        width: 42% !important;
+        max-width: 270px !important;
+        white-space: normal;
+        overflow: relative;
+        background: #f5f5f5;
+        z-index: 1;
+        position: relative;
+    }
 
-  .col-actions {
-    width: 15% !important;
-    min-width: 100px !important;
-  }
+    .col-actions {
+        width: 15% !important;
+        min-width: 100px !important;
+    }
 
-  .p-datatable-thead > tr > th {
-    background-color: #e8ecef;
-    font-weight: 900;
-    color: black;
-  }
+    .p-datatable-thead > tr > th {
+        background-color: #e8ecef;
+        font-weight: 900;
+        color: black;
+    }
 
-  .p-datatable-tbody > tr > td {
-    border-bottom: 1px solid #e0e0e0;
-  }
+    .p-datatable-tbody > tr > td {
+        border-bottom: 1px solid #e0e0e0;
+    }
 
-  .p-paginator {
-    background-color: #e8ecef;
-    padding: 10px;
-    border-top: 1px solid #e0e0e0;
-  }
+    .p-paginator {
+        background-color: #e8ecef;
+        padding: 10px;
+        border-top: 1px solid #e0e0e0;
+    }
 }
 
 :host ::ng-deep .p-datatable-wrapper,
 :host ::ng-deep .p-datatable-scrollable-body {
-  overflow-x: auto !important;
-  overflow-y: visible !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
 }
 
 :host ::ng-deep .p-datatable-tbody > tr > td {
-  overflow: visible !important;
-  position: relative;
+    overflow: visible !important;
+    position: relative;
 }
 
 .desc-tooltip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 }
 
 .desc-teaser {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  font-style: italic;
-  max-width: clamp(180px, 28vw, 360px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    font-style: italic;
+    max-width: clamp(180px, 28vw, 360px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .desc-teaser:hover {
-  text-decoration: underline;
-  font-style: normal;
+    text-decoration: underline;
+    font-style: normal;
 }
 
 .desc-teaser::after {
-  content: "";
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 40px;
-  background: linear-gradient(to right, rgba(255,255,255,0), var(--surface-color, #fff));
-  pointer-events: none;
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), var(--surface-color, #fff));
+    pointer-events: none;
 }
 
 .desc-popup {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
-  min-width: 200px;
-  max-width: min(420px, calc(100vw - 32px));
-  background: var(--surface-overlay, #fff);
-  color: var(--text-color, #222);
-  border: 1px solid var(--surface-border, #e5e7eb);
-  border-radius: 10px;
-  box-shadow: 0 12px 24px rgba(0,0,0,.12);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .12s ease, transform .12s ease;
-  z-index: 10000;
-  padding: 0.5rem;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    max-width: min(420px, calc(100vw - 32px));
+    background: var(--surface-overlay, #fff);
+    color: var(--text-color, #222);
+    border: 1px solid var(--surface-border, #e5e7eb);
+    border-radius: 10px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.12s ease,
+        transform 0.12s ease;
+    z-index: 10000;
+    padding: 0.5rem;
 }
 
 .desc-popup-arrow {
-  position: absolute;
-  bottom: -6px;
-  left: 14px;
-  width: 12px;
-  height: 12px;
-  background: var(--surface-overlay, #fff);
-  border-right: 1px solid var(--surface-border, #e5e7eb);
-  border-bottom: 1px solid var(--surface-border, #e5e7eb);
-  transform: rotate(45deg);
+    position: absolute;
+    bottom: -6px;
+    left: 14px;
+    width: 12px;
+    height: 12px;
+    background: var(--surface-overlay, #fff);
+    border-right: 1px solid var(--surface-border, #e5e7eb);
+    border-bottom: 1px solid var(--surface-border, #e5e7eb);
+    transform: rotate(45deg);
 }
 
 .desc-popup-body {
-  font-size: .85rem;
-  line-height: 1.3;
+    font-size: 0.85rem;
+    line-height: 1.3;
 }
 
 .desc-popup-title {
-  font-weight: 600;
-  margin-bottom: .25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }
 
 .desc-popup-text {
-  color: var(--text-secondary-color, #6b7280);
+    color: var(--text-secondary-color, #6b7280);
 }
 
 .desc-tooltip:hover .desc-popup {
-  opacity: 1;
-  transform: translateY(2px);
-  pointer-events: auto;
+    opacity: 1;
+    transform: translateY(2px);
+    pointer-events: auto;
 }
 
 ::ng-deep .p-datatable,
@@ -193,62 +197,60 @@
 ::ng-deep .p-datatable-scrollable-body,
 ::ng-deep .p-datatable-scrollable-footer,
 ::ng-deep .p-paginator {
-  box-shadow: none !important;
-  margin: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
 }
 
 ::ng-deep .p-datatable-wrapper:first-child {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 ::ng-deep .p-paginator {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
-
 
 .form-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem 0;
-
-  .form-field {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
 
-    label {
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: #1a3c34;
+    .form-field {
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1a3c34;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
     }
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      box-sizing: border-box;
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
     }
-
-    textarea {
-      resize: vertical;
-    }
-  }
-
-  .form-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-  }
 }
 
-
-  button {
+button {
     color: white;
     padding: 10px 15px;
     border: none;
@@ -256,67 +258,81 @@
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
-  }
+}
 
 ::ng-deep .p-toast {
-  top: 2rem !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  }
+    top: 2rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
 
 ::ng-deep .p-datatable thead th {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 ::ng-deep .p-datatable thead th > div {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
 }
 ::ng-deep .p-datatable-thead > tr > th {
-  text-align: center;
+    text-align: center;
 }
 
 // Enhanced prompt text display
 .prompt-text-display {
-  padding: 20px;
-  background: #ffffff;
+    padding: 20px;
+    background: #ffffff;
 
-  .formatted-content {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.7;
-    color: #2c3e50;
-    font-size: 14px;
+    .formatted-content {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.7;
+        color: #2c3e50;
+        font-size: 14px;
 
-    p {
-      margin: 0 0 16px 0;
-      text-align: justify;
+        p {
+            margin: 0 0 16px 0;
+            text-align: justify;
 
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    &.structured {
-      p {
-        margin-bottom: 12px;
-
-        &:has(br:first-child) {
-          margin-top: 8px;
+            &:last-child {
+                margin-bottom: 0;
+            }
         }
-      }
 
-      br + br {
-        margin-top: 8px;
-      }
-    }
+        &.structured {
+            p {
+                margin-bottom: 12px;
 
-    br {
-      line-height: 1.8;
-    }
+                &:has(br:first-child) {
+                    margin-top: 8px;
+                }
+            }
 
-    &:contains('#') {
-      font-weight: 500;
+            br + br {
+                margin-top: 8px;
+            }
+        }
+
+        br {
+            line-height: 1.8;
+        }
+
+        &:contains('#') {
+            font-weight: 500;
+        }
     }
-  }
+}
+
+::ng-deep .p-datatable-thead > tr > th {
+    text-align: center;
+}
+
+::ng-deep .p-datatable-thead > tr > th.col-prompt-code,
+::ng-deep .p-datatable-thead > tr > th.col-text {
+    text-align: left;
+}
+
+::ng-deep .p-datatable-tbody > tr > td.col-prompt-code,
+::ng-deep .p-datatable-tbody > tr > td.col-text {
+    text-align: left;
 }

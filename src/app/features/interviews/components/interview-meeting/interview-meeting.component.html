@@ -46,34 +46,13 @@
             <!-- Info and Action Buttons -->
             <div class="fixed bottom-4 right-[2.5%] flex gap-4 z-50 items-center" [@fadeInControls]>
                 <!-- Info Button -->
-                <p-button
-                    icon="pi pi-info-circle"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="secondary"
-                    styleClass="text-white hover:bg-white/10"
-                    (onClick)="showInterviewRules()"
-                    pTooltip="Show Interview Rules">
-                </p-button>
+                <p-button icon="pi pi-info-circle" [rounded]="true" [text]="true" severity="secondary" styleClass="text-white hover:bg-white/10" (onClick)="showInterviewRules()" pTooltip="Show Interview Rules"> </p-button>
 
                 <!-- Finish Button -->
-                <p-button
-                    icon="pi pi-times"
-                    [rounded]="true"
-                    severity="danger"
-                    (onClick)="finishInterview()"
-                    pTooltip="Finish Interview">
-                </p-button>
+                <p-button icon="pi pi-times" [rounded]="true" severity="danger" (onClick)="finishInterview()" pTooltip="Finish Interview"> </p-button>
 
                 <!-- Show Transcript Button -->
-                <p-button
-                    *ngIf="!isTranscriptVisible"
-                    icon="pi pi-eye"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="isTranscriptVisible = true"
-                    pTooltip="Show Transcript">
-                </p-button>
+                <p-button *ngIf="!isTranscriptVisible" icon="pi pi-eye" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = true" pTooltip="Show Transcript"> </p-button>
             </div>
         </div>
 
@@ -102,14 +81,7 @@
     </div>
 
     <!-- Rules Dialog -->
-    <p-dialog
-        header="Interview Information"
-        [(visible)]="showRulesDialog"
-        [modal]="true"
-        [style]="{ width: '40rem' }"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-        styleClass="p-fluid">
-
+    <p-dialog header="Interview Information" [(visible)]="showRulesDialog" [modal]="true" [style]="{ width: '40rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" styleClass="p-fluid">
         <ng-template pTemplate="content">
             <div class="space-y-4">
                 <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -117,7 +89,7 @@
                     <ul class="text-sm text-blue-700 space-y-1">
                         <li>• Candidate: {{ candidateName || 'Not specified' }}</li>
                         <li>• Position: {{ offerTitle || 'Not specified' }}</li>
-                        <li>• Duration: Approximately 15-20 minutes</li>
+                        <li>• Duration: Approximately {{ getEstimatedTotalDuration() }} minutes</li>
                         <li>• Questions: {{ questions.length || 5 }} questions total</li>
                     </ul>
                 </div>
@@ -138,12 +110,7 @@
 
         <ng-template pTemplate="footer">
             <div class="flex gap-2 justify-end">
-                <p-button
-                    label="Close"
-                    icon="pi pi-times"
-                    (onClick)="hideInterviewRules()"
-                    severity="secondary">
-                </p-button>
+                <p-button label="Close" icon="pi pi-times" (onClick)="hideInterviewRules()" severity="secondary"> </p-button>
             </div>
         </ng-template>
     </p-dialog>
@@ -230,7 +197,7 @@
                                 <div class="bg-blue-50 p-4 rounded-lg">
                                     <h4 class="font-semibold text-blue-800 mb-2">Interview Information</h4>
                                     <ul class="text-sm text-blue-700 space-y-1">
-                                        <li>• Duration: Approximately 15-20 minutes</li>
+                                        <li>• Duration: Approximately {{ getEstimatedTotalDuration() }} minutes</li>
                                         <li>• Questions: {{ questions.length || 5 }} questions total</li>
                                         <li>• Recording: Full session will be recorded</li>
                                         <li>• Format: Video interview with live transcript</li>

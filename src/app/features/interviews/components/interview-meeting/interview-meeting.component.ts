@@ -144,7 +144,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.requestCameraPermission();
         }, 500);
     }
-      // Add this method to show the rules
+    // Add this method to show the rules
     showInterviewRules(): void {
         this.showRulesDialog = true;
     }
@@ -268,6 +268,17 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.handleSpeechError(error?.message ?? String(error));
         });
     }
+
+getEstimatedTotalDuration(): number {
+    if (!this.questions?.length) return 15;
+
+    const totalMinutes = this.questions.reduce((total, question) =>
+        total + (question.durationInMinutes || 0), 0
+    );
+
+    // Custom rounding: round down for .5 cases, otherwise normal rounding
+    return Math.floor(totalMinutes / 10 + 0.4) * 10;
+}
 
     private updateUIFromSpeechState(state: SpeechRecognitionState): void {
         this.liveSubtitle = state.combinedTranscript;

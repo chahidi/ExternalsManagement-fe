@@ -128,7 +128,7 @@
 
                                 <div class="text-center space-y-2">
                                     <p class="text-sm text-gray-600">Make sure your camera is working properly and you are clearly visible</p>
-                                    <p-button *ngIf="!isCameraReady" label="Retry Camera Access" icon="pi pi-refresh" severity="secondary" (onClick)="requestCameraAndMicrophonePermission"> </p-button>
+                                    <p-button *ngIf="!isCameraReady" label="Retry Camera Access" icon="pi pi-refresh" severity="secondary" (onClick)="requestCameraAndMicrophonePermission()"> </p-button>
                                 </div>
                                 <div class="flex-grow"></div>
                                 <div class="pt-4 flex flex-col items-center gap-4">

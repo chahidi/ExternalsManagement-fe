@@ -90,6 +90,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     private eventListenersRegistered = false;
     interviewToken: any;
     isCameraReady = true;
+    @ViewChild('previewVideo') previewVideo!: ElementRef<HTMLVideoElement>;
 
     constructor(
         private promptService: PromptService,
@@ -230,6 +231,13 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 },
                 audio: true
             });
+
+            const videoElement = this.previewVideo?.nativeElement;
+            if (videoElement) {
+                videoElement.srcObject = this.stream;
+                this.isCameraReady = true;
+                this.previewMode = true;
+            }
 
             console.log('Micro stream obtained:', this.stream);
             this.previewMode = true;

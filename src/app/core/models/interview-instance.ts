@@ -1,6 +1,5 @@
 import { Question } from './question';
 import { Evaluation } from './evaluation';
-import { Record } from './record';
 
 export interface InterviewInstance {
     id: string;
@@ -9,12 +8,10 @@ export interface InterviewInstance {
     startTime: Date;
     endTime: Date;
     description: string;
-    feedbackGeneral: string;
     comment: string;
     candidateFullName: string;
     candidateMainTech: string;
     offerTitle: string;
     questions: Question[];
     evaluations: Evaluation[];
-    record: Record;
 }

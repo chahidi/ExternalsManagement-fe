@@ -69,6 +69,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     aiSpeaking = false;
     showSubtitles = false;
     showRulesDialog = false;
+    transcriptions: string[] = [];
 
     // User interaction
     currentUserAnswer: string = '';
@@ -414,6 +415,8 @@ getEstimatedTotalDuration(): number {
     addCurrentQuestionToTranscript(): void {
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (currentQuestion?.description) {
+            const questionTime = this.getRelativeTime();
+            this.transcriptions.push(`AI - ${questionTime} : ${currentQuestion.description} || `);
             this.transcriptMessages.push({
                 sender: 'AI',
                 text: currentQuestion.description,
@@ -424,6 +427,19 @@ getEstimatedTotalDuration(): number {
             this.scrollTranscriptToBottom();
         }
     }
+
+    private getRelativeTime(): string {
+        if (!this.interviewStartTime) return '00:00:00';
+        const msecondes = Date.now() - this.interviewStartTime;
+        const totalSeconds = Math.floor(msecondes / 1000);
+
+        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
 
     async startNextQuestion(): Promise<void> {
         const currentQuestion = this.questions[this.currentQuestionIndex];
@@ -530,6 +546,8 @@ getEstimatedTotalDuration(): number {
 
         currentQuestion.answer = answerObject;
 
+        const formatedAnswer = `Candidate - ${this.getRelativeTime()} : ${userAnswerText}`;
+        this.transcriptions[this.transcriptions.length-1]+=formatedAnswer;
         this.transcriptMessages.push({
             sender: 'You',
             text: userAnswerText,
@@ -669,12 +687,19 @@ getEstimatedTotalDuration(): number {
             realAnswerTime: question.answer?.durationInMinutes || 0
         }));
 
-        console.log('Interview ID:', this.interviewId);
-        console.log('Questions and Answers DTO:', JSON.stringify(questionsAndAnswers, null, 2));
-        console.log('Number of questions:', questionsAndAnswers.length);
-        console.log('============================');
+        const transcriptionString = JSON.stringify(this.transcriptions);
 
-        this.evaluationService.prepareInterviewEvaluation(this.interviewId, questionsAndAnswers).subscribe({
+        this.evaluationService.saveInterviewTranscription(this.interviewId,transcriptionString).subscribe({
+            next: (interview) => {
+                console.log('Interview Transcription saved');
+                console.log('Interview : ', interview);
+            },
+            error: (err) => {
+                console.error('Saving Transcription failed :', err);
+            }
+        })
+
+        this.evaluationService.prepareInterviewEvaluation(this.interviewId,questionsAndAnswers).subscribe({
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');

@@ -68,6 +68,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     showSubmitButton = false;
     canSubmitAnswer = false;
     isWaitingForAnswer = false;
+    isAudioEnabled = false;
     speechRecognitionState: SpeechRecognitionState = {
         isListening: false,
         isSupported: false,
@@ -233,25 +234,45 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
     async requestCameraPermission(): Promise<void> {
         try {
-            console.log('Requesting camera permission...');
+            console.log('Requesting camera and microphone permission...');
+            
             this.stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    facingMode: 'user'
-                },
+                video: true,
                 audio: true
             });
 
-            console.log('Camera stream obtained:', this.stream);
-            this.isCameraEnabled = true;
-            this.previewMode = true;
-            this.configureCameraPreview();
-        } catch (error) {
-            console.warn('Camera permission denied or failed:', error);
-            this.handleCameraInitializationFailure();
+            if (!this.stream) {
+                throw new Error('No media stream received.');
+            }
+
+            const videoTracks = this.stream.getVideoTracks();
+            const audioTracks = this.stream.getAudioTracks();
+
+            this.isCameraEnabled = videoTracks.some(track => track.readyState === 'live');
+            this.isAudioEnabled = audioTracks.some(track => track.readyState === 'live');
+
+            console.log('Camera enabled:', this.isCameraEnabled);
+            console.log('Audio enabled:', this.isAudioEnabled);
+
+            if (this.isCameraEnabled) {
+                this.previewMode = true;
+                this.attachStreamToVideoElement(this.previewVideo?.nativeElement);
+            }
+
+            this.monitorCameraAndAudio();
+
+        } catch (err) {
+            console.warn('❌ User denied camera/mic:', err);
+            this.isCameraEnabled = false;
+            this.isAudioEnabled = false;
+            this.previewMode = false;
+            this.userWarningMessage = 'Please allow camera and microphone access to continue.';
         }
+
+        this.cdr.detectChanges(); 
     }
+
+
 
     private configureCameraPreview(): void {
         setTimeout(() => {
@@ -707,4 +728,34 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const seconds = this.timeRemaining % 60;
         return `⏱ Time left: ${minutes}m ${seconds}s`;
     }
+    private monitorCameraAndAudio(): void {
+        if (!this.stream) return;
+
+        const checkInterval = setInterval(() => {
+            if (!this.stream) {
+                clearInterval(checkInterval);
+                return;
+            }
+
+            const videoTracks = this.stream.getVideoTracks();
+            const audioTracks = this.stream.getAudioTracks();
+
+            const cameraActive = videoTracks.some(track => track.readyState === 'live');
+            const micActive = audioTracks.some(track => track.readyState === 'live');
+
+            if (this.isCameraEnabled !== cameraActive || this.isAudioEnabled !== micActive) {
+                this.isCameraEnabled = cameraActive;
+                this.isAudioEnabled = micActive;
+                this.cdr.detectChanges();
+            }
+
+            if (!cameraActive || !micActive) {
+                this.userWarningMessage = 'Camera or microphone disabled. Please enable both to continue.';
+            }
+
+        }, 1000);
+    }
+
+
+
 }

@@ -43,6 +43,14 @@
                 </p-button>
             </div>
 
+            <div *ngIf="isWaitingForAnswer && !isReadyToSpeak" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+                <p-tag value="Please wait, AI is finishing..." severity="warn" styleClass="text-lg px-6 py-3 shadow-lg"> </p-tag>
+            </div>
+
+            <div *ngIf="isWaitingForAnswer && isReadyToSpeak" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+                <p-tag value="You can speak now" severity="success" styleClass="text-lg px-6 py-3 shadow-lg animate-pulse"> </p-tag>
+            </div>
+
             <!-- Info and Action Buttons -->
             <div class="fixed bottom-4 right-[2.5%] flex gap-4 z-50 items-center" [@fadeInControls]>
                 <!-- Info Button -->

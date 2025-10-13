@@ -69,6 +69,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     aiSpeaking = false;
     showSubtitles = false;
     showRulesDialog = false;
+    isReadyToSpeak = false;
     transcriptions: string[] = [];
 
     // User interaction
@@ -145,12 +146,11 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             this.requestCameraPermission();
         }, 500);
     }
-    // Add this method to show the rules
+
     showInterviewRules(): void {
         this.showRulesDialog = true;
     }
 
-    // Add this method to hide the rules
     hideInterviewRules(): void {
         this.showRulesDialog = false;
     }
@@ -188,7 +188,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                 console.log('Retrieved interview ID:', interviewId);
                 this.interviewId = interviewId;
 
-                // Load interview details
                 this.interviewService.getInterviewById(interviewId).subscribe({
                     next: (interview) => {
                         console.log('Interview details:', interview);
@@ -213,12 +212,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                             });
                         }
 
-                        // Load questions
                         this.loadInterviewQuestions(interviewId);
                     },
                     error: (err) => {
                         console.error('Failed to load interview:', err);
-                        // Still try to load questions
                         this.loadInterviewQuestions(interviewId);
                     }
                 });
@@ -230,6 +227,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             }
         });
     }
+
     private loadInterviewQuestions(interviewId: string): void {
         console.log('Loading questions for interview ID:', interviewId);
         this.interviewService.getInterviewQuestions(interviewId).subscribe({
@@ -270,16 +268,15 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-getEstimatedTotalDuration(): number {
-    if (!this.questions?.length) return 15;
+    getEstimatedTotalDuration(): number {
+        if (!this.questions?.length) return 15;
 
-    const totalMinutes = this.questions.reduce((total, question) =>
-        total + (question.durationInMinutes || 0), 0
-    );
+        const totalMinutes = this.questions.reduce((total, question) =>
+            total + (question.durationInMinutes || 0), 0
+        );
 
-    // Custom rounding: round down for .5 cases, otherwise normal rounding
-    return Math.floor(totalMinutes / 10 + 0.4) * 10;
-}
+        return Math.floor(totalMinutes / 10 + 0.4) * 10;
+    }
 
     private updateUIFromSpeechState(state: SpeechRecognitionState): void {
         this.liveSubtitle = state.combinedTranscript;
@@ -323,24 +320,30 @@ getEstimatedTotalDuration(): number {
         const seconds = now.getSeconds().toString().padStart(2, '0');
         this.currentTime = `${hours}:${minutes}:${seconds}`;
     }
+
     async requestCameraPermission(): Promise<void> {
         try {
-            console.log('Requesting camera permission...');
+            console.log('Requesting camera and audio permission with echo cancellation...');
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     width: { ideal: 1280 },
                     height: { ideal: 720 },
                     facingMode: 'user'
                 },
-                audio: false
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                    sampleRate: 48000
+                }
             });
 
-            console.log('Camera stream obtained:', this.stream);
+            console.log('Camera and audio stream obtained with echo cancellation:', this.stream);
             this.isCameraEnabled = true;
             this.previewMode = true;
             this.configureCameraPreview();
         } catch (error) {
-            console.warn('Camera permission denied or failed:', error);
+            console.warn('Camera/audio permission denied or failed:', error);
             this.handleCameraInitializationFailure();
         }
     }
@@ -440,6 +443,25 @@ getEstimatedTotalDuration(): number {
         return `${hours}:${minutes}:${seconds}`;
     }
 
+    private async waitForSilence(maxWaitTime: number = 3000): Promise<void> {
+        return new Promise((resolve) => {
+            const startTime = Date.now();
+            const checkInterval = setInterval(() => {
+                if (!this.aiSpeaking && !this.tts.isCurrentlyPlaying()) {
+                    clearInterval(checkInterval);
+                    console.log('Silence detected, ready for speech recognition');
+                    resolve();
+                }
+
+
+                if (Date.now() - startTime > maxWaitTime) {
+                    clearInterval(checkInterval);
+                    console.log('Silence wait timeout, proceeding anyway');
+                    resolve();
+                }
+            }, 100);
+        });
+    }
 
     async startNextQuestion(): Promise<void> {
         const currentQuestion = this.questions[this.currentQuestionIndex];
@@ -449,6 +471,7 @@ getEstimatedTotalDuration(): number {
         this.timeRemaining = currentQuestion.durationInMinutes * 60;
         this.questionStartTime = Date.now();
         this.aiSpeaking = true;
+        this.isReadyToSpeak = false;
         this.hideSubmissionControls();
 
         this.addCurrentQuestionToTranscript();
@@ -456,12 +479,23 @@ getEstimatedTotalDuration(): number {
         this.preloadUpcomingQuestions();
 
         try {
+            console.log('AI starting to speak...');
             await this.tts.speak(currentQuestion.description, true);
+            console.log('AI finished speaking, waiting for silence...');
+
+            await this.waitForSilence(3000);
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
             this.aiSpeaking = false;
             this.isWaitingForAnswer = true;
             this.showSubmitButton = true;
-            console.log('AI finished speaking, starting recognition...');
+            this.isReadyToSpeak = true;
+
+            console.log('Ready for candidate response, starting recognition...');
             this.scheduleDelayedSpeechRecognition();
+
+            this.cdr.detectChanges();
         } catch (error) {
             console.error('TTS error:', error);
             this.handleTTSError();
@@ -490,7 +524,7 @@ getEstimatedTotalDuration(): number {
                 this.resetSpeechRecognitionData();
                 this.beginSpeechRecognition();
             }
-        }, 1000);
+        }, 2000);
     }
 
     private handleTTSError(): void {
@@ -498,6 +532,7 @@ getEstimatedTotalDuration(): number {
         this.aiSpeaking = false;
         this.isWaitingForAnswer = true;
         this.showSubmitButton = true;
+        this.isReadyToSpeak = true;
         this.scheduleDelayedSpeechRecognition();
     }
 
@@ -516,7 +551,7 @@ getEstimatedTotalDuration(): number {
 
     private beginSpeechRecognition(): void {
         this.speechRecognitionService.start();
-        console.log('Speech recognition started for question:', this.currentQuestionIndex + 1);
+        console.log('🎙️ Speech recognition started for question:', this.currentQuestionIndex + 1);
     }
 
     submitCurrentAnswer(): void {
@@ -528,6 +563,7 @@ getEstimatedTotalDuration(): number {
 
         this.stopSpeechRecognition();
         this.hideSubmissionControls();
+        this.isReadyToSpeak = false;
 
         const currentQuestion = this.questions[this.currentQuestionIndex];
         if (!currentQuestion) {
@@ -547,7 +583,7 @@ getEstimatedTotalDuration(): number {
         currentQuestion.answer = answerObject;
 
         const formatedAnswer = `Candidate - ${this.getRelativeTime()} : ${userAnswerText}`;
-        this.transcriptions[this.transcriptions.length-1]+=formatedAnswer;
+        this.transcriptions[this.transcriptions.length - 1] += formatedAnswer;
         this.transcriptMessages.push({
             sender: 'You',
             text: userAnswerText,
@@ -580,6 +616,7 @@ getEstimatedTotalDuration(): number {
         this.stopSpeechRecognition();
         this.clearQuestionTimer();
         this.hideSubmissionControls();
+        this.isReadyToSpeak = false;
 
         this.currentQuestionIndex++;
         if (this.currentQuestionIndex < this.questions.length) {
@@ -593,6 +630,7 @@ getEstimatedTotalDuration(): number {
         console.log('Question time limit reached');
         this.clearQuestionTimer();
         this.hideSubmissionControls();
+        this.isReadyToSpeak = false;
 
         const userAnswerText = this.speechRecognitionService.getFinalTranscript().trim();
 
@@ -660,6 +698,7 @@ getEstimatedTotalDuration(): number {
         this.isInterviewInProgress = false;
         this.isInterviewFinalizing = true;
         this.aiSpeaking = false;
+        this.isReadyToSpeak = false;
         this.hideSubmissionControls();
         this.stopSpeechRecognition();
         this.tts.stop();
@@ -689,7 +728,7 @@ getEstimatedTotalDuration(): number {
 
         const transcriptionString = JSON.stringify(this.transcriptions);
 
-        this.evaluationService.saveInterviewTranscription(this.interviewId,transcriptionString).subscribe({
+        this.evaluationService.saveInterviewTranscription(this.interviewId, transcriptionString).subscribe({
             next: (interview) => {
                 console.log('Interview Transcription saved');
                 console.log('Interview : ', interview);
@@ -697,9 +736,9 @@ getEstimatedTotalDuration(): number {
             error: (err) => {
                 console.error('Saving Transcription failed :', err);
             }
-        })
+        });
 
-        this.evaluationService.prepareInterviewEvaluation(this.interviewId,questionsAndAnswers).subscribe({
+        this.evaluationService.prepareInterviewEvaluation(this.interviewId, questionsAndAnswers).subscribe({
             next: (evaluation) => {
                 console.log('Interview Evaluation:', evaluation);
                 this.notify.showSuccess('Interview Completed', 'Your interview has been successfully evaluated.');

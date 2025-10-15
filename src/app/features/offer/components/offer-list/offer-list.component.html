@@ -198,7 +198,7 @@
   <p-dialog [(visible)]="descDialogVisible" [modal]="true" [dismissableMask]="true" [closeOnEscape]="true"
     [resizable]="false" [draggable]="false" [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
     [style]="{ width: '52rem', maxHeight: '75vh' }" header="{{ currentOffer?.title || 'Description' }}">
-    <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
+    <div class="whitespace-pre-wrap text-base text-justify" style="overflow:auto; max-height: 60vh;">
       {{ currentOffer?.description }}
     </div>
   </p-dialog>

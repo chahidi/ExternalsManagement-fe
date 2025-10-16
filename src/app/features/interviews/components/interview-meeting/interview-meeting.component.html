@@ -179,7 +179,7 @@
                                     <h3 class="text-xl font-semibold text-gray-800">Ready to join?</h3>
                                     <p-avatar image="assets/layout/avatar2.png" shape="circle" size="xlarge" styleClass="shadow-lg border border-gray-300"> </p-avatar>
                                     <p class="text-sm text-gray-600 italic">Alex is waiting for you</p>
-                                    <p-button label="I'm Ready to Start" icon="pi pi-play" severity="success" size="large" [disabled]="!isCameraReady" (onClick)="startInterview()" styleClass="w-auto"> </p-button>
+                                    <p-button label="I'm Ready to Start" icon="pi pi-play" severity="success" size="large" [disabled]="!isCameraEnabled || !isAudioEnabled" (onClick)="startInterview()" styleClass="w-auto"> </p-button>
 
                                     <p *ngIf="!isCameraReady" class="text-sm text-red-600">Please allow camera access to start the interview</p>
                                 </div>

@@ -603,7 +603,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.answerService.createAnswerForQuestion(answerData).subscribe({
             next: (response) => {
                 console.log('Answer saved to backend:', response);
-            },
+            }, 
             error: (error) => {
                 console.error('Failed to save answer:', error);
             }

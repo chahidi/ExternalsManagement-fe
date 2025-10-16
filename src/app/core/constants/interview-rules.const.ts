@@ -29,5 +29,10 @@ export const INTERVIEW_RULES: InterviewRule[] = [
     icon: 'pi pi-video',
     title: 'Session Recording',
     description: 'The entire session will be monitored and recorded for evaluation.'
+  },
+    {
+    icon: 'pi pi-globe',
+    title: 'English Language Only',
+    description: 'The interview will be conducted in English. You must answer all questions using English only.'
   }
 ];

@@ -28,29 +28,31 @@
                 </div>
             </div>
 
-            <!-- Submit Answer Button  -->
-            <div *ngIf="showSubmitButton" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
-                <p-button
-                    label="Submit Answer"
-                    icon="pi pi-check"
-                    severity="secondary"
-                    size="large"
-                    [disabled]="!canSubmitAnswer"
-                    (onClick)="submitCurrentAnswer()"
-                    styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
-                    pTooltip="Submit your current answer"
-                >
-                </p-button>
-            </div>
+        <!-- Submit Answer Button - moved higher -->
+<!-- "Please wait" message - Higher position -->
+<div *ngIf="isWaitingForAnswer && !isReadyToSpeak" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+    <p-tag value="Please wait, AI is finishing..." severity="warn" styleClass="text-lg px-6 py-3 shadow-lg"> </p-tag>
+</div>
 
-            <div *ngIf="isWaitingForAnswer && !isReadyToSpeak" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
-                <p-tag value="Please wait, AI is finishing..." severity="warn" styleClass="text-lg px-6 py-3 shadow-lg"> </p-tag>
-            </div>
+<!-- "You can speak now" message - Higher position -->
+<div *ngIf="isWaitingForAnswer && isReadyToSpeak" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+    <p-tag value="You can speak now" severity="success" styleClass="text-lg px-6 py-3 shadow-lg animate-pulse"> </p-tag>
+</div>
 
-            <div *ngIf="isWaitingForAnswer && isReadyToSpeak" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
-                <p-tag value="You can speak now" severity="success" styleClass="text-lg px-6 py-3 shadow-lg animate-pulse"> </p-tag>
-            </div>
-
+<!-- Submit Answer Button - Lower position -->
+<div *ngIf="showSubmitButton" class="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
+    <p-button
+        label="Submit Answer"
+        icon="pi pi-check"
+        severity="secondary"
+        size="large"
+        [disabled]="!canSubmitAnswer"
+        (onClick)="submitCurrentAnswer()"
+        styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
+        pTooltip="Submit your current answer"
+    >
+    </p-button>
+</div>
             <!-- Info and Action Buttons -->
             <div class="fixed bottom-4 right-[2.5%] flex gap-4 z-50 items-center" [@fadeInControls]>
                 <!-- Info Button -->
@@ -218,7 +220,7 @@
             </div>
 
             <div class="text-center mt-8 text-gray-500 text-sm">
-                <p>Need help? Contact support at <span class="text-blue-600">support&#64;nttSm</span></p>
+                <p>Need help? Contact support at <span class="text-blue-600">support&#64;nttData</span></p>
             </div>
         </div>
     </div>

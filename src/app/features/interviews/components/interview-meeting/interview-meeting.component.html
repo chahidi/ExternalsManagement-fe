@@ -23,32 +23,42 @@
 
             <div class="absolute bottom-6 right-20 z-50">
                 <div class="w-36 h-36 bg-white rounded-xl flex flex-col items-center justify-center shadow-xl border-2 border-gray-300">
-                    <p-avatar image="assets/layout/avatar.png" shape="circle" size="xlarge"> </p-avatar>
+                    <p-avatar image="assets/layout/avatar2.png" shape="circle" size="xlarge"> </p-avatar>
                     <p class="mt-2 text-gray-700 font-semibold">Alex</p>
                 </div>
             </div>
 
-            <!-- Submit Answer Button  -->
-            <div *ngIf="showSubmitButton" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
-                <p-button
-                    label="Submit Answer"
-                    icon="pi pi-check"
-                    severity="secondary"
-                    size="large"
-                    [disabled]="!canSubmitAnswer"
-                    (onClick)="submitCurrentAnswer()"
-                    styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
-                    pTooltip="Submit your current answer"
-                >
-                </p-button>
-            </div>
+        <!-- Submit Answer Button - moved higher -->
+<!-- "Please wait" message - Higher position -->
+<div *ngIf="isWaitingForAnswer && !isReadyToSpeak" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+    <p-tag value="Please wait, AI is finishing..." severity="warn" styleClass="text-lg px-6 py-3 shadow-lg"> </p-tag>
+</div>
 
-            <div class="fixed bottom-4 right-[calc(14%+5rem)] z-50" [@fadeInControls]>
-                <p-button icon="pi pi-info-circle" [rounded]="true" [text]="true" severity="secondary" styleClass="text-white hover:bg-white/10"> </p-button>
-            </div>
+<!-- "You can speak now" message - Higher position -->
+<div *ngIf="isWaitingForAnswer && isReadyToSpeak" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+    <p-tag value="You can speak now" severity="success" styleClass="text-lg px-6 py-3 shadow-lg animate-pulse"> </p-tag>
+</div>
 
-            <!-- Finish + Show Transcript -->
+<!-- Submit Answer Button - Lower position -->
+<div *ngIf="showSubmitButton" class="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
+    <p-button
+        label="Submit Answer"
+        icon="pi pi-check"
+        severity="secondary"
+        size="large"
+        [disabled]="!canSubmitAnswer"
+        (onClick)="submitCurrentAnswer()"
+        styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
+        pTooltip="Submit your current answer"
+    >
+    </p-button>
+</div>
+            <!-- Info and Action Buttons -->
             <div class="fixed bottom-4 right-[2.5%] flex gap-4 z-50 items-center" [@fadeInControls]>
+                <!-- Info Button -->
+                <p-button icon="pi pi-info-circle" [rounded]="true" [text]="true" severity="secondary" styleClass="text-white hover:bg-white/10" (onClick)="showInterviewRules()" pTooltip="Show Interview Rules"> </p-button>
+
+                <!-- Finish Button -->
                 <p-button icon="pi pi-times" [rounded]="true" severity="danger" (onClick)="finishInterview()" pTooltip="Finish Interview"> </p-button>
 
                 <!-- Show Transcript Button -->
@@ -77,9 +87,43 @@
                 </p-scrollPanel>
             </p-panel>
         </div>
-
-        <div class="absolute bottom-6 left-[2.5%] text-white text-base md:text-lg font-semibold z-50" [@fadeInControls]>{{ currentTime }} | Developer AI Interview</div>
+        <div class="absolute bottom-6 left-[2.5%] text-white text-base md:text-lg font-semibold z-50" [@fadeInControls]>{{ currentTime }} | Interview of {{ candidateName || 'Candidate' }} - {{ offerTitle || 'Position' }}</div>
     </div>
+
+    <!-- Rules Dialog -->
+    <p-dialog header="Interview Information" [(visible)]="showRulesDialog" [modal]="true" [style]="{ width: '40rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="space-y-4">
+                <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 class="font-semibold text-blue-800 mb-2">Interview Details</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Candidate: {{ candidateName || 'Not specified' }}</li>
+                        <li>• Position: {{ offerTitle || 'Not specified' }}</li>
+                        <li>• Duration: Approximately {{ getEstimatedTotalDuration() }} minutes</li>
+                        <li>• Questions: {{ questions.length || 5 }} questions total</li>
+                    </ul>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <h4 class="font-semibold text-gray-800 mb-2">Important Points</h4>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        <li>• The interview is being recorded</li>
+                        <li>• Do not switch tabs or resize the window</li>
+                        <li>• Make sure you have a stable internet connection</li>
+                        <li>• Speak clearly and concisely</li>
+                        <li>• You have limited time for each question</li>
+                        <li>• Ensure you are in a quiet environment</li>
+                    </ul>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <div class="flex gap-2 justify-end">
+                <p-button label="Close" icon="pi pi-times" (onClick)="hideInterviewRules()" severity="secondary"> </p-button>
+            </div>
+        </ng-template>
+    </p-dialog>
 </ng-container>
 
 <!-- FINALIZING SCREEN -->
@@ -133,9 +177,9 @@
                                 <div class="flex-grow"></div>
                                 <div class="pt-4 flex flex-col items-center gap-4">
                                     <h3 class="text-xl font-semibold text-gray-800">Ready to join?</h3>
-                                    <p-avatar image="assets/layout/avatar.png" shape="circle" size="xlarge" styleClass="shadow-lg border border-gray-300"> </p-avatar>
+                                    <p-avatar image="assets/layout/avatar2.png" shape="circle" size="xlarge" styleClass="shadow-lg border border-gray-300"> </p-avatar>
                                     <p class="text-sm text-gray-600 italic">Alex is waiting for you</p>
-                                    <p-button label="I'm Ready to Start" icon="pi pi-play" severity="success" size="large" [disabled]="!isCameraReady" (onClick)="startInterview()" styleClass="w-auto"> </p-button>
+                                    <p-button label="I'm Ready to Start" icon="pi pi-play" severity="success" size="large" [disabled]="!isCameraEnabled || !isAudioEnabled" (onClick)="startInterview()" styleClass="w-auto"> </p-button>
 
                                     <p *ngIf="!isCameraReady" class="text-sm text-red-600">Please allow camera access to start the interview</p>
                                 </div>
@@ -163,7 +207,7 @@
                                 <div class="bg-blue-50 p-4 rounded-lg">
                                     <h4 class="font-semibold text-blue-800 mb-2">Interview Information</h4>
                                     <ul class="text-sm text-blue-700 space-y-1">
-                                        <li>• Duration: Approximately 15-20 minutes</li>
+                                        <li>• Duration: Approximately {{ getEstimatedTotalDuration() }} minutes</li>
                                         <li>• Questions: {{ questions.length || 5 }} questions total</li>
                                         <li>• Recording: Full session will be recorded</li>
                                         <li>• Format: Video interview with live transcript</li>
@@ -176,7 +220,7 @@
             </div>
 
             <div class="text-center mt-8 text-gray-500 text-sm">
-                <p>Need help? Contact support at <span class="text-blue-600">support&#64;nttSm</span></p>
+                <p>Need help? Contact support at <span class="text-blue-600">support&#64;nttData</span></p>
             </div>
         </div>
     </div>

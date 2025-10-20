@@ -132,7 +132,6 @@
                     </p-columnFilter>
                 </th>
                 <th>Evaluation</th>
-                <th>Recording Link</th>
                 <th>Actions</th>
             </tr>
         </ng-template>
@@ -142,7 +141,24 @@
                 <td>{{ interview.candidateFullName }}</td>
                 <td>{{ interview.candidateMainTech || 'N/A' }}</td>
                 <td>{{ interview.offerTitle || 'N/A' }}</td>
-                <td>{{ interview.comment || 'N/A' }}</td>
+                <td>
+                    @if (interview.comment) {
+                    <div class="desc-tooltip">
+                        <span class="desc-teaser" (click)="openCommentModal(interview)">
+                            {{ teaserWords(interview.comment, 3) }}
+                        </span>
+                        <div class="desc-popup">
+                            <div class="desc-popup-body">
+                                <div class="desc-popup-title">View full comment</div>
+                                <div class="desc-popup-text">Click the text to see all details</div>
+                            </div>
+                            <div class="desc-popup-arrow"></div>
+                        </div>
+                    </div>
+                    } @else {
+                    <span class="text-gray-400 italic">N/A</span>
+                    }
+                </td>
                 <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
 
                 <td>
@@ -153,23 +169,14 @@
                     <span class="text-gray-400 italic">N/A</span>
                     }
                 </td>
-                <td>
-                    @if (interview.record?.fileUrl) {
-                    <a [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View
-                        Recording</a>
-                    }
-                    @if (!interview.record?.fileUrl) {
-                    <span class="text-gray-400 italic">Not Available</span>
-                    }
-                </td>
                 <td class="flex gap-1">
-                    <button pButton icon="pi pi-eye" class="p-button-sm p-button-text"
+                    <button pButton icon="pi pi-eye" class="p-button-sm p-button-text p-button-info"
                         [pTooltip]="'View More Details'" tooltipPosition="top"
                         (click)="ViewInterviewPopup(interview)"></button>
-                    <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text"
+                    <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text p-button-secondary"
                         [pTooltip]="'Generate New Link'" tooltipPosition="top"
                         (click)="generateLinkAndSendEmail(interview)"></button>
-                    <button pButton icon="pi pi-comment" class="p-button-sm p-button-text" pTooltip="Add Comment"
+                    <button pButton icon="pi pi-comment" class="p-button-sm p-button-text p-button-secondary" pTooltip="Add Comment"
                         (click)="AddCommentPopup(interview)"></button>
                     <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text"
                         (click)="confirmDelete(interview)"></button>
@@ -177,6 +184,22 @@
             </tr>
         </ng-template>
     </p-table>
+
+    <!-- View Comment Dialog -->
+    <p-dialog
+        [(visible)]="commentDialogVisible"
+        [modal]="true"
+        [dismissableMask]="true"
+        [closeOnEscape]="true"
+        [resizable]="false"
+        [draggable]="false"
+        [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+        [style]="{ width: '52rem', maxHeight: '75vh' }"
+        header="Comment">
+        <div class="whitespace-pre-wrap text-sm" style="overflow:auto; max-height: 60vh;">
+            {{ currentCommentInterview?.comment }}
+        </div>
+    </p-dialog>
 
     <!-- Add Comment Dialog -->
     <p-dialog header="Add Comment" [(visible)]="showCommentDialog" [modal]="true" [style]="{ width: '500px' }"

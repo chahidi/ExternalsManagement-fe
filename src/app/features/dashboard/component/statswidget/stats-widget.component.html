@@ -9,11 +9,14 @@
     </p-card>
   </div>
 
-  <p-tabs>
+  <p-tabs value="0">
+    <p-tablist>
+      <p-tab value="0">Languages</p-tab>
+      <p-tab value="1">Skills</p-tab>
+      <p-tab value="2">Experience</p-tab>
+    </p-tablist>
     <!-- Languages Tab -->
-    <ng-template pTemplate="tab" let-index="index">
-      Languages
-    </ng-template>
+    <p-tabpanel value="0">
     <p-card class="chart-card">
       <h3>Candidates by Language</h3>
       <div *ngIf="!languageChartData" class="loading-indicator">
@@ -28,11 +31,10 @@
         width="100%">
       </p-chart>
     </p-card>
+    </p-tabpanel>
 
     <!-- Skills Tab -->
-    <ng-template pTemplate="tab" let-index="index">
-      Skills
-    </ng-template>
+    <p-tabpanel value="1">
     <p-card class="chart-card">
       <h3>Candidates by Skill</h3>
       <div *ngIf="!skillsChartData" class="loading-indicator">
@@ -47,11 +49,10 @@
         width="100%">
       </p-chart>
     </p-card>
+    </p-tabpanel>
 
     <!-- Experience Tab -->
-    <ng-template pTemplate="tab" let-index="index">
-      Experience
-    </ng-template>
+    <p-tabpanel value="2">
     <p-card class="chart-card">
       <h3>Candidates by years of experience</h3>
       <div *ngIf="!experienceChartData" class="loading-indicator">
@@ -66,5 +67,6 @@
         width="100%">
       </p-chart>
     </p-card>
+    </p-tabpanel>
   </p-tabs>
 </div>

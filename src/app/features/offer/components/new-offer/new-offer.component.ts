@@ -45,8 +45,16 @@ export class NewOfferComponent {
     const payload = this.offerForm.value; // { title, description }
 
     this.offerService.addOffer(payload).subscribe({
-      next: () => {
-        this.router.navigate(['/offers']);
+      next: (createdOffer) => {
+        this.offerService.prepareOfferFormattedDescription(createdOffer.id).subscribe({
+          next: (formatted) => {
+            console.log('Formatted description:', formatted);
+            this.router.navigate(['/offers']);
+          },
+          error: (err) => {
+            console.error('Error preparing formatted description', err);
+          }
+        });
       },
       error: (err) => {
         console.error('Error creating offer', err);

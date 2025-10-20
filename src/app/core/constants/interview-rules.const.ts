@@ -21,13 +21,18 @@ export const INTERVIEW_RULES: InterviewRule[] = [
     description: 'Fullscreen mode will start automatically after you click "I\'m Ready".'
   },
   {
-    icon: 'pi pi-eye',
-    title: 'Stay Focused',
-    description: 'Maintain focus and avoid distractions throughout the session.'
+    icon: 'pi pi-globe',
+    title: 'Browser Requirements (Chrome or Edge)',
+    description: 'Use only Chrome or Edge browser for optimal performance and compatibility.'
   },
   {
     icon: 'pi pi-video',
     title: 'Session Recording',
     description: 'The entire session will be monitored and recorded for evaluation.'
+  },
+    {
+    icon: 'pi pi-globe',
+    title: 'English Language Only',
+    description: 'The interview will be conducted in English. You must answer all questions using English only.'
   }
 ];

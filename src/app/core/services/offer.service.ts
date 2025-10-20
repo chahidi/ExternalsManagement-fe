@@ -14,7 +14,7 @@ import { OfferFormattedDescription } from '../models/offerFormattedDescription';
   providedIn: 'root'
 })
 export class OfferService {
-  private offers: Offer[] = [];               // keep a lightweight cache if you want
+  private offers: Offer[] = [];
 
 
   private apiUrl = `${environment.apiUrl}/v1/offers`;
@@ -52,7 +52,7 @@ export class OfferService {
 
   addOffer(offer: Offer): Observable<Offer> {
     return this.http.post<Offer>(this.apiUrl, offer).pipe(
-      tap(newOffer => { this.offers.push(newOffer); }) // keep cache in sync (optional)
+      tap(newOffer => { this.offers.push(newOffer); }) 
     );
   }
 
@@ -77,4 +77,10 @@ export class OfferService {
     return this.http.get<OfferFormattedDescription>(`${this.apiUrl}/${offerId}/formatted-description`)
     .pipe(retry(2));
   }
+
+  prepareOfferFormattedDescription(offerId: string): Observable<OfferFormattedDescription> {
+    return this.http.post<OfferFormattedDescription>(`${this.apiUrl}/${offerId}/prepare-formatted-description`,{})
+    .pipe(retry(2));
+  }
+
 }

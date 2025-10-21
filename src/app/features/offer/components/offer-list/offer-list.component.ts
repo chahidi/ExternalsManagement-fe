@@ -59,7 +59,7 @@ export class OfferListComponent implements OnInit {
   // data
   offers: any[] = [];
   filteredOffers: any[] = [];
-  ref: DynamicDialogRef | undefined;
+  ref: DynamicDialogRef<any> | null = null;
 
   // responsive
   screenWidth = window.innerWidth;
@@ -198,7 +198,7 @@ export class OfferListComponent implements OnInit {
       height: '65%',
       data: { offer }
     });
-    this.ref.onClose.subscribe((updated) => {
+    this.ref?.onClose.subscribe((updated) => {
       if (updated) this.loadOffers();
     });
   }

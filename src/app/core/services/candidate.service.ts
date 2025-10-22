@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Candidate } from '../models/candidate';
 import { environment } from '../../../environments/environment';
 import { CandidateOffer } from '../models/candidate-offer';
+import { PassedCandidate } from '../models/passed-candidate';
 
 
 @Injectable({
@@ -137,6 +138,12 @@ export class CandidateService {
     catchError(this.handleError)
   );
   }
+
+  getPassedCandidatesForOffer(offerId: string): Observable<PassedCandidate[]> {
+    return this.http.get<PassedCandidate[]>(
+      `${this.baseUrl}/${offerId}/passed-candidates`
+    );
+}
 
 }
 

@@ -15,13 +15,14 @@ import { Observable } from 'rxjs';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { ListboxModule } from 'primeng/listbox';
 import { RecommendedCandidatesComponent } from '../recommended-candidates/recommended-candidates.component';
+import { OfferCandidatesComponent } from '../offer-candidates/offer-candidates.component';
 
 
 
 @Component({
   selector: 'app-offer-details',
   standalone: true,
-  imports: [LoaderComponent, CommonModule, TagModule, CardModule, ChipModule, ListboxModule , RecommendedCandidatesComponent],
+  imports: [LoaderComponent, CommonModule, TagModule, CardModule, ChipModule, ListboxModule , RecommendedCandidatesComponent, OfferCandidatesComponent],
   providers: [MessageService, NotificationService],
   templateUrl: './offer-details.component.html',
   styleUrls: ['./offer-details.component.scss']

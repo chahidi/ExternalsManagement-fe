@@ -91,19 +91,19 @@ export class OfferCandidatesComponent implements OnInit {
       let overallFound = false;
 
       candidate.evaluations.forEach(evaluation => {
-        const typeName = evaluation.evaluationType.description;
-        evaluationScores[typeName] = evaluation.score;
-        
-        if (!evaluationTypes.includes(typeName)) {
-          evaluationTypes.push(typeName);
-        }
+        let typeName = evaluation.evaluationType.description;
 
-        // Check if this is the OverAll score
-        if (typeName.toLowerCase().includes('OverAll') || 
-            typeName.toLowerCase().includes('général') ||
-            typeName.toLowerCase() === 'OverAll') {
+        // Standardize OverAll name
+        if (typeName.toLowerCase().includes('overall') || typeName.toLowerCase().includes('général')) {
+          typeName = 'OverAll';
           overallScore = evaluation.score;
           overallFound = true;
+        }
+
+        evaluationScores[typeName] = evaluation.score;
+
+        if (!evaluationTypes.includes(typeName)) {
+          evaluationTypes.push(typeName);
         }
       });
 
@@ -111,6 +111,8 @@ export class OfferCandidatesComponent implements OnInit {
       if (!overallFound && candidate.evaluations.length > 0) {
         const sum = candidate.evaluations.reduce((acc, ev) => acc + ev.score, 0);
         overallScore = sum / candidate.evaluations.length;
+        evaluationScores['OverAll'] = overallScore; // also add it to scores
+        evaluationTypes.push('OverAll');
       }
 
       return {
@@ -121,6 +123,7 @@ export class OfferCandidatesComponent implements OnInit {
       };
     });
   }
+
 
   private extractUniqueEvaluationTypes(): void {
       const typesSet = new Set<string>();

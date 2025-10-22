@@ -9,5 +9,6 @@ import { Evaluation } from './evaluation';
 export interface PassedCandidate {
   id: string;
   fullName: string;
+  address : Address;
   evaluations: Evaluation[];
 }

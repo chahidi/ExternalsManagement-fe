@@ -2,47 +2,51 @@
   <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="p-fluid space-y-4">
     <!-- Title -->
     <div class="p-field">
-      <label for="title" class="block font-semibold mb-2">Title</label>
+      <label for="title" class="block font-semibold mb-2">
+        {{ 'editOffer.form.title.label' | translate }}
+      </label>
       <input
         id="title"
         pInputText
         class="w-full"
         formControlName="title"
-        placeholder="Enter job title"
+        [placeholder]="'editOffer.form.title.placeholder' | translate"
         aria-describedby="title-error"
         [class.p-invalid]="offerForm.get('title')?.touched && offerForm.get('title')?.invalid"
       />
 
       @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('required')) {
         <small id="title-error" class="p-error block mt-1">
-          Title is required.
+          {{ 'editOffer.form.title.errors.required' | translate }}
         </small>
       }
 
       @if (offerForm.get('title')?.touched && offerForm.get('title')?.hasError('maxlength')) {
         <small class="p-error block mt-1">
-          Title must be at most 200 characters.
+          {{ 'editOffer.form.title.errors.maxlength' | translate }}
         </small>
       }
     </div>
 
     <!-- Description -->
     <div class="p-field">
-      <label for="description" class="block font-semibold mb-2">Description</label>
+      <label for="description" class="block font-semibold mb-2">
+        {{ 'editOffer.form.description.label' | translate }}
+      </label>
       <textarea
         id="description"
         pInputTextarea
         class="border rounded-lg w-full px-2 py-2"
         rows="8"
         formControlName="description"
-        placeholder="Enter job description"
+        [placeholder]="'editOffer.form.description.placeholder' | translate"
         aria-describedby="description-error"
         [class.p-invalid]="offerForm.get('description')?.touched && offerForm.get('description')?.invalid"
       ></textarea>
 
       @if (offerForm.get('description')?.touched && offerForm.get('description')?.hasError('required')) {
         <small id="description-error" class="p-error block mt-1">
-          Description is required.
+          {{ 'editOffer.form.description.errors.required' | translate }}
         </small>
       }
     </div>
@@ -52,7 +56,7 @@
       <button
         pButton
         type="submit"
-        label="Save"
+        [label]="'editOffer.buttons.save' | translate"
         icon="pi pi-check"
         class="p-button"
         [disabled]="offerForm.invalid"
@@ -60,7 +64,7 @@
       <button
         pButton
         type="button"
-        label="Cancel"
+        [label]="'editOffer.buttons.cancel' | translate"
         icon="pi pi-times"
         class="p-button p-button-secondary"
         (click)="ref.close(false)"

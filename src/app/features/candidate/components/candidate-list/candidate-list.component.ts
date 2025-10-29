@@ -25,6 +25,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface FilterCriteria {
   skills: any[];
@@ -58,7 +59,8 @@ interface DropdownOption {
     ToastModule,
     DatePicker,
     CheckboxModule,
-    LoaderComponent
+    LoaderComponent,
+    TranslateModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './candidate-list.component.html',
@@ -94,11 +96,14 @@ export class CandidateListComponent implements OnInit {
     { id: '', name: 'USA', englishName: 'United State', cities: null }
   ];
 
-    filters: FilterCriteria = {
-      skills: [],
-      language: [],
-      yearsOfExperience: null,
-    };
+  filters: FilterCriteria = {
+    skills: [],
+    language: [],
+    yearsOfExperience: null,
+  };
+
+  newSkillName: string = '';
+  newSkillProficiency: string = '';
 
   constructor(
     private candidateService: CandidateService,
@@ -106,7 +111,8 @@ export class CandidateListComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private loaderService: LoaderService,
-    private confirmationModalService: ConfirmationModalService
+    private confirmationModalService: ConfirmationModalService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -117,11 +123,12 @@ export class CandidateListComponent implements OnInit {
     this.loadingMessage$ = this.loaderService.loadingMessage$;
 
     this.proficiencyLevelOptions = this.proficiencyLevels.map(level => ({
-      label: level,
+      label: this.translate.instant(`candidateList.proficiencyLevels.${level}`),
       value: level
     }));
+
     this.languageLevelOptions = this.languageLevels.map(lang => ({
-      label: lang,
+      label: this.translate.instant(`candidateList.languageLevels.${lang}`),
       value: lang
     }));
   }
@@ -130,7 +137,6 @@ export class CandidateListComponent implements OnInit {
     return Array.isArray(value);
   }
 
-  // Initialize with default values but will be updated with real data after loading candidates
   initFilterOptions(): void {
     this.skillOptions = [
       { name: 'JavaScript', code: 'JavaScript' },
@@ -150,9 +156,7 @@ export class CandidateListComponent implements OnInit {
     ];
   }
 
-  // Updated method to extract available skills and languages from the loaded candidates
   loadFilterOptions(): void {
-    // Extract unique skills from candidates
     const uniqueSkills = new Set<string>();
     this.candidates.forEach(candidate => {
       if (candidate.skills && candidate.skills.length) {
@@ -164,25 +168,19 @@ export class CandidateListComponent implements OnInit {
       }
     });
 
-    // Create skill options
     this.skillOptions = Array.from(uniqueSkills).sort().map(skill => ({
       name: skill,
       code: skill
     }));
 
     if (this.skillOptions.length === 0) {
-      // If no skills found, use default options
       this.initFilterOptions();
-    } else {
-      console.log('Loaded actual skills from candidates:', this.skillOptions);
     }
 
-    // Extract unique languages from candidates
     const uniqueLanguages = new Set<string>();
     this.candidates.forEach(candidate => {
       if (candidate.naturalLanguages && candidate.naturalLanguages.length) {
         candidate.naturalLanguages.forEach(lang => {
-          // Prioritize language field but fall back to others if needed
           const languageName = lang.language || lang.languageInEnglish || lang.englishDescription;
           if (languageName) {
             uniqueLanguages.add(languageName);
@@ -191,15 +189,12 @@ export class CandidateListComponent implements OnInit {
       }
     });
 
-    // Create language options
     this.languageOptions = Array.from(uniqueLanguages).sort().map(language => ({
       name: language,
       code: language
     }));
 
     if (this.languageOptions.length === 0) {
-      // If no languages found, keep default options
-      console.log('No languages found in candidates, using defaults');
       this.languageOptions = [
         { name: 'English', code: 'English' },
         { name: 'French', code: 'French' },
@@ -207,28 +202,15 @@ export class CandidateListComponent implements OnInit {
         { name: 'German', code: 'German' },
         { name: 'Arabic', code: 'Arabic' }
       ];
-    } else {
-      console.log('Loaded actual languages from candidates:', this.languageOptions);
     }
-
-    console.log('Available skills:', this.skillOptions);
-    console.log('Available languages:', this.languageOptions);
   }
 
   loadCandidates(): void {
-    this.loaderService.show("Loading candidates...");
+    this.loaderService.show(this.translate.instant('candidateList.loadingCandidates'));
     this.candidateService.getCandidates().subscribe({
       next: (data) => {
         this.candidates = data || [];
-        console.log('Loaded candidates:', this.candidates.length);
-        // Log a sample candidate to check its structure
-        if (this.candidates.length > 0) {
-          console.log('Sample candidate:', this.candidates[0]);
-        }
-
-        // Load filter options based on real candidate data
         this.loadFilterOptions();
-
         this.loaderService.hide();
       },
       error: (err) => {
@@ -236,56 +218,41 @@ export class CandidateListComponent implements OnInit {
         this.loaderService.hide();
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: err.message || 'Failed to load candidates.'
+          summary: this.translate.instant('candidateList.errors.error'),
+          detail: err.message || this.translate.instant('candidateList.errors.loadFailed')
         });
       },
     });
   }
 
   applyFilters(): void {
-    this.loaderService.show("Loading candidates...");
-    console.log('Applying filters:', this.filters);
-
-    // Check if filters contain the expected data structure
-    if (this.filters.skills && this.filters.skills.length > 0) {
-      console.log('Skills filter:', this.filters.skills);
-      this.filters.skills.forEach((skill: any, index: number) => {
-        console.log(`Skill ${index}:`, skill.name, skill.code);
-      });
-    }
+    this.loaderService.show(this.translate.instant('candidateList.loadingCandidates'));
 
     const filterParams: any = {};
-
-    // Clone the filters to ensure we're passing the complete objects
     if (this.filters.skills && this.filters.skills.length > 0) {
       filterParams.skills = [...this.filters.skills];
     }
-
     filterParams.language = [...this.filters.language];
-
     if (this.filters.yearsOfExperience !== null) {
-      // Ensure we're passing a number value for years of experience
       filterParams.yearsOfExperience = Number(this.filters.yearsOfExperience);
     }
 
     this.candidateFilterService.filterCandidates(filterParams).subscribe({
       next: (data) => {
-        console.log('Filtered candidates:', data.length);
         this.candidates = data || [];
         this.loaderService.hide();
 
         if (data.length === 0) {
           this.messageService.add({
             severity: 'info',
-            summary: 'No Results',
-            detail: 'No candidates match the selected filters.'
+            summary: this.translate.instant('candidateList.filter.noResults'),
+            detail: this.translate.instant('candidateList.filter.noCandidatesMatch')
           });
         } else {
           this.messageService.add({
             severity: 'success',
-            summary: 'Filters Applied',
-            detail: `Found ${data.length} candidates matching your criteria.`
+            summary: this.translate.instant('candidateList.filter.filtersApplied'),
+            detail: this.translate.instant('candidateList.filter.foundCandidates', { count: data.length })
           });
         }
       },
@@ -294,8 +261,8 @@ export class CandidateListComponent implements OnInit {
         this.loaderService.hide();
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to filter candidates.'
+          summary: this.translate.instant('candidateList.errors.error'),
+          detail: this.translate.instant('candidateList.errors.filterFailed')
         });
       }
     });
@@ -310,8 +277,8 @@ export class CandidateListComponent implements OnInit {
     this.loadCandidates();
     this.messageService.add({
       severity: 'info',
-      summary: 'Filters Reset',
-      detail: 'All filters have been cleared.'
+      summary: this.translate.instant('candidateList.filter.filtersReset'),
+      detail: this.translate.instant('candidateList.filter.allFiltersCleared')
     });
   }
 
@@ -324,8 +291,8 @@ export class CandidateListComponent implements OnInit {
     table.clear();
     this.messageService.add({
       severity: 'info',
-      summary: 'Table Cleared',
-      detail: 'All table filters have been cleared.'
+      summary: this.translate.instant('candidateList.table.tableCleared'),
+      detail: this.translate.instant('candidateList.table.allFiltersCleared')
     });
   }
 
@@ -337,22 +304,21 @@ export class CandidateListComponent implements OnInit {
     this.selectedCandidate.skills = this.selectedCandidate.skills || [];
     this.selectedCandidate.educations = this.selectedCandidate.educations || [];
     this.selectedCandidate.naturalLanguages = this.selectedCandidate.naturalLanguages || [];
-    // Synchroniser city.country pour les adresses existantes
     this.selectedCandidate.addresses.forEach(addr => this.syncCityCountry(addr));
     this.displayEditDialog = true;
   }
+
   addAddress(): void {
-    console.log('Adding new address');
     if (!this.selectedCandidate) return;
     const newAddress = {
       id: '',
       street: '',
       postalCode: '',
       fullAddress: '',
-      city: this.cities[0], // Valeur par défaut : première ville
-      country: this.countries[0] // Valeur par défaut : premier pays
+      city: this.cities[0],
+      country: this.countries[0]
     };
-    this.syncCityCountry(newAddress); // Synchroniser city.country
+    this.syncCityCountry(newAddress);
     this.selectedCandidate.addresses.push(newAddress);
   }
 
@@ -364,7 +330,6 @@ export class CandidateListComponent implements OnInit {
 
   syncCityCountry(address: any): void {
     if (address.city && address.country) {
-      // S'assurer que city.country correspond à address.country
       address.city = {
         ...address.city,
         country: address.country,
@@ -427,16 +392,6 @@ export class CandidateListComponent implements OnInit {
     this.selectedCandidate.experiences.splice(index, 1);
   }
 
-  /*addSkill(): void {
-    if (!this.selectedCandidate) return;
-    this.selectedCandidate.skills = this.selectedCandidate.skills || [];
-    this.selectedCandidate.skills.push({
-      id: '',
-      skillName: '',
-      proficiencyLevel: '',
-    });
-  }*/
-
   removeSkill(index: number): void {
     if (!this.selectedCandidate || !this.selectedCandidate.skills) return;
     this.selectedCandidate.skills.splice(index, 1);
@@ -491,7 +446,7 @@ export class CandidateListComponent implements OnInit {
   saveCandidate(): void {
     if (!this.selectedCandidate) return;
 
-    this.loaderService.show("Loading candidates...");
+    this.loaderService.show(this.translate.instant('candidateList.savingCandidate'));
     this.candidateService.updateCandidate(this.selectedCandidate.id, this.selectedCandidate).subscribe({
       next: (updatedCandidate) => {
         const index = this.candidates.findIndex(c => c.id === updatedCandidate.id);
@@ -501,8 +456,8 @@ export class CandidateListComponent implements OnInit {
 
         this.messageService.add({
           severity: 'success',
-          summary: 'Success',
-          detail: 'Candidate updated successfully'
+          summary: this.translate.instant('candidateList.messages.success'),
+          detail: this.translate.instant('candidateList.messages.candidateUpdated')
         });
 
         this.displayEditDialog = false;
@@ -513,8 +468,8 @@ export class CandidateListComponent implements OnInit {
         console.error('Error updating candidate:', err);
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: err.message || 'Failed to update candidate.'
+          summary: this.translate.instant('candidateList.errors.error'),
+          detail: err.message || this.translate.instant('candidateList.errors.updateFailed')
         });
         this.loaderService.hide();
       }
@@ -528,15 +483,15 @@ export class CandidateListComponent implements OnInit {
   }
 
   deleteCandidate(candidate: Candidate): void {
-    this.loaderService.show("Loading candidates...");
+    this.loaderService.show(this.translate.instant('candidateList.deletingCandidate'));
     this.candidateService.deleteCandidate(candidate.id).subscribe({
       next: () => {
         this.candidates = this.candidates.filter(c => c.id !== candidate.id);
 
         this.messageService.add({
           severity: 'success',
-          summary: 'Success',
-          detail: 'Candidate deleted successfully'
+          summary: this.translate.instant('candidateList.messages.success'),
+          detail: this.translate.instant('candidateList.messages.candidateDeleted')
         });
 
         this.loaderService.hide();
@@ -545,8 +500,8 @@ export class CandidateListComponent implements OnInit {
         console.error('Error deleting candidate:', err);
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: err.message || 'Failed to delete candidate.'
+          summary: this.translate.instant('candidateList.errors.error'),
+          detail: err.message || this.translate.instant('candidateList.errors.deleteFailed')
         });
         this.loaderService.hide();
       }
@@ -558,11 +513,6 @@ export class CandidateListComponent implements OnInit {
     return contact ? contact.contactValue : 'N/A';
   }
 
-  // Add these properties
-  newSkillName: string = '';
-  newSkillProficiency: string = '';
-
-  // Add these methods
   getProficiencyLabel(value: string): string {
     const proficiency = this.proficiencyLevelOptions.find(p => p.value === value);
     return proficiency ? proficiency.label : '';
@@ -578,7 +528,6 @@ export class CandidateListComponent implements OnInit {
     }
   }
 
-  // Modify your addSkill method
   addSkill() {
     if (this.newSkillName && this.newSkillProficiency) {
       if (!this.selectedCandidate) return;
@@ -642,6 +591,4 @@ export class CandidateListComponent implements OnInit {
         : bFormattedEducation.localeCompare(aFormattedEducation);
     });
   }
-
-
 }

@@ -16,7 +16,7 @@ import { LoaderComponent } from '../../../../shared/layout/components/loader/loa
 import { ConfirmationModalService } from '../../../../core/services/utils/confirmation.service';
 import { PromptFilterService } from '../../../../core/services/prompt-filter.service';
 import { Table } from 'primeng/table';
-
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-prompt-list',
@@ -30,8 +30,9 @@ import { Table } from 'primeng/table';
     FormsModule,
     InputTextModule,
     ConfirmDialogModule,
-    LoaderComponent
-],
+    LoaderComponent,
+    TranslateModule
+  ],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss',
   providers: [MessageService, ConfirmationService],
@@ -48,7 +49,6 @@ export class PromptListComponent implements OnInit {
   sortField = '';
   sortOrder = 1;
 
-  // Search functionality
   searchQuery = '';
 
   dialogVisible = false;
@@ -68,8 +68,9 @@ export class PromptListComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private loaderService: LoaderService,
     private confirmationModalService: ConfirmationModalService,
-    private promptFilterService: PromptFilterService
-) {}
+    private promptFilterService: PromptFilterService,
+    private translate: TranslateService 
+  ) {}
 
   ngOnInit() {
     this.loadPrompts();
@@ -79,7 +80,7 @@ export class PromptListComponent implements OnInit {
   }
 
   loadPrompts(event?: any) {
-    this.loaderService.show("Loading prompts...");
+    this.loaderService.show(this.translate.instant('promptList.loading'));
     const page = event ? event.first / event.rows : 0;
     const size = event ? event.rows : this.rows;
     const sortField = event ? event.sortField : this.sortField;
@@ -93,7 +94,11 @@ export class PromptListComponent implements OnInit {
         this.loaderService.hide();
       },
       error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('error.title'),
+          detail: error.message || this.translate.instant('promptList.messages.error.loadFailed')
+        });
         this.loaderService.hide();
       },
     });
@@ -111,7 +116,11 @@ export class PromptListComponent implements OnInit {
       (dt as any).clear();
     }
 
-    this.messageService.add({ severity: 'info', summary: 'Clear', detail: 'The search is cleared!' });
+    this.messageService.add({
+      severity: 'info',
+      summary: this.translate.instant('promptList.search.clear'),
+      detail: this.translate.instant('promptList.search.cleared')
+    });
   }
 
   openTextModal(prompt: Prompt) {
@@ -133,15 +142,15 @@ export class PromptListComponent implements OnInit {
 
   renderFormattedText(content: string | null | undefined): string {
     if (!content) return '';
-    
+
     if (content.includes('<') && content.includes('>')) {
       return content;
     }
     return content
-      .replace(/\n\n/g, '</p><p>') 
-      .replace(/\n/g, '<br>') 
-      .replace(/^/, '<p>') 
-      .replace(/$/, '</p>')  
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>')
       .replace(/<p><\/p>/g, '<p>&nbsp;</p>');
   }
 
@@ -159,11 +168,19 @@ export class PromptListComponent implements OnInit {
   deletePrompt(id: string) {
     this.promptService.deletePrompt(id).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Prompt deleted successfully' });
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.instant('success.title'),
+          detail: this.translate.instant('promptList.messages.success.deleted')
+        });
         this.loadPrompts();
       },
       error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('error.title'),
+          detail: error.message || this.translate.instant('promptList.messages.error.deleteFailed')
+        });
       },
     });
   }
@@ -182,15 +199,24 @@ export class PromptListComponent implements OnInit {
   updatePrompt() {
     this.promptService.updatePrompt(this.selectedPrompt.id, this.selectedPrompt).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Prompt updated successfully' });
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.instant('success.title'),
+          detail: this.translate.instant('promptList.messages.success.updated')
+        });
         this.dialogVisible = false;
         this.loadPrompts();
       },
       error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('error.title'),
+          detail: error.message || this.translate.instant('promptList.messages.error.updateFailed')
+        });
       },
     });
   }
+
   prettySchema(raw: string | null | undefined): string {
     if (!raw) return '';
     try {
@@ -200,5 +226,20 @@ export class PromptListComponent implements OnInit {
       return raw;
     }
   }
+
+  // Helper method to get dialog header with fallback
+  getDialogHeader(base: string, promptCode?: string): string {
+    if (promptCode) {
+      return promptCode;
+    }
+    return this.translate.instant(`promptList.dialogs.view.${base.toLowerCase()}.header`);
+  }
+
+  // Helper method to get schema dialog header
+  getSchemaDialogHeader(promptCode?: string): string {
+    if (promptCode) {
+      return `${promptCode} - ${this.translate.instant('promptList.dialogs.view.schema.header')}`;
+    }
+    return this.translate.instant('promptList.dialogs.view.schema.header');
+  }
 }
-  

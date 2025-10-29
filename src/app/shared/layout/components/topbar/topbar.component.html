@@ -30,9 +30,10 @@
             <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
                 <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
             </button>
-            <div class="relative">
+
+            <div class="language-dropdown">
                 <button
-                    class="layout-topbar-action layout-topbar-action-highlight"
+                    class="layout-topbar-action"
                     pStyleClass="@next"
                     enterFromClass="hidden"
                     enterActiveClass="animate-scalein"
@@ -40,8 +41,20 @@
                     leaveActiveClass="animate-fadeout"
                     [hideOnOutsideClick]="true"
                 >
-                    <i class="pi pi-palette"></i>
+                    <i class="pi pi-globe"></i>
                 </button>
+                <div class="language-dropdown-menu hidden">
+                    <div class="language-option" (click)="switchLanguage('en')">
+                        <span class="language-flag">🇺🇸</span>
+                        <span class="language-name">English</span>
+                        <i class="pi pi-check" *ngIf="currentLang === 'en'"></i>
+                    </div>
+                    <div class="language-option" (click)="switchLanguage('es')">
+                        <span class="language-flag">🇪🇸</span>
+                        <span class="language-name">Español</span>
+                        <i class="pi pi-check" *ngIf="currentLang === 'es'"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -53,15 +66,15 @@
             <div class="layout-topbar-menu-content">
                 <button type="button" class="layout-topbar-action">
                     <i class="pi pi-calendar"></i>
-                    <span>Calendar</span>
+                    <span>{{ 'calendar' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action">
                     <i class="pi pi-inbox"></i>
-                    <span>Messages</span>
+                    <span>{{ 'messages' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action">
                     <i class="pi pi-user"></i>
-                    <span>Profile</span>
+                    <span>{{ 'profile' | translate }}</span>
                 </button>
             </div>
         </div>

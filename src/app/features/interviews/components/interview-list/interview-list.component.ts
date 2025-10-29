@@ -25,11 +25,12 @@ import { ConfirmationModalService } from '../../../../core/services/utils/confir
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InterviewFilterService } from '../../../../core/services/interview-filter.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-interview-list',
     standalone: true,
-    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule, LoaderComponent, MultiSelectModule, DatePickerModule],
+    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule, LoaderComponent, MultiSelectModule, DatePickerModule, TranslateModule],
     providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
@@ -73,8 +74,9 @@ export class InterviewListComponent implements OnInit {
         private router: Router,
         private notify: NotificationService,
         private loaderService: LoaderService,
-        private confirmationModalService: ConfirmationModalService
-    ) { }
+        private confirmationModalService: ConfirmationModalService,
+        private translate: TranslateService // Add this
+    ) {}
 
     ngOnInit(): void {
         this.loadMainTechOptions();
@@ -92,7 +94,7 @@ export class InterviewListComponent implements OnInit {
                 this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to load Main Tech options');
+                this.notify.showError(this.translate.instant('error.title'), this.translate.instant('interviewList.messages.error.loadMainTechFailed'));
             }
         });
     }
@@ -103,7 +105,7 @@ export class InterviewListComponent implements OnInit {
                 this.titleOptions = titles.map((title) => ({ label: title, value: title }));
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to load title options');
+                this.notify.showError(this.translate.instant('error.title'), this.translate.instant('interviewList.messages.error.loadTitlesFailed'));
             }
         });
     }
@@ -113,14 +115,12 @@ export class InterviewListComponent implements OnInit {
     }
 
     loadInterviews(): void {
-        this.loaderService.show("Loading interviews...");
+        this.loaderService.show(this.translate.instant('interviewList.loading'));
         this.interviewService.getInterviews().subscribe((data) => {
             this.interviews = data;
             this.filteredInterviews = this.interviews;
             this.loaderService.hide();
         });
-
-
     }
 
     applyFilters(): void {
@@ -148,36 +148,38 @@ export class InterviewListComponent implements OnInit {
         this.filteredInterviews = this.interviews;
     }
 
-    clear(): void{
+    clear(): void {
         this.searchQuery = '';
     }
 
     getRemainingHours(expiryDate?: Date): string {
-        if (!expiryDate) return 'N/A';
+        if (!expiryDate) return this.translate.instant('interviewList.status.na');
         const diff = new Date(expiryDate).getTime() - new Date().getTime();
         const hours = Math.floor(diff / (1000 * 60 * 60));
-        return hours > 0 ? `${hours}h` : 'Expired';
+        return hours > 0 ? `${hours}h` : this.translate.instant('interviewList.status.expired');
     }
 
     generateLinkAndSendEmail(interview: InterviewInstance): void {
         this.isGeneratingLink = true;
 
-        this.interviewService.generateAndSaveInterviewLink(interview).pipe(
-            tap(link => {
-                console.log('Generated Link:', link);
-                interview.link = link;
-            }),
-            catchError(err => this.handleGenerateAndSaveLinkError(err)),
+        this.interviewService
+            .generateAndSaveInterviewLink(interview)
+            .pipe(
+                tap((link) => {
+                    console.log('Generated Link:', link);
+                    interview.link = link;
+                }),
+                catchError((err) => this.handleGenerateAndSaveLinkError(err)),
 
-            switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
+                switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
 
-            finalize(() => {
-                this.isGeneratingLink = false;
-            })
-        )
+                finalize(() => {
+                    this.isGeneratingLink = false;
+                })
+            )
             .subscribe({
                 next: (res) => {
-                    this.notify.showSuccess('Email Sent Successfully', res);
+                    this.notify.showSuccess(this.translate.instant('interviewList.messages.success.emailSent'), res);
                 }
             });
     }
@@ -203,10 +205,10 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.selectedCommentInterview!.comment = comment;
                 this.showCommentDialog = false;
-                this.notify.showSuccess('Comment Saved', 'Comment saved successfully!');
+                this.notify.showSuccess(this.translate.instant('success.title'), this.translate.instant('interviewList.messages.success.commentSaved'));
             },
             error: (err) => {
-                this.notify.showError('Error', 'Failed to save comment');
+                this.notify.showError(this.translate.instant('error.title'), this.translate.instant('interviewList.messages.error.saveCommentFailed'));
                 console.error('Save comment failed:', err);
             }
         });
@@ -223,10 +225,10 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.interviews = this.interviews.filter((i) => i.id !== interview.id);
                 this.filteredInterviews = this.filteredInterviews.filter((i) => i.id !== interview.id);
-                this.notify.showSuccess('Deleted', 'Interview deleted successfully');
+                this.notify.showSuccess(this.translate.instant('success.title'), this.translate.instant('interviewList.messages.success.deleted'));
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to delete interview');
+                this.notify.showError(this.translate.instant('error.title'), this.translate.instant('interviewList.messages.error.deleteFailed'));
             }
         });
     }
@@ -252,14 +254,13 @@ export class InterviewListComponent implements OnInit {
             message.includes('generate')
         ) {
             console.error('Failed to generate interview link:', err);
-            this.notify.showError('Link Generation Error', message);
+            this.notify.showError(this.translate.instant('interviewList.messages.error.linkGeneration'), message);
         } else if (message.includes('save')) {
             console.error('Failed To save the generated link');
-            this.notify.showError('Saving Link Error', message);
-        }
-        else {
+            this.notify.showError(this.translate.instant('interviewList.messages.error.savingLink'), message);
+        } else {
             console.error('Unexpected error during link generation:', err);
-            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+            this.notify.showError(this.translate.instant('interviewList.messages.error.unexpected'), message || 'An unexpected error occurred.');
         }
         return EMPTY;
     }
@@ -268,13 +269,14 @@ export class InterviewListComponent implements OnInit {
         const message = err.message;
         if (message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME || message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE || message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE || message.includes('email')) {
             console.error('Failed to send email:', err);
-            this.notify.showError('Email Sending Error', message);
+            this.notify.showError(this.translate.instant('interviewList.messages.error.emailSending'), message);
         } else {
             console.error('Unexpected error during email sending:', err);
-            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+            this.notify.showError(this.translate.instant('interviewList.messages.error.unexpected'), message || 'An unexpected error occurred.');
         }
         return EMPTY;
     }
+
     private toDate(v: Date | string | null | undefined): Date | null {
         if (!v) return null;
         const d = new Date(v);
@@ -299,29 +301,16 @@ export class InterviewListComponent implements OnInit {
     sortInterviewsByCandidateName(asc: boolean = true) {
         this.candidateNameSortAsc = !this.candidateNameSortAsc;
 
-        this.filteredInterviews.sort((a, b) =>
-            this.candidateNameSortAsc ? a.candidateFullName.localeCompare(b.candidateFullName) :
-                b.candidateFullName.localeCompare(a.candidateFullName)
-        );
-
+        this.filteredInterviews.sort((a, b) => (this.candidateNameSortAsc ? a.candidateFullName.localeCompare(b.candidateFullName) : b.candidateFullName.localeCompare(a.candidateFullName)));
     }
 
     sortInterviewsByCandidateMainTech() {
         this.candidateMainTechSortAsc = !this.candidateMainTechSortAsc;
-        this.filteredInterviews.sort((a, b) =>
-            this.candidateMainTechSortAsc
-                ? a.candidateMainTech.localeCompare(b.candidateMainTech)
-                : b.candidateMainTech.localeCompare(a.candidateMainTech)
-        );
+        this.filteredInterviews.sort((a, b) => (this.candidateMainTechSortAsc ? a.candidateMainTech.localeCompare(b.candidateMainTech) : b.candidateMainTech.localeCompare(a.candidateMainTech)));
     }
 
     sortInterviewsByOfferTitle() {
         this.offerTitleSortAsc = !this.offerTitleSortAsc;
-        this.filteredInterviews.sort((a, b) =>
-            this.offerTitleSortAsc
-                ? a.offerTitle.localeCompare(b.offerTitle)
-                : b.offerTitle.localeCompare(a.offerTitle)
-        );
+        this.filteredInterviews.sort((a, b) => (this.offerTitleSortAsc ? a.offerTitle.localeCompare(b.offerTitle) : b.offerTitle.localeCompare(a.offerTitle)));
     }
-
 }

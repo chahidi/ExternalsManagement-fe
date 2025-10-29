@@ -18,35 +18,36 @@
         <div class="top-section">
             <!-- LEFT: Interview Info -->
             <div class="info-section">
-                    <h1 class="interview-title">
-                        Interview evaluation for
-                        <span class="candidate-name">{{interviewEvaluation.candidateFullName || 'Unknown' }}</span>
-                    </h1>
+                <h1 class="interview-title">
+                    {{ 'evaluationinterview.interviewEvaluationFor' | translate }}
+                    <span class="candidate-name">{{interviewEvaluation.candidateFullName || ('evaluationinterview.unknown' | translate) }}</span>
+                </h1>
                 <div class="interview-metadata-score">
                     <div class="interview-metadata">
-                    <div class="metadata-item">
-                        <i class="pi pi-briefcase"></i>
-                        <span>{{ interviewEvaluation.offerTitle }}</span>
+                        <div class="metadata-item">
+                            <i class="pi pi-briefcase"></i>
+                            <span>{{ interviewEvaluation.offerTitle }}</span>
+                        </div>
+
+                        <div class="metadata-item">
+                            <i class="pi pi-calendar"></i>
+                            <span>{{ interviewEvaluation.scheduledAt | date: 'MMM d, y' }}</span>
+                        </div>
+
+                        <div class="metadata-item">
+                            <i class="pi pi-clock"></i>
+                            <span>{{ getRealDurationLabel() }}</span>
+                        </div>
+
+                        <div class="metadata-item">
+                            <i class="pi pi-check-circle"></i>
+                            <span>{{ 'evaluationinterview.noUnfairnessDetected' | translate }}</span>
+                        </div>
                     </div>
 
-                    <div class="metadata-item">
-                        <i class="pi pi-calendar"></i>
-                        <span>{{ interviewEvaluation.scheduledAt | date: 'MMM d, y' }}</span>
-                    </div>
-
-                    <div class="metadata-item">
-                        <i class="pi pi-clock"></i>
-                        <span>{{ getRealDurationLabel() }}</span>
-                    </div>
-
-                    <div class="metadata-item">
-                        <i class="pi pi-check-circle"></i>
-                        <span>No signs of unfairness detected</span>
-                    </div>
-                    </div>
                     @if (overallEvaluation) {
                         <div class="score-card">
-                            <h3 class="score-card-title">Overall Score</h3>
+                            <h3 class="score-card-title">{{ 'evaluationinterview.overallScore' | translate }}</h3>
                             <div #scoreCircle
                                 class="score-circle-large enhanced-circle"
                                 [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(overallEvaluation.id))"
@@ -54,79 +55,72 @@
                                 <div class="score-inner">
                                     <div class="score-value-large"
                                         [class]="getScoreTextClass(overallEvaluation.score || 0)">
-                                        {{ overallEvaluation.score != null ? getAnimatedScore(overallEvaluation.id) : 'N/A' }}
+                                        {{ overallEvaluation.score != null ? getAnimatedScore(overallEvaluation.id) : ('evaluationinterview.notAvailable' | translate) }}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
                 </div>
-                <!-- RIGHT: Overall Score Card -->
-            
             </div>
-
-            
         </div>
 
         <!-- OVERALL FEEDBACK SECTION -->
         @if (overallEvaluation) {
             <div class="overall-feedback-section">
-                <h3 class="feedback-title">Overall Feedback</h3>
-                <p class="feedback-text">{{ overallEvaluation.feedback || 'No feedback available.' }}</p>
+                <h3 class="feedback-title">{{ 'evaluationinterview.overallFeedback' | translate }}</h3>
+                <p class="feedback-text">{{ overallEvaluation.feedback || ('evaluationinterview.noFeedbackAvailable' | translate) }}</p>
             </div>
         }
 
-
         <!-- SCORED EVALUATIONS -->
         <div class="evaluations-container">
-            
             <div class="evaluations-grid">
-                    <p-card *ngFor="let evaluation of nonOverallEvaluations; trackBy: trackByEvaluationId" class="evaluation-card" [ngClass]="getScoreRangeClass(evaluation.score || 0)">
-                        <div class="card-header">
-                            <div class="header-badge category-badge">
-                                <i class="pi pi-bookmark"></i>
-                                <span>{{ getEvaluationTypeDescription(evaluation) }}</span>
-                            </div>
+                <p-card *ngFor="let evaluation of nonOverallEvaluations; trackBy: trackByEvaluationId"
+                        class="evaluation-card"
+                        [ngClass]="getScoreRangeClass(evaluation.score || 0)">
+                    <div class="card-header">
+                        <div class="header-badge category-badge">
+                            <i class="pi pi-bookmark"></i>
+                            <span>{{ getEvaluationTypeDescription(evaluation) }}</span>
                         </div>
-                        
-                        <div class="evaluation-center">
-                            <div #scoreCircle
-                                class="score-circle-large enhanced-circle card-score-top-right"
-                                [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(evaluation.id))"
-                                [style.--score-color]="getScoreColor(evaluation.score || 0)">
-                                <div class="score-inner">
-                                    <div class="score-value-large" 
-                                        [class]="getScoreTextClass(evaluation.score || 0)">
-                                        {{ evaluation.score != null ? getAnimatedScore(evaluation.id) : 'N/A' }}
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
 
-
-                           
-                        </div>
-
-                        <div class="evaluation-content">
-                            <div class="feedback-section">
-                                <div class="section-header">
-                                    <i class="pi pi-comment"></i>
-                                    <h4>Feedback</h4>
-                                </div>
-                                <div class="">
-                                    <p>{{ evaluation.feedback || 'No feedback available.' }}</p>
-                                </div>
-                            </div>
-                            <div class="score-details">
-                                <div class="weight-info">
-                                    <i class="pi pi-percentage"></i>
-                                    <span class="coefficient-label">Weight:</span>
-                                    <span class="coefficient-value">
-                                        {{ evaluation.evaluationType.coefficient }}
-                                    </span>
+                    <div class="evaluation-center">
+                        <div #scoreCircle
+                            class="score-circle-large enhanced-circle card-score-top-right"
+                            [style.--progress-degrees]="getProgressDegrees(getAnimatedScore(evaluation.id))"
+                            [style.--score-color]="getScoreColor(evaluation.score || 0)">
+                            <div class="score-inner">
+                                <div class="score-value-large"
+                                    [class]="getScoreTextClass(evaluation.score || 0)">
+                                    {{ evaluation.score != null ? getAnimatedScore(evaluation.id) : ('evaluationinterview.notAvailable' | translate) }}
                                 </div>
                             </div>
                         </div>
-                    </p-card>
+                    </div>
+
+                    <div class="evaluation-content">
+                        <div class="feedback-section">
+                            <div class="section-header">
+                                <i class="pi pi-comment"></i>
+                                <h4>{{ 'evaluationinterview.feedback' | translate }}</h4>
+                            </div>
+                            <div class="">
+                                <p>{{ evaluation.feedback || ('evaluationinterview.noFeedbackAvailable' | translate) }}</p>
+                            </div>
+                        </div>
+                        <div class="score-details">
+                            <div class="weight-info">
+                                <i class="pi pi-percentage"></i>
+                                <span class="coefficient-label">{{ 'evaluationinterview.weight' | translate }}:</span>
+                                <span class="coefficient-value">
+                                    {{ evaluation.evaluationType.coefficient }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </p-card>
             </div>
         </div>
     </div>

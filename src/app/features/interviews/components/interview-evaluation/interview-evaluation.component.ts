@@ -1,5 +1,4 @@
-
-import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef, QueryList } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef, QueryList, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -12,9 +11,12 @@ import { AccordionModule } from 'primeng/accordion';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
+import { LanguageService } from '../../../../core/services/language.service';
 
 import { Evaluation } from '../../../../core/models/evaluation';
 import { InterviewEvaluationDisplay } from '../../../../core/models/interview-evaluation-display';
@@ -23,12 +25,24 @@ import { InterviewInstance } from '../../../../core/models/interview-instance';
 @Component({
     selector: 'app-interview-evaluation',
     standalone: true,
-    imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule, ToastModule, TooltipModule],
+    imports: [
+        ProgressSpinnerModule,
+        MessageModule,
+        CommonModule,
+        CardModule,
+        ButtonModule,
+        BadgeModule,
+        TagModule,
+        AccordionModule,
+        ToastModule,
+        TooltipModule,
+        TranslateModule
+    ],
     providers: [MessageService, NotificationService],
     templateUrl: './interview-evaluation.component.html',
     styleUrls: ['./interview-evaluation.component.scss']
 })
-export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
+export class InterviewEvaluationComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChildren('scoreCircle') scoreCircles!: QueryList<ElementRef>;
 
     interview: InterviewInstance | null = null;
@@ -40,22 +54,34 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     animatedScores: Record<string, number> = {};
 
     overallEvaluation?: Evaluation;
+    private languageSubscription?: Subscription;
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private evaluationService: InterviewEvaluationService,
         private messageService: MessageService,
-        private notify: NotificationService
+        private notify: NotificationService,
+        private translate: TranslateService,
+        private languageService: LanguageService
     ) { }
 
     ngOnInit(): void {
+        // Set initial language from LanguageService
+        const currentLang = this.languageService.getCurrentLanguage();
+        this.translate.use(currentLang);
+
+        // Subscribe to language changes
+        this.languageSubscription = this.languageService.getLanguageObservable().subscribe(lang => {
+            this.translate.use(lang);
+        });
+
         this.interview = history.state?.interview ?? null;
 
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) {
             this.loading = false;
-            this.error = { happened: true, message: 'Missing interview id in the route.' };
+            this.error = { happened: true, message: this.translate.instant('evaluationinterview.missingInterviewId') };
             return;
         }
         if (!this.interview) {
@@ -72,6 +98,12 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         if (this.evaluations.length > 0) setTimeout(() => this.animateAllScores(), 100);
+    }
+
+    ngOnDestroy(): void {
+        if (this.languageSubscription) {
+            this.languageSubscription.unsubscribe();
+        }
     }
 
     private loadEvaluations(interviewId: string): void {
@@ -92,9 +124,15 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             },
             error: (err) => {
                 console.error('Failed to fetch evaluation:', err);
-                this.notify.showError('Error', 'Failed to load evaluation data');
+                this.notify.showError(
+                    this.translate.instant('evaluationinterview.error'),
+                    this.translate.instant('evaluationinterview.failedToLoadData')
+                );
                 this.loading = false;
-                this.error = { happened: true, message: 'Failed to load evaluation data.' };
+                this.error = {
+                    happened: true,
+                    message: this.translate.instant('evaluationinterview.failedToLoadData')
+                };
             }
         });
     }
@@ -106,23 +144,27 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     }
 
     getProgressDegrees(score: number): string {
-        const degrees = (score / 100) * 360; 
+        const degrees = (score / 100) * 360;
         return degrees + 'deg';
     }
-
 
     getRealDurationLabel(): string {
         const start = this.toDate(this.interview?.startTime) ?? this.toDate(this.interview?.scheduledAt);
         const end = this.toDate(this.interview?.endTime);
-        if (!start || !end) return '—';
+        if (!start || !end) return this.translate.instant('evaluationinterview.notAvailable');
 
         const diffMs = end.getTime() - start.getTime();
-        if (diffMs <= 0) return '—';
+        if (diffMs <= 0) return this.translate.instant('evaluationinterview.notAvailable');
 
         const minutes = Math.round(diffMs / 60000);
         const h = Math.floor(minutes / 60);
         const m = minutes % 60;
-        return h > 0 ? `${h}h ${m}m` : `${m} min`;
+
+        if (h > 0) {
+            return this.translate.instant('evaluationinterview.durationHoursMinutes', { hours: h, minutes: m });
+        } else {
+            return this.translate.instant('evaluationinterview.durationMinutes', { minutes: m });
+        }
     }
 
     getScoreRangeClass(score: number): string {
@@ -131,12 +173,14 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         if (score >= 25) return 'score-25-50';
         return 'score-0-25';
     }
+
     getScoreColor(score: number): string {
         if (score >= 75) return 'var(--primary-color)';
         if (score >= 50) return '#eab308';
         if (score >= 25) return '#f97316';
         return '#ef4444';
     }
+
     getScoreTextClass(score: number): string {
         if (score >= 75) return 'score-excellent';
         if (score >= 50) return 'score-good';
@@ -159,7 +203,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         setTimeout(() => scoreElement.classList.add('pulse'), 2000);
     }
 
-
     animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();
@@ -172,6 +215,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         };
         requestAnimationFrame(step);
     }
+
     triggerScoreAnimation(): void {
         if (!this.scoreCircles || !this.evaluations.length) return;
         const els = this.scoreCircles.toArray();
@@ -179,12 +223,15 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
         setTimeout(() => this.animateAllScores(), 100);
     }
+
     getEvaluationTypeDescription(e: Evaluation): string {
-        return e.evaluationType?.description || 'General Evaluation';
+        return e.evaluationType?.description || this.translate.instant('evaluationinterview.generalEvaluation');
     }
+
     getAnimatedScore(id: string): number {
         return this.animatedScores[id] || 0;
     }
+
     trackByEvaluationId(_: number, e: Evaluation): string {
         return e.id;
     }

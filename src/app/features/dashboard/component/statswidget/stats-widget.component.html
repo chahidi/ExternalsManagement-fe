@@ -1,9 +1,9 @@
 <div class="stats-container">
   <div class="stats-header">
-    <h2 class="stats-title">Candidate Statistics</h2>
+    <h2 class="stats-title">{{ 'dashboard.statistics.title' | translate }}</h2>
     <p-card class="total-card">
       <div class="total-candidates">
-        <span class="total-label">Total Candidates:</span>
+        <span class="total-label">{{ 'dashboard.statistics.totalCandidates' | translate }}</span>
         <span class="candidate-count">{{ totalCandidates }}</span>
       </div>
     </p-card>
@@ -12,12 +12,12 @@
   <p-tabs>
     <!-- Languages Tab -->
     <ng-template pTemplate="tab" let-index="index">
-      Languages
+      {{ 'dashboard.statistics.tabs.languages' | translate }}
     </ng-template>
     <p-card class="chart-card">
-      <h3>Candidates by Language</h3>
+      <h3>{{ 'dashboard.statistics.charts.languages.title' | translate }}</h3>
       <div *ngIf="!languageChartData" class="loading-indicator">
-        Loading language data...
+        {{ 'dashboard.statistics.charts.languages.loading' | translate }}
       </div>
       <p-chart
         *ngIf="languageChartData"
@@ -31,12 +31,12 @@
 
     <!-- Skills Tab -->
     <ng-template pTemplate="tab" let-index="index">
-      Skills
+      {{ 'dashboard.statistics.tabs.skills' | translate }}
     </ng-template>
     <p-card class="chart-card">
-      <h3>Candidates by Skill</h3>
+      <h3>{{ 'dashboard.statistics.charts.skills.title' | translate }}</h3>
       <div *ngIf="!skillsChartData" class="loading-indicator">
-        Loading skill data...
+        {{ 'dashboard.statistics.charts.skills.loading' | translate }}
       </div>
       <p-chart
         *ngIf="skillsChartData"
@@ -50,12 +50,12 @@
 
     <!-- Experience Tab -->
     <ng-template pTemplate="tab" let-index="index">
-      Experience
+      {{ 'dashboard.statistics.tabs.experience' | translate }}
     </ng-template>
     <p-card class="chart-card">
-      <h3>Candidates by years of experience</h3>
+      <h3>{{ 'dashboard.statistics.charts.experience.title' | translate }}</h3>
       <div *ngIf="!experienceChartData" class="loading-indicator">
-        Loading experience data...
+        {{ 'dashboard.statistics.charts.experience.loading' | translate }}
       </div>
       <p-chart
         *ngIf="experienceChartData"

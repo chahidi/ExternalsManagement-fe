@@ -10,69 +10,62 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { PanelModule } from 'primeng/panel';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-new-prompt',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    ButtonModule,
-    ToastModule,
-    RouterModule,
-    CardModule,
-    PanelModule
-  ],
-  templateUrl: './new-prompt.component.html',
-  styleUrls: ['./new-prompt.component.scss'],
-  providers: [MessageService]
+    selector: 'app-new-prompt',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, ToastModule, RouterModule, CardModule, PanelModule, TranslateModule],
+    templateUrl: './new-prompt.component.html',
+    styleUrls: ['./new-prompt.component.scss'],
+    providers: [MessageService]
 })
 export class NewPromptComponent {
-  promptForm!: FormGroup;
+    promptForm!: FormGroup;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private promptService: PromptService,
-    private messageService: MessageService,
-    private router: Router
-  ) { }
+    constructor(
+        private formBuilder: FormBuilder,
+        private promptService: PromptService,
+        private messageService: MessageService,
+        private router: Router,
+        private translate: TranslateService
+    ) {}
 
-  ngOnInit(): void {
-    this.promptForm = this.formBuilder.group({
-      promptCode: ['', [Validators.required]],
-      promptDesc: ['', [Validators.required]],
-      schema: ['', [Validators.required]]
-    });
-  }
-
-  onSubmit() {
-    if (this.promptForm.invalid) {
-      this.promptForm.markAllAsTouched();
-      return;
+    ngOnInit(): void {
+        this.promptForm = this.formBuilder.group({
+            promptCode: ['', [Validators.required]],
+            promptDesc: ['', [Validators.required]],
+            schema: ['', [Validators.required]]
+        });
     }
 
-    const payload = this.promptForm.value;
+    onSubmit() {
+        if (this.promptForm.invalid) {
+            this.promptForm.markAllAsTouched();
+            return;
+        }
 
-    this.promptService.createPrompt(payload).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Prompt created successfully'
+        const payload = this.promptForm.value;
+
+        this.promptService.createPrompt(payload).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: this.translate.instant('success.title'),
+                    detail: this.translate.instant('newPrompt.messages.success.created')
+                });
+                this.promptForm.reset();
+                setTimeout(() => {
+                    this.router.navigate(['/prompts/prompt-list']);
+                }, 1000);
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: this.translate.instant('error.title'),
+                    detail: error.message || this.translate.instant('newPrompt.messages.error.createFailed')
+                });
+            }
         });
-        this.promptForm.reset();
-        setTimeout(() => {
-          this.router.navigate(['/prompts/prompt-list']);
-        }, 1000);
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message
-        });
-      },
-    });
-  }
+    }
 }

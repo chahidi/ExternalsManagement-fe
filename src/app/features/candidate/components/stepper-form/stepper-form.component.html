@@ -3,83 +3,83 @@
     <div class="stepper-content" [ngStyle]="{'margin-top': activeIndex >= 0 ? '1.5rem' : '0'}"></div>
     <div class="p-mt-4">
       <ng-container [ngSwitch]="activeIndex">
-        <!--  General Data -->
+        <!-- General Data -->
         <div *ngSwitchCase="0" [formGroup]="generalDataForm">
           <!-- Full Name -->
           <div class="p-field">
-            <label for="fullName">Full Name</label>
+            <label for="fullName">{{ 'steppercandidate.fullName' | translate }}</label>
             <input id="fullName" type="text" pInputText formControlName="fullName">
             <small *ngIf="generalDataForm.get('fullName')?.touched">
               <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('required')">
-                <i class="pi pi-times-circle"></i> Full Name is required.
+                <i class="pi pi-times-circle"></i> {{ 'steppercandidate.fullNameRequired' | translate }}
               </ng-container>
               <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('pattern')">
-                <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
+                <i class="pi pi-times-circle"></i> {{ 'steppercandidate.onlyLettersSpaces' | translate }}
               </ng-container>
             </small>
           </div>
           <!-- Birth Date -->
           <div class="p-field">
-            <label for="birthDate">Birth Date</label>
+            <label for="birthDate">{{ 'steppercandidate.birthDate' | translate }}</label>
             <input id="birthDate" type="date" pInputText formControlName="birthDate">
             <small *ngIf="generalDataForm.get('birthDate')?.touched">
               <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('required')">
-                <i class="pi pi-times-circle"></i> Birth Date is required.
+                <i class="pi pi-times-circle"></i> {{ 'steppercandidate.birthDateRequired' | translate }}
               </ng-container>
               <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('underAge')">
-                <i class="pi pi-times-circle"></i> You must be at least 18 years old.
+                <i class="pi pi-times-circle"></i> {{ 'steppercandidate.mustBe18' | translate }}
               </ng-container>
               <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('overAge')">
-                <i class="pi pi-times-circle"></i> Age exceeds allowed limit.
+                <i class="pi pi-times-circle"></i> {{ 'steppercandidate.ageExceedsLimit' | translate }}
               </ng-container>
             </small>
           </div>
           <!-- Years of Experience -->
-            <div class="p-field">
-                <label for="yearsOfExperience">Years of Experience</label>
-                <input
-                id="yearsOfExperience"
-                type="number"
-                pInputText
-                formControlName="yearsOfExperience"
-                [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null"
-                >
-                <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-                <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
-                    <i class="pi pi-times-circle"></i> Please enter a valid number.
-                </ng-container>
-                </small>
-                <small *ngIf="generalDataForm.hasError('invalidExperience')">
-                <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
-                </small>
-            </div>
+          <div class="p-field">
+            <label for="yearsOfExperience">{{ 'steppercandidate.yearsOfExperience' | translate }}</label>
+            <input
+              id="yearsOfExperience"
+              type="number"
+              pInputText
+              formControlName="yearsOfExperience"
+              [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null"
+            >
+            <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
+              <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
+                <i class="pi pi-times-circle"></i> {{ 'steppercandidate.enterValidNumber' | translate }}
+              </ng-container>
+            </small>
+            <small *ngIf="generalDataForm.hasError('invalidExperience')">
+              <i class="pi pi-times-circle"></i> {{ 'steppercandidate.experienceExceedsPossible' | translate }}
+            </small>
+          </div>
           <!-- Gender -->
           <div class="p-field">
-            <label>Gender</label>
+            <label>{{ 'steppercandidate.gender' | translate }}</label>
             <div class="p-formgroup-inline">
               <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
-              <label>Male</label>
+              <label>{{ 'steppercandidate.male' | translate }}</label>
               <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
-              <label>Female</label>
+              <label>{{ 'steppercandidate.female' | translate }}</label>
             </div>
             <small *ngIf="generalDataForm.get('gender')?.touched && generalDataForm.get('gender')?.invalid">
-              <i class="pi pi-times-circle"></i> Gender is required.
+              <i class="pi pi-times-circle"></i> {{ 'steppercandidate.genderRequired' | translate }}
             </small>
           </div>
           <!-- Main Technology -->
           <div class="p-field">
-            <label for="mainTech">Main Technology</label>
+            <label for="mainTech">{{ 'steppercandidate.mainTechnology' | translate }}</label>
             <input id="mainTech" type="text" pInputText formControlName="mainTech">
             <small *ngIf="generalDataForm.get('mainTech')?.touched && generalDataForm.get('mainTech')?.invalid">
-              <i class="pi pi-times-circle"></i> Main Technology is required.
+              <i class="pi pi-times-circle"></i> {{ 'steppercandidate.mainTechRequired' | translate }}
             </small>
           </div>
           <!-- Summary -->
           <div class="p-field">
-            <label for="summary">Summary</label>
+            <label for="summary">{{ 'steppercandidate.summary' | translate }}</label>
             <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
             <small *ngIf="generalDataForm.get('summary')?.touched && generalDataForm.get('summary')?.invalid">
-              <i class="pi pi-times-circle"></i> Summary is required.
+              <i class="pi pi-times-circle"></i> {{ 'steppercandidate.summaryRequired' | translate }}
             </small>
           </div>
         </div>
@@ -94,75 +94,76 @@
 
                     <!-- Street -->
                     <div class="p-field">
-                    <label for="street-{{i}}">Street</label>
+                    <label for="street-{{i}}">{{ 'steppercandidate.street' | translate }}</label>
                     <input id="street-{{i}}" type="text" pInputText formControlName="street">
                     <small *ngIf="addressGroup.get('street')?.touched && addressGroup.get('street')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="addressGroup.get('street')?.hasError('required')">
-                        Street is required.
+                        {{ 'steppercandidate.streetRequired' | translate }}
                         </ng-container>
                         <ng-container *ngIf="addressGroup.get('street')?.hasError('pattern')">
-                        Only letters, numbers, spaces, and basic punctuation are allowed.
+                        {{ 'steppercandidate.streetPattern' | translate }}
                         </ng-container>
                     </small>
                     </div>
 
                     <!-- Postal Code -->
                     <div class="p-field">
-                    <label for="postalCode-{{i}}">Postal Code</label>
+                    <label for="postalCode-{{i}}">{{ 'steppercandidate.postalCode' | translate }}</label>
                     <input id="postalCode-{{i}}" type="text" pInputText formControlName="postalCode" maxlength="10">
                     <small *ngIf="addressGroup.get('postalCode')?.touched && addressGroup.get('postalCode')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="addressGroup.get('postalCode')?.hasError('required')">
-                        Postal Code is required.
+                        {{ 'steppercandidate.postalCodeRequired' | translate }}
                         </ng-container>
                         <ng-container *ngIf="addressGroup.get('postalCode')?.hasError('pattern')">
-                        3-10 characters: letters, digits, spaces or hyphens only.
+                        {{ 'steppercandidate.postalCodePattern' | translate }}
                         </ng-container>
                     </small>
                     </div>
 
                     <!-- Full Address -->
                     <div class="p-field">
-                    <label for="fullAddress-{{i}}">Full Address</label>
+                    <label for="fullAddress-{{i}}">{{ 'steppercandidate.fullAddress' | translate }}</label>
                     <input id="fullAddress-{{i}}" type="text" pInputText formControlName="fullAddress">
                     <small *ngIf="addressGroup.get('fullAddress')?.touched && addressGroup.get('fullAddress')?.invalid">
-                        <i class="pi pi-times-circle"></i> Full Address is required.
+                        <i class="pi pi-times-circle"></i> {{ 'steppercandidate.fullAddressRequired' | translate }}
                     </small>
                     </div>
 
                     <!-- City -->
                     <div class="p-field">
-                    <label for="city-{{i}}">City</label>
+                    <label for="city-{{i}}">{{ 'steppercandidate.city' | translate }}</label>
                     <input id="city-{{i}}" type="text" pInputText formControlName="city">
                     <small *ngIf="addressGroup.get('city')?.touched && addressGroup.get('city')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="addressGroup.get('city')?.hasError('required')">
-                        City is required.
+                        {{ 'steppercandidate.cityRequired' | translate }}
                         </ng-container>
                         <ng-container *ngIf="addressGroup.get('city')?.hasError('pattern')">
-                        Only letters, spaces, apostrophes, dots, and hyphens are allowed.
+                        {{ 'steppercandidate.cityPattern' | translate }}
                         </ng-container>
                     </small>
                     </div>
 
                     <!-- Country -->
                     <div class="p-field">
-                    <label for="country-{{i}}">Country</label>
+                    <label for="country-{{i}}">{{ 'steppercandidate.country' | translate }}</label>
                     <input id="country-{{i}}" type="text" pInputText formControlName="country">
                     <small *ngIf="addressGroup.get('country')?.touched && addressGroup.get('country')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="addressGroup.get('country')?.hasError('required')">
-                        Country is required.
+                        {{ 'steppercandidate.countryRequired' | translate }}
                         </ng-container>
                         <ng-container *ngIf="addressGroup.get('country')?.hasError('pattern')">
-                        Only letters, spaces, apostrophes, dots, and hyphens are allowed.
+                        {{ 'steppercandidate.countryPattern' | translate }}
                         </ng-container>
                     </small>
                     </div>
 
                     <!-- Remove Button (only show if more than one address) -->
-                    <button *ngIf="addressesFormArray.length > 1" type="button" pButton label="Remove"
+                    <button *ngIf="addressesFormArray.length > 1" type="button" pButton
+                            [label]="'steppercandidate.remove' | translate"
                             icon="pi pi-times" class="p-button-danger p-button-sm"
                             (click)="removeAddress(i)"></button>
                 </div>
@@ -170,13 +171,14 @@
 
                 <!-- Add Button -->
                 <div class="p-mt-2">
-                <button type="button" pButton icon="pi pi-plus" label="Add Address"
+                <button type="button" pButton icon="pi pi-plus"
+                        [label]="'steppercandidate.addAddress' | translate"
                         class="p-button-sm" (click)="addAddress()"></button>
                 </div>
             </form>
         </div>
 
-        <!--  Education -->
+        <!-- Education -->
         <div *ngSwitchCase="2">
             <form [formGroup]="educationFormWrapper">
                 <div formArrayName="educationsFormArray">
@@ -186,12 +188,12 @@
 
                     <!-- Institution -->
                     <div class="p-field">
-                    <label for="institution-{{i}}">Institution</label>
+                    <label for="institution-{{i}}">{{ 'steppercandidate.institution' | translate }}</label>
                     <input id="institution-{{i}}" type="text" pInputText formControlName="institution">
                     <small *ngIf="eduGroup.get('institution')?.touched && eduGroup.get('institution')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="eduGroup.get('institution')?.hasError('required')">
-                        Institution is required.
+                        {{ 'steppercandidate.institutionRequired' | translate }}
                         </ng-container>
                     </small>
                     </div>
@@ -199,50 +201,50 @@
                     <!-- Dates -->
                     <div class="p-field p-grid">
                     <div class="p-col-6">
-                        <label for="startDateEdu-{{i}}">Start Date</label>
+                        <label for="startDateEdu-{{i}}">{{ 'steppercandidate.startDate' | translate }}</label>
                         <input id="startDateEdu-{{i}}" type="date" pInputText formControlName="startDate">
                         <small *ngIf="eduGroup.get('startDate')?.touched && eduGroup.get('startDate')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="eduGroup.get('startDate')?.hasError('required')">
-                            Start date is required.
+                            {{ 'steppercandidate.startDateRequired' | translate }}
                         </ng-container>
                         </small>
                     </div>
 
                     <div class="p-col-6">
-                        <label for="endDateEdu-{{i}}">End Date</label>
+                        <label for="endDateEdu-{{i}}">{{ 'steppercandidate.endDate' | translate }}</label>
                         <input id="endDateEdu-{{i}}" type="date" pInputText formControlName="endDate">
                         <small *ngIf="eduGroup.get('endDate')?.touched && eduGroup.get('endDate')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="eduGroup.get('endDate')?.hasError('required')">
-                            End date is required.
+                            {{ 'steppercandidate.endDateRequired' | translate }}
                         </ng-container>
                         </small>
                     </div>
 
                     <!-- Displaying form-level error (for invalid date range) -->
                     <small *ngIf="eduGroup.hasError('invalidDateRange') && eduGroup.touched">
-                        <i class="pi pi-times-circle"></i> End date cannot be earlier than start date.
+                        <i class="pi pi-times-circle"></i> {{ 'steppercandidate.endDateBeforeStart' | translate }}
                     </small>
                     </div>
 
                     <!-- Diploma -->
                     <div class="p-field">
-                    <label for="diploma-{{i}}">Diploma</label>
+                    <label for="diploma-{{i}}">{{ 'steppercandidate.diploma' | translate }}</label>
                     <input id="diploma-{{i}}" type="text" pInputText formControlName="diploma">
                     <small *ngIf="eduGroup.get('diploma')?.touched && eduGroup.get('diploma')?.invalid">
                         <i class="pi pi-times-circle"></i>
                         <ng-container *ngIf="eduGroup.get('diploma')?.hasError('required')">
-                        Diploma is required.
+                        {{ 'steppercandidate.diplomaRequired' | translate }}
                         </ng-container>
                         <ng-container *ngIf="eduGroup.get('diploma')?.hasError('pattern')">
-                        Diploma can only include letters, numbers, and common symbols (like ., +, #, etc.).
+                        {{ 'steppercandidate.diplomaPattern' | translate }}
                         </ng-container>
                     </small>
                     </div>
 
                     <!-- Remove Button -->
-                    <button type="button" pButton label="Remove" icon="pi pi-times"
+                    <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times"
                             class="p-button-danger p-button-sm"
                             (click)="removeEducation(i)"></button>
                 </div>
@@ -250,13 +252,12 @@
 
                 <!-- Add Button -->
                 <div class="p-mt-2">
-                <button type="button" pButton icon="pi pi-plus" label="Add Education"
+                <button type="button" pButton icon="pi pi-plus"
+                        [label]="'steppercandidate.addEducation' | translate"
                         class="p-button-sm" (click)="addEducation()"></button>
                 </div>
             </form>
         </div>
-
-
 
         <!-- Experience -->
         <div *ngSwitchCase="3">
@@ -268,65 +269,65 @@
 
                     <!-- Company Name -->
                     <div class="p-field">
-                    <label for="companyName-{{i}}">Company Name</label>
+                    <label for="companyName-{{i}}">{{ 'steppercandidate.companyName' | translate }}</label>
                     <input id="companyName-{{i}}" type="text" pInputText formControlName="companyName">
                     <small *ngIf="expGroup.get('companyName')?.touched && expGroup.get('companyName')?.invalid">
                         <i class="pi pi-times-circle"></i>
-                        Only letters, numbers, spaces, &, ', +, ., and - are allowed.
+                        {{ 'steppercandidate.companyNamePattern' | translate }}
                     </small>
                     </div>
 
                     <!-- Position -->
                     <div class="p-field">
-                    <label for="position-{{i}}">Position</label>
+                    <label for="position-{{i}}">{{ 'steppercandidate.position' | translate }}</label>
                     <input id="position-{{i}}" type="text" pInputText formControlName="position">
                     <small *ngIf="expGroup.get('position')?.touched && expGroup.get('position')?.invalid">
                         <i class="pi pi-times-circle"></i>
-                        Only letters, spaces, slashes (/) and dashes (-) are allowed.
+                        {{ 'steppercandidate.positionPattern' | translate }}
                     </small>
                     </div>
 
                     <!-- Dates -->
                     <div class="p-field p-grid">
                     <div class="p-col-6">
-                        <label for="startDateExp-{{i}}">Start Date</label>
+                        <label for="startDateExp-{{i}}">{{ 'steppercandidate.startDate' | translate }}</label>
                         <input id="startDateExp-{{i}}" type="date" pInputText formControlName="startDate">
                         <small *ngIf="expGroup.get('startDate')?.touched && expGroup.get('startDate')?.invalid">
                         <i class="pi pi-times-circle"></i>
-                        Must be in YYYY-MM-DD format.
+                        {{ 'steppercandidate.dateFormat' | translate }}
                         </small>
                     </div>
 
                     <div class="p-col-6">
-                        <label for="endDateExp-{{i}}">End Date</label>
+                        <label for="endDateExp-{{i}}">{{ 'steppercandidate.endDate' | translate }}</label>
                         <input id="endDateExp-{{i}}" type="date" pInputText formControlName="endDate">
                         <small *ngIf="expGroup.get('endDate')?.touched && expGroup.get('endDate')?.invalid">
                         <i class="pi pi-times-circle"></i>
-                        Must be in YYYY-MM-DD format.
+                        {{ 'steppercandidate.dateFormat' | translate }}
                         </small>
                     </div>
 
                     <!-- Date Validators -->
                     <small *ngIf="expGroup.hasError('futureEndDate')">
-                        <i class="pi pi-times-circle"></i> End Date cannot be in the future.
+                        <i class="pi pi-times-circle"></i> {{ 'steppercandidate.endDateFuture' | translate }}
                     </small>
                     <small *ngIf="expGroup.hasError('invalidDateRange')">
-                        <i class="pi pi-times-circle"></i> Start Date must come before End Date.
+                        <i class="pi pi-times-circle"></i> {{ 'steppercandidate.startBeforeEnd' | translate }}
                     </small>
                     </div>
 
                     <!-- Description -->
                     <div class="p-field">
-                    <label for="descriptionExp-{{i}}">Description</label>
+                    <label for="descriptionExp-{{i}}">{{ 'steppercandidate.description' | translate }}</label>
                     <textarea id="descriptionExp-{{i}}" pInputTextarea formControlName="description"></textarea>
                     <small *ngIf="expGroup.get('description')?.touched && expGroup.get('description')?.invalid">
                         <i class="pi pi-times-circle"></i>
-                        Allowed: letters, numbers, punctuation like . , ! ? () - : ; / ' " #
+                        {{ 'steppercandidate.descriptionPattern' | translate }}
                     </small>
                     </div>
 
                     <!-- Remove Button -->
-                    <button type="button" pButton label="Remove" icon="pi pi-times"
+                    <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times"
                             class="p-button-danger p-button-sm"
                             (click)="removeExperience(i)"></button>
                 </div>
@@ -334,59 +335,56 @@
 
                 <!-- Add Button -->
                 <div class="p-mt-2">
-                <button type="button" pButton icon="pi pi-plus" label="Add Experience"
+                <button type="button" pButton icon="pi pi-plus"
+                        [label]="'steppercandidate.addExperience' | translate"
                         class="p-button-sm" (click)="addExperience()"></button>
                 </div>
             </form>
         </div>
 
-
-
-        <!--  Languages -->
-
+        <!-- Languages -->
         <div *ngSwitchCase="4">
-        <form [formGroup]="languagesFormWrapper">
-            <div formArrayName="languagesFormArray">
-            <div *ngFor="let langGroup of languagesFormArray.controls; let i = index" [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
+            <form [formGroup]="languagesFormWrapper">
+                <div formArrayName="languagesFormArray">
+                <div *ngFor="let langGroup of languagesFormArray.controls; let i = index" [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
 
-                <div class="p-field">
-                <label for="language-{{ i }}">Language</label>
-                <input id="language-{{ i }}" type="text" pInputText formControlName="language" />
+                    <div class="p-field">
+                    <label for="language-{{ i }}">{{ 'steppercandidate.language' | translate }}</label>
+                    <input id="language-{{ i }}" type="text" pInputText formControlName="language" />
+                    </div>
+
+                    <div class="p-field">
+                    <label for="level-{{ i }}">{{ 'steppercandidate.level' | translate }}</label>
+                    <p-select
+                        id="level-{{ i }}"
+                        [options]="languageLevels"
+                        formControlName="level"
+                        [placeholder]="'steppercandidate.selectLevel' | translate"
+                        optionLabel="label"
+                        optionValue="value"
+                    ></p-select>
+                    </div>
+
+                    <div class="p-field">
+                    <label for="isNative-{{ i }}">{{ 'steppercandidate.native' | translate }}</label>
+                    <p-checkbox id="isNative-{{ i }}" binary="true" formControlName="isNative"></p-checkbox>
+                    </div>
+
+                    <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeLanguage(i)"></button>
+
+                </div>
                 </div>
 
-                <div class="p-field">
-                <label for="level-{{ i }}">Level</label>
-                <p-select
-                    id="level-{{ i }}"
-                    [options]="languageLevels"
-                    formControlName="level"
-                    placeholder="Select Level"
-                    optionLabel="label"
-                    optionValue="value"
-                ></p-select>
+                <div class="p-mt-2">
+                <button type="button" pButton icon="pi pi-plus"
+                        [label]="'steppercandidate.addLanguage' | translate"
+                        class="p-button-sm" (click)="addLanguage()"></button>
                 </div>
-
-                <div class="p-field">
-                <label for="isNative-{{ i }}">Native?</label>
-                <p-checkbox id="isNative-{{ i }}" binary="true" formControlName="isNative"></p-checkbox>
-                </div>
-
-                <button type="button" pButton label="Remove" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeLanguage(i)"></button>
-
-            </div>
-            </div>
-
-            <div class="p-mt-2">
-            <button type="button" pButton icon="pi pi-plus" label="Add Language" class="p-button-sm" (click)="addLanguage()"></button>
-            </div>
-        </form>
+            </form>
         </div>
 
-
         <!-- Skills -->
-
-
-            <div *ngSwitchCase="5">
+        <div *ngSwitchCase="5">
             <form [formGroup]="skillsFormWrapper">
                 <div formArrayName="skillsFormArray">
                 <!-- Skill Tags Display -->
@@ -409,20 +407,20 @@
                 <div class="p-fluid">
                     <div class="p-field p-grid">
                     <div class="p-col-6">
-                        <label for="newSkillName">Skill Name</label>
+                        <label for="newSkillName">{{ 'steppercandidate.skillName' | translate }}</label>
                         <input id="newSkillName"
                             type="text"
                             pInputText
                             [(ngModel)]="newSkillName"
                             [ngModelOptions]="{standalone: true}"
-                            placeholder="Enter skill name"/>
+                            [placeholder]="'steppercandidate.enterSkillName' | translate"/>
                     </div>
                     <div class="p-col-5">
-                        <label for="newSkillProficiency">Proficiency</label>
+                        <label for="newSkillProficiency">{{ 'steppercandidate.proficiency' | translate }}</label>
                         <p-select [options]="skillProficiencies"
                                     [(ngModel)]="newSkillProficiency"
                                     [ngModelOptions]="{standalone: true}"
-                                    placeholder="Select level"
+                                    [placeholder]="'steppercandidate.selectLevel' | translate"
                                     optionLabel="label"
                                     optionValue="value"></p-select>
                     </div>
@@ -438,11 +436,9 @@
                 </div>
                 </div>
             </form>
-            </div>
+        </div>
 
-
-
-        <!--  Contact -->
+        <!-- Contact -->
         <div *ngSwitchCase="6" [formGroup]="contactsFormWrapper">
             <div formArrayName="contactsFormArray">
                 <div
@@ -451,37 +447,37 @@
                 class="p-mb-3 p-p-3 p-shadow-2 p-border-round"
                 >
                 <div class="p-field">
-                    <label for="contactType-{{ i }}">Contact Type</label>
+                    <label for="contactType-{{ i }}">{{ 'steppercandidate.contactType' | translate }}</label>
                     <p-select
                     id="contactType-{{ i }}"
                     formControlName="contactType"
                     [options]="[
-                        { label: 'email', value: 'email' },
-                        { label: 'phone', value: 'phone' },
-                        { label: 'linkedin', value: 'linkedin' }
+                        { label: 'Email', value: 'email' },
+                        { label: 'Phone', value: 'phone' },
+                        { label: 'LinkedIn', value: 'linkedin' }
                     ]"
-                    placeholder="Select Contact Type"
+                    [placeholder]="'steppercandidate.selectContactType' | translate"
                     ></p-select>
                     <small *ngIf="contactGroup.get('contactType')?.touched && contactGroup.get('contactType')?.invalid">
-                    <i class="pi pi-times-circle"></i> Contact type is required.
+                    <i class="pi pi-times-circle"></i> {{ 'steppercandidate.contactTypeRequired' | translate }}
                     </small>
                 </div>
 
                 <div class="p-field">
-                    <label for="contactValue-{{ i }}">Contact Value</label>
+                    <label for="contactValue-{{ i }}">{{ 'steppercandidate.contactValue' | translate }}</label>
                     <input
                     id="contactValue-{{ i }}"
                     type="text"
                     pInputText
                     formControlName="contactValue"
-                    placeholder="Enter contact detail"
+                    [placeholder]="'steppercandidate.enterContactDetail' | translate"
                     />
                     <small *ngIf="contactGroup.get('contactValue')?.touched && contactGroup.get('contactValue')?.invalid">
                     <ng-container *ngIf="contactGroup.get('contactValue')?.hasError('required')">
-                        <i class="pi pi-times-circle"></i> Contact value is required.
+                        <i class="pi pi-times-circle"></i> {{ 'steppercandidate.contactValueRequired' | translate }}
                     </ng-container>
                     <ng-container *ngIf="contactGroup.get('contactValue')?.hasError('pattern')">
-                        <i class="pi pi-times-circle"></i> Invalid {{ contactGroup.get('contactType')?.value }} format.
+                        <i class="pi pi-times-circle"></i> {{ 'steppercandidate.invalidContactFormat' | translate: {type: contactGroup.get('contactType')?.value} }}
                     </ng-container>
                     </small>
                 </div>
@@ -492,7 +488,7 @@
                     icon="pi pi-trash"
                     class="p-button-danger p-mt-2"
                     (click)="removeContact(i)"
-                    label="Remove"
+                    [label]="'steppercandidate.remove' | translate"
                 ></button>
                 </div>
             </div>
@@ -502,17 +498,39 @@
                 pButton
                 icon="pi pi-plus"
                 class="p-button-primary p-mt-3"
-                label="Add Contact"
+                [label]="'steppercandidate.addContact' | translate"
                 (click)="addContact()"
             ></button>
         </div>
+      </ng-container>
+    </div>
 
     <!-- Buttons -->
     <div class="p-mt-4 button-group">
-    <button type="button" pButton label="Previous" icon="pi pi-arrow-left" iconPos="left" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
-    <button type="button" pButton label="Clear" icon="pi pi-trash" iconPos="left" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
-    <button type="button" pButton label="Next" icon="pi pi-arrow-right" iconPos="right" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-    <button type="submit" pButton label="Save" icon="pi pi-check" iconPos="right" title="Save and submit the form" (click)="confirmUpdate()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
-  </div>
-
-
+        <button type="button" pButton
+                [label]="'steppercandidate.previous' | translate"
+                icon="pi pi-arrow-left" iconPos="left"
+                [title]="'steppercandidate.previousTitle' | translate"
+                (click)="prev()"
+                [disabled]="activeIndex === 0"></button>
+        <button type="button" pButton
+                [label]="'steppercandidate.clear' | translate"
+                icon="pi pi-trash" iconPos="left"
+                [title]="'steppercandidate.clearTitle' | translate"
+                (click)="clearCurrentSection()"></button>
+        <button type="button" pButton
+                [label]="'steppercandidate.next' | translate"
+                icon="pi pi-arrow-right" iconPos="right"
+                [title]="'steppercandidate.nextTitle' | translate"
+                (click)="next()"
+                *ngIf="activeIndex < steps.length - 1"
+                [disabled]="!getCurrentForm().valid"></button>
+        <button type="submit" pButton
+                [label]="'steppercandidate.save' | translate"
+                icon="pi pi-check" iconPos="right"
+                [title]="'steppercandidate.saveTitle' | translate"
+                (click)="confirmUpdate()"
+                *ngIf="activeIndex === steps.length - 1"
+                [disabled]="!areAllFormsValid()"></button>
+    </div>
+</div>

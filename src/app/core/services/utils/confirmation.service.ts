@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmationModalService {
 
   private confirmationService: ConfirmationService | null = null;
+
+  // Add TranslateService to constructor
+  constructor(private translate: TranslateService) {}
 
   setConfirmationService(confirmationService: ConfirmationService) {
       this.confirmationService = confirmationService;
@@ -21,29 +25,67 @@ export class ConfirmationModalService {
     message: string,
     header: string,
     acceptCallback: () => void,
-    rejectCallback?: () => void
+    rejectCallback?: () => void,
+    acceptLabel?: string,
+    rejectLabel?: string
   ) {
     this.getConfirmationService().confirm({
       message,
       header,
       accept: acceptCallback,
-      reject: rejectCallback
+      reject: rejectCallback,
+      acceptLabel: acceptLabel || 'Yes', // Default fallback
+      rejectLabel: rejectLabel || 'No'   // Default fallback
     });
   }
 
-  confirmUpdate(acceptCallback: () => void, entityName: string = 'item') {
+  confirmUpdate(
+    acceptCallback: () => void,
+    entityName: string = 'item',
+    translations?: {
+      title?: string;
+      message?: string;
+      acceptLabel?: string;
+      rejectLabel?: string;
+    }
+  ) {
+    const defaultTitle = this.translate.instant('confirmation.updateTitle');
+    const defaultMessage = this.translate.instant('confirmation.updateMessage', { entity: entityName });
+    const defaultAccept = this.translate.instant('confirmation.yes');
+    const defaultReject = this.translate.instant('confirmation.no');
+
     this.confirm(
-      `Are you sure you want to edit this ${entityName}?`,
-      'Confirm Update',
-      acceptCallback
+      translations?.message || defaultMessage,
+      translations?.title || defaultTitle,
+      acceptCallback,
+      undefined,
+      translations?.acceptLabel || defaultAccept,
+      translations?.rejectLabel || defaultReject
     );
   }
 
-  confirmDelete(acceptCallback: () => void, entityName: string = 'item') {
+  confirmDelete(
+    acceptCallback: () => void,
+    entityName: string = 'item',
+    translations?: {
+      title?: string;
+      message?: string;
+      acceptLabel?: string;
+      rejectLabel?: string;
+    }
+  ) {
+    const defaultTitle = this.translate.instant('confirmation.deleteTitle');
+    const defaultMessage = this.translate.instant('confirmation.deleteMessage', { entity: entityName });
+    const defaultAccept = this.translate.instant('confirmation.yes');
+    const defaultReject = this.translate.instant('confirmation.no');
+
     this.confirm(
-      `Are you sure you want to delete this ${entityName}?`,
-      'Confirm Delete',
-      acceptCallback
+      translations?.message || defaultMessage,
+      translations?.title || defaultTitle,
+      acceptCallback,
+      undefined, 
+      translations?.acceptLabel || defaultAccept,
+      translations?.rejectLabel || defaultReject
     );
   }
 }

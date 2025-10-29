@@ -1,64 +1,65 @@
 @if (isLoading$ | async) {
-<app-loader
-    [message]="loadingMessage$ | async"
-    [withOverlay]="true"
-></app-loader>
+    <app-loader [message]="loadingMessage$ | async" [withOverlay]="true"></app-loader>
 }
 <p-toast></p-toast>
-<p-dialog header="Update Prompt" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [contentStyle]="{ 'overflow-y': 'auto' }">
+
+<p-dialog [header]="'promptList.dialogs.update.header' | translate" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '50vw' }" [contentStyle]="{ 'overflow-y': 'auto' }">
     <form *ngIf="dialogVisible" class="form-layout">
         <div class="form-field">
-            <label for="promptCode">Prompt Code</label>
-            <input type="text" id="promptCode" pInputText [(ngModel)]="selectedPrompt.promptCode" name="promptCode"/>
+            <label for="promptCode">{{ 'promptList.dialogs.update.fields.promptCode' | translate }}</label>
+            <input type="text" id="promptCode" pInputText [(ngModel)]="selectedPrompt.promptCode" name="promptCode" />
         </div>
 
         <div class="form-field">
-            <label for="promptDesc">Text (Required)</label>
+            <label for="promptDesc">{{ 'promptList.dialogs.update.fields.promptDesc' | translate }}</label>
             <textarea id="promptDesc" pInputTextarea rows="4" [(ngModel)]="selectedPrompt.promptDesc" name="promptDesc" required></textarea>
         </div>
 
         <div class="form-field">
-            <label for="schema">Schema (JSON)</label>
+            <label for="schema">{{ 'promptList.dialogs.update.fields.schema' | translate }}</label>
             <textarea id="schema" pInputTextarea rows="6" [(ngModel)]="selectedPrompt.schema" name="schema"></textarea>
         </div>
 
         <div class="form-footer">
-            <p-button icon="pi pi-times" label="Cancel" (click)="dialogVisible = false" styleClass="p-button-text"></p-button>
-            <button pButton type="button" label="Update" class="p-button-info" (click)="confirmUpdate()"></button>
+            <p-button icon="pi pi-times" [label]="'promptList.dialogs.update.buttons.cancel' | translate" (click)="dialogVisible = false" styleClass="p-button-text"> </p-button>
+            <button pButton type="button" [label]="'promptList.dialogs.update.buttons.update' | translate" class="p-button-info" (click)="confirmUpdate()"></button>
         </div>
     </form>
 </p-dialog>
-<h2>Prompt List</h2>
+
+<h2>{{ 'promptList.title' | translate }}</h2>
+
 <p-table
     #dt1
     [value]="filteredPrompts"
     [paginator]="true"
     [rows]="rows"
-    [rowsPerPageOptions]="[5,10,20]"
+    [rowsPerPageOptions]="[5, 10, 20]"
     [totalRecords]="totalRecords"
     [lazy]="true"
     (onLazyLoad)="loadPrompts($event)"
     [loading]="loading"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
-    [globalFilterFields]="['promptCode','promptDesc','schema']"
-    class="custom-table">
-
+    [globalFilterFields]="['promptCode', 'promptDesc', 'schema']"
+    class="custom-table"
+>
     <ng-template pTemplate="caption">
-          <div class="flex">
-              <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)"></p-button>
-              <div class="ml-auto flex items-center gap-2">
-                    <i class="pi pi-search"></i>
-                    <input pInputText type="text" placeholder="Search prompts..." [(ngModel)]="searchQuery" (input)="onSearch()" class="border rounded-md h-10 px-3 w-full">
-              </div>
-          </div>
+        <div class="flex">
+            <p-button [label]="'promptList.search.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)"> </p-button>
+            <div class="ml-auto flex items-center gap-2">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" [placeholder]="'promptList.search.placeholder' | translate" [(ngModel)]="searchQuery" (input)="onSearch()" class="border rounded-md h-10 px-3 w-full" />
+            </div>
+        </div>
     </ng-template>
+
     <ng-template pTemplate="header">
         <tr>
-            <th class="col-prompt-code">Prompt Code</th>
-            <th class="col-text">Text</th>
-            <th class="col-schema">Schema</th>
-            <th class="col-actions">Actions</th>
+            <th class="col-prompt-code">{{ 'promptList.table.columns.promptCode' | translate }}</th>
+            <th class="col-text">{{ 'promptList.table.columns.text' | translate }}</th>
+            <th class="col-schema">{{ 'promptList.table.columns.schema' | translate }}</th>
+            <th class="col-actions">{{ 'promptList.table.columns.actions' | translate }}</th>
         </tr>
     </ng-template>
 
@@ -72,8 +73,8 @@
                     </span>
                     <div class="desc-popup">
                         <div class="desc-popup-body">
-                            <div class="desc-popup-title">View full text</div>
-                            <div class="desc-popup-text">Click the text to see all details</div>
+                            <div class="desc-popup-title">{{ 'promptList.dialogs.view.text.title' | translate }}</div>
+                            <div class="desc-popup-text">{{ 'promptList.dialogs.view.text.description' | translate }}</div>
                         </div>
                         <div class="desc-popup-arrow"></div>
                     </div>
@@ -86,8 +87,8 @@
                     </span>
                     <div class="desc-popup">
                         <div class="desc-popup-body">
-                            <div class="desc-popup-title">View full schema</div>
-                            <div class="desc-popup-text">Click the text to see all details</div>
+                            <div class="desc-popup-title">{{ 'promptList.dialogs.view.schema.title' | translate }}</div>
+                            <div class="desc-popup-text">{{ 'promptList.dialogs.view.schema.description' | translate }}</div>
                         </div>
                         <div class="desc-popup-arrow"></div>
                     </div>
@@ -102,44 +103,39 @@
 
     <ng-template pTemplate="emptymessage">
         <tr>
-            <td colspan="4" style="text-align: center;">No prompts found.</td>
+            <td colspan="4" style="text-align: center">{{ 'promptList.table.emptyMessage' | translate }}</td>
         </tr>
     </ng-template>
 </p-table>
 
-
 <p-dialog
-  [(visible)]="descDialogVisibleText"
-  [modal]="true"
-  [dismissableMask]="true"
-  [closeOnEscape]="true"
-  [resizable]="false"
-  [draggable]="false"
-  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-  [style]="{ width: '52rem', maxHeight: '75vh' }"
-  header="{{ currentPrompt?.promptCode || 'Text' }}">
-  <div class="prompt-text-display" style="overflow:auto; max-height: 60vh;">
-    <div 
-      [innerHTML]="renderFormattedText(currentPrompt?.promptDesc)"
-      class="formatted-content"
-      [class.structured]="hasStructuredContent(currentPrompt?.promptDesc)">
+    [(visible)]="descDialogVisibleText"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closeOnEscape]="true"
+    [resizable]="false"
+    [draggable]="false"
+    [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+    [style]="{ width: '52rem', maxHeight: '75vh' }"
+    [header]="getDialogHeader('text', currentPrompt?.promptCode)"
+>
+    <div class="prompt-text-display" style="overflow: auto; max-height: 60vh">
+        <div [innerHTML]="renderFormattedText(currentPrompt?.promptDesc)" class="formatted-content" [class.structured]="hasStructuredContent(currentPrompt?.promptDesc)"></div>
     </div>
-  </div>
 </p-dialog>
 
 <p-dialog
-  [(visible)]="descDialogVisibleSchema"
-  [modal]="true"
-  [dismissableMask]="true"
-  [closeOnEscape]="true"
-  [resizable]="false"
-  [draggable]="false"
-  [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
-  [style]="{ width: '52rem', maxHeight: '75vh' }"
-  header="{{ (currentPrompt?.promptCode || 'Schema') + ' - Schema' }}">
-  <div class="whitespace-pre-wrap text-base" style="overflow:auto; max-height: 60vh;">
-    {{ prettySchema(currentPrompt?.schema) }}
-  </div>
+    [(visible)]="descDialogVisibleSchema"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closeOnEscape]="true"
+    [resizable]="false"
+    [draggable]="false"
+    [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
+    [style]="{ width: '52rem', maxHeight: '75vh' }"
+    [header]="getSchemaDialogHeader(currentPrompt?.promptCode)"
+>
+    <div class="whitespace-pre-wrap text-base" style="overflow: auto; max-height: 60vh">
+        {{ prettySchema(currentPrompt?.schema) }}
+    </div>
 </p-dialog>
-
-

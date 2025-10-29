@@ -3,89 +3,95 @@
 }
 <p-toast></p-toast>
 
-
 <div class="p-4">
-    <h2 class="text-xl font-bold mb-4">Interview List</h2>
+    <h2 class="text-xl font-bold mb-4">{{ 'interviewList.title' | translate }}</h2>
 
     <!-- Filter Panel -->
     <div class="card mb-4">
-  <h3 class="text-lg font-semibold mb-3">Filter Interviews</h3>
+        <h3 class="text-lg font-semibold mb-3">{{ 'interviewList.filter.title' | translate }}</h3>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <!-- Main Tech -->
-    <div class="field">
-      <label class="block mb-2">Main Tech</label>
-      <p-multiSelect
-        [options]="techOptions"
-        optionLabel="label"
-        optionValue="value"
-        [(ngModel)]="selectedTechFilters"
-        placeholder="Select Tech"
-        display="chip"
-        class="w-full">
-      </p-multiSelect>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Main Tech -->
+            <div class="field">
+                <label class="block mb-2">{{ 'interviewList.filter.mainTech' | translate }}</label>
+                <p-multiSelect
+                    [options]="techOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="selectedTechFilters"
+                    [placeholder]="'interviewList.filter.selectTech' | translate"
+                    display="chip"
+                    class="w-full">
+                </p-multiSelect>
+            </div>
+
+            <!-- Title -->
+            <div class="field">
+                <label class="block mb-2">{{ 'interviewList.filter.titleField' | translate }}</label>
+                <p-multiSelect
+                    [options]="titleOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="selectedTitleFilters"
+                    [placeholder]="'interviewList.filter.selectTitle' | translate"
+                    display="chip"
+                    class="w-full">
+                </p-multiSelect>
+            </div>
+
+            <!-- Scheduled Date -->
+            <div class="field">
+                <label class="block mb-2">{{ 'interviewList.filter.scheduledDate' | translate }}</label>
+                <p-datepicker
+                    [(ngModel)]="scheduledDateFilter"
+                    dateFormat="yy-mm-dd"
+                    showIcon="true"
+                    class="w-full">
+                </p-datepicker>
+            </div>
+        </div>
+
+        <div class="flex justify-end mt-4">
+            <p-button
+                [label]="'interviewList.filter.reset' | translate"
+                icon="pi pi-times"
+                styleClass="p-button-outlined p-button-danger mr-2"
+                (click)="resetFilters()">
+            </p-button>
+
+            <p-button
+                [label]="'interviewList.filter.applyFilters' | translate"
+                icon="pi pi-search"
+                (click)="applyFilters()">
+            </p-button>
+        </div>
     </div>
-
-    <!-- Title -->
-    <div class="field">
-      <label class="block mb-2">Title</label>
-      <p-multiSelect
-        [options]="titleOptions"
-        optionLabel="label"
-        optionValue="value"
-        [(ngModel)]="selectedTitleFilters"
-        placeholder="Select Title"
-        display="chip"
-        class="w-full">
-      </p-multiSelect>
-    </div>
-
-    <!-- Scheduled Date -->
-    <div class="field">
-      <label class="block mb-2">Scheduled Date</label>
-      <p-datepicker
-        [(ngModel)]="scheduledDateFilter"
-        dateFormat="yy-mm-dd"
-        showIcon="true"
-        class="w-full">
-      </p-datepicker>
-    </div>
-  </div>
-
-  <div class="flex justify-end mt-4">
-    <p-button
-      label="Reset"
-      icon="pi pi-times"
-      styleClass="p-button-outlined p-button-danger mr-2"
-      (click)="resetFilters()">
-    </p-button>
-
-    <p-button
-      label="Apply Filters"
-      icon="pi pi-search"
-      (click)="applyFilters()">
-    </p-button>
-  </div>
-</div>
-
 
     <!-- Interview Table -->
     <p-table #dt [value]="filteredInterviews" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]"
         [globalFilterFields]="['candidate.fullName', 'candidate.mainTech', 'offer.title', 'comment']"
-        responsiveLayout="scroll"
-    >
-
-
+        responsiveLayout="scroll">
 
         <ng-template pTemplate="caption">
-          <div class="flex">
-              <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear()"></p-button>
-              <div class="ml-auto flex items-center gap-2">
+            <div class="flex">
+                <p-button
+                    [label]="'interviewList.search.clear' | translate"
+                    [outlined]="true"
+                    icon="pi pi-filter-slash"
+                    (click)="clear()">
+                </p-button>
+                <div class="ml-auto flex items-center gap-2">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" placeholder="Search interviews..." [(ngModel)]="searchQuery" (input)="onSearch()" class="border rounded-md h-10 px-3 w-full">
-              </div>
-          </div>
-    </ng-template>
+                    <input
+                        pInputText
+                        type="text"
+                        [placeholder]="'interviewList.search.placeholder' | translate"
+                        [(ngModel)]="searchQuery"
+                        (input)="onSearch()"
+                        class="border rounded-md h-10 px-3 w-full">
+                </div>
+            </div>
+        </ng-template>
 
         <ng-template pTemplate="header">
             <tr>
@@ -95,7 +101,7 @@
                             [icon]="candidateNameSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByCandidateName()">
                         </button>
-                        Candidate
+                        {{ 'interviewList.table.columns.candidate' | translate }}
                         <p-columnFilter field="candidate.fullName" matchMode="contains" display="menu"></p-columnFilter>
                     </div>
                 </th>
@@ -105,7 +111,7 @@
                             [icon]="candidateMainTechSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1"
                             (click)="sortInterviewsByCandidateMainTech()"></button>
-                        Main Tech
+                        {{ 'interviewList.table.columns.mainTech' | translate }}
                         <p-columnFilter field="candidate.mainTech" matchMode="contains" display="menu"></p-columnFilter>
                     </div>
                 </th>
@@ -113,17 +119,16 @@
                     <div>
                         <button type="button" pButton [icon]="offerTitleSortAsc ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
                             class="p-button-text p-button-sm ml-1" (click)="sortInterviewsByOfferTitle()"></button>
-                        Title
-
+                        {{ 'interviewList.table.columns.title' | translate }}
                         <p-columnFilter field="offer.title" matchMode="contains" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th>
-                    Comment
+                    {{ 'interviewList.table.columns.comment' | translate }}
                     <p-columnFilter field="comment" matchMode="contains" display="menu"></p-columnFilter>
                 </th>
                 <th>
-                    Scheduled On
+                    {{ 'interviewList.table.columns.scheduledOn' | translate }}
                     <p-columnFilter field="scheduledAt" matchMode="equals" display="menu" [showOperator]="false">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                             <input type="date" class="p-inputtext p-component w-full" [ngModel]="value"
@@ -131,47 +136,51 @@
                         </ng-template>
                     </p-columnFilter>
                 </th>
-                <th>Evaluation</th>
-                <th>Recording Link</th>
-                <th>Actions</th>
+                <th>{{ 'interviewList.table.columns.evaluation' | translate }}</th>
+                <th>{{ 'interviewList.table.columns.recordingLink' | translate }}</th>
+                <th>{{ 'interviewList.table.columns.actions' | translate }}</th>
             </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-interview>
             <tr>
                 <td>{{ interview.candidateFullName }}</td>
-                <td>{{ interview.candidateMainTech || 'N/A' }}</td>
-                <td>{{ interview.offerTitle || 'N/A' }}</td>
-                <td>{{ interview.comment || 'N/A' }}</td>
+                <td>{{ interview.candidateMainTech || ('interviewList.status.na' | translate) }}</td>
+                <td>{{ interview.offerTitle || ('interviewList.status.na' | translate) }}</td>
+                <td>{{ interview.comment || ('interviewList.status.na' | translate) }}</td>
                 <td>{{ interview.scheduledAt | date: 'dd-MM-yyyy' }}</td>
 
                 <td>
                     @if (shouldShowEvaluation(interview)) {
-                    <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer"> View
-                        Evaluation </a>
+                    <a (click)="openEvaluation(interview)" class="text-blue-600 underline cursor-pointer">
+                        {{ 'interviewList.table.actions.viewEvaluation' | translate }}
+                    </a>
                     } @else {
-                    <span class="text-gray-400 italic">N/A</span>
+                    <span class="text-gray-400 italic">{{ 'interviewList.status.na' | translate }}</span>
                     }
                 </td>
                 <td>
                     @if (interview.record?.fileUrl) {
-                    <a [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">View
-                        Recording</a>
+                    <a [href]="interview.record.fileUrl" target="_blank" class="text-blue-600 underline">
+                        {{ 'interviewList.table.actions.viewRecording' | translate }}
+                    </a>
                     }
                     @if (!interview.record?.fileUrl) {
-                    <span class="text-gray-400 italic">Not Available</span>
+                    <span class="text-gray-400 italic">{{ 'interviewList.status.notAvailable' | translate }}</span>
                     }
                 </td>
                 <td class="flex gap-1">
                     <button pButton icon="pi pi-eye" class="p-button-sm p-button-text"
-                        [pTooltip]="'View More Details'" tooltipPosition="top"
+                        [pTooltip]="'interviewList.table.actions.viewMoreDetails' | translate" tooltipPosition="top"
                         (click)="ViewInterviewPopup(interview)"></button>
                     <button pButton icon="pi pi-refresh" class="p-button-sm p-button-text"
-                        [pTooltip]="'Generate New Link'" tooltipPosition="top"
+                        [pTooltip]="'interviewList.table.actions.generateNewLink' | translate" tooltipPosition="top"
                         (click)="generateLinkAndSendEmail(interview)"></button>
-                    <button pButton icon="pi pi-comment" class="p-button-sm p-button-text" pTooltip="Add Comment"
+                    <button pButton icon="pi pi-comment" class="p-button-sm p-button-text"
+                        [pTooltip]="'interviewList.table.actions.addComment' | translate" tooltipPosition="top"
                         (click)="AddCommentPopup(interview)"></button>
                     <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger p-button-text"
+                        [pTooltip]="'interviewList.table.actions.delete' | translate" tooltipPosition="top"
                         (click)="confirmDelete(interview)"></button>
                 </td>
             </tr>
@@ -179,73 +188,109 @@
     </p-table>
 
     <!-- Add Comment Dialog -->
-    <p-dialog header="Add Comment" [(visible)]="showCommentDialog" [modal]="true" [style]="{ width: '500px' }"
+    <p-dialog
+        [header]="'interviewList.dialogs.addComment.header' | translate"
+        [(visible)]="showCommentDialog"
+        [modal]="true"
+        [style]="{ width: '500px' }"
         [dismissableMask]="true">
         <div class="p-fluid p-3">
             <div class="field mb-3">
-                <label for="comment" class="font-semibold block mb-2">Comment:</label>
-                <textarea id="comment" pInputTextarea [(ngModel)]="tempComment" rows="6" autoResize="true"
+                <label for="comment" class="font-semibold block mb-2">
+                    {{ 'interviewList.dialogs.addComment.label' | translate }}
+                </label>
+                <textarea
+                    id="comment"
+                    pInputTextarea
+                    [(ngModel)]="tempComment"
+                    rows="6"
+                    autoResize="true"
                     class="p-inputtext w-full border border-gray-300 rounded"
-                    placeholder="Enter your comment here..."></textarea>
+                    [placeholder]="'interviewList.dialogs.addComment.placeholder' | translate">
+                </textarea>
             </div>
         </div>
 
         <ng-template pTemplate="footer">
             <div class="flex justify-end gap-2 px-3 pb-3">
-                <button pButton label="Close" class="p-button-secondary" (click)="showCommentDialog = false"></button>
-                <button pButton label="Save" class="p-button-primary" (click)="saveComment()"></button>
+                <button
+                    pButton
+                    [label]="'interviewList.dialogs.addComment.buttons.close' | translate"
+                    class="p-button-secondary"
+                    (click)="showCommentDialog = false">
+                </button>
+                <button
+                    pButton
+                    [label]="'interviewList.dialogs.addComment.buttons.save' | translate"
+                    class="p-button-primary"
+                    (click)="saveComment()">
+                </button>
             </div>
         </ng-template>
     </p-dialog>
 
     <!-- View Interview Details Dialog -->
-    <p-dialog header="Interview Details" [(visible)]="showDetailsDialog" [modal]="true" [style]="{ width: '600px' }">
+    <p-dialog
+        [header]="'interviewList.dialogs.interviewDetails.header' | translate"
+        [(visible)]="showDetailsDialog"
+        [modal]="true"
+        [style]="{ width: '600px' }">
         <ng-container *ngIf="selectedInterview">
             <div class="p-4 space-y-4">
 
                 <!-- Basic Info -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <p><strong>Candidate:</strong> {{ selectedInterview?.candidateFullName }}</p>
-                        <p><strong>Main Tech:</strong> {{ selectedInterview?.candidateMainTech || 'N/A' }}</p>
-                        <p><strong>Title:</strong> {{ selectedInterview?.offerTitle || 'N/A' }}</p>
+                        <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.basicInfo.candidate' | translate }}:</strong> {{ selectedInterview?.candidateFullName }}</p>
+                        <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.basicInfo.mainTech' | translate }}:</strong> {{ selectedInterview?.candidateMainTech || ('interviewList.status.na' | translate) }}</p>
+                        <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.basicInfo.title' | translate }}:</strong> {{ selectedInterview?.offerTitle || ('interviewList.status.na' | translate) }}</p>
                     </div>
                     <div>
-                        <p><strong>Scheduled:</strong> {{ selectedInterview?.scheduledAt | date:'dd-MM-yyyy HH:mm' }}</p>
-                        <p><strong>End Time:</strong> {{ selectedInterview?.endTime ? (selectedInterview?.endTime | date:'dd-MM-yyyy HH:mm') : '—' }}</p>
-                        <p><strong>Duration:</strong> {{ getDurationLabel(selectedInterview) }}</p>
+                        <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.basicInfo.scheduled' | translate }}:</strong> {{ selectedInterview?.scheduledAt | date:'dd-MM-yyyy HH:mm' }}</p>
+                        <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.basicInfo.endTime' | translate }}:</strong> {{ selectedInterview?.endTime ? (selectedInterview?.endTime | date:'dd-MM-yyyy HH:mm') : '—' }}</p>
+                        <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.basicInfo.duration' | translate }}:</strong> {{ getDurationLabel(selectedInterview) }}</p>
                     </div>
                 </div>
 
-
                 <!-- Recording -->
                 <div class="border-t pt-4">
-                    <p><strong>Recording:</strong></p>
+                    <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.recording' | translate }}:</strong></p>
                     <div *ngIf="selectedInterview?.record?.fileUrl; else noRecording" class="mt-2">
                         <a [href]="selectedInterview?.record?.fileUrl" target="_blank"
-                        class="text-blue-600 underline">View Recording</a>
+                        class="text-blue-600 underline">
+                            {{ 'interviewList.table.actions.viewRecording' | translate }}
+                        </a>
                     </div>
                     <ng-template #noRecording>
-                        <p class="text-gray-500 text-sm">Not available</p>
+                        <p class="text-gray-500 text-sm">
+                            {{ 'interviewList.dialogs.interviewDetails.noData.recording' | translate }}
+                        </p>
                     </ng-template>
                 </div>
 
                 <!-- Evaluation -->
                 <div class="border-t pt-4">
-                    <p><strong>Evaluation:</strong></p>
+                    <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.evaluation' | translate }}:</strong></p>
                     <div *ngIf="shouldShowEvaluation(selectedInterview); else noEval" class="mt-2">
-                        <button pButton label="View Evaluation" icon="pi pi-eye" class="p-button-sm"
-                                (click)="openEvaluation(selectedInterview)"></button>
+                        <button
+                            pButton
+                            [label]="'interviewList.dialogs.interviewDetails.buttons.viewEvaluation' | translate"
+                            icon="pi pi-eye"
+                            class="p-button-sm"
+                            (click)="openEvaluation(selectedInterview)">
+                        </button>
                     </div>
                     <ng-template #noEval>
-                        <p class="text-gray-500 text-sm">Not available</p>
+                        <p class="text-gray-500 text-sm">
+                            {{ 'interviewList.dialogs.interviewDetails.noData.evaluation' | translate }}
+                        </p>
                     </ng-template>
                 </div>
 
                 <!-- Comment -->
                 <div class="border-t pt-4">
-                    <p><strong>Comment:</strong></p>
-                    <p class="mt-1 text-sm">{{ selectedInterview?.comment || 'No comments' }}</p>
+                    <p><strong>{{ 'interviewList.dialogs.interviewDetails.sections.comment' | translate }}:</strong></p>
+                    <p class="mt-1 text-sm">{{ selectedInterview?.comment || ('interviewList.dialogs.interviewDetails.noData.comment' | translate) }}</p>
                 </div>
 
             </div>
@@ -253,13 +298,13 @@
 
         <ng-template pTemplate="footer">
             <div class="flex justify-end gap-2">
-                <button pButton label="Close" class="p-button-secondary"
-                        (click)="showDetailsDialog = false"></button>
+                <button
+                    pButton
+                    [label]="'interviewList.dialogs.interviewDetails.buttons.close' | translate"
+                    class="p-button-secondary"
+                    (click)="showDetailsDialog = false">
+                </button>
             </div>
         </ng-template>
     </p-dialog>
-
-
-
-
 </div>

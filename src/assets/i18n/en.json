@@ -1,0 +1,829 @@
+{
+  "calendar": "Calendar",
+  "messages": "Messages",
+  "profile": "Profile",
+  "dashboardMenu": "Dashboard",
+  "candidates": "Candidates",
+  "newCV": "New CV",
+  "candidateListMenu": "Candidate List",
+  "offerManagement": "Offer Management",
+  "newOfferMenu": "New offer",
+  "offerListMenu": "Offer List",
+  "promptManagement": "Prompt Management",
+  "newPromptMenu": "New Prompt",
+  "promptListMenu": "Prompt List",
+  "interviewsManagement": "Interviews Management",
+  "interviewListMenu": "Interview List",
+  "advancedNewCV": "Advanced New Curriculum Vitae",
+  "chooseFile": "Choose",
+  "uploadFile": "Upload",
+  "cancelFile": "Cancel",
+  "dragDropMessage": "Drag and drop files here to upload.",
+  "fileSelectedSuccess": "CV \"{filename}\" selected successfully!",
+  "uploadingCV": "Uploading CV...",
+  "cvUploadedSuccess": "CV uploaded successfully!",
+  "errorUploadingCV": "Error uploading CV.",
+  "noFileSelected": "No file selected!",
+
+
+    "success": {
+    "title": "Success"
+  },
+  "error": {
+    "title": "Error"
+  },
+  "dashboard": {
+    "statistics": {
+      "title": "Candidate Statistics",
+      "totalCandidates": "Total Candidates:",
+      "tabs": {
+        "languages": "Languages",
+        "skills": "Skills",
+        "experience": "Experience"
+      },
+      "charts": {
+        "languages": {
+          "title": "Candidates by Language",
+          "loading": "Loading language data...",
+          "datasetLabel": "Candidates by Language"
+        },
+        "skills": {
+          "title": "Candidates by Skill",
+          "loading": "Loading skill data...",
+          "datasetLabel": "Candidates by Skill"
+        },
+        "experience": {
+          "title": "Candidates by years of experience",
+          "loading": "Loading experience data...",
+          "datasetLabel": "Candidates by experience",
+          "yearsSuffix": " years"
+        }
+      },
+      "noData": {
+        "message": "No Data Available",
+        "experience": "No Experience Data"
+      }
+    }
+  },
+
+
+  "candidateList": {
+    "title": "Candidate List",
+    "loadingCandidates": "Loading candidates...",
+    "savingCandidate": "Saving candidate...",
+    "deletingCandidate": "Deleting candidate...",
+
+    "filter": {
+      "filterCandidates": "Filter Candidates",
+      "skills": "Skills",
+      "language": "Language",
+      "yearsOfExperience": "Minimum Years of Experience",
+      "selectSkills": "Select Skills",
+      "selectLanguage": "Select Language",
+      "enterYears": "Enter years",
+      "noResults": "No Results",
+      "noCandidatesMatch": "No candidates match the selected filters.",
+      "filtersApplied": "Filters Applied",
+      "foundCandidates": "Found {{count}} candidates matching your criteria.",
+      "filtersReset": "Filters Reset",
+      "allFiltersCleared": "All filters have been cleared."
+    },
+
+    "buttons": {
+      "reset": "Reset",
+      "applyFilters": "Apply Filters",
+      "clear": "Clear",
+      "addAddress": "Add Address",
+      "addContact": "Add Contact",
+      "addExperience": "Add Experience",
+      "addEducation": "Add Education",
+      "addLanguage": "Add Language",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+
+    "table": {
+      "searchPlaceholder": "Search candidates...",
+      "tableCleared": "Table Cleared",
+      "allFiltersCleared": "All table filters have been cleared.",
+      "noCandidatesFound": "No candidates found.",
+      "columns": {
+        "name": "Name",
+        "mainTech": "Main Tech",
+        "location": "Location",
+        "education": "Education",
+        "experience": "Experience",
+        "skills": "Skills",
+        "contact": "Contact",
+        "actions": "Actions"
+      }
+    },
+
+    "dialog": {
+      "editCandidate": "Edit Candidate",
+      "basicInformation": "Basic Information",
+      "addresses": "Addresses",
+      "contacts": "Contacts",
+      "experiences": "Experiences",
+      "skills": "Skills",
+      "educations": "Educations",
+      "languages": "Languages",
+      "fullName": "Full Name",
+      "birthDate": "Birth Date",
+      "yearsOfExperience": "Years of Experience",
+      "gender": "Gender",
+      "mainTechnology": "Main Technology",
+      "summary": "Summary",
+      "street": "Street",
+      "postalCode": "Postal Code",
+      "fullAddress": "Full Address",
+      "city": "City",
+      "country": "Country",
+      "contactType": "Contact Type",
+      "contactValue": "Contact Value",
+      "companyName": "Company Name",
+      "position": "Position",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "description": "Description",
+      "skillName": "Skill Name",
+      "proficiencyLevel": "Proficiency Level",
+      "institution": "Institution",
+      "degree": "Degree",
+      "diploma": "Diploma",
+      "englishDescription": "English Description",
+      "fullDescription": "Full Description",
+      "language": "Language",
+      "languageInEnglish": "Language (English)",
+      "level": "Level",
+      "native": "Native",
+      "selectGender": "Select Gender",
+      "selectCity": "Select City",
+      "selectCountry": "Select Country",
+      "selectContactType": "Select Contact Type",
+      "enterSkillName": "Enter skill name",
+      "selectLevel": "Select level"
+    },
+
+    "proficiencyLevels": {
+      "BEGINNER": "Beginner",
+      "INTERMEDIATE": "Intermediate",
+      "EXPERT": "Expert"
+    },
+
+    "languageLevels": {
+      "BEGINNER": "Beginner",
+      "LOWER_INTERMEDIATE": "Lower Intermediate",
+      "INTERMEDIATE": "Intermediate",
+      "UPPER_INTERMEDIATE": "Upper Intermediate",
+      "ADVANCED": "Advanced"
+    },
+
+    "messages": {
+      "success": "Success",
+      "candidateUpdated": "Candidate updated successfully",
+      "candidateDeleted": "Candidate deleted successfully"
+    },
+
+    "errors": {
+      "error": "Error",
+      "loadFailed": "Failed to load candidates.",
+      "filterFailed": "Failed to filter candidates.",
+      "updateFailed": "Failed to update candidate.",
+      "deleteFailed": "Failed to delete candidate."
+    }
+  },
+
+"newOffer": {
+    "title": "Create New Offer",
+    "form": {
+      "title": {
+        "label": "Title",
+        "placeholder": "e.g. Senior MLOps Engineer",
+        "errors": {
+          "required": "Title is required!",
+          "maxlength": "Title must be at most 200 characters."
+        }
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Paste the full job description…",
+        "errors": {
+          "required": "Description is required!"
+        }
+      },
+      "submit": "Save Offer"
+    },
+    "messages": {
+      "success": "Offer created successfully!",
+      "error": "Error creating offer",
+      "formattingError": "Error formatting description"
+    }
+  },
+    "offerList": {
+    "title": "Offer List",
+    "filter": {
+      "filterOffers": "Filter Offers",
+      "interviewCount": "Interview Count",
+      "showOffersWith": "Show offers with between {{min}} and {{max}} interviews.",
+      "offerKeywords": "Offer Keywords",
+      "selectKeywords": "Select keywords",
+      "skillsRequired": "Skills Required",
+      "selectSkills": "Select skills",
+      "reset": "Reset",
+      "applyFilters": "Apply Filters",
+      "filtersApplied": "Filters Applied",
+      "filtersReset": "Filters Reset",
+      "offersMatched": "{{count}} offers matched"
+    },
+    "table": {
+      "clear": "Clear",
+      "searchPlaceholder": "Search offers...",
+      "columns": {
+        "offerTitle": "Offer Title",
+        "description": "Description",
+        "interviewCount": "Interview Count",
+        "offerKeywords": "Offer Keywords",
+        "skillsRequired": "Skills Required",
+        "actions": "Actions"
+      },
+      "noData": "—"
+    },
+    "actions": {
+      "viewOffer": "View Offer",
+      "editOffer": "Edit Offer",
+      "deleteOffer": "Delete Offer"
+    },
+    "dialog": {
+      "description": "Description",
+      "viewFullDescription": "View full description",
+      "clickToSeeDetails": "Click the text to see all details"
+    },
+    "messages": {
+      "loading": "Loading Offers...",
+      "success": {
+        "deleted": "Offer has been deleted successfully!",
+        "clear": "The search is cleared!",
+        "filtersApplied": "Filters Applied",
+        "filtersReset": "Filters reset."
+      },
+      "error": {
+        "loadFailed": "Failed to load offers from server",
+        "deleteFailed": "Failed to delete offer.",
+        "initializationFailed": "Could not configure filters/services. Some features may be limited."
+      }
+    },
+    "numericFilter": {
+      "equals": "Equals",
+      "notEquals": "Not Equals",
+      "greaterThan": "Greater Than",
+      "greaterOrEqual": "Greater Or Equal",
+      "lessThan": "Less Than",
+      "lessOrEqual": "Less Or Equal"
+    }
+  },
+   "offerDetails": {
+    "yearsExperience": "Years Experience",
+    "loading": {
+      "message": "Loading offer details..."
+    },
+    "sections": {
+      "jobDescription": "Job Description",
+      "mainResponsibilities": "Main Responsibilities",
+      "education": "Education & Qualifications",
+      "languages": "Language Requirements",
+      "requiredSkills": "Required Skills",
+      "keywords": "Keywords"
+    },
+    "noData": {
+      "responsibilities": "No responsibilities available."
+    },
+    "languageLevels": {
+      "BEGINNER": "Beginner",
+      "ELEMENTARY": "Elementary",
+      "LOWER_INTERMEDIATE": "Lower Intermediate",
+      "INTERMEDIATE": "Intermediate",
+      "UPPER_INTERMEDIATE": "Upper Intermediate",
+      "ADVANCED": "Advanced",
+      "PROFICIENT": "Proficient",
+      "NATIVE": "Native"
+    },
+    "errorTitle": "Error",
+    "errors": {
+      "idNotFound": "Did not find the id of the offer, please return to the previous page",
+      "loadFailed": "Failed to load offer data",
+      "loadFormattedFailed": "Failed to load offer formatted description"
+    }
+  },
+   "recommendedCandidates": {
+    "title": "Recommended Candidates",
+    "loading": "Loading recommended candidates...",
+    "searchPlaceholder": "Search candidates...",
+    "clear": "Clear",
+    "table": {
+      "columns": {
+        "fullName": "Full Name",
+        "mainTech": "Main Tech",
+        "location": "Location",
+        "yearsOfExperience": "Years of Experience",
+        "actions": "Actions"
+      },
+      "emptyMessage": "No candidates found or no candidate matches this offer."
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "convocate": "Convocate for Interview"
+    },
+    "detailsDialog": {
+      "title": "Candidate Details",
+      "basicInfo": {
+        "fullName": "Full Name",
+        "mainTech": "Main Tech",
+        "yearsOfExperience": "Years of Experience",
+        "city": "City",
+        "country": "Country"
+      },
+      "sections": {
+        "skills": "Skills",
+        "languages": "Languages",
+        "education": "Education",
+        "experiences": "Experiences",
+        "contacts": "Contacts"
+      },
+      "proficiencyLevels": {
+        "BEGINNER": "Beginner",
+        "INTERMEDIATE": "Intermediate",
+        "EXPERT": "Expert"
+      },
+      "languageLevels": {
+        "BEGINNER": "Beginner",
+        "LOWER_INTERMEDIATE": "Lower Intermediate",
+        "INTERMEDIATE": "Intermediate",
+        "UPPER_INTERMEDIATE": "Upper Intermediate",
+        "ADVANCED": "Advanced"
+      },
+      "close": "Close"
+    },
+    "convocateDialog": {
+      "title": "Convocate Candidate",
+      "candidate": "Candidate",
+      "fields": {
+        "description": {
+          "label": "Description",
+          "placeholder": "Interview description",
+          "errors": {
+            "required": "Description is required."
+          }
+        },
+        "schedule": {
+          "label": "Schedule",
+          "errors": {
+            "required": "Schedule is required."
+          }
+        },
+        "criteria": {
+          "label": "Evaluation Criteria",
+          "placeholder": "Select Criteria",
+          "errors": {
+            "required": "Select at least one criteria."
+          }
+        },
+        "totalQuestions": {
+          "label": "Total Questions",
+          "errors": {
+            "required": "Must be at least 5 questions.",
+            "min": "Must be at least 5 questions."
+          }
+        },
+        "duration": {
+          "label": "Duration (mins)",
+          "errors": {
+            "required": "Must be at least 10 minutes.",
+            "min": "Must be at least 10 minutes."
+          }
+        }
+      },
+      "addNewType": "Add New Type",
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      }
+    },
+    "evaluationTypeDialog": {
+      "title": "Create Evaluation Type",
+      "fields": {
+        "description": {
+          "label": "Description",
+          "placeholder": "Description"
+        },
+        "coefficient": {
+          "label": "Coefficient"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create"
+      }
+    },
+    "messages": {
+      "success": {
+        "evaluationTypeCreated": "Evaluation type created.",
+        "interviewCreated": "Interview created, questions generated, link generated, and email sent."
+      },
+      "error": {
+        "offerIdNotFound": "Did not find the id of the offer.",
+        "loadCandidatesFailed": "Failed to load candidates",
+        "loadEvaluationTypesFailed": "Failed to load evaluation types",
+        "createEvaluationTypeFailed": "Failed to create evaluation type",
+        "validation": {
+          "descriptionRequired": "Description is required.",
+          "fillRequiredFields": "Please fill in all required fields."
+        },
+        "interviewCreationFailed": "An error occurred during the creation of the interview.",
+        "linkGeneration": "Link Generation Error",
+        "savingLink": "Saving Link Error",
+        "emailSending": "Email Sending Error",
+        "unexpected": "Unexpected Error"
+      }
+    },
+    "unknown": {
+      "city": "Unknown City",
+      "country": "Unknown Country",
+      "na": "N/A"
+    }
+  },
+    "editOffer": {
+    "title": "Edit Offer",
+    "form": {
+      "title": {
+        "label": "Title",
+        "placeholder": "Enter job title",
+        "errors": {
+          "required": "Title is required.",
+          "maxlength": "Title must be at most 200 characters."
+        }
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter job description",
+        "errors": {
+          "required": "Description is required."
+        }
+      }
+    },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "messages": {
+      "success": {
+        "updated": "Offer has been updated successfully"
+      },
+      "error": {
+        "updateFailed": "Could not update the offer"
+      }
+    },
+    "confirmation": {
+      "title": "Confirm Update",
+      "message": "Are you sure you want to update this offer?",
+      "accept": "Yes",
+      "reject": "No"
+    }
+  },
+   "confirmation": {
+    "updateTitle": "Confirm Update",
+    "updateMessage": "Are you sure you want to update this {entity}?",
+    "deleteTitle": "Confirm Delete",
+    "deleteMessage": "Are you sure you want to delete this {entity}?",
+    "yes": "Yes",
+    "no": "No"
+  },
+    "newPrompt": {
+    "title": "Add New Prompt",
+    "form": {
+      "promptCode": {
+        "label": "Prompt Code",
+        "placeholder": "e.g. PROMPT_001",
+        "errors": {
+          "required": "Prompt code is required!"
+        }
+      },
+      "promptDesc": {
+        "label": "Text (Required)",
+        "placeholder": "Enter prompt description...",
+        "errors": {
+          "required": "Prompt description is required!"
+        }
+      },
+      "schema": {
+        "label": "Schema (JSON)",
+        "placeholder": "e.g. {\"key\":\"value\"}",
+        "errors": {
+          "required": "Schema is required!"
+        }
+      }
+    },
+    "buttons": {
+      "save": "Save Prompt"
+    },
+    "messages": {
+      "success": {
+        "created": "Prompt created successfully"
+      },
+      "error": {
+        "createFailed": "Failed to create prompt"
+      }
+    }
+  },
+    "promptList": {
+    "title": "Prompt List",
+    "loading": "Loading prompts...",
+    "search": {
+      "placeholder": "Search prompts...",
+      "clear": "Clear",
+      "cleared": "The search is cleared!"
+    },
+    "table": {
+      "columns": {
+        "promptCode": "Prompt Code",
+        "text": "Text",
+        "schema": "Schema",
+        "actions": "Actions"
+      },
+      "emptyMessage": "No prompts found."
+    },
+    "dialogs": {
+      "update": {
+        "header": "Update Prompt",
+        "fields": {
+          "promptCode": "Prompt Code",
+          "promptDesc": "Text (Required)",
+          "schema": "Schema (JSON)"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "update": "Update"
+        }
+      },
+      "view": {
+        "text": {
+          "header": "Text",
+          "title": "View full text",
+          "description": "Click the text to see all details"
+        },
+        "schema": {
+          "header": "Schema",
+          "title": "View full schema",
+          "description": "Click the text to see all details"
+        }
+      }
+    },
+    "messages": {
+      "success": {
+        "deleted": "Prompt deleted successfully",
+        "updated": "Prompt updated successfully"
+      },
+      "error": {
+        "loadFailed": "Failed to load prompts",
+        "deleteFailed": "Failed to delete prompt",
+        "updateFailed": "Failed to update prompt"
+      }
+    }
+  },
+  "interviewList": {
+    "title": "Interview List",
+    "loading": "Loading interviews...",
+    "filter": {
+      "title": "Filter Interviews",
+      "mainTech": "Main Tech",
+      "titleField": "Title",
+      "scheduledDate": "Scheduled Date",
+      "selectTech": "Select Tech",
+      "selectTitle": "Select Title",
+      "reset": "Reset",
+      "applyFilters": "Apply Filters"
+    },
+    "search": {
+      "placeholder": "Search interviews...",
+      "clear": "Clear",
+      "cleared": "The search is cleared!"
+    },
+    "table": {
+      "columns": {
+        "candidate": "Candidate",
+        "mainTech": "Main Tech",
+        "title": "Title",
+        "comment": "Comment",
+        "scheduledOn": "Scheduled On",
+        "evaluation": "Evaluation",
+        "recordingLink": "Recording Link",
+        "actions": "Actions"
+      },
+      "actions": {
+        "viewEvaluation": "View Evaluation",
+        "viewRecording": "View Recording",
+        "viewMoreDetails": "View More Details",
+        "generateNewLink": "Generate New Link",
+        "addComment": "Add Comment",
+        "delete": "Delete"
+      }
+    },
+    "dialogs": {
+      "addComment": {
+        "header": "Add Comment",
+        "label": "Comment:",
+        "placeholder": "Enter your comment here...",
+        "buttons": {
+          "close": "Close",
+          "save": "Save"
+        }
+      },
+      "interviewDetails": {
+        "header": "Interview Details",
+        "sections": {
+          "basicInfo": {
+            "candidate": "Candidate",
+            "mainTech": "Main Tech",
+            "title": "Title",
+            "scheduled": "Scheduled",
+            "endTime": "End Time",
+            "duration": "Duration"
+          },
+          "recording": "Recording",
+          "evaluation": "Evaluation",
+          "comment": "Comment"
+        },
+        "buttons": {
+          "close": "Close",
+          "viewEvaluation": "View Evaluation"
+        },
+        "noData": {
+          "recording": "Not available",
+          "evaluation": "Not available",
+          "comment": "No comments"
+        }
+      }
+    },
+    "messages": {
+      "success": {
+        "emailSent": "Email Sent Successfully",
+        "commentSaved": "Comment saved successfully!",
+        "deleted": "Interview deleted successfully"
+      },
+      "error": {
+        "loadMainTechFailed": "Failed to load Main Tech options",
+        "loadTitlesFailed": "Failed to load title options",
+        "saveCommentFailed": "Failed to save comment",
+        "deleteFailed": "Failed to delete interview",
+        "linkGeneration": "Link Generation Error",
+        "savingLink": "Saving Link Error",
+        "emailSending": "Email Sending Error",
+        "unexpected": "Unexpected Error"
+      }
+    },
+    "status": {
+      "expired": "Expired",
+      "notAvailable": "Not Available",
+      "na": "N/A"
+    }
+  },
+ "steppercandidate": {
+    "generalData": "General Data",
+    "address": "Address",
+    "education": "Education",
+    "experience": "Experience",
+    "languages": "Languages",
+    "skills": "Skills",
+    "contact": "Contact",
+
+    "fullName": "Full Name",
+    "fullNameRequired": "Full Name is required.",
+    "onlyLettersSpaces": "Only letters and spaces are allowed.",
+
+    "birthDate": "Birth Date",
+    "birthDateRequired": "Birth Date is required.",
+    "mustBe18": "You must be at least 18 years old.",
+    "ageExceedsLimit": "Age exceeds allowed limit.",
+
+    "yearsOfExperience": "Years of Experience",
+    "enterValidNumber": "Please enter a valid number.",
+    "experienceExceedsPossible": "Experience exceeds what is possible given your birth date.",
+
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "genderRequired": "Gender is required.",
+
+    "mainTechnology": "Main Technology",
+    "mainTechRequired": "Main Technology is required.",
+
+    "summary": "Summary",
+    "summaryRequired": "Summary is required.",
+
+    "street": "Street",
+    "streetRequired": "Street is required.",
+    "streetPattern": "Only letters, numbers, spaces, and basic punctuation are allowed.",
+
+    "postalCode": "Postal Code",
+    "postalCodeRequired": "Postal Code is required.",
+    "postalCodePattern": "3-10 characters: letters, digits, spaces or hyphens only.",
+
+    "fullAddress": "Full Address",
+    "fullAddressRequired": "Full Address is required.",
+
+    "city": "City",
+    "cityRequired": "City is required.",
+    "cityPattern": "Only letters, spaces, apostrophes, dots, and hyphens are allowed.",
+
+    "country": "Country",
+    "countryRequired": "Country is required.",
+    "countryPattern": "Only letters, spaces, apostrophes, dots, and hyphens are allowed.",
+
+    "institution": "Institution",
+    "institutionRequired": "Institution is required.",
+
+    "startDate": "Start Date",
+    "startDateRequired": "Start date is required.",
+
+    "endDate": "End Date",
+    "endDateRequired": "End date is required.",
+    "endDateBeforeStart": "End date cannot be earlier than start date.",
+
+    "diploma": "Diploma",
+    "diplomaRequired": "Diploma is required.",
+    "diplomaPattern": "Diploma can only include letters, numbers, and common symbols.",
+
+    "companyName": "Company Name",
+    "companyNamePattern": "Only letters, numbers, spaces, &, ', +, ., and - are allowed.",
+
+    "position": "Position",
+    "positionPattern": "Only letters, spaces, slashes (/) and dashes (-) are allowed.",
+
+    "dateFormat": "Must be in YYYY-MM-DD format.",
+    "endDateFuture": "End Date cannot be in the future.",
+    "startBeforeEnd": "Start Date must come before End Date.",
+
+    "description": "Description",
+    "descriptionPattern": "Allowed: letters, numbers, punctuation like . , ! ? () - : ; / ' \" #",
+
+    "language": "Language",
+    "level": "Level",
+    "selectLevel": "Select Level",
+    "native": "Native?",
+
+    "skillName": "Skill Name",
+    "enterSkillName": "Enter skill name",
+    "proficiency": "Proficiency",
+
+    "contactType": "Contact Type",
+    "contactTypeRequired": "Contact type is required.",
+    "contactValue": "Contact Value",
+    "contactValueRequired": "Contact value is required.",
+    "selectContactType": "Select Contact Type",
+    "enterContactDetail": "Enter contact detail",
+    "invalidContactFormat": "Invalid {{type}} format.",
+
+    "advanced": "Advanced",
+    "intermediate": "Intermediate",
+    "basic": "Basic",
+    "nativeForm": "Native",
+    "beginner": "Beginner",
+    "expert": "Expert",
+
+    "addAddress": "Add Address",
+    "addEducation": "Add Education",
+    "addExperience": "Add Experience",
+    "addLanguage": "Add Language",
+    "addContact": "Add Contact",
+    "remove": "Remove",
+
+    "previous": "Previous",
+    "previousTitle": "Go to the previous step in the form",
+    "clear": "Clear",
+    "clearTitle": "Clear the current section of the form",
+    "next": "Next",
+    "nextTitle": "Go to the next step in the form",
+    "save": "Save",
+    "saveTitle": "Save and submit the form"
+  },
+    "evaluationinterview": {
+    "missingInterviewId": "Missing interview id in the route.",
+    "failedToLoadData": "Failed to load evaluation data.",
+    "error": "Error",
+    "notAvailable": "N/A",
+    "durationHoursMinutes": "{{hours}}h {{minutes}}m",
+    "durationMinutes": "{{minutes}} min",
+    "generalEvaluation": "General Evaluation",
+    "interviewEvaluationFor": "Interview evaluation for",
+    "unknown": "Unknown",
+    "noUnfairnessDetected": "No signs of unfairness detected",
+    "overallScore": "Overall Score",
+    "overallFeedback": "Overall Feedback",
+    "noFeedbackAvailable": "No feedback available.",
+    "feedback": "Feedback",
+    "weight": "Weight"
+  },
+   "footer": {
+    "copyright": "© {{year}} NTT DATA Morocco"
+  }
+}

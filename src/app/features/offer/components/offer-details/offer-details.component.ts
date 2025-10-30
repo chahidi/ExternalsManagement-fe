@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { OfferService } from '../../../../core/services/offer.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -11,22 +11,31 @@ import { ChipModule } from 'primeng/chip';
 import { CommonModule } from '@angular/common';
 import { OfferFormattedDescriptionLanguage } from '../../../../core/models/offerFormattedDescriptionLanguage';
 import { LoaderService } from '../../../../core/services/loader.service';
-import { Observable } from 'rxjs';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { ListboxModule } from 'primeng/listbox';
 import { RecommendedCandidatesComponent } from '../recommended-candidates/recommended-candidates.component';
-
-
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../../../core/services/language.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-offer-details',
   standalone: true,
-  imports: [LoaderComponent, CommonModule, TagModule, CardModule, ChipModule, ListboxModule , RecommendedCandidatesComponent],
+  imports: [
+    LoaderComponent,
+    CommonModule,
+    TagModule,
+    CardModule,
+    ChipModule,
+    ListboxModule,
+    RecommendedCandidatesComponent,
+    TranslateModule
+  ],
   providers: [MessageService, NotificationService],
   templateUrl: './offer-details.component.html',
   styleUrls: ['./offer-details.component.scss']
 })
-export class OfferDetailsComponent implements OnInit {
+export class OfferDetailsComponent implements OnInit, OnDestroy {
 
   isLoading$!: any;
   loadingMessage$!: any;
@@ -41,32 +50,53 @@ export class OfferDetailsComponent implements OnInit {
   yearsOfExperience: number = 0;
   offerId!: string;
 
-
+  private languageSubscription?: Subscription;
 
   constructor(
     private offerServ: OfferService,
     private router: Router,
     private route: ActivatedRoute,
     private notify: NotificationService,
-    private loader: LoaderService
-  ) {
-  }
+    private loader: LoaderService,
+    private translate: TranslateService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
+    const globalLanguage = this.languageService.getCurrentLanguage();
+    this.translate.use(globalLanguage);
+
+    this.languageSubscription = this.languageService.getLanguageObservable().subscribe(lang => {
+      this.translate.use(lang);
+    });
+
     this.isLoading$ = this.loader.isLoading$;
     this.loadingMessage$ = this.loader.loadingMessage$;
 
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.notify.showError('Error', 'Did not find the id of the offer, please return to the previous page');
+      this.translate.get(['offerDetails.errorTitle', 'offerDetails.errors.idNotFound']).subscribe(translations => {
+        this.notify.showError(
+          translations['offerDetails.errorTitle'],
+          translations['offerDetails.errors.idNotFound']
+        );
+      });
       return;
     }
 
     this.offerId = id;
 
+    this.translate.get('offerDetails.loading.message').subscribe(msg => {
+      this.loader.show(msg);
+    });
 
-    this.loader.show('Loading offer details...');
     this.loadOfferFormattedDescriptionAndOfferTitle(id);
+  }
+
+  ngOnDestroy(): void {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
   }
 
   loadOfferFormattedDescriptionAndOfferTitle(offerId: string): void {
@@ -75,17 +105,22 @@ export class OfferDetailsComponent implements OnInit {
         this.offerTitle = offer.title;
       },
       error: () => {
-        this.notify.showError('Error', 'Failed to load offer data');
+        this.translate.get(['offerDetails.errorTitle', 'offerDetails.errors.loadFailed']).subscribe(translations => {
+          this.notify.showError(
+            translations['offerDetails.errorTitle'],
+            translations['offerDetails.errors.loadFailed']
+          );
+        });
         this.loader.hide();
       }
     });
 
     this.offerServ.getOfferFormattedDescription(offerId).subscribe({
       next: (offerFormattedDescription: OfferFormattedDescription) => {
-        this.skillsList = offerFormattedDescription.skills.split('-');
-        this.mainResponsibilitiesList = offerFormattedDescription.mainResponsibilities.split('-');
-        this.educationList = offerFormattedDescription.education.split('-');
-        this.keywordsList = offerFormattedDescription.keywords.split('-');
+        this.skillsList = offerFormattedDescription.skills.split('-').filter(s => s.trim());
+        this.mainResponsibilitiesList = offerFormattedDescription.mainResponsibilities.split('-').filter(r => r.trim());
+        this.educationList = offerFormattedDescription.education.split('-').filter(e => e.trim());
+        this.keywordsList = offerFormattedDescription.keywords.split('-').filter(k => k.trim());
         this.languages = offerFormattedDescription.languages;
         this.description = offerFormattedDescription.description;
         this.mainTech = offerFormattedDescription.mainTech;
@@ -94,9 +129,20 @@ export class OfferDetailsComponent implements OnInit {
         this.loader.hide();
       },
       error: () => {
-        this.notify.showError('Error', 'Failed to load offer formatted description');
+        this.translate.get(['offerDetails.errorTitle', 'offerDetails.errors.loadFormattedFailed']).subscribe(translations => {
+          this.notify.showError(
+            translations['offerDetails.errorTitle'],
+            translations['offerDetails.errors.loadFormattedFailed']
+          );
+        });
         this.loader.hide();
       }
     });
+  }
+
+  getLanguageLevel(level: string): string {
+    const translationKey = `offerDetails.languageLevels.${level}`;
+    const translatedLevel = this.translate.instant(translationKey);
+    return translatedLevel === translationKey ? level : translatedLevel;
   }
 }

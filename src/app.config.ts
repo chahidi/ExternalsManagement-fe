@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, HttpClient } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
@@ -8,14 +8,43 @@ import { appRoutes } from './app.routes';
 import { MainPreset } from './mainpreset';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
+        provideRouter(
+            appRoutes,
+            withInMemoryScrolling({
+                anchorScrolling: 'enabled',
+                scrollPositionRestoration: 'enabled'
+            }),
+            withEnabledBlockingInitialNavigation()
+        ),
         provideHttpClient(withFetch()),
         provideAnimationsAsync(),
         ConfirmationService,
         importProvidersFrom(ConfirmDialogModule),
-        providePrimeNG({ theme: { preset: MainPreset, options: { darkModeSelector: '.app-dark' } } })
+        provideTranslateHttpLoader({
+            prefix: '/assets/i18n/',
+            suffix: '.json'
+        }),
+        importProvidersFrom(
+            TranslateModule.forRoot({
+                defaultLanguage: 'en',
+                loader: {
+                    provide: TranslateLoader,
+                    useClass: TranslateHttpLoader
+                }
+            })
+        ),
+        providePrimeNG({
+            theme: {
+                preset: MainPreset,
+                options: {
+                    darkModeSelector: '.app-dark'
+                }
+            }
+        })
     ]
 };

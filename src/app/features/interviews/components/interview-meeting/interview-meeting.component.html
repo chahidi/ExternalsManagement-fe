@@ -1,10 +1,12 @@
 <p-toast position="top-center"></p-toast>
 
 <!-- Warning Message -->
-<p-message *ngIf="userWarningMessage" severity="error" [text]="userWarningMessage" [closable]="true" (onClose)="closeWarning()" styleClass="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-xl"> </p-message>
+@if (userWarningMessage) {
+    <p-message severity="error" [text]="userWarningMessage" [closable]="true" (onClose)="closeWarning()" styleClass="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-xl"> </p-message>
+}
 
 <!-- INTERVIEW IN PROGRESS FULLSCREEN -->
-<ng-container *ngIf="isInterviewInProgress">
+@if (isInterviewInProgress) {
     <div class="fixed inset-0 bg-[#1e1e1e] z-40 flex items-center p-4 gap-6" [@slideInInterview]>
         <div class="relative flex-grow h-[90vh] flex items-center">
             <div class="w-full h-full flex items-center justify-center relative">
@@ -17,9 +19,11 @@
             </div>
 
             <!-- Subtitles -->
-            <div *ngIf="showSubtitles" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white text-xl font-medium bg-black bg-opacity-50 px-4 py-2 rounded" [@fadeInControls]>
-                {{ liveSubtitle }}
-            </div>
+            @if (showSubtitles) {
+                <div class="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white text-xl font-medium bg-black bg-opacity-50 px-4 py-2 rounded" [@fadeInControls]>
+                    {{ liveSubtitle }}
+                </div>
+            }
 
             <div class="absolute bottom-6 right-20 z-50">
                 <div class="w-36 h-36 bg-white rounded-xl flex flex-col items-center justify-center shadow-xl border-2 border-gray-300">
@@ -30,29 +34,35 @@
 
         <!-- Submit Answer Button - moved higher -->
 <!-- "Please wait" message - Higher position -->
-<div *ngIf="isWaitingForAnswer && !isReadyToSpeak" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
-    <p-tag value="Please wait, AI is finishing..." severity="warn" styleClass="text-lg px-6 py-3 shadow-lg"> </p-tag>
-</div>
+@if (isWaitingForAnswer && !isReadyToSpeak) {
+    <div class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+        <p-tag value="Please wait, AI is finishing..." severity="warn" styleClass="text-lg px-6 py-3 shadow-lg"> </p-tag>
+    </div>
+}
 
 <!-- "You can speak now" message - Higher position -->
-<div *ngIf="isWaitingForAnswer && isReadyToSpeak" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
-    <p-tag value="You can speak now" severity="success" styleClass="text-lg px-6 py-3 shadow-lg animate-pulse"> </p-tag>
-</div>
+@if (isWaitingForAnswer && isReadyToSpeak) {
+    <div class="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-50" [@fadeInControls]>
+        <p-tag value="You can speak now" severity="success" styleClass="text-lg px-6 py-3 shadow-lg animate-pulse"> </p-tag>
+    </div>
+}
 
 <!-- Submit Answer Button - Lower position -->
-<div *ngIf="showSubmitButton" class="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
-    <p-button
-        label="Submit Answer"
-        icon="pi pi-check"
-        severity="secondary"
-        size="large"
-        [disabled]="!canSubmitAnswer"
-        (onClick)="submitCurrentAnswer()"
-        styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
-        pTooltip="Submit your current answer"
-    >
-    </p-button>
-</div>
+@if (showSubmitButton) {
+    <div class="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 w-full flex justify-center" [@fadeInControls]>
+        <p-button
+            label="Submit Answer"
+            icon="pi pi-check"
+            severity="secondary"
+            size="large"
+            [disabled]="!canSubmitAnswer"
+            (onClick)="submitCurrentAnswer()"
+            styleClass="bg-blue-600 hover:bg-blue-700 border-none text-white px-8 py-3 text-lg font-bold rounded-full shadow-xl transition-all duration-200 ease-in-out"
+            pTooltip="Submit your current answer"
+        >
+        </p-button>
+    </div>
+}
             <!-- Info and Action Buttons -->
             <div class="fixed bottom-4 right-[2.5%] flex gap-4 z-50 items-center" [@fadeInControls]>
                 <!-- Info Button -->
@@ -62,31 +72,37 @@
                 <p-button icon="pi pi-times" [rounded]="true" severity="danger" (onClick)="finishInterview()" pTooltip="Finish Interview"> </p-button>
 
                 <!-- Show Transcript Button -->
-                <p-button *ngIf="!isTranscriptVisible" icon="pi pi-eye" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = true" pTooltip="Show Transcript"> </p-button>
+                @if (!isTranscriptVisible) {
+                    <p-button icon="pi pi-eye" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = true" pTooltip="Show Transcript"> </p-button>
+                }
             </div>
         </div>
 
         <!-- Transcript Panel - Same Height as Camera Area -->
-        <div *ngIf="isTranscriptVisible" class="h-[90vh] mr-[2.5%] w-[320px] flex-shrink-0" [@slideInTranscript]>
-            <p-panel header="Live Transcript" [toggleable]="false" styleClass="w-[320px] shadow-xl rounded-2xl h-full">
-                <ng-template pTemplate="icons">
-                    <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = false"> </p-button>
-                </ng-template>
+        @if (isTranscriptVisible) {
+            <div class="h-[90vh] mr-[2.5%] w-[320px] flex-shrink-0" [@slideInTranscript]>
+                <p-panel header="Live Transcript" [toggleable]="false" styleClass="w-[320px] shadow-xl rounded-2xl h-full">
+                    <ng-template pTemplate="icons">
+                        <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="secondary" (onClick)="isTranscriptVisible = false"> </p-button>
+                    </ng-template>
 
-                <p-scrollPanel #transcriptScroll [style]="{ height: 'calc(90vh - 120px)' }" styleClass="transcript-scroll-panel">
-                    <div class="space-y-2 text-base pb-4">
-                        <div *ngFor="let msg of transcriptMessages" [ngClass]="msg.align === 'right' ? 'flex justify-end' : 'flex justify-start'">
-                            <div
-                                [ngClass]="msg.type === 'question' ? 'bg-gray-200 text-gray-800 mr-10' : msg.align === 'right' ? 'bg-[#0084ff] text-white ml-10' : 'bg-gray-200 text-gray-800 mr-10'"
-                                class="px-5 py-3 rounded-xl max-w-[80%] text-[0.95rem] shadow-sm"
-                            >
-                                <strong>{{ msg.sender }}:</strong> {{ msg.text }}
-                            </div>
+                    <p-scrollPanel #transcriptScroll [style]="{ height: 'calc(90vh - 120px)' }" styleClass="transcript-scroll-panel">
+                        <div class="space-y-2 text-base pb-4">
+                            @for (msg of transcriptMessages; track $index) {
+                                <div [ngClass]="msg.align === 'right' ? 'flex justify-end' : 'flex justify-start'">
+                                    <div
+                                        [ngClass]="msg.type === 'question' ? 'bg-gray-200 text-gray-800 mr-10' : msg.align === 'right' ? 'bg-[#0084ff] text-white ml-10' : 'bg-gray-200 text-gray-800 mr-10'"
+                                        class="px-5 py-3 rounded-xl max-w-[80%] text-[0.95rem] shadow-sm"
+                                    >
+                                        <strong>{{ msg.sender }}:</strong> {{ msg.text }}
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    </div>
-                </p-scrollPanel>
-            </p-panel>
-        </div>
+                    </p-scrollPanel>
+                </p-panel>
+            </div>
+        }
         <div class="absolute bottom-6 left-[2.5%] text-white text-base md:text-lg font-semibold z-50" [@fadeInControls]>{{ currentTime }} | Interview of {{ candidateName || 'Candidate' }} - {{ offerTitle || 'Position' }}</div>
     </div>
 
@@ -124,10 +140,10 @@
             </div>
         </ng-template>
     </p-dialog>
-</ng-container>
+}
 
 <!-- FINALIZING SCREEN -->
-<ng-container *ngIf="isInterviewFinalizing">
+@if (isInterviewFinalizing) {
     <div class="flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-b from-gray-50 to-gray-100" [@fadeIn]>
         <p-card styleClass="w-full max-w-md">
             <ng-template pTemplate="content">
@@ -138,10 +154,10 @@
             </ng-template>
         </p-card>
     </div>
-</ng-container>
+}
 
 <!-- RULES AND PREVIEW SCREEN -->
-<ng-container *ngIf="showRulesAndPreview && !isInterviewInProgress && !isInterviewFinalizing && !isInterviewCompleted">
+@if (showRulesAndPreview && !isInterviewInProgress && !isInterviewFinalizing && !isInterviewCompleted) {
     <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-6" [@fadeIn]>
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-8">
@@ -159,20 +175,26 @@
                                 </div>
 
                                 <div class="relative bg-gray-900 rounded-lg overflow-hidden aspect-video" [id]="'camera-preview-container'">
-                                    <video *ngIf="isCameraReady && previewMode" #previewVideo autoplay muted class="w-full h-full object-cover transition-all duration-700 ease-in-out" [id]="'camera-preview-video'"></video>
+                                    @if (isCameraReady && previewMode) {
+                                        <video #previewVideo autoplay muted class="w-full h-full object-cover transition-all duration-700 ease-in-out" [id]="'camera-preview-video'"></video>
+                                    }
 
                                     <!-- Camera Loading State -->
-                                    <div *ngIf="!isCameraReady" class="absolute inset-0 flex items-center justify-center bg-gray-800 text-white">
-                                        <div class="text-center">
-                                            <p-progressSpinner styleClass="w-8 h-8 mb-4"></p-progressSpinner>
-                                            <p>Initializing camera...</p>
+                                    @if (!isCameraReady) {
+                                        <div class="absolute inset-0 flex items-center justify-center bg-gray-800 text-white">
+                                            <div class="text-center">
+                                                <p-progressSpinner styleClass="w-8 h-8 mb-4"></p-progressSpinner>
+                                                <p>Initializing camera...</p>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 </div>
 
                                 <div class="text-center space-y-2">
                                     <p class="text-sm text-gray-600">Make sure your camera is working properly and you are clearly visible</p>
-                                    <p-button *ngIf="!isCameraReady" label="Retry Camera Access" icon="pi pi-refresh" severity="secondary" (onClick)="requestCameraPermission()"> </p-button>
+                                    @if (!isCameraReady) {
+                                        <p-button label="Retry Camera Access" icon="pi pi-refresh" severity="secondary" (onClick)="requestCameraPermission()"> </p-button>
+                                    }
                                 </div>
                                 <div class="flex-grow"></div>
                                 <div class="pt-4 flex flex-col items-center gap-4">
@@ -181,7 +203,9 @@
                                     <p class="text-sm text-gray-600 italic">Alex is waiting for you</p>
                                     <p-button label="I'm Ready to Start" icon="pi pi-play" severity="success" size="large" [disabled]="!isCameraEnabled || !isAudioEnabled" (onClick)="startInterview()" styleClass="w-auto"> </p-button>
 
-                                    <p *ngIf="!isCameraReady" class="text-sm text-red-600">Please allow camera access to start the interview</p>
+                                    @if (!isCameraReady) {
+                                        <p class="text-sm text-red-600">Please allow camera access to start the interview</p>
+                                    }
                                 </div>
                             </div>
                         </ng-template>
@@ -194,13 +218,15 @@
                         <ng-template pTemplate="content">
                             <div class="space-y-6 h-full flex flex-col">
                                 <div class="space-y-4">
-                                    <div *ngFor="let rule of interviewRules" class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                                        <i [class]="rule.icon" class="text-blue-600 text-xl relative top-3"></i>
-                                        <div>
-                                            <h4 class="font-semibold text-gray-800 mb-1">{{ rule.title }}</h4>
-                                            <p class="text-sm text-gray-600 leading-relaxed">{{ rule.description }}</p>
+                                    @for (rule of interviewRules; track $index) {
+                                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                            <i [class]="rule.icon" class="text-blue-600 text-xl relative top-3"></i>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800 mb-1">{{ rule.title }}</h4>
+                                                <p class="text-sm text-gray-600 leading-relaxed">{{ rule.description }}</p>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 </div>
                                 <p-divider></p-divider>
                                 <div class="flex-grow"></div>
@@ -224,4 +250,4 @@
             </div>
         </div>
     </div>
-</ng-container>
+}

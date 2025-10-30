@@ -17,7 +17,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RouterModule, Router } from '@angular/router';
 import { tap, switchMap, catchError, finalize } from 'rxjs/operators';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
-import { ERROR_MESSAGES } from '../../../../core/constants/error-messages.const';
 import { Observable, EMPTY } from 'rxjs';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
@@ -25,11 +24,29 @@ import { ConfirmationModalService } from '../../../../core/services/utils/confir
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InterviewFilterService } from '../../../../core/services/interview-filter.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ErrorMessageService } from '../../../../core/services/error-message.service';
 
 @Component({
     selector: 'app-interview-list',
     standalone: true,
-    imports: [CommonModule, TableModule, TooltipModule, ButtonModule, DialogModule, FormsModule, InputTextModule, ToastModule, DatePipe, ConfirmDialogModule, RouterModule, LoaderComponent, MultiSelectModule, DatePickerModule],
+    imports: [
+        CommonModule,
+        TableModule,
+        TooltipModule,
+        ButtonModule,
+        DialogModule,
+        FormsModule,
+        InputTextModule,
+        ToastModule,
+        DatePipe,
+        ConfirmDialogModule,
+        RouterModule,
+        LoaderComponent,
+        MultiSelectModule,
+        DatePickerModule,
+        TranslateModule
+    ],
     providers: [MessageService, ConfirmationService, NotificationService],
     templateUrl: './interview-list.component.html',
     styleUrls: ['./interview-list.component.scss']
@@ -55,7 +72,6 @@ export class InterviewListComponent implements OnInit {
     tempComment: string = '';
     selectedCommentInterview: InterviewInstance | null = null;
 
-    // New properties for comment modal
     commentDialogVisible: boolean = false;
     currentCommentInterview: InterviewInstance | null = null;
 
@@ -77,7 +93,9 @@ export class InterviewListComponent implements OnInit {
         private router: Router,
         private notify: NotificationService,
         private loaderService: LoaderService,
-        private confirmationModalService: ConfirmationModalService
+        private confirmationModalService: ConfirmationModalService,
+        private translate: TranslateService,
+        private errorMessageService: ErrorMessageService
     ) { }
 
     ngOnInit(): void {
@@ -96,7 +114,10 @@ export class InterviewListComponent implements OnInit {
                 this.techOptions = techList.map((tech) => ({ label: tech, value: tech }));
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to load Main Tech options');
+                this.notify.showError(
+                    this.translate.instant('interviewList.errors.loadTechOptions'),
+                    this.errorMessageService.getUnknownError()
+                );
             }
         });
     }
@@ -107,7 +128,10 @@ export class InterviewListComponent implements OnInit {
                 this.titleOptions = titles.map((title) => ({ label: title, value: title }));
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to load title options');
+                this.notify.showError(
+                    this.translate.instant('interviewList.errors.loadTitleOptions'),
+                    this.errorMessageService.getUnknownError()
+                );
             }
         });
     }
@@ -117,7 +141,7 @@ export class InterviewListComponent implements OnInit {
     }
 
     loadInterviews(): void {
-        this.loaderService.show("Loading interviews...");
+        this.loaderService.show(this.translate.instant('interviewList.notifications.loading'));
         this.interviewService.getInterviews().subscribe((data) => {
             this.interviews = data;
             this.filteredInterviews = this.interviews;
@@ -152,6 +176,7 @@ export class InterviewListComponent implements OnInit {
 
     clear(): void {
         this.searchQuery = '';
+        this.onSearch();
     }
 
     getRemainingHours(expiryDate?: Date): string {
@@ -170,18 +195,18 @@ export class InterviewListComponent implements OnInit {
                 interview.link = link;
             }),
             catchError(err => this.handleGenerateAndSaveLinkError(err)),
-
             switchMap(() => this.interviewService.sendEmail(interview).pipe(catchError((err) => this.handleSendEmailError(err)))),
-
             finalize(() => {
                 this.isGeneratingLink = false;
             })
-        )
-            .subscribe({
-                next: (res) => {
-                    this.notify.showSuccess('Email Sent Successfully', res);
-                }
-            });
+        ).subscribe({
+            next: (res) => {
+                this.notify.showSuccess(
+                    this.translate.instant('interviewList.notifications.emailSent'),
+                    res
+                );
+            }
+        });
     }
 
     AddCommentPopup(interview: InterviewInstance): void {
@@ -195,13 +220,11 @@ export class InterviewListComponent implements OnInit {
         this.showDetailsDialog = true;
     }
 
-    // New method to open comment modal
     openCommentModal(interview: InterviewInstance): void {
         this.currentCommentInterview = interview;
         this.commentDialogVisible = true;
     }
 
-    // Method to truncate text to specified word count
     teaserWords(text: string, wordCount: number): string {
         if (!text) return '';
         const words = text.split(' ');
@@ -219,10 +242,16 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.selectedCommentInterview!.comment = comment;
                 this.showCommentDialog = false;
-                this.notify.showSuccess('Comment Saved', 'Comment saved successfully!');
+                this.notify.showSuccess(
+                    'Comment Saved',
+                    this.translate.instant('interviewList.notifications.commentSaved')
+                );
             },
             error: (err) => {
-                this.notify.showError('Error', 'Failed to save comment');
+                this.notify.showError(
+                    this.errorMessageService.getUnknownError(),
+                    this.translate.instant('interviewList.errors.saveComment')
+                );
                 console.error('Save comment failed:', err);
             }
         });
@@ -239,10 +268,16 @@ export class InterviewListComponent implements OnInit {
             next: () => {
                 this.interviews = this.interviews.filter((i) => i.id !== interview.id);
                 this.filteredInterviews = this.filteredInterviews.filter((i) => i.id !== interview.id);
-                this.notify.showSuccess('Deleted', 'Interview deleted successfully');
+                this.notify.showSuccess(
+                    'Deleted',
+                    this.translate.instant('interviewList.notifications.interviewDeleted')
+                );
             },
             error: () => {
-                this.notify.showError('Error', 'Failed to delete interview');
+                this.notify.showError(
+                    this.errorMessageService.getUnknownError(),
+                    this.translate.instant('interviewList.errors.deleteInterview')
+                );
             }
         });
     }
@@ -261,33 +296,52 @@ export class InterviewListComponent implements OnInit {
     private handleGenerateAndSaveLinkError(err: Error): Observable<never> {
         const message = err.message;
         if (
-            message === ERROR_MESSAGES.INTERVIEW.INVALID_CANDIDATE_ID ||
-            message === ERROR_MESSAGES.INTERVIEW.INVALID_OFFER_ID ||
-            message === ERROR_MESSAGES.INTERVIEW.INVALID_INTERVIEW_ID ||
-            message === ERROR_MESSAGES.INTERVIEW.INVALID_SCHEDULED_DATE ||
+            message === this.errorMessageService.getInterviewInvalidCandidateIdError() ||
+            message === this.errorMessageService.getInterviewInvalidOfferIdError() ||
+            message === this.errorMessageService.getInterviewInvalidInterviewIdError() ||
+            message === this.errorMessageService.getInterviewInvalidScheduledDateError() ||
             message.includes('generate')
         ) {
             console.error('Failed to generate interview link:', err);
-            this.notify.showError('Link Generation Error', message);
+            this.notify.showError(
+                this.translate.instant('interviewList.errors.linkGeneration'),
+                message
+            );
         } else if (message.includes('save')) {
             console.error('Failed To save the generated link');
-            this.notify.showError('Saving Link Error', message);
-        }
-        else {
+            this.notify.showError(
+                this.translate.instant('interviewList.errors.savingLink'),
+                message
+            );
+        } else {
             console.error('Unexpected error during link generation:', err);
-            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+            this.notify.showError(
+                this.translate.instant('interviewList.errors.unexpected'),
+                message || this.errorMessageService.getUnknownError()
+            );
         }
         return EMPTY;
     }
 
     private handleSendEmailError(err: Error): Observable<never> {
         const message = err.message;
-        if (message === ERROR_MESSAGES.EMAIL.INVALID_CANDIDATE_NAME || message === ERROR_MESSAGES.EMAIL.INVALID_OFFER_TITLE || message === ERROR_MESSAGES.EMAIL.INVALID_SCHEDULED_DATE || message.includes('email')) {
+        if (
+            message === this.errorMessageService.getEmailInvalidCandidateNameError() ||
+            message === this.errorMessageService.getEmailInvalidOfferTitleError() ||
+            message === this.errorMessageService.getEmailInvalidScheduledDateError() ||
+            message.includes('email')
+        ) {
             console.error('Failed to send email:', err);
-            this.notify.showError('Email Sending Error', message);
+            this.notify.showError(
+                this.translate.instant('interviewList.errors.emailSending'),
+                message
+            );
         } else {
             console.error('Unexpected error during email sending:', err);
-            this.notify.showError('Unexpected Error', message || 'An unexpected error occurred.');
+            this.notify.showError(
+                this.translate.instant('interviewList.errors.unexpected'),
+                message || this.errorMessageService.getUnknownError()
+            );
         }
         return EMPTY;
     }
@@ -313,7 +367,7 @@ export class InterviewListComponent implements OnInit {
         return hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
     }
 
-    sortInterviewsByCandidateName(asc: boolean = true) {
+    sortInterviewsByCandidateName() {
         this.candidateNameSortAsc = !this.candidateNameSortAsc;
 
         this.filteredInterviews.sort((a, b) =>

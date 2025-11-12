@@ -7,32 +7,32 @@ export interface InterviewRule {
 export const INTERVIEW_RULES: InterviewRule[] = [
   {
     icon: 'pi pi-camera',
-    title: 'Camera Access Required',
-    description: 'Camera access is required to begin the interview session.'
+    title: 'INTERVIEW.CAMERA_ACCESS_TITLE',
+    description: 'INTERVIEW.CAMERA_ACCESS_DESCRIPTION'
   },
   {
     icon: 'pi pi-ban',
-    title: 'No Tab Switching',
-    description: 'Do not switch tabs, minimize, or close the window during the interview.'
+    title: 'INTERVIEW.NO_TAB_SWITCHING_TITLE',
+    description: 'INTERVIEW.NO_TAB_SWITCHING_DESCRIPTION'
   },
   {
     icon: 'pi pi-expand',
-    title: 'Fullscreen Mode',
-    description: 'Fullscreen mode will start automatically after you click "I\'m Ready".'
+    title: 'INTERVIEW.FULLSCREEN_TITLE',
+    description: 'INTERVIEW.FULLSCREEN_DESCRIPTION'
   },
   {
     icon: 'pi pi-globe',
-    title: 'Browser Requirements (Chrome or Edge)',
-    description: 'Use only Chrome or Edge browser for optimal performance and compatibility.'
+    title: 'INTERVIEW.BROWSER_REQUIREMENTS_TITLE',
+    description: 'INTERVIEW.BROWSER_REQUIREMENTS_DESCRIPTION'
   },
   {
     icon: 'pi pi-video',
-    title: 'Session Recording',
-    description: 'The entire session will be monitored and recorded for evaluation.'
+    title: 'INTERVIEW.SESSION_RECORDING_TITLE',
+    description: 'INTERVIEW.SESSION_RECORDING_DESCRIPTION'
   },
-    {
-    icon: 'pi pi-globe',
-    title: 'English Language Only',
-    description: 'The interview will be conducted in English. You must answer all questions using English only.'
+  {
+    icon: 'pi pi-language',
+    title: 'INTERVIEW.ENGLISH_ONLY_TITLE',
+    description: 'INTERVIEW.ENGLISH_ONLY_DESCRIPTION'
   }
 ];

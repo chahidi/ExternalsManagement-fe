@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './app/shared/layout/layout.component';
-import { DashboardComponent } from './app/features/dashboard/dashboard.component';
 import { InterviewTokenGuard } from './app/core/guards/interview-token.guard';
 
 export const appRoutes: Routes = [
@@ -8,35 +7,37 @@ export const appRoutes: Routes = [
         path: '',
         component: LayoutComponent,
         children: [
-            { path: '', component: DashboardComponent },
-            { path: 'features', loadChildren: () => import('./app/features/features.routes') }
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+            {
+                path: 'dashboard',
+                loadChildren: () =>
+                    import('./app/features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+            },
+            {
+                path: 'candidates',
+                loadChildren: () => import('./app/features/candidate/candidate-routes').then((m) => m.CANDIDATE_FORMS_ROUTES),
+            },
+            {
+                path: 'offers',
+                loadChildren: () => import('./app/features/offer/offer-routes').then((m) => m.OFFER_ROUTES),
+            },
+            {
+                path: 'prompts',
+                loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),
+            },
+            {
+                path: 'interviews',
+                loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
+            }
         ]
     },
-    {
-        path: 'candidates',
-        component: LayoutComponent,
-        loadChildren: () => import('./app/features/candidate/candidate-routes').then((m) => m.CANDIDATE_FORMS_ROUTES),
-    },
-    {
-        path : 'offers' ,
-        component :LayoutComponent ,
-        loadChildren : ()=>import('./app/features/offer/offer-routes').then((m)=>m.OFFER_ROUTES),
-    },
+
     {
         path: 'offer/:id',
         loadComponent: () =>
             import('./app/features/offer/components/offer-details/offer-details.component').then(m => m.OfferDetailsComponent),
         title: 'Offer details'
-    },
-    {
-        path: 'prompts',
-        component: LayoutComponent,
-        loadChildren: () => import('./app/features/prompt/prompt.routes').then((m) => m.promptRoutes),
-    },
-    {
-        path: 'interviews',
-        component: LayoutComponent,
-        loadChildren: () => import('./app/features/interviews/interviews.routes').then((m) => m.INTERVIEWS_ROUTES),
     },
     {
         path: 'interviews/:token',
@@ -69,6 +70,6 @@ export const appRoutes: Routes = [
     },
     {
         path: '**',
-        redirectTo: '/notfound'
+        redirectTo: '/dashboard'
     }
 ];

@@ -1,66 +1,69 @@
 <div class="new-form-card-wrapper">
   <p-panel class="p-mb-5 new-form-card-container p-mt-20">
      <ng-template pTemplate="header">
-        <h3>Add New Prompt</h3>
+        <h3>{{ 'newPrompt.title' | translate }}</h3>
       </ng-template>
 
     <form [formGroup]="promptForm" (ngSubmit)="onSubmit()" class="p-fluid">
 
       <div class="p-field p-mb-4">
-        <label for="promptCode" class="p-text-bold p-mb-2">Prompt Code</label>
+        <label for="promptCode" class="p-text-bold p-mb-2">
+          {{ 'newPrompt.form.promptCode.label' | translate }}
+        </label>
         <input
           id="promptCode"
           type="text"
           pInputText
           formControlName="promptCode"
-          placeholder="e.g. PROMPT_001"
+          [placeholder]="'newPrompt.form.promptCode.placeholder' | translate"
           class="p-inputtext w-full my-3"
           [class.p-invalid]="promptForm.get('promptCode')?.touched && promptForm.get('promptCode')?.invalid"
-
         />
       </div>
       @if (promptForm.get('promptCode')?.touched && promptForm.get('promptCode')?.hasError('required')) {
         <small class="p-error new-custom-error">
-          promptCode is required!
+          {{ 'newPrompt.form.promptCode.errors.required' | translate }}
         </small>
       }
 
       <div class="p-field p-mb-4">
-        <label for="promptDesc" class="p-text-bold p-mb-2">Text (Required)</label>
+        <label for="promptDesc" class="p-text-bold p-mb-2">
+          {{ 'newPrompt.form.promptDesc.label' | translate }}
+        </label>
         <textarea
           id="promptDesc"
           pInputTextarea
           formControlName="promptDesc"
-          placeholder="Enter prompt description..."
+          [placeholder]="'newPrompt.form.promptDesc.placeholder' | translate"
           rows="6"
           class="p-inputtext w-full my-3"
           [class.p-invalid]="promptForm.get('promptDesc')?.touched && promptForm.get('promptDesc')?.invalid"
-
         ></textarea>
       </div>
       @if (promptForm.get('promptDesc')?.touched && promptForm.get('promptDesc')?.hasError('required')) {
         <small id="title-error" class="p-error new-custom-error">
-          promptDesc is required!
+          {{ 'newPrompt.form.promptDesc.errors.required' | translate }}
         </small>
       }
 
       <div class="p-field p-mb-4">
-        <label for="schema" class="p-text-bold p-mb-2">Schema (JSON)</label>
+        <label for="schema" class="p-text-bold p-mb-2">
+          {{ 'newPrompt.form.schema.label' | translate }}
+        </label>
         <textarea
           id="schema"
           pInputTextarea
           formControlName="schema"
-          placeholder='e.g. {"key":"value"}'
+          [placeholder]="'newPrompt.form.schema.placeholder' | translate"
           rows="6"
           class="p-inputtext w-full my-3"
           [class.p-invalid]="promptForm.get('schema')?.touched && promptForm.get('schema')?.invalid"
-
         ></textarea>
       </div>
 
       @if (promptForm.get('schema')?.touched && promptForm.get('schema')?.hasError('required')) {
         <small id="title-error" class="p-error new-custom-error">
-          schema is required!
+          {{ 'newPrompt.form.schema.errors.required' | translate }}
         </small>
       }
 
@@ -68,7 +71,7 @@
         <button
           pButton
           type="submit"
-          label="Save Prompt"
+          [label]="'newPrompt.buttons.save' | translate"
           icon="pi pi-check"
           class="p-button p-button-lg p-button-info"
           [disabled]="promptForm.invalid"

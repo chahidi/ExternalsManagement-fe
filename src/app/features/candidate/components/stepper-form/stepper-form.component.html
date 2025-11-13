@@ -1,518 +1,529 @@
 <div class="card">
     <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="true"></p-steps>
-    <div class="stepper-content" [ngStyle]="{'margin-top': activeIndex >= 0 ? '1.5rem' : '0'}"></div>
+    <div class="stepper-content" [ngStyle]="{ 'margin-top': activeIndex >= 0 ? '1.5rem' : '0' }"></div>
     <div class="p-mt-4">
-      <ng-container [ngSwitch]="activeIndex">
-        <!--  General Data -->
-        <div *ngSwitchCase="0" [formGroup]="generalDataForm">
-          <!-- Full Name -->
-          <div class="p-field">
-            <label for="fullName">Full Name</label>
-            <input id="fullName" type="text" pInputText formControlName="fullName">
-            <small *ngIf="generalDataForm.get('fullName')?.touched">
-              <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('required')">
-                <i class="pi pi-times-circle"></i> Full Name is required.
-              </ng-container>
-              <ng-container *ngIf="generalDataForm.get('fullName')?.hasError('pattern')">
-                <i class="pi pi-times-circle"></i> Only letters and spaces are allowed.
-              </ng-container>
-            </small>
-          </div>
-          <!-- Birth Date -->
-          <div class="p-field">
-            <label for="birthDate">Birth Date</label>
-            <input id="birthDate" type="date" pInputText formControlName="birthDate">
-            <small *ngIf="generalDataForm.get('birthDate')?.touched">
-              <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('required')">
-                <i class="pi pi-times-circle"></i> Birth Date is required.
-              </ng-container>
-              <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('underAge')">
-                <i class="pi pi-times-circle"></i> You must be at least 18 years old.
-              </ng-container>
-              <ng-container *ngIf="generalDataForm.get('birthDate')?.hasError('overAge')">
-                <i class="pi pi-times-circle"></i> Age exceeds allowed limit.
-              </ng-container>
-            </small>
-          </div>
-          <!-- Years of Experience -->
-            <div class="p-field">
-                <label for="yearsOfExperience">Years of Experience</label>
-                <input
-                id="yearsOfExperience"
-                type="number"
-                pInputText
-                formControlName="yearsOfExperience"
-                [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null"
-                >
-                <small *ngIf="generalDataForm.get('yearsOfExperience')?.touched">
-                <ng-container *ngIf="generalDataForm.get('yearsOfExperience')?.invalid">
-                    <i class="pi pi-times-circle"></i> Please enter a valid number.
-                </ng-container>
-                </small>
-                <small *ngIf="generalDataForm.hasError('invalidExperience')">
-                <i class="pi pi-times-circle"></i> Experience exceeds what is possible given your birth date.
-                </small>
-            </div>
-          <!-- Gender -->
-          <div class="p-field">
-            <label>Gender</label>
-            <div class="p-formgroup-inline">
-              <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
-              <label>Male</label>
-              <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
-              <label>Female</label>
-            </div>
-            <small *ngIf="generalDataForm.get('gender')?.touched && generalDataForm.get('gender')?.invalid">
-              <i class="pi pi-times-circle"></i> Gender is required.
-            </small>
-          </div>
-          <!-- Main Technology -->
-          <div class="p-field">
-            <label for="mainTech">Main Technology</label>
-            <input id="mainTech" type="text" pInputText formControlName="mainTech">
-            <small *ngIf="generalDataForm.get('mainTech')?.touched && generalDataForm.get('mainTech')?.invalid">
-              <i class="pi pi-times-circle"></i> Main Technology is required.
-            </small>
-          </div>
-          <!-- Summary -->
-          <div class="p-field">
-            <label for="summary">Summary</label>
-            <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
-            <small *ngIf="generalDataForm.get('summary')?.touched && generalDataForm.get('summary')?.invalid">
-              <i class="pi pi-times-circle"></i> Summary is required.
-            </small>
-          </div>
-        </div>
-
-        <!-- Address -->
-        <div *ngSwitchCase="1">
-            <form [formGroup]="addressFormWrapper">
-                <div formArrayName="addressesFormArray">
-                <div *ngFor="let addressGroup of addressesFormArray.controls; let i = index"
-                    [formGroupName]="i"
-                    class="p-mb-3 p-p-3 p-shadow-2">
-
-                    <!-- Street -->
+        @switch (activeIndex) {
+            <!-- General Data -->
+            @case (0) {
+                <div [formGroup]="generalDataForm">
+                    <!-- Full Name -->
                     <div class="p-field">
-                    <label for="street-{{i}}">Street</label>
-                    <input id="street-{{i}}" type="text" pInputText formControlName="street">
-                    <small *ngIf="addressGroup.get('street')?.touched && addressGroup.get('street')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="addressGroup.get('street')?.hasError('required')">
-                        Street is required.
-                        </ng-container>
-                        <ng-container *ngIf="addressGroup.get('street')?.hasError('pattern')">
-                        Only letters, numbers, spaces, and basic punctuation are allowed.
-                        </ng-container>
-                    </small>
+                        <label for="fullName">{{ 'steppercandidate.fullName' | translate }}</label>
+                        <input id="fullName" type="text" pInputText formControlName="fullName" />
+                        @if (generalDataForm.get('fullName')?.touched) {
+                            <small>
+                                @if (generalDataForm.get('fullName')?.hasError('required')) {
+                                    <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.fullNameRequired' | translate }} </ng-container>
+                                }
+                                @if (generalDataForm.get('fullName')?.hasError('pattern')) {
+                                    <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.onlyLettersSpaces' | translate }} </ng-container>
+                                }
+                            </small>
+                        }
                     </div>
-
-                    <!-- Postal Code -->
+                    <!-- Birth Date -->
                     <div class="p-field">
-                    <label for="postalCode-{{i}}">Postal Code</label>
-                    <input id="postalCode-{{i}}" type="text" pInputText formControlName="postalCode" maxlength="10">
-                    <small *ngIf="addressGroup.get('postalCode')?.touched && addressGroup.get('postalCode')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="addressGroup.get('postalCode')?.hasError('required')">
-                        Postal Code is required.
-                        </ng-container>
-                        <ng-container *ngIf="addressGroup.get('postalCode')?.hasError('pattern')">
-                        3-10 characters: letters, digits, spaces or hyphens only.
-                        </ng-container>
-                    </small>
+                        <label for="birthDate">{{ 'steppercandidate.birthDate' | translate }}</label>
+                        <input id="birthDate" type="date" pInputText formControlName="birthDate" />
+                        @if (generalDataForm.get('birthDate')?.touched) {
+                            <small>
+                                @if (generalDataForm.get('birthDate')?.hasError('required')) {
+                                    <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.birthDateRequired' | translate }} </ng-container>
+                                }
+                                @if (generalDataForm.get('birthDate')?.hasError('underAge')) {
+                                    <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.mustBe18' | translate }} </ng-container>
+                                }
+                                @if (generalDataForm.get('birthDate')?.hasError('overAge')) {
+                                    <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.ageExceedsLimit' | translate }} </ng-container>
+                                }
+                            </small>
+                        }
                     </div>
-
-                    <!-- Full Address -->
+                    <!-- Years of Experience -->
                     <div class="p-field">
-                    <label for="fullAddress-{{i}}">Full Address</label>
-                    <input id="fullAddress-{{i}}" type="text" pInputText formControlName="fullAddress">
-                    <small *ngIf="addressGroup.get('fullAddress')?.touched && addressGroup.get('fullAddress')?.invalid">
-                        <i class="pi pi-times-circle"></i> Full Address is required.
-                    </small>
+                        <label for="yearsOfExperience">{{ 'steppercandidate.yearsOfExperience' | translate }}</label>
+                        <input id="yearsOfExperience" type="number" pInputText formControlName="yearsOfExperience" [attr.required]="generalDataForm.get('yearsOfExperience')?.value ? true : null" />
+                        @if (generalDataForm.get('yearsOfExperience')?.touched) {
+                            <small>
+                                @if (generalDataForm.get('yearsOfExperience')?.invalid) {
+                                    <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.enterValidNumber' | translate }} </ng-container>
+                                }
+                            </small>
+                        }
+                        @if (generalDataForm.hasError('invalidExperience')) {
+                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.experienceExceedsPossible' | translate }} </small>
+                        }
                     </div>
-
-                    <!-- City -->
+                    <!-- Gender -->
                     <div class="p-field">
-                    <label for="city-{{i}}">City</label>
-                    <input id="city-{{i}}" type="text" pInputText formControlName="city">
-                    <small *ngIf="addressGroup.get('city')?.touched && addressGroup.get('city')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="addressGroup.get('city')?.hasError('required')">
-                        City is required.
-                        </ng-container>
-                        <ng-container *ngIf="addressGroup.get('city')?.hasError('pattern')">
-                        Only letters, spaces, apostrophes, dots, and hyphens are allowed.
-                        </ng-container>
-                    </small>
+                        <label>{{ 'steppercandidate.gender' | translate }}</label>
+                        <div class="p-formgroup-inline">
+                            <p-radioButton name="gender" value="Male" formControlName="gender"></p-radioButton>
+                            <label>{{ 'steppercandidate.male' | translate }}</label>
+                            <p-radioButton name="gender" value="Female" formControlName="gender"></p-radioButton>
+                            <label>{{ 'steppercandidate.female' | translate }}</label>
+                        </div>
+                        @if (generalDataForm.get('gender')?.touched && generalDataForm.get('gender')?.invalid) {
+                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.genderRequired' | translate }} </small>
+                        }
                     </div>
-
-                    <!-- Country -->
+                    <!-- Main Technology -->
                     <div class="p-field">
-                    <label for="country-{{i}}">Country</label>
-                    <input id="country-{{i}}" type="text" pInputText formControlName="country">
-                    <small *ngIf="addressGroup.get('country')?.touched && addressGroup.get('country')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="addressGroup.get('country')?.hasError('required')">
-                        Country is required.
-                        </ng-container>
-                        <ng-container *ngIf="addressGroup.get('country')?.hasError('pattern')">
-                        Only letters, spaces, apostrophes, dots, and hyphens are allowed.
-                        </ng-container>
-                    </small>
+                        <label for="mainTech">{{ 'steppercandidate.mainTechnology' | translate }}</label>
+                        <input id="mainTech" type="text" pInputText formControlName="mainTech" />
+                        @if (generalDataForm.get('mainTech')?.touched && generalDataForm.get('mainTech')?.invalid) {
+                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.mainTechRequired' | translate }} </small>
+                        }
                     </div>
-
-                    <!-- Remove Button (only show if more than one address) -->
-                    <button *ngIf="addressesFormArray.length > 1" type="button" pButton label="Remove"
-                            icon="pi pi-times" class="p-button-danger p-button-sm"
-                            (click)="removeAddress(i)"></button>
-                </div>
-                </div>
-
-                <!-- Add Button -->
-                <div class="p-mt-2">
-                <button type="button" pButton icon="pi pi-plus" label="Add Address"
-                        class="p-button-sm" (click)="addAddress()"></button>
-                </div>
-            </form>
-        </div>
-
-        <!--  Education -->
-        <div *ngSwitchCase="2">
-            <form [formGroup]="educationFormWrapper">
-                <div formArrayName="educationsFormArray">
-                <div *ngFor="let eduGroup of educationsFormArray.controls; let i = index"
-                    [formGroupName]="i"
-                    class="p-mb-3 p-p-3 p-shadow-2">
-
-                    <!-- Institution -->
+                    <!-- Summary -->
                     <div class="p-field">
-                    <label for="institution-{{i}}">Institution</label>
-                    <input id="institution-{{i}}" type="text" pInputText formControlName="institution">
-                    <small *ngIf="eduGroup.get('institution')?.touched && eduGroup.get('institution')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="eduGroup.get('institution')?.hasError('required')">
-                        Institution is required.
-                        </ng-container>
-                    </small>
-                    </div>
-
-                    <!-- Dates -->
-                    <div class="p-field p-grid">
-                    <div class="p-col-6">
-                        <label for="startDateEdu-{{i}}">Start Date</label>
-                        <input id="startDateEdu-{{i}}" type="date" pInputText formControlName="startDate">
-                        <small *ngIf="eduGroup.get('startDate')?.touched && eduGroup.get('startDate')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="eduGroup.get('startDate')?.hasError('required')">
-                            Start date is required.
-                        </ng-container>
-                        </small>
-                    </div>
-
-                    <div class="p-col-6">
-                        <label for="endDateEdu-{{i}}">End Date</label>
-                        <input id="endDateEdu-{{i}}" type="date" pInputText formControlName="endDate">
-                        <small *ngIf="eduGroup.get('endDate')?.touched && eduGroup.get('endDate')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="eduGroup.get('endDate')?.hasError('required')">
-                            End date is required.
-                        </ng-container>
-                        </small>
-                    </div>
-
-                    <!-- Displaying form-level error (for invalid date range) -->
-                    <small *ngIf="eduGroup.hasError('invalidDateRange') && eduGroup.touched">
-                        <i class="pi pi-times-circle"></i> End date cannot be earlier than start date.
-                    </small>
-                    </div>
-
-                    <!-- Diploma -->
-                    <div class="p-field">
-                    <label for="diploma-{{i}}">Diploma</label>
-                    <input id="diploma-{{i}}" type="text" pInputText formControlName="diploma">
-                    <small *ngIf="eduGroup.get('diploma')?.touched && eduGroup.get('diploma')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        <ng-container *ngIf="eduGroup.get('diploma')?.hasError('required')">
-                        Diploma is required.
-                        </ng-container>
-                        <ng-container *ngIf="eduGroup.get('diploma')?.hasError('pattern')">
-                        Diploma can only include letters, numbers, and common symbols (like ., +, #, etc.).
-                        </ng-container>
-                    </small>
-                    </div>
-
-                    <!-- Remove Button -->
-                    <button type="button" pButton label="Remove" icon="pi pi-times"
-                            class="p-button-danger p-button-sm"
-                            (click)="removeEducation(i)"></button>
-                </div>
-                </div>
-
-                <!-- Add Button -->
-                <div class="p-mt-2">
-                <button type="button" pButton icon="pi pi-plus" label="Add Education"
-                        class="p-button-sm" (click)="addEducation()"></button>
-                </div>
-            </form>
-        </div>
-
-
-
-        <!-- Experience -->
-        <div *ngSwitchCase="3">
-            <form [formGroup]="experienceFormWrapper">
-                <div formArrayName="experiencesFormArray">
-                <div *ngFor="let expGroup of experiencesFormArray.controls; let i = index"
-                    [formGroupName]="i"
-                    class="p-mb-3 p-p-3 p-shadow-2">
-
-                    <!-- Company Name -->
-                    <div class="p-field">
-                    <label for="companyName-{{i}}">Company Name</label>
-                    <input id="companyName-{{i}}" type="text" pInputText formControlName="companyName">
-                    <small *ngIf="expGroup.get('companyName')?.touched && expGroup.get('companyName')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        Only letters, numbers, spaces, &, ', +, ., and - are allowed.
-                    </small>
-                    </div>
-
-                    <!-- Position -->
-                    <div class="p-field">
-                    <label for="position-{{i}}">Position</label>
-                    <input id="position-{{i}}" type="text" pInputText formControlName="position">
-                    <small *ngIf="expGroup.get('position')?.touched && expGroup.get('position')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        Only letters, spaces, slashes (/) and dashes (-) are allowed.
-                    </small>
-                    </div>
-
-                    <!-- Dates -->
-                    <div class="p-field p-grid">
-                    <div class="p-col-6">
-                        <label for="startDateExp-{{i}}">Start Date</label>
-                        <input id="startDateExp-{{i}}" type="date" pInputText formControlName="startDate">
-                        <small *ngIf="expGroup.get('startDate')?.touched && expGroup.get('startDate')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        Must be in YYYY-MM-DD format.
-                        </small>
-                    </div>
-
-                    <div class="p-col-6">
-                        <label for="endDateExp-{{i}}">End Date</label>
-                        <input id="endDateExp-{{i}}" type="date" pInputText formControlName="endDate">
-                        <small *ngIf="expGroup.get('endDate')?.touched && expGroup.get('endDate')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        Must be in YYYY-MM-DD format.
-                        </small>
-                    </div>
-
-                    <!-- Date Validators -->
-                    <small *ngIf="expGroup.hasError('futureEndDate')">
-                        <i class="pi pi-times-circle"></i> End Date cannot be in the future.
-                    </small>
-                    <small *ngIf="expGroup.hasError('invalidDateRange')">
-                        <i class="pi pi-times-circle"></i> Start Date must come before End Date.
-                    </small>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="p-field">
-                    <label for="descriptionExp-{{i}}">Description</label>
-                    <textarea id="descriptionExp-{{i}}" pInputTextarea formControlName="description"></textarea>
-                    <small *ngIf="expGroup.get('description')?.touched && expGroup.get('description')?.invalid">
-                        <i class="pi pi-times-circle"></i>
-                        Allowed: letters, numbers, punctuation like . , ! ? () - : ; / ' " #
-                    </small>
-                    </div>
-
-                    <!-- Remove Button -->
-                    <button type="button" pButton label="Remove" icon="pi pi-times"
-                            class="p-button-danger p-button-sm"
-                            (click)="removeExperience(i)"></button>
-                </div>
-                </div>
-
-                <!-- Add Button -->
-                <div class="p-mt-2">
-                <button type="button" pButton icon="pi pi-plus" label="Add Experience"
-                        class="p-button-sm" (click)="addExperience()"></button>
-                </div>
-            </form>
-        </div>
-
-
-
-        <!--  Languages -->
-
-        <div *ngSwitchCase="4">
-        <form [formGroup]="languagesFormWrapper">
-            <div formArrayName="languagesFormArray">
-            <div *ngFor="let langGroup of languagesFormArray.controls; let i = index" [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
-
-                <div class="p-field">
-                <label for="language-{{ i }}">Language</label>
-                <input id="language-{{ i }}" type="text" pInputText formControlName="language" />
-                </div>
-
-                <div class="p-field">
-                <label for="level-{{ i }}">Level</label>
-                <p-select
-                    id="level-{{ i }}"
-                    [options]="languageLevels"
-                    formControlName="level"
-                    placeholder="Select Level"
-                    optionLabel="label"
-                    optionValue="value"
-                ></p-select>
-                </div>
-
-                <div class="p-field">
-                <label for="isNative-{{ i }}">Native?</label>
-                <p-checkbox id="isNative-{{ i }}" binary="true" formControlName="isNative"></p-checkbox>
-                </div>
-
-                <button type="button" pButton label="Remove" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeLanguage(i)"></button>
-
-            </div>
-            </div>
-
-            <div class="p-mt-2">
-            <button type="button" pButton icon="pi pi-plus" label="Add Language" class="p-button-sm" (click)="addLanguage()"></button>
-            </div>
-        </form>
-        </div>
-
-
-        <!-- Skills -->
-
-
-            <div *ngSwitchCase="5">
-            <form [formGroup]="skillsFormWrapper">
-                <div formArrayName="skillsFormArray">
-                <!-- Skill Tags Display -->
-                <div class="skill-tags-container p-mb-4">
-                    <div *ngFor="let skillGroup of skillsFormArray.controls; let i = index"
-                        [formGroupName]="i"
-                        class="skill-tag"
-                        [ngClass]="getProficiencyClass(skillGroup.value.proficiencyLevel)">
-                    <span class="skill-name">{{ skillGroup.value.skillName }}</span>
-                    <span class="skill-level">{{ getProficiencyLabel(skillGroup.value.proficiencyLevel) }}</span>
-                    <button type="button"
-                            pButton
-                            icon="pi pi-times"
-                            class="tag-close-button p-button-rounded p-button-text p-button-sm"
-                            (click)="removeSkill(i); $event.stopPropagation()"></button>
+                        <label for="summary">{{ 'steppercandidate.summary' | translate }}</label>
+                        <textarea id="summary" pInputTextarea formControlName="summary"></textarea>
+                        @if (generalDataForm.get('summary')?.touched && generalDataForm.get('summary')?.invalid) {
+                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.summaryRequired' | translate }} </small>
+                        }
                     </div>
                 </div>
+            }
 
-                <!-- Add New Skill Form -->
-                <div class="p-fluid">
-                    <div class="p-field p-grid">
-                    <div class="p-col-6">
-                        <label for="newSkillName">Skill Name</label>
-                        <input id="newSkillName"
-                            type="text"
-                            pInputText
-                            [(ngModel)]="newSkillName"
-                            [ngModelOptions]="{standalone: true}"
-                            placeholder="Enter skill name"/>
+            <!-- Address -->
+            @case (1) {
+                <div>
+                    <form [formGroup]="addressFormWrapper">
+                        <div formArrayName="addressesFormArray">
+                            @for (addressGroup of addressesFormArray.controls; track addressGroup; let i = $index) {
+                                <div [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
+                                    <!-- Street -->
+                                    <div class="p-field">
+                                        <label for="street-{{ i }}">{{ 'steppercandidate.street' | translate }}</label>
+                                        <input id="street-{{ i }}" type="text" pInputText formControlName="street" />
+                                        @if (addressGroup.get('street')?.touched && addressGroup.get('street')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                @if (addressGroup.get('street')?.hasError('required')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.streetRequired' | translate }}
+                                                    </ng-container>
+                                                }
+                                                @if (addressGroup.get('street')?.hasError('pattern')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.streetPattern' | translate }}
+                                                    </ng-container>
+                                                }
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Postal Code -->
+                                    <div class="p-field">
+                                        <label for="postalCode-{{ i }}">{{ 'steppercandidate.postalCode' | translate }}</label>
+                                        <input id="postalCode-{{ i }}" type="text" pInputText formControlName="postalCode" maxlength="10" />
+                                        @if (addressGroup.get('postalCode')?.touched && addressGroup.get('postalCode')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                @if (addressGroup.get('postalCode')?.hasError('required')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.postalCodeRequired' | translate }}
+                                                    </ng-container>
+                                                }
+                                                @if (addressGroup.get('postalCode')?.hasError('pattern')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.postalCodePattern' | translate }}
+                                                    </ng-container>
+                                                }
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Full Address -->
+                                    <div class="p-field">
+                                        <label for="fullAddress-{{ i }}">{{ 'steppercandidate.fullAddress' | translate }}</label>
+                                        <input id="fullAddress-{{ i }}" type="text" pInputText formControlName="fullAddress" />
+                                        @if (addressGroup.get('fullAddress')?.touched && addressGroup.get('fullAddress')?.invalid) {
+                                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.fullAddressRequired' | translate }} </small>
+                                        }
+                                    </div>
+
+                                    <!-- City -->
+                                    <div class="p-field">
+                                        <label for="city-{{ i }}">{{ 'steppercandidate.city' | translate }}</label>
+                                        <input id="city-{{ i }}" type="text" pInputText formControlName="city" />
+                                        @if (addressGroup.get('city')?.touched && addressGroup.get('city')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                @if (addressGroup.get('city')?.hasError('required')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.cityRequired' | translate }}
+                                                    </ng-container>
+                                                }
+                                                @if (addressGroup.get('city')?.hasError('pattern')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.cityPattern' | translate }}
+                                                    </ng-container>
+                                                }
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Country -->
+                                    <div class="p-field">
+                                        <label for="country-{{ i }}">{{ 'steppercandidate.country' | translate }}</label>
+                                        <input id="country-{{ i }}" type="text" pInputText formControlName="country" />
+                                        @if (addressGroup.get('country')?.touched && addressGroup.get('country')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                @if (addressGroup.get('country')?.hasError('required')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.countryRequired' | translate }}
+                                                    </ng-container>
+                                                }
+                                                @if (addressGroup.get('country')?.hasError('pattern')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.countryPattern' | translate }}
+                                                    </ng-container>
+                                                }
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Remove Button (only show if more than one address) -->
+                                    @if (addressesFormArray.length > 1) {
+                                        <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeAddress(i)"></button>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Add Button -->
+                        <div class="p-mt-2">
+                            <button type="button" pButton icon="pi pi-plus" [label]="'steppercandidate.addAddress' | translate" class="p-button-sm" (click)="addAddress()"></button>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <!-- Education -->
+            @case (2) {
+                <div>
+                    <form [formGroup]="educationFormWrapper">
+                        <div formArrayName="educationsFormArray">
+                            @for (eduGroup of educationsFormArray.controls; track eduGroup; let i = $index) {
+                                <div [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
+                                    <!-- Institution -->
+                                    <div class="p-field">
+                                        <label for="institution-{{ i }}">{{ 'steppercandidate.institution' | translate }}</label>
+                                        <input id="institution-{{ i }}" type="text" pInputText formControlName="institution" />
+                                        @if (eduGroup.get('institution')?.touched && eduGroup.get('institution')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                @if (eduGroup.get('institution')?.hasError('required')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.institutionRequired' | translate }}
+                                                    </ng-container>
+                                                }
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Dates -->
+                                    <div class="p-field p-grid">
+                                        <div class="p-col-6">
+                                            <label for="startDateEdu-{{ i }}">{{ 'steppercandidate.startDate' | translate }}</label>
+                                            <input id="startDateEdu-{{ i }}" type="date" pInputText formControlName="startDate" />
+                                            @if (eduGroup.get('startDate')?.touched && eduGroup.get('startDate')?.invalid) {
+                                                <small>
+                                                    <i class="pi pi-times-circle"></i>
+                                                    @if (eduGroup.get('startDate')?.hasError('required')) {
+                                                        <ng-container>
+                                                            {{ 'steppercandidate.startDateRequired' | translate }}
+                                                        </ng-container>
+                                                    }
+                                                </small>
+                                            }
+                                        </div>
+
+                                        <div class="p-col-6">
+                                            <label for="endDateEdu-{{ i }}">{{ 'steppercandidate.endDate' | translate }}</label>
+                                            <input id="endDateEdu-{{ i }}" type="date" pInputText formControlName="endDate" />
+                                            @if (eduGroup.get('endDate')?.touched && eduGroup.get('endDate')?.invalid) {
+                                                <small>
+                                                    <i class="pi pi-times-circle"></i>
+                                                    @if (eduGroup.get('endDate')?.hasError('required')) {
+                                                        <ng-container>
+                                                            {{ 'steppercandidate.endDateRequired' | translate }}
+                                                        </ng-container>
+                                                    }
+                                                </small>
+                                            }
+                                        </div>
+
+                                        <!-- Displaying form-level error (for invalid date range) -->
+                                        @if (eduGroup.hasError('invalidDateRange') && eduGroup.touched) {
+                                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.endDateBeforeStart' | translate }} </small>
+                                        }
+                                    </div>
+
+                                    <!-- Diploma -->
+                                    <div class="p-field">
+                                        <label for="diploma-{{ i }}">{{ 'steppercandidate.diploma' | translate }}</label>
+                                        <input id="diploma-{{ i }}" type="text" pInputText formControlName="diploma" />
+                                        @if (eduGroup.get('diploma')?.touched && eduGroup.get('diploma')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                @if (eduGroup.get('diploma')?.hasError('required')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.diplomaRequired' | translate }}
+                                                    </ng-container>
+                                                }
+                                                @if (eduGroup.get('diploma')?.hasError('pattern')) {
+                                                    <ng-container>
+                                                        {{ 'steppercandidate.diplomaPattern' | translate }}
+                                                    </ng-container>
+                                                }
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Remove Button -->
+                                    <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeEducation(i)"></button>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Add Button -->
+                        <div class="p-mt-2">
+                            <button type="button" pButton icon="pi pi-plus" [label]="'steppercandidate.addEducation' | translate" class="p-button-sm" (click)="addEducation()"></button>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <!-- Experience -->
+            @case (3) {
+                <div>
+                    <form [formGroup]="experienceFormWrapper">
+                        <div formArrayName="experiencesFormArray">
+                            @for (expGroup of experiencesFormArray.controls; track expGroup; let i = $index) {
+                                <div [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
+                                    <!-- Company Name -->
+                                    <div class="p-field">
+                                        <label for="companyName-{{ i }}">{{ 'steppercandidate.companyName' | translate }}</label>
+                                        <input id="companyName-{{ i }}" type="text" pInputText formControlName="companyName" />
+                                        @if (expGroup.get('companyName')?.touched && expGroup.get('companyName')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                {{ 'steppercandidate.companyNamePattern' | translate }}
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Position -->
+                                    <div class="p-field">
+                                        <label for="position-{{ i }}">{{ 'steppercandidate.position' | translate }}</label>
+                                        <input id="position-{{ i }}" type="text" pInputText formControlName="position" />
+                                        @if (expGroup.get('position')?.touched && expGroup.get('position')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                {{ 'steppercandidate.positionPattern' | translate }}
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Dates -->
+                                    <div class="p-field p-grid">
+                                        <div class="p-col-6">
+                                            <label for="startDateExp-{{ i }}">{{ 'steppercandidate.startDate' | translate }}</label>
+                                            <input id="startDateExp-{{ i }}" type="date" pInputText formControlName="startDate" />
+                                            @if (expGroup.get('startDate')?.touched && expGroup.get('startDate')?.invalid) {
+                                                <small>
+                                                    <i class="pi pi-times-circle"></i>
+                                                    {{ 'steppercandidate.dateFormat' | translate }}
+                                                </small>
+                                            }
+                                        </div>
+
+                                        <div class="p-col-6">
+                                            <label for="endDateExp-{{ i }}">{{ 'steppercandidate.endDate' | translate }}</label>
+                                            <input id="endDateExp-{{ i }}" type="date" pInputText formControlName="endDate" />
+                                            @if (expGroup.get('endDate')?.touched && expGroup.get('endDate')?.invalid) {
+                                                <small>
+                                                    <i class="pi pi-times-circle"></i>
+                                                    {{ 'steppercandidate.dateFormat' | translate }}
+                                                </small>
+                                            }
+                                        </div>
+
+                                        <!-- Date Validators -->
+                                        @if (expGroup.hasError('futureEndDate')) {
+                                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.endDateFuture' | translate }} </small>
+                                        }
+                                        @if (expGroup.hasError('invalidDateRange')) {
+                                            <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.startBeforeEnd' | translate }} </small>
+                                        }
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="p-field">
+                                        <label for="descriptionExp-{{ i }}">{{ 'steppercandidate.description' | translate }}</label>
+                                        <textarea id="descriptionExp-{{ i }}" pInputTextarea formControlName="description"></textarea>
+                                        @if (expGroup.get('description')?.touched && expGroup.get('description')?.invalid) {
+                                            <small>
+                                                <i class="pi pi-times-circle"></i>
+                                                {{ 'steppercandidate.descriptionPattern' | translate }}
+                                            </small>
+                                        }
+                                    </div>
+
+                                    <!-- Remove Button -->
+                                    <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeExperience(i)"></button>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Add Button -->
+                        <div class="p-mt-2">
+                            <button type="button" pButton icon="pi pi-plus" [label]="'steppercandidate.addExperience' | translate" class="p-button-sm" (click)="addExperience()"></button>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <!-- Languages -->
+            @case (4) {
+                <div>
+                    <form [formGroup]="languagesFormWrapper">
+                        <div formArrayName="languagesFormArray">
+                            @for (langGroup of languagesFormArray.controls; track langGroup; let i = $index) {
+                                <div [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2">
+                                    <div class="p-field">
+                                        <label for="language-{{ i }}">{{ 'steppercandidate.language' | translate }}</label>
+                                        <input id="language-{{ i }}" type="text" pInputText formControlName="language" />
+                                    </div>
+
+                                    <div class="p-field">
+                                        <label for="level-{{ i }}">{{ 'steppercandidate.level' | translate }}</label>
+                                        <p-select id="level-{{ i }}" [options]="languageLevels" formControlName="level" [placeholder]="'steppercandidate.selectLevel' | translate" optionLabel="label" optionValue="value"></p-select>
+                                    </div>
+
+                                    <div class="p-field">
+                                        <label for="isNative-{{ i }}">{{ 'steppercandidate.native' | translate }}</label>
+                                        <p-checkbox id="isNative-{{ i }}" binary="true" formControlName="isNative"></p-checkbox>
+                                    </div>
+
+                                    <button type="button" pButton [label]="'steppercandidate.remove' | translate" icon="pi pi-times" class="p-button-danger p-button-sm" (click)="removeLanguage(i)"></button>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="p-mt-2">
+                            <button type="button" pButton icon="pi pi-plus" [label]="'steppercandidate.addLanguage' | translate" class="p-button-sm" (click)="addLanguage()"></button>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <!-- Skills -->
+            @case (5) {
+                <div>
+                    <form [formGroup]="skillsFormWrapper">
+                        <div formArrayName="skillsFormArray">
+                            <!-- Skill Tags Display -->
+                            <div class="skill-tags-container p-mb-4">
+                                @for (skillGroup of skillsFormArray.controls; track skillGroup; let i = $index) {
+                                    <div [formGroupName]="i" class="skill-tag" [ngClass]="getProficiencyClass(skillGroup.value.proficiencyLevel)">
+                                        <span class="skill-name">{{ skillGroup.value.skillName }}</span>
+                                        <span class="skill-level">{{ getProficiencyLabel(skillGroup.value.proficiencyLevel) }}</span>
+                                        <button type="button" pButton icon="pi pi-times" class="tag-close-button p-button-rounded p-button-text p-button-sm" (click)="removeSkill(i); $event.stopPropagation()"></button>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Add New Skill Form -->
+                            <div class="p-fluid">
+                                <div class="p-field p-grid">
+                                    <div class="p-col-6">
+                                        <label for="newSkillName">{{ 'steppercandidate.skillName' | translate }}</label>
+                                        <input id="newSkillName" type="text" pInputText [(ngModel)]="newSkillName" [ngModelOptions]="{ standalone: true }" [placeholder]="'steppercandidate.enterSkillName' | translate" />
+                                    </div>
+                                    <div class="p-col-5">
+                                        <label for="newSkillProficiency">{{ 'steppercandidate.proficiency' | translate }}</label>
+                                        <p-select
+                                            [options]="skillProficiencies"
+                                            [(ngModel)]="newSkillProficiency"
+                                            [ngModelOptions]="{ standalone: true }"
+                                            [placeholder]="'steppercandidate.selectLevel' | translate"
+                                            optionLabel="label"
+                                            optionValue="value"
+                                        ></p-select>
+                                    </div>
+                                    <div class="p-col-1" style="align-self: flex-end">
+                                        <button type="button" pButton icon="pi pi-plus" class="p-button-sm" [disabled]="!newSkillName || !newSkillProficiency" (click)="addNewSkill()"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <!-- Contact -->
+            @case (6) {
+                <div [formGroup]="contactsFormWrapper">
+                    <div formArrayName="contactsFormArray">
+                        @for (contactGroup of contactsFormArray.controls; track contactGroup; let i = $index) {
+                            <div [formGroupName]="i" class="p-mb-3 p-p-3 p-shadow-2 p-border-round">
+                                <div class="p-field">
+                                    <label for="contactType-{{ i }}">{{ 'steppercandidate.contactType' | translate }}</label>
+                                    <p-select
+                                        id="contactType-{{ i }}"
+                                        formControlName="contactType"
+                                        [options]="[
+                                            { label: 'Email', value: 'email' },
+                                            { label: 'Phone', value: 'phone' },
+                                            { label: 'LinkedIn', value: 'linkedin' }
+                                        ]"
+                                        [placeholder]="'steppercandidate.selectContactType' | translate"
+                                    ></p-select>
+                                    @if (contactGroup.get('contactType')?.touched && contactGroup.get('contactType')?.invalid) {
+                                        <small> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.contactTypeRequired' | translate }} </small>
+                                    }
+                                </div>
+
+                                <div class="p-field">
+                                    <label for="contactValue-{{ i }}">{{ 'steppercandidate.contactValue' | translate }}</label>
+                                    <input id="contactValue-{{ i }}" type="text" pInputText formControlName="contactValue" [placeholder]="'steppercandidate.enterContactDetail' | translate" />
+                                    @if (contactGroup.get('contactValue')?.touched && contactGroup.get('contactValue')?.invalid) {
+                                        <small>
+                                            @if (contactGroup.get('contactValue')?.hasError('required')) {
+                                                <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.contactValueRequired' | translate }} </ng-container>
+                                            }
+                                            @if (contactGroup.get('contactValue')?.hasError('pattern')) {
+                                                <ng-container> <i class="pi pi-times-circle"></i> {{ 'steppercandidate.invalidContactFormat' | translate: { type: contactGroup.get('contactType')?.value } }} </ng-container>
+                                            }
+                                        </small>
+                                    }
+                                </div>
+
+                                <button type="button" pButton icon="pi pi-trash" class="p-button-danger p-mt-2" (click)="removeContact(i)" [label]="'steppercandidate.remove' | translate"></button>
+                            </div>
+                        }
                     </div>
-                    <div class="p-col-5">
-                        <label for="newSkillProficiency">Proficiency</label>
-                        <p-select [options]="skillProficiencies"
-                                    [(ngModel)]="newSkillProficiency"
-                                    [ngModelOptions]="{standalone: true}"
-                                    placeholder="Select level"
-                                    optionLabel="label"
-                                    optionValue="value"></p-select>
-                    </div>
-                    <div class="p-col-1" style="align-self: flex-end;">
-                        <button type="button"
-                                pButton
-                                icon="pi pi-plus"
-                                class="p-button-sm"
-                                [disabled]="!newSkillName || !newSkillProficiency"
-                                (click)="addNewSkill()"></button>
-                    </div>
-                    </div>
+
+                    <button type="button" pButton icon="pi pi-plus" class="p-button-primary p-mt-3" [label]="'steppercandidate.addContact' | translate" (click)="addContact()"></button>
                 </div>
-                </div>
-            </form>
-            </div>
-
-
-
-        <!--  Contact -->
-        <div *ngSwitchCase="6" [formGroup]="contactsFormWrapper">
-            <div formArrayName="contactsFormArray">
-                <div
-                *ngFor="let contactGroup of contactsFormArray.controls; let i = index"
-                [formGroupName]="i"
-                class="p-mb-3 p-p-3 p-shadow-2 p-border-round"
-                >
-                <div class="p-field">
-                    <label for="contactType-{{ i }}">Contact Type</label>
-                    <p-select
-                    id="contactType-{{ i }}"
-                    formControlName="contactType"
-                    [options]="[
-                        { label: 'email', value: 'email' },
-                        { label: 'phone', value: 'phone' },
-                        { label: 'linkedin', value: 'linkedin' }
-                    ]"
-                    placeholder="Select Contact Type"
-                    ></p-select>
-                    <small *ngIf="contactGroup.get('contactType')?.touched && contactGroup.get('contactType')?.invalid">
-                    <i class="pi pi-times-circle"></i> Contact type is required.
-                    </small>
-                </div>
-
-                <div class="p-field">
-                    <label for="contactValue-{{ i }}">Contact Value</label>
-                    <input
-                    id="contactValue-{{ i }}"
-                    type="text"
-                    pInputText
-                    formControlName="contactValue"
-                    placeholder="Enter contact detail"
-                    />
-                    <small *ngIf="contactGroup.get('contactValue')?.touched && contactGroup.get('contactValue')?.invalid">
-                    <ng-container *ngIf="contactGroup.get('contactValue')?.hasError('required')">
-                        <i class="pi pi-times-circle"></i> Contact value is required.
-                    </ng-container>
-                    <ng-container *ngIf="contactGroup.get('contactValue')?.hasError('pattern')">
-                        <i class="pi pi-times-circle"></i> Invalid {{ contactGroup.get('contactType')?.value }} format.
-                    </ng-container>
-                    </small>
-                </div>
-
-                <button
-                    type="button"
-                    pButton
-                    icon="pi pi-trash"
-                    class="p-button-danger p-mt-2"
-                    (click)="removeContact(i)"
-                    label="Remove"
-                ></button>
-                </div>
-            </div>
-
-            <button
-                type="button"
-                pButton
-                icon="pi pi-plus"
-                class="p-button-primary p-mt-3"
-                label="Add Contact"
-                (click)="addContact()"
-            ></button>
-        </div>
+            }
+        }
+    </div>
 
     <!-- Buttons -->
     <div class="p-mt-4 button-group">
-    <button type="button" pButton label="Previous" icon="pi pi-arrow-left" iconPos="left" title="Go to the previous step in the form" (click)="prev()" [disabled]="activeIndex === 0"></button>
-    <button type="button" pButton label="Clear" icon="pi pi-trash" iconPos="left" title="Clear the current section of the form" (click)="clearCurrentSection()"></button>
-    <button type="button" pButton label="Next" icon="pi pi-arrow-right" iconPos="right" title="Go to the next step in the form" (click)="next()" *ngIf="activeIndex < steps.length - 1" [disabled]="!getCurrentForm().valid"></button>
-    <button type="submit" pButton label="Save" icon="pi pi-check" iconPos="right" title="Save and submit the form" (click)="confirmUpdate()" *ngIf="activeIndex === steps.length - 1" [disabled]="!areAllFormsValid()"></button>
-  </div>
-
-
+        <button type="button" pButton [label]="'steppercandidate.previous' | translate" icon="pi pi-arrow-left" iconPos="left" [title]="'steppercandidate.previousTitle' | translate" (click)="prev()" [disabled]="activeIndex === 0"></button>
+        <button type="button" pButton [label]="'steppercandidate.clear' | translate" icon="pi pi-trash" iconPos="left" [title]="'steppercandidate.clearTitle' | translate" (click)="clearCurrentSection()"></button>
+        @if (activeIndex < steps.length - 1) {
+            <button type="button" pButton [label]="'steppercandidate.next' | translate" icon="pi pi-arrow-right" iconPos="right" [title]="'steppercandidate.nextTitle' | translate" (click)="next()" [disabled]="!getCurrentForm().valid"></button>
+        }
+        @if (activeIndex === steps.length - 1) {
+            <button type="submit" pButton [label]="'steppercandidate.save' | translate" icon="pi pi-check" iconPos="right" [title]="'steppercandidate.saveTitle' | translate" (click)="confirmUpdate()" [disabled]="!areAllFormsValid()"></button>
+        }
+    </div>
+</div>

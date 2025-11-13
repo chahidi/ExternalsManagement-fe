@@ -7,13 +7,14 @@ import { LoaderService } from '../../../../core/services/loader.service';
 import { LoaderComponent } from '../../../../shared/layout/components/loader/loader.component';
 import { CommonModule } from '@angular/common';
 import { PanelModule } from 'primeng/panel';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-new-cv',
     standalone: true,
     templateUrl: './new-cv.component.html',
     styleUrls: ['./new-cv.component.scss'],
-    imports: [CommonModule, ButtonModule, FileUploadModule, LoaderComponent,PanelModule]
+    imports: [CommonModule, ButtonModule, FileUploadModule, LoaderComponent, PanelModule, TranslateModule]
 })
 export class NewCvComponent {
     selectedFile: File | null = null;
@@ -22,22 +23,29 @@ export class NewCvComponent {
     loadingMessage$;
     successMessage: string | null = null;
 
-    constructor(private newService: NewCvService, private router: Router, private loaderService: LoaderService) {
+    constructor(
+        private newService: NewCvService,
+        private router: Router,
+        private loaderService: LoaderService,
+        private translate: TranslateService
+    ) {
         this.isLoading$ = this.loaderService.isLoading$;
         this.loadingMessage$ = this.loaderService.loadingMessage$;
     }
-
 
     onFileSelected(event: any): void {
         if (event?.files?.length) {
             this.selectedFile = event.files[0];
             console.log('File Selected', this.selectedFile);
-            this.successMessage = `CV "${this.selectedFile?.name}" selected successfully!`;
+            this.successMessage = this.translate.instant('fileSelectedSuccess', {
+                filename: this.selectedFile?.name
+            });
         } else {
             console.error('No files selected');
             this.successMessage = null;
         }
     }
+
     onFileCleared(): void {
         this.selectedFile = null;
         this.successMessage = null;
@@ -45,7 +53,7 @@ export class NewCvComponent {
 
     uploadCv(): void {
         if (this.selectedFile) {
-            this.loaderService.show('Uploading CV...');
+            this.loaderService.show(this.translate.instant('uploadingCV'));
             const reader = new FileReader();
 
             reader.onloadend = () => {
@@ -61,7 +69,7 @@ export class NewCvComponent {
                 this.newService.uploadCv(payload).subscribe(
                     (response: any) => {
                         this.loaderService.hide();
-                        alert('CV uploaded successfully!');
+                        alert(this.translate.instant('cvUploadedSuccess'));
                         console.log('Server response:', response);
 
                         this.router.navigate(['/candidates/stepper'], {
@@ -70,7 +78,7 @@ export class NewCvComponent {
                     },
                     error => {
                         this.loaderService.hide();
-                        alert('Error uploading CV.');
+                        alert(this.translate.instant('errorUploadingCV'));
                         console.error('Upload error:', error);
                     }
                 );
@@ -78,7 +86,7 @@ export class NewCvComponent {
 
             reader.readAsDataURL(this.selectedFile);
         } else {
-            alert('No file selected!');
+            alert(this.translate.instant('noFileSelected'));
         }
     }
 }

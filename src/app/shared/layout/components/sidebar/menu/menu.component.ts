@@ -1,48 +1,91 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuItemComponent } from '../menuitem/menu-item.component';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, MenuItemComponent, RouterModule],
+    imports: [CommonModule, MenuItemComponent, RouterModule, TranslateModule],
     templateUrl: './menu.component.html'
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
     model: MenuItem[] = [];
 
+    constructor(private translate: TranslateService) {}
+
     ngOnInit() {
+        this.buildMenu();
+
+        this.translate.onLangChange.subscribe(() => {
+            this.buildMenu();
+        });
+    }
+
+    buildMenu() {
         this.model = [
             {
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/'] }]
+                items: [{
+                    label: this.translate.instant('dashboardMenu'),
+                    icon: 'pi pi-fw pi-chart-bar',
+                    routerLink: ['/']
+                }]
             },
             {
-                label: 'Candidates',
+                label: this.translate.instant('candidates'),
                 items: [
-                    { label: 'New CV', icon: 'pi pi-fw pi-user-plus', routerLink: ['/candidates/new-cv'] },
-                    { label: 'Candidate List', icon: 'pi pi-fw pi-list', routerLink: ['/candidates/candidate-list'] }
+                    {
+                        label: this.translate.instant('newCV'),
+                        icon: 'pi pi-fw pi-user-plus',
+                        routerLink: ['/candidates/new-cv']
+                    },
+                    {
+                        label: this.translate.instant('candidateListMenu'),
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/candidates/candidate-list']
+                    }
                 ]
             },
             {
-                label : 'Offer Management' ,
-                items : [
-                    {label : 'New offer'  , icon : 'pi pi-briefcase' , routerLink : ['/offers/new-offer']},
-                    {label : 'Offer List' , icon : 'pi pi-fw pi-list' , routerLink : ['/offers']},
-
+                label: this.translate.instant('offerManagement'),
+                items: [
+                    {
+                        label: this.translate.instant('newOfferMenu'),
+                        icon: 'pi pi-briefcase',
+                        routerLink: ['/offers/new-offer']
+                    },
+                    {
+                        label: this.translate.instant('offerListMenu'),
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/offers']
+                    }
                 ]
             },
             {
-                label: 'Prompt Management',
+                label: this.translate.instant('promptManagement'),
                 items: [
-                    { label: 'New Prompt', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/prompts/new-prompt'] },
-                    { label: 'Prompt List', icon: 'pi pi-fw pi-list', routerLink: ['/prompts/prompt-list'] }
+                    {
+                        label: this.translate.instant('newPromptMenu'),
+                        icon: 'pi pi-fw pi-microchip-ai',
+                        routerLink: ['/prompts/new-prompt']
+                    },
+                    {
+                        label: this.translate.instant('promptListMenu'),
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/prompts/prompt-list']
+                    }
                 ]
             },
             {
-                label: 'Interviews Management',
+                label: this.translate.instant('interviewsManagement'),
                 items: [
-                    { label: 'Interview List', icon: 'pi pi-fw pi-list', routerLink: ['/interviews/interview-list'] },
+                    {
+                        label: this.translate.instant('interviewListMenu'),
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/interviews/interview-list']
+                    }
                 ]
             }
         ];

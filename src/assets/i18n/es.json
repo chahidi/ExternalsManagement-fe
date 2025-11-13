@@ -1,0 +1,893 @@
+{
+  "calendar": "Calendario",
+  "messages": "Mensajes",
+  "profile": "Perfil",
+  "dashboardMenu": "Tablero",
+  "candidates": "Candidatos",
+  "newCV": "Nuevo CV",
+  "candidateListMenu": "Lista de Candidatos",
+  "offerManagement": "Gestión de Ofertas",
+  "newOfferMenu": "Nueva oferta",
+  "offerListMenu": "Lista de Ofertas",
+  "promptManagement": "Gestión de Prompts",
+  "newPromptMenu": "Nuevo Prompt",
+  "promptListMenu": "Lista de Prompts",
+  "interviewsManagement": "Gestión de Entrevistas",
+  "interviewListMenu": "Lista de Entrevistas",
+  "advancedNewCV": "Nuevo Currículum Vitae Avanzado",
+  "chooseFile": "Elegir",
+  "uploadFile": "Subir",
+  "cancelFile": "Cancelar",
+  "dragDropMessage": "Arrastra y suelta archivos aquí para subir.",
+  "fileSelectedSuccess": "CV \"{filename}\" seleccionado exitosamente!",
+  "uploadingCV": "Subiendo CV...",
+  "cvUploadedSuccess": "¡CV subido exitosamente!",
+  "errorUploadingCV": "Error al subir CV.",
+  "noFileSelected": "¡No se seleccionó ningún archivo!",
+
+  "errors": {
+    "emptyText": "El texto no puede estar vacío",
+    "audioFailed": "Error en la reproducción de audio",
+    "audioFailedWithReason": "Error en la reproducción de audio: ",
+    "unknown": "Ocurrió un error desconocido.",
+    "generateFail": "Error al generar el habla",
+    "api": {
+      "invalidKey": "Clave de API inválida",
+      "invalidParameters": "Parámetros de solicitud inválidos",
+      "rateLimit": "Límite de tasa excedido",
+      "serverError": "Error interno del servidor",
+      "generic": "Error del servidor ({{status}})"
+    },
+    "interview": {
+      "invalidCandidateId": "ID de candidato inválido",
+      "invalidOfferId": "ID de oferta inválido",
+      "invalidInterviewId": "ID de entrevista inválido",
+      "invalidScheduledDate": "Fecha programada inválida",
+      "unknown": "Ocurrió un error desconocido en la entrevista."
+    },
+    "email": {
+      "invalidCandidateName": "Nombre completo del candidato inválido",
+      "invalidOfferTitle": "Título de oferta inválido",
+      "invalidScheduledDate": "Fecha programada inválida para el correo",
+      "invalidLink": "Enlace inválido",
+      "invalidInterviewId": "ID de entrevista inválido, debe ser una cadena y no estar vacío"
+    }
+  },
+    "success": {
+    "title": "Éxito"
+  },
+  "error": {
+    "title": "Error"
+  },
+   "dashboard": {
+    "statistics": {
+      "title": "Estadísticas de Candidatos",
+      "totalCandidates": "Total de Candidatos:",
+      "tabs": {
+        "languages": "Idiomas",
+        "skills": "Habilidades",
+        "experience": "Experiencia"
+      },
+      "charts": {
+        "languages": {
+          "title": "Candidatos por Idioma",
+          "loading": "Cargando datos de idiomas...",
+          "datasetLabel": "Candidatos por Idioma"
+        },
+        "skills": {
+          "title": "Candidatos por Habilidad",
+          "loading": "Cargando datos de habilidades...",
+          "datasetLabel": "Candidatos por Habilidad"
+        },
+        "experience": {
+          "title": "Candidatos por años de experiencia",
+          "loading": "Cargando datos de experiencia...",
+          "datasetLabel": "Candidatos por experiencia",
+          "yearsSuffix": " años"
+        }
+      },
+      "noData": {
+        "message": "No hay datos disponibles",
+        "experience": "No hay datos de experiencia"
+      }
+    }
+  },
+
+  "candidateList": {
+    "title": "Lista de Candidatos",
+    "loadingCandidates": "Cargando candidatos...",
+    "savingCandidate": "Guardando candidato...",
+    "deletingCandidate": "Eliminando candidato...",
+
+    "filter": {
+      "filterCandidates": "Filtrar Candidatos",
+      "skills": "Habilidades",
+      "language": "Idioma",
+      "yearsOfExperience": "Años Mínimos de Experiencia",
+      "selectSkills": "Seleccionar Habilidades",
+      "selectLanguage": "Seleccionar Idioma",
+      "enterYears": "Ingresar años",
+      "noResults": "Sin Resultados",
+      "noCandidatesMatch": "No hay candidatos que coincidan con los filtros seleccionados.",
+      "filtersApplied": "Filtros Aplicados",
+      "foundCandidates": "Se encontraron {{count}} candidatos que coinciden con sus criterios.",
+      "filtersReset": "Filtros Reiniciados",
+      "allFiltersCleared": "Todos los filtros han sido eliminados."
+    },
+
+    "buttons": {
+      "reset": "Reiniciar",
+      "applyFilters": "Aplicar Filtros",
+      "clear": "Limpiar",
+      "addAddress": "Agregar Dirección",
+      "addContact": "Agregar Contacto",
+      "addExperience": "Agregar Experiencia",
+      "addEducation": "Agregar Educación",
+      "addLanguage": "Agregar Idioma",
+      "cancel": "Cancelar",
+      "save": "Guardar"
+    },
+
+    "table": {
+      "searchPlaceholder": "Buscar candidatos...",
+      "tableCleared": "Tabla Limpiada",
+      "allFiltersCleared": "Todos los filtros de la tabla han sido eliminados.",
+      "noCandidatesFound": "No se encontraron candidatos.",
+      "columns": {
+        "name": "Nombre",
+        "mainTech": "Tecnología Principal",
+        "location": "Ubicación",
+        "education": "Educación",
+        "experience": "Experiencia",
+        "skills": "Habilidades",
+        "contact": "Contacto",
+        "actions": "Acciones"
+      }
+    },
+
+    "dialog": {
+      "editCandidate": "Editar Candidato",
+      "basicInformation": "Información Básica",
+      "addresses": "Direcciones",
+      "contacts": "Contactos",
+      "experiences": "Experiencias",
+      "skills": "Habilidades",
+      "educations": "Educaciones",
+      "languages": "Idiomas",
+      "fullName": "Nombre Completo",
+      "birthDate": "Fecha de Nacimiento",
+      "yearsOfExperience": "Años de Experiencia",
+      "gender": "Género",
+      "mainTechnology": "Tecnología Principal",
+      "summary": "Resumen",
+      "street": "Calle",
+      "postalCode": "Código Postal",
+      "fullAddress": "Dirección Completa",
+      "city": "Ciudad",
+      "country": "País",
+      "contactType": "Tipo de Contacto",
+      "contactValue": "Valor de Contacto",
+      "companyName": "Nombre de la Empresa",
+      "position": "Posición",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Fin",
+      "description": "Descripción",
+      "skillName": "Nombre de Habilidad",
+      "proficiencyLevel": "Nivel de Competencia",
+      "institution": "Institución",
+      "degree": "Título",
+      "diploma": "Diploma",
+      "englishDescription": "Descripción en Inglés",
+      "fullDescription": "Descripción Completa",
+      "language": "Idioma",
+      "languageInEnglish": "Idioma (en Inglés)",
+      "level": "Nivel",
+      "native": "Nativo",
+      "selectGender": "Seleccionar Género",
+      "selectCity": "Seleccionar Ciudad",
+      "selectCountry": "Seleccionar País",
+      "selectContactType": "Seleccionar Tipo de Contacto",
+      "enterSkillName": "Ingresar nombre de habilidad",
+      "selectLevel": "Seleccionar nivel"
+    },
+
+    "proficiencyLevels": {
+      "BEGINNER": "Principiante",
+      "INTERMEDIATE": "Intermedio",
+      "EXPERT": "Experto"
+    },
+
+    "languageLevels": {
+      "BEGINNER": "Principiante",
+      "LOWER_INTERMEDIATE": "Intermedio Bajo",
+      "INTERMEDIATE": "Intermedio",
+      "UPPER_INTERMEDIATE": "Intermedio Alto",
+      "ADVANCED": "Avanzado"
+    },
+
+    "messages": {
+      "success": "Éxito",
+      "candidateUpdated": "Candidato actualizado exitosamente",
+      "candidateDeleted": "Candidato eliminado exitosamente"
+    },
+
+    "errors": {
+      "error": "Error",
+      "loadFailed": "Error al cargar los candidatos.",
+      "filterFailed": "Error al filtrar los candidatos.",
+      "updateFailed": "Error al actualizar el candidato.",
+      "deleteFailed": "Error al eliminar el candidato."
+    }
+  },
+
+  "newOffer": {
+    "title": "Crear Nueva Oferta",
+    "form": {
+      "title": {
+        "label": "Título",
+        "placeholder": "ej. Ingeniero Senior MLOps",
+        "errors": {
+          "required": "¡El título es requerido!",
+          "maxlength": "El título debe tener máximo 200 caracteres."
+        }
+      },
+      "description": {
+        "label": "Descripción",
+        "placeholder": "Pega la descripción completa del trabajo…",
+        "errors": {
+          "required": "¡La descripción es requerida!"
+        }
+      },
+      "submit": "Guardar Oferta"
+    },
+    "messages": {
+      "success": "¡Oferta creada exitosamente!",
+      "error": "Error al crear la oferta",
+      "formattingError": "Error al formatear la descripción"
+    }
+  },
+  "offerList": {
+    "title": "Lista de Ofertas",
+    "filter": {
+      "filterOffers": "Filtrar Ofertas",
+      "interviewCount": "Cantidad de Entrevistas",
+      "showOffersWith": "Mostrar ofertas con entre {{min}} y {{max}} entrevistas.",
+      "offerKeywords": "Palabras Clave de Oferta",
+      "selectKeywords": "Seleccionar palabras clave",
+      "skillsRequired": "Habilidades Requeridas",
+      "selectSkills": "Seleccionar habilidades",
+      "reset": "Reiniciar",
+      "applyFilters": "Aplicar Filtros",
+      "filtersApplied": "Filtros Aplicados",
+      "filtersReset": "Filtros Reiniciados",
+      "offersMatched": "{{count}} ofertas coinciden"
+    },
+    "table": {
+      "clear": "Limpiar",
+      "searchPlaceholder": "Buscar ofertas...",
+      "columns": {
+        "offerTitle": "Título de Oferta",
+        "description": "Descripción",
+        "interviewCount": "Cantidad de Entrevistas",
+        "offerKeywords": "Palabras Clave",
+        "skillsRequired": "Habilidades Requeridas",
+        "actions": "Acciones"
+      },
+      "noData": "—"
+    },
+    "actions": {
+      "viewOffer": "Ver Oferta",
+      "editOffer": "Editar Oferta",
+      "deleteOffer": "Eliminar Oferta"
+    },
+    "dialog": {
+      "description": "Descripción",
+      "viewFullDescription": "Ver descripción completa",
+      "clickToSeeDetails": "Haz clic en el texto para ver todos los detalles"
+    },
+    "messages": {
+      "loading": "Cargando Ofertas...",
+      "success": {
+        "deleted": "¡Oferta eliminada exitosamente!",
+        "clear": "¡La búsqueda ha sido limpiada!",
+        "filtersApplied": "Filtros Aplicados",
+        "filtersReset": "Filtros reiniciados."
+      },
+      "error": {
+        "loadFailed": "Error al cargar ofertas del servidor",
+        "deleteFailed": "Error al eliminar la oferta.",
+        "initializationFailed": "No se pudieron configurar filtros/servicios. Algunas funciones pueden estar limitadas."
+      }
+    },
+    "numericFilter": {
+      "equals": "Igual",
+      "notEquals": "No Igual",
+      "greaterThan": "Mayor Que",
+      "greaterOrEqual": "Mayor o Igual",
+      "lessThan": "Menor Que",
+      "lessOrEqual": "Menor o Igual"
+    }
+  },
+  "offerDetails": {
+    "yearsExperience": "Años de Experiencia",
+    "loading": {
+      "message": "Cargando detalles de la oferta..."
+    },
+    "sections": {
+      "jobDescription": "Descripción del Puesto",
+      "mainResponsibilities": "Responsabilidades Principales",
+      "education": "Educación y Calificaciones",
+      "languages": "Requisitos de Idioma",
+      "requiredSkills": "Habilidades Requeridas",
+      "keywords": "Palabras Clave"
+    },
+    "noData": {
+      "responsibilities": "No hay responsabilidades disponibles."
+    },
+    "languageLevels": {
+      "BEGINNER": "Principiante",
+      "ELEMENTARY": "Elemental",
+      "LOWER_INTERMEDIATE": "Intermedio Bajo",
+      "INTERMEDIATE": "Intermedio",
+      "UPPER_INTERMEDIATE": "Intermedio Alto",
+      "ADVANCED": "Avanzado",
+      "PROFICIENT": "Competente",
+      "NATIVE": "Nativo"
+    },
+    "errorTitle": "Error",
+    "errors": {
+      "idNotFound": "No se encontró el id de la oferta, por favor regrese a la página anterior",
+      "loadFailed": "Error al cargar los datos de la oferta",
+      "loadFormattedFailed": "Error al cargar la descripción formateada de la oferta"
+    }
+  },
+ "recommendedCandidates": {
+    "title": "Candidatos Recomendados",
+    "loading": "Cargando candidatos recomendados...",
+    "searchPlaceholder": "Buscar candidatos...",
+    "clear": "Limpiar",
+    "table": {
+      "columns": {
+        "fullName": "Nombre Completo",
+        "mainTech": "Tecnología Principal",
+        "location": "Ubicación",
+        "yearsOfExperience": "Años de Experiencia",
+        "actions": "Acciones"
+      },
+      "emptyMessage": "No se encontraron candidatos o ningún candidato coincide con esta oferta."
+    },
+    "actions": {
+      "viewDetails": "Ver Detalles",
+      "convocate": "Convocar para Entrevista"
+    },
+    "detailsDialog": {
+      "title": "Detalles del Candidato",
+      "basicInfo": {
+        "fullName": "Nombre Completo",
+        "mainTech": "Tecnología Principal",
+        "yearsOfExperience": "Años de Experiencia",
+        "city": "Ciudad",
+        "country": "País"
+      },
+      "sections": {
+        "skills": "Habilidades",
+        "languages": "Idiomas",
+        "education": "Educación",
+        "experiences": "Experiencias",
+        "contacts": "Contactos"
+      },
+      "proficiencyLevels": {
+        "BEGINNER": "Principiante",
+        "INTERMEDIATE": "Intermedio",
+        "EXPERT": "Experto"
+      },
+      "languageLevels": {
+        "BEGINNER": "Principiante",
+        "LOWER_INTERMEDIATE": "Intermedio Bajo",
+        "INTERMEDIATE": "Intermedio",
+        "UPPER_INTERMEDIATE": "Intermedio Alto",
+        "ADVANCED": "Avanzado"
+      },
+      "close": "Cerrar"
+    },
+    "convocateDialog": {
+      "title": "Convocar Candidato",
+      "candidate": "Candidato",
+      "fields": {
+        "description": {
+          "label": "Descripción",
+          "placeholder": "Descripción de la entrevista",
+          "errors": {
+            "required": "La descripción es requerida."
+          }
+        },
+        "schedule": {
+          "label": "Programación",
+          "errors": {
+            "required": "La programación es requerida."
+          }
+        },
+        "criteria": {
+          "label": "Criterios de Evaluación",
+          "placeholder": "Seleccionar Criterios",
+          "errors": {
+            "required": "Seleccione al menos un criterio."
+          }
+        },
+        "totalQuestions": {
+          "label": "Total de Preguntas",
+          "errors": {
+            "required": "Debe haber al menos 5 preguntas.",
+            "min": "Debe haber al menos 5 preguntas."
+          }
+        },
+        "duration": {
+          "label": "Duración (min)",
+          "errors": {
+            "required": "Debe ser de al menos 10 minutos.",
+            "min": "Debe ser de al menos 10 minutos."
+          }
+        }
+      },
+      "addNewType": "Agregar Nuevo Tipo",
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+      }
+    },
+    "evaluationTypeDialog": {
+      "title": "Crear Tipo de Evaluación",
+      "fields": {
+        "description": {
+          "label": "Descripción",
+          "placeholder": "Descripción"
+        },
+        "coefficient": {
+          "label": "Coeficiente"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "create": "Crear"
+      }
+    },
+    "messages": {
+      "success": {
+        "evaluationTypeCreated": "Tipo de evaluación creado.",
+        "interviewCreated": "Entrevista creada, preguntas generadas, enlace generado y correo enviado."
+      },
+      "error": {
+        "offerIdNotFound": "No se encontró el ID de la oferta.",
+        "loadCandidatesFailed": "Error al cargar los candidatos",
+        "loadEvaluationTypesFailed": "Error al cargar los tipos de evaluación",
+        "createEvaluationTypeFailed": "Error al crear el tipo de evaluación",
+        "validation": {
+          "descriptionRequired": "La descripción es requerida.",
+          "fillRequiredFields": "Por favor complete todos los campos requeridos."
+        },
+        "interviewCreationFailed": "Ocurrió un error durante la creación de la entrevista.",
+        "linkGeneration": "Error de Generación de Enlace",
+        "savingLink": "Error al Guardar Enlace",
+        "emailSending": "Error al Enviar Correo",
+        "unexpected": "Error Inesperado"
+      }
+    },
+    "unknown": {
+      "city": "Ciudad Desconocida",
+      "country": "País Desconocido",
+      "na": "N/A"
+    }
+  },
+    "editOffer": {
+    "title": "Editar Oferta",
+    "form": {
+      "title": {
+        "label": "Título",
+        "placeholder": "Ingrese el título del trabajo",
+        "errors": {
+          "required": "El título es requerido.",
+          "maxlength": "El título debe tener máximo 200 caracteres."
+        }
+      },
+      "description": {
+        "label": "Descripción",
+        "placeholder": "Ingrese la descripción del trabajo",
+        "errors": {
+          "required": "La descripción es requerida."
+        }
+      }
+    },
+    "buttons": {
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    },
+    "messages": {
+      "success": {
+        "updated": "Oferta actualizada exitosamente"
+      },
+      "error": {
+        "updateFailed": "No se pudo actualizar la oferta"
+      }
+    },
+    "confirmation": {
+      "title": "Confirmar Actualización",
+      "message": "¿Está seguro de que desea actualizar esta oferta?",
+      "accept": "Sí",
+      "reject": "No"
+    }
+  },
+  "confirmation": {
+    "updateTitle": "Confirmar Actualización",
+    "updateMessage": "¿Está seguro de que desea actualizar este {entity}?",
+    "deleteTitle": "Confirmar Eliminación",
+    "deleteMessage": "¿Está seguro de que desea eliminar este {entity}?",
+    "yes": "Sí",
+    "no": "No"
+  },
+    "newPrompt": {
+    "title": "Agregar Nuevo Prompt",
+    "form": {
+      "promptCode": {
+        "label": "Código del Prompt",
+        "placeholder": "ej. PROMPT_001",
+        "errors": {
+          "required": "¡El código del prompt es requerido!"
+        }
+      },
+      "promptDesc": {
+        "label": "Texto (Requerido)",
+        "placeholder": "Ingrese la descripción del prompt...",
+        "errors": {
+          "required": "¡La descripción del prompt es requerida!"
+        }
+      },
+      "schema": {
+        "label": "Esquema (JSON)",
+        "placeholder": "ej. {\"clave\":\"valor\"}",
+        "errors": {
+          "required": "¡El esquema es requerido!"
+        }
+      }
+    },
+    "buttons": {
+      "save": "Guardar Prompt"
+    },
+    "messages": {
+      "success": {
+        "created": "Prompt creado exitosamente"
+      },
+      "error": {
+        "createFailed": "Error al crear el prompt"
+      }
+    }
+  },
+   "promptList": {
+    "title": "Lista de Prompts",
+    "loading": "Cargando prompts...",
+    "search": {
+      "placeholder": "Buscar prompts...",
+      "clear": "Limpiar",
+      "cleared": "¡La búsqueda ha sido limpiada!"
+    },
+    "table": {
+      "columns": {
+        "promptCode": "Código del Prompt",
+        "text": "Texto",
+        "schema": "Esquema",
+        "actions": "Acciones"
+      },
+      "emptyMessage": "No se encontraron prompts."
+    },
+    "dialogs": {
+      "update": {
+        "header": "Actualizar Prompt",
+        "fields": {
+          "promptCode": "Código del Prompt",
+          "promptDesc": "Texto (Requerido)",
+          "schema": "Esquema (JSON)"
+        },
+        "buttons": {
+          "cancel": "Cancelar",
+          "update": "Actualizar"
+        }
+      },
+      "view": {
+        "text": {
+          "header": "Texto",
+          "title": "Ver texto completo",
+          "description": "Haz clic en el texto para ver todos los detalles"
+        },
+        "schema": {
+          "header": "Esquema",
+          "title": "Ver esquema completo",
+          "description": "Haz clic en el texto para ver todos los detalles"
+        }
+      }
+    },
+    "messages": {
+      "success": {
+        "deleted": "Prompt eliminado exitosamente",
+        "updated": "Prompt actualizado exitosamente"
+      },
+      "error": {
+        "loadFailed": "Error al cargar los prompts",
+        "deleteFailed": "Error al eliminar el prompt",
+        "updateFailed": "Error al actualizar el prompt"
+      }
+    }
+  },
+   "interviewList": {
+    "title": "Lista de Entrevistas",
+    "filter": {
+      "header": "Filtrar Entrevistas",
+      "mainTech": "Tecnología Principal",
+      "selectTech": "Seleccionar Tecnología",
+      "jobTitle": "Título",
+      "selectTitle": "Seleccionar Título",
+      "scheduledDate": "Fecha Programada",
+      "reset": "Restablecer",
+      "apply": "Aplicar Filtros"
+    },
+    "table": {
+      "clear": "Limpiar",
+      "search": "Buscar entrevistas...",
+      "candidate": "Candidato",
+      "mainTech": "Tecnología Principal",
+      "jobTitle": "Título",
+      "comment": "Comentario",
+      "scheduledOn": "Programado El",
+      "evaluation": "Evaluación",
+      "actions": "Acciones",
+      "notAvailable": "N/A",
+      "viewEvaluation": "Ver Evaluación"
+    },
+    "comments": {
+      "viewFull": "Ver comentario completo",
+      "clickToSee": "Haga clic en el texto para ver todos los detalles"
+    },
+    "actions": {
+      "viewDetails": "Ver Más Detalles",
+      "generateLink": "Generar Nuevo Enlace",
+      "addComment": "Agregar Comentario",
+      "delete": "Eliminar"
+    },
+    "dialogs": {
+      "comment": "Comentario",
+      "addComment": "Agregar Comentario",
+      "commentLabel": "Comentario:",
+      "commentPlaceholder": "Ingrese su comentario aquí...",
+      "interviewDetails": "Detalles de la Entrevista"
+    },
+    "details": {
+      "candidate": "Candidato:",
+      "mainTech": "Tecnología Principal:",
+      "jobTitle": "Título:",
+      "scheduled": "Programado:",
+      "endTime": "Hora de Finalización:",
+      "duration": "Duración:",
+      "recording": "Grabación:",
+      "viewRecording": "Ver Grabación",
+      "notAvailable": "No disponible",
+      "evaluation": "Evaluación:",
+      "viewEvaluation": "Ver Evaluación",
+      "comments": "Comentario:",
+      "noComments": "Sin comentarios"
+    },
+    "buttons": {
+      "close": "Cerrar",
+      "save": "Guardar"
+    },
+    "notifications": {
+      "loading": "Cargando entrevistas...",
+      "commentSaved": "¡Comentario guardado exitosamente!",
+      "interviewDeleted": "Entrevista eliminada exitosamente",
+      "emailSent": "Correo enviado exitosamente"
+    },
+    "errors": {
+      "loadTechOptions": "Error al cargar opciones de tecnología principal",
+      "loadTitleOptions": "Error al cargar opciones de título",
+      "saveComment": "Error al guardar el comentario",
+      "deleteInterview": "Error al eliminar la entrevista",
+      "linkGeneration": "Error al generar enlace",
+      "savingLink": "Error al guardar enlace",
+      "emailSending": "Error al enviar correo",
+      "unexpected": "Error inesperado"
+    }
+  },
+ "steppercandidate": {
+    "generalData": "Datos Generales",
+    "address": "Dirección",
+    "education": "Educación",
+    "experience": "Experiencia",
+    "languages": "Idiomas",
+    "skills": "Habilidades",
+    "contact": "Contacto",
+
+    "fullName": "Nombre Completo",
+    "fullNameRequired": "El nombre completo es requerido.",
+    "onlyLettersSpaces": "Solo se permiten letras y espacios.",
+
+    "birthDate": "Fecha de Nacimiento",
+    "birthDateRequired": "La fecha de nacimiento es requerida.",
+    "mustBe18": "Debes tener al menos 18 años.",
+    "ageExceedsLimit": "La edad excede el límite permitido.",
+
+    "yearsOfExperience": "Años de Experiencia",
+    "enterValidNumber": "Por favor ingrese un número válido.",
+    "experienceExceedsPossible": "La experiencia excede lo posible dada tu fecha de nacimiento.",
+
+    "gender": "Género",
+    "male": "Masculino",
+    "female": "Femenino",
+    "genderRequired": "El género es requerido.",
+
+    "mainTechnology": "Tecnología Principal",
+    "mainTechRequired": "La tecnología principal es requerida.",
+
+    "summary": "Resumen",
+    "summaryRequired": "El resumen es requerido.",
+
+    "street": "Calle",
+    "streetRequired": "La calle es requerida.",
+    "streetPattern": "Solo se permiten letras, números, espacios y puntuación básica.",
+
+    "postalCode": "Código Postal",
+    "postalCodeRequired": "El código postal es requerido.",
+    "postalCodePattern": "3-10 caracteres: solo letras, dígitos, espacios o guiones.",
+
+    "fullAddress": "Dirección Completa",
+    "fullAddressRequired": "La dirección completa es requerida.",
+
+    "city": "Ciudad",
+    "cityRequired": "La ciudad es requerida.",
+    "cityPattern": "Solo se permiten letras, espacios, apóstrofes, puntos y guiones.",
+
+    "country": "País",
+    "countryRequired": "El país es requerido.",
+    "countryPattern": "Solo se permiten letras, espacios, apóstrofes, puntos y guiones.",
+
+    "institution": "Institución",
+    "institutionRequired": "La institución es requerida.",
+
+    "startDate": "Fecha de Inicio",
+    "startDateRequired": "La fecha de inicio es requerida.",
+
+    "endDate": "Fecha de Fin",
+    "endDateRequired": "La fecha de fin es requerida.",
+    "endDateBeforeStart": "La fecha de fin no puede ser anterior a la fecha de inicio.",
+
+    "diploma": "Diploma",
+    "diplomaRequired": "El diploma es requerido.",
+    "diplomaPattern": "El diploma solo puede incluir letras, números y símbolos comunes.",
+
+    "companyName": "Nombre de la Empresa",
+    "companyNamePattern": "Solo se permiten letras, números, espacios, &, ', +, ., y -.",
+
+    "position": "Cargo",
+    "positionPattern": "Solo se permiten letras, espacios, barras (/) y guiones (-).",
+
+    "dateFormat": "Debe estar en formato AAAA-MM-DD.",
+    "endDateFuture": "La fecha de fin no puede ser en el futuro.",
+    "startBeforeEnd": "La fecha de inicio debe ser anterior a la fecha de fin.",
+
+    "description": "Descripción",
+    "descriptionPattern": "Permitido: letras, números, puntuación como . , ! ? () - : ; / ' \" #",
+
+    "language": "Idioma",
+    "level": "Nivel",
+    "selectLevel": "Seleccionar Nivel",
+    "nativeForm": "¿Nativo?",
+
+    "skillName": "Nombre de Habilidad",
+    "enterSkillName": "Ingresar nombre de habilidad",
+    "proficiency": "Competencia",
+
+    "contactType": "Tipo de Contacto",
+    "contactTypeRequired": "El tipo de contacto es requerido.",
+    "contactValue": "Valor de Contacto",
+    "contactValueRequired": "El valor de contacto es requerido.",
+    "selectContactType": "Seleccionar Tipo de Contacto",
+    "enterContactDetail": "Ingresar detalle de contacto",
+    "invalidContactFormat": "Formato de {{type}} inválido.",
+
+    "advanced": "Avanzado",
+    "intermediate": "Intermedio",
+    "basic": "Básico",
+    "native": "Nativo",
+    "beginner": "Principiante",
+    "expert": "Experto",
+
+    "addAddress": "Agregar Dirección",
+    "addEducation": "Agregar Educación",
+    "addExperience": "Agregar Experiencia",
+    "addLanguage": "Agregar Idioma",
+    "addContact": "Agregar Contacto",
+    "remove": "Eliminar",
+
+    "previous": "Anterior",
+    "previousTitle": "Ir al paso anterior en el formulario",
+    "clear": "Limpiar",
+    "clearTitle": "Limpiar la sección actual del formulario",
+    "next": "Siguiente",
+    "nextTitle": "Ir al siguiente paso en el formulario",
+    "save": "Guardar",
+    "saveTitle": "Guardar y enviar el formulario"
+  },
+  "footer": {
+    "copyright": "© {{year}} NTT DATA Marruecos"
+  },
+    "evaluation": {
+    "title": "Evaluación de entrevista para",
+    "unknown": "Desconocido",
+    "overallScore": "Puntuación General",
+    "overallFeedback": "Comentarios Generales",
+    "feedback": "Comentarios",
+    "weight": "Peso",
+    "transcript": "Transcripción",
+    "notAvailable": "N/A",
+    "noFeedback": "No hay comentarios disponibles",
+    "generalEvaluation": "Evaluación General",
+    "interviewer": "Entrevistador",
+    "candidate": "Candidato",
+    "fairness": {
+      "detected": "No se detectaron signos de injusticia"
+    },
+    "errors": {
+      "title": "Error",
+      "missingInterviewId": "Falta el ID de la entrevista en la ruta",
+      "loadFailed": "Error al cargar los datos de evaluación"
+    }
+  },
+    "INTERVIEW": {
+    "WELCOME_TITLE": "Bienvenido a Tu Entrevista",
+    "WELCOME_SUBTITLE": "Por favor revisa las reglas y prueba tu cámara antes de comenzar",
+    "CAMERA_PREVIEW": "Vista Previa de la Cámara",
+    "CAMERA_READY": "Cámara Lista",
+    "CAMERA_NOT_READY": "Cámara No Disponible",
+    "INITIALIZING_CAMERA": "Inicializando cámara...",
+    "CAMERA_CHECK": "Asegúrate de que tu cámara funcione correctamente y estés claramente visible",
+    "RETRY_CAMERA": "Reintentar Acceso a Cámara",
+    "READY_TO_JOIN": "¿Listo para unirte?",
+    "AI_WAITING": "Alex te está esperando",
+    "READY_TO_START": "Estoy Listo para Comenzar",
+    "CAMERA_ACCESS_REQUIRED": "Por favor permite el acceso a la cámara para comenzar la entrevista",
+    "RULES_DIALOG_TITLE": "Información de la Entrevista",
+    "DETAILS_TITLE": "Detalles de la Entrevista",
+    "CANDIDATE": "Candidato",
+    "POSITION": "Puesto",
+    "DURATION": "Duración",
+    "APPROXIMATELY": "Aproximadamente",
+    "MINUTES": "minutos",
+    "QUESTIONS": "Preguntas",
+    "QUESTIONS_TOTAL": "preguntas en total",
+    "NOT_SPECIFIED": "No especificado",
+    "IMPORTANT_POINTS": "Puntos Importantes",
+    "RECORDING_NOTE": "La entrevista está siendo grabada",
+    "TAB_SWITCH_WARNING": "No cambies de pestaña ni redimensiones la ventana",
+    "INTERNET_CONNECTION": "Asegúrate de tener una conexión a internet estable",
+    "SPEAK_CLEARLY": "Habla claro y conciso",
+    "TIME_LIMIT": "Tienes tiempo limitado para cada pregunta",
+    "QUIET_ENVIRONMENT": "Asegúrate de estar en un ambiente tranquilo",
+    "INFORMATION_TITLE": "Información de la Entrevista",
+    "RECORDING_SESSION": "Grabación: Toda la sesión será grabada",
+    "FORMAT": "Formato: Entrevista en video con transcripción en vivo",
+    "SUPPORT_TEXT": "¿Necesitas ayuda? Contacta al soporte en",
+    "FINALIZING": "Finalizando tu grabación...",
+    "CAMERA_ACCESS_TITLE": "Acceso a Cámara Requerido",
+    "CAMERA_ACCESS_DESCRIPTION": "Se requiere acceso a la cámara para comenzar la sesión de entrevista.",
+    "NO_TAB_SWITCHING_TITLE": "No Cambiar de Pestaña",
+    "NO_TAB_SWITCHING_DESCRIPTION": "No cambies de pestaña, minimices o cierres la ventana durante la entrevista.",
+    "FULLSCREEN_TITLE": "Modo Pantalla Completa",
+    "FULLSCREEN_DESCRIPTION": "El modo de pantalla completa comenzará automáticamente después de hacer clic en \"Estoy Listo\".",
+    "BROWSER_REQUIREMENTS_TITLE": "Requisitos del Navegador (Chrome o Edge)",
+    "BROWSER_REQUIREMENTS_DESCRIPTION": "Usa solo el navegador Chrome o Edge para un rendimiento y compatibilidad óptimos.",
+    "SESSION_RECORDING_TITLE": "Grabación de Sesión",
+    "SESSION_RECORDING_DESCRIPTION": "Toda la sesión será monitoreada y grabada para evaluación.",
+    "ENGLISH_ONLY_TITLE": "Solo Idioma Inglés",
+    "ENGLISH_ONLY_DESCRIPTION": "La entrevista se llevará a cabo en inglés. Debes responder todas las preguntas usando solo inglés."
+  },
+  "COMMON": {
+    "CLOSE": "Cerrar"
+  }
+
+}

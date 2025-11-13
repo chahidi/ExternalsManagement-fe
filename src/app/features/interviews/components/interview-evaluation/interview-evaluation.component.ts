@@ -1,4 +1,3 @@
-
 import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,9 +11,11 @@ import { AccordionModule } from 'primeng/accordion';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { InterviewEvaluationService } from '../../../../core/services/interview-evaluation.service';
 import { NotificationService } from '../../../../core/services/utils/notification.service';
+import { LanguageService } from '../../../../core/services/language.service';
 
 import { Evaluation } from '../../../../core/models/evaluation';
 import { InterviewEvaluationDisplay } from '../../../../core/models/interview-evaluation-display';
@@ -23,7 +24,19 @@ import { InterviewInstance } from '../../../../core/models/interview-instance';
 @Component({
     selector: 'app-interview-evaluation',
     standalone: true,
-    imports: [ProgressSpinnerModule, MessageModule, CommonModule, CardModule, ButtonModule, BadgeModule, TagModule, AccordionModule, ToastModule, TooltipModule],
+    imports: [
+        ProgressSpinnerModule,
+        MessageModule,
+        CommonModule,
+        CardModule,
+        ButtonModule,
+        BadgeModule,
+        TagModule,
+        AccordionModule,
+        ToastModule,
+        TooltipModule,
+        TranslateModule
+    ],
     providers: [MessageService, NotificationService],
     templateUrl: './interview-evaluation.component.html',
     styleUrls: ['./interview-evaluation.component.scss']
@@ -50,18 +63,29 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         private route: ActivatedRoute,
         private evaluationService: InterviewEvaluationService,
         private messageService: MessageService,
-        private notify: NotificationService
+        private notify: NotificationService,
+        private translate: TranslateService,
+        private languageService: LanguageService
     ) { }
 
     ngOnInit(): void {
+        // Set up language subscription
+        this.languageService.getLanguageObservable().subscribe(lang => {
+            this.translate.use(lang);
+        });
+
         this.interview = history.state?.interview ?? null;
 
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) {
             this.loading = false;
-            this.error = { happened: true, message: 'Missing interview id in the route.' };
+            this.error = {
+                happened: true,
+                message: this.translate.instant('evaluation.errors.missingInterviewId')
+            };
             return;
         }
+
         if (!this.interview) {
             const stored = sessionStorage.getItem(`interview_${id}`);
             if (stored) {
@@ -78,8 +102,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
             },
             error: (err) => console.error('Failed to load transcription', err)
         });
-
-
     }
 
     ngAfterViewInit(): void {
@@ -92,21 +114,27 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
                 this.interviewEvaluation = data;
                 this.evaluations = data.evaluations ?? [];
                 this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
-                 this.overallEvaluation = this.evaluations.find(
-                e => e.evaluationType?.description === 'OverAll'
-            );
+                this.overallEvaluation = this.evaluations.find(
+                    e => e.evaluationType?.description === 'OverAll'
+                );
 
-            // Debug log
-            console.log('Evaluations loaded:', this.evaluations);
-            console.log('Overall evaluation:', this.overallEvaluation);
+                // Debug log
+                console.log('Evaluations loaded:', this.evaluations);
+                console.log('Overall evaluation:', this.overallEvaluation);
                 this.loading = false;
                 setTimeout(() => this.animateAllScores(), 100);
             },
             error: (err) => {
                 console.error('Failed to fetch evaluation:', err);
-                this.notify.showError('Error', 'Failed to load evaluation data');
+                this.notify.showError(
+                    this.translate.instant('evaluation.errors.title'),
+                    this.translate.instant('evaluation.errors.loadFailed')
+                );
                 this.loading = false;
-                this.error = { happened: true, message: 'Failed to load evaluation data.' };
+                this.error = {
+                    happened: true,
+                    message: this.translate.instant('evaluation.errors.loadFailed')
+                };
             }
         });
     }
@@ -118,10 +146,9 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
     }
 
     getProgressDegrees(score: number): string {
-        const degrees = (score / 100) * 360; 
+        const degrees = (score / 100) * 360;
         return degrees + 'deg';
     }
-
 
     getRealDurationLabel(): string {
         const start = this.toDate(this.interview?.startTime) ?? this.toDate(this.interview?.scheduledAt);
@@ -143,12 +170,14 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         if (score >= 25) return 'score-25-50';
         return 'score-0-25';
     }
+
     getScoreColor(score: number): string {
         if (score >= 75) return 'var(--primary-color)';
         if (score >= 50) return '#eab308';
         if (score >= 25) return '#f97316';
         return '#ef4444';
     }
+
     getScoreTextClass(score: number): string {
         if (score >= 75) return 'score-excellent';
         if (score >= 50) return 'score-good';
@@ -171,7 +200,6 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         setTimeout(() => scoreElement.classList.add('pulse'), 2000);
     }
 
-
     animateScoreNumber(evaluationId: string, targetScore: number): void {
         const duration = 2000;
         const startTime = performance.now();
@@ -184,6 +212,7 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         };
         requestAnimationFrame(step);
     }
+
     triggerScoreAnimation(): void {
         if (!this.scoreCircles || !this.evaluations.length) return;
         const els = this.scoreCircles.toArray();
@@ -191,12 +220,15 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         this.evaluations.forEach((e) => (this.animatedScores[e.id] = 0));
         setTimeout(() => this.animateAllScores(), 100);
     }
+
     getEvaluationTypeDescription(e: Evaluation): string {
-        return e.evaluationType?.description || 'General Evaluation';
+        return e.evaluationType?.description || this.translate.instant('evaluation.generalEvaluation');
     }
+
     getAnimatedScore(id: string): number {
         return Math.round(this.animatedScores[id]) || 0;
     }
+
     trackByEvaluationId(_: number, e: Evaluation): string {
         return e.id;
     }
@@ -205,56 +237,52 @@ export class InterviewEvaluationComponent implements OnInit, AfterViewInit {
         return this.evaluations.filter(e => this.getEvaluationTypeDescription(e) !== 'OverAll');
     }
 
-   getTranscriptEntries(): Array<{speaker: string, time: string, message: string, type: 'interviewer' | 'candidate'}> {
+    getTranscriptEntries(): Array<{speaker: string, time: string, message: string, type: 'interviewer' | 'candidate'}> {
         const entries: Array<{speaker: string, time: string, message: string, type: 'interviewer' | 'candidate'}> = [];
-        
+
         this.transcription.forEach(entry => {
             const parts = entry.split('||');
-            
+
             // Parse AI/Interviewer part (Question)
             if (parts[0]) {
-            const aiPart = parts[0].trim();
-            const aiTimeMatch = aiPart.match(/(\d{2}:\d{2}:\d{2})/);
-            // Match everything after the last colon to get the actual message
-            const aiMessageMatch = aiPart.match(/:\s*(.+)$/);
-            
-            if (aiTimeMatch && aiMessageMatch) {
-                let message = aiMessageMatch[1].trim();
-                // Remove the duplicate time at the beginning of the message (format "01:00 : ")
-                message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
-                
-                entries.push({
-                speaker: 'Interviewer',
-                time: aiTimeMatch[1],
-                message: message,
-                type: 'interviewer'
-                });
+                const aiPart = parts[0].trim();
+                const aiTimeMatch = aiPart.match(/(\d{2}:\d{2}:\d{2})/);
+                const aiMessageMatch = aiPart.match(/:\s*(.+)$/);
+
+                if (aiTimeMatch && aiMessageMatch) {
+                    let message = aiMessageMatch[1].trim();
+                    message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
+
+                    entries.push({
+                        speaker: this.translate.instant('evaluation.interviewer'),
+                        time: aiTimeMatch[1],
+                        message: message,
+                        type: 'interviewer'
+                    });
+                }
             }
-            }
-            
+
             // Parse Candidate part (Answer)
             if (parts[1]) {
-            const candidatePart = parts[1].trim();
-            const candidateTimeMatch = candidatePart.match(/(\d{2}:\d{2}:\d{2})/);
-            const candidateMessageMatch = candidatePart.match(/:\s*(.+)$/);
-            const candidateNameMatch = candidatePart.match(/^([^-]+)\s*-/);
-            const candidateName = this.interviewEvaluation?.candidateFullName || 'Candidate';
-            
-            if (candidateTimeMatch && candidateMessageMatch) {
-                let message = candidateMessageMatch[1].trim();
-                // Remove the duplicate time at the beginning of the message (format "20:30 : ")
-                message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
-                
-                entries.push({
-                speaker: candidateName,
-                time: candidateTimeMatch[1],
-                message: message,
-                type: 'candidate'
-                });
-            }
+                const candidatePart = parts[1].trim();
+                const candidateTimeMatch = candidatePart.match(/(\d{2}:\d{2}:\d{2})/);
+                const candidateMessageMatch = candidatePart.match(/:\s*(.+)$/);
+                const candidateName = this.interviewEvaluation?.candidateFullName || this.translate.instant('evaluation.candidate');
+
+                if (candidateTimeMatch && candidateMessageMatch) {
+                    let message = candidateMessageMatch[1].trim();
+                    message = message.replace(/^\d{2}:\d{2}\s*:\s*/, '');
+
+                    entries.push({
+                        speaker: candidateName,
+                        time: candidateTimeMatch[1],
+                        message: message,
+                        type: 'candidate'
+                    });
+                }
             }
         });
-        
+
         return entries;
-        }
+    }
 }

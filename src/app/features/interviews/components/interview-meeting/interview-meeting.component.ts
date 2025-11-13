@@ -34,6 +34,7 @@ import { QuestionsAndAnswersForEvaluationDTO } from '../../../../core/models/int
 import { OfferService } from '../../../../core/services/offer.service';
 import { CandidateService } from '../../../../core/services/candidate.service';
 import { DialogModule } from 'primeng/dialog';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 type SpeechRecognitionState = {
     isListening: boolean;
@@ -44,10 +45,33 @@ type SpeechRecognitionState = {
     combinedTranscript: string;
 };
 
+interface Language {
+    code: string;
+    name: string;
+    flag: string;
+}
+
 @Component({
     selector: 'app-interview-meeting',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, CardModule, MessageModule, InputTextModule, PanelModule, ProgressSpinnerModule, ToastModule, DividerModule, DialogModule, TagModule, SkeletonModule, AvatarModule, ScrollPanelModule],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ButtonModule,
+        CardModule,
+        MessageModule,
+        InputTextModule,
+        PanelModule,
+        ProgressSpinnerModule,
+        ToastModule,
+        DividerModule,
+        DialogModule,
+        TagModule,
+        SkeletonModule,
+        AvatarModule,
+        ScrollPanelModule,
+        TranslateModule
+    ],
     templateUrl: './interview-meeting.component.html',
     providers: [MessageService, NotificationService],
     animations: [cameraTransition, slideInInterview, fadeInControls, slideInTranscript, fadeIn]
@@ -76,6 +100,14 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
     currentUserAnswer: string = '';
     userWarningMessage: string | null = null;
     liveSubtitle = '';
+
+    // Translation
+    languages: Language[] = [
+        { code: 'en', name: 'English', flag: '🇺🇸' },
+        { code: 'es', name: 'Español', flag: '🇪🇸' }
+    ];
+    selectedLanguage: Language = this.languages[0];
+    showLanguageDropdown = true;
 
     // Camera
     stream: MediaStream | null = null;
@@ -133,19 +165,32 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         private tokenValidationService: TokenValidationService,
         private answerService: AnswerService,
         private candidateService: CandidateService,
-        private offerService: OfferService
+        private offerService: OfferService,
+        private translate: TranslateService
     ) {}
 
     ngOnInit(): void {
         this.initializeComponent();
         this.subscribesToSpeechRecognition();
         this.subscribeToTTSState();
+        this.initializeTranslation();
     }
 
     ngAfterViewInit(): void {
         setTimeout(() => {
             this.requestCameraPermission();
         }, 500);
+    }
+
+    private initializeTranslation(): void {
+        // Set default language
+        this.translate.setDefaultLang('en');
+        this.translate.use('en');
+    }
+
+    onLanguageChange(): void {
+        this.translate.use(this.selectedLanguage.code);
+        console.log('Language changed to:', this.selectedLanguage.code);
     }
 
     showInterviewRules(): void {
@@ -173,7 +218,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
         this.checkSpeechRecognitionSupport();
-        this.isCameraReady = true;
     }
 
     private subscribeToTTSState(): void {
@@ -326,8 +370,18 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         try {
             console.log('Requesting camera and microphone permission...');
 
+            // First, stop any existing stream
+            if (this.stream) {
+                this.stream.getTracks().forEach(track => track.stop());
+                this.stream = null;
+            }
+
+            // Request camera with basic constraints
             this.stream = await navigator.mediaDevices.getUserMedia({
-                video: true,
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
                 audio: true
             });
 
@@ -338,31 +392,79 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
             const videoTracks = this.stream.getVideoTracks();
             const audioTracks = this.stream.getAudioTracks();
 
-            this.isCameraEnabled = videoTracks.some(track => track.readyState === 'live');
-            this.isAudioEnabled = audioTracks.some(track => track.readyState === 'live');
+            this.isCameraEnabled = videoTracks.length > 0;
+            this.isAudioEnabled = audioTracks.length > 0;
 
-            console.log('Camera enabled:', this.isCameraEnabled);
-            console.log('Audio enabled:', this.isAudioEnabled);
+            console.log('Camera enabled:', this.isCameraEnabled, 'Tracks:', videoTracks.length);
+            console.log('Audio enabled:', this.isAudioEnabled, 'Tracks:', audioTracks.length);
 
             if (this.isCameraEnabled) {
                 this.previewMode = true;
-                this.attachStreamToVideoElement(this.previewVideo?.nativeElement);
+                this.isCameraReady = true;
+
+                // Wait for the view to update and video element to be available
+                setTimeout(() => {
+                    this.attachStreamToVideoElement(this.previewVideo?.nativeElement);
+                }, 300);
             }
 
             this.monitorCameraAndAudio();
 
-        } catch (err) {
-            console.warn('❌ User denied camera/mic:', err);
+        } catch (err: any) {
+            console.error('❌ Camera/mic error:', err);
             this.isCameraEnabled = false;
             this.isAudioEnabled = false;
             this.previewMode = false;
-            this.userWarningMessage = 'Please allow camera and microphone access to continue.';
+            this.isCameraReady = false;
+
+            let errorMessage = 'Please allow camera and microphone access to continue.';
+
+            if (err.name === 'NotAllowedError') {
+                errorMessage = 'Camera access was denied. Please allow camera permissions and refresh the page.';
+            } else if (err.name === 'NotFoundError') {
+                errorMessage = 'No camera found. Please connect a camera and try again.';
+            } else if (err.name === 'NotSupportedError') {
+                errorMessage = 'Your browser does not support camera access. Please use Chrome, Edge, or Firefox.';
+            } else if (err.name === 'NotReadableError') {
+                errorMessage = 'Camera is already in use by another application. Please close other camera apps.';
+            }
+
+            this.userWarningMessage = errorMessage;
+            this.notify.showError('Camera Error', errorMessage);
         }
 
         this.cdr.detectChanges();
     }
 
+    private attachStreamToVideoElement(videoElement: HTMLVideoElement | undefined): void {
+        if (videoElement && this.stream) {
+            console.log('Attaching stream to video element');
 
+            // Clear any existing stream
+            videoElement.srcObject = null;
+
+            // Set the new stream
+            videoElement.srcObject = this.stream;
+            videoElement.muted = true;
+            videoElement.playsInline = true;
+            videoElement.autoplay = true;
+
+            videoElement.onloadedmetadata = () => {
+                console.log('Video metadata loaded, attempting to play');
+                videoElement.play().then(() => {
+                    console.log('Video playback started successfully');
+                }).catch((e) => {
+                    console.error('Video play error:', e);
+                });
+            };
+
+            videoElement.onerror = (error) => {
+                console.error('Video element error:', error);
+            };
+        } else {
+            console.warn('Cannot attach stream: video element or stream not available');
+        }
+    }
 
     private configureCameraPreview(): void {
         setTimeout(() => {
@@ -370,21 +472,10 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         }, 100);
     }
 
-    private attachStreamToVideoElement(videoElement: HTMLVideoElement | undefined): void {
-        if (videoElement && this.stream) {
-            videoElement.srcObject = this.stream;
-            videoElement.muted = true;
-            videoElement.playsInline = true;
-            videoElement.autoplay = true;
-            videoElement.onloadedmetadata = () => {
-                videoElement.play().catch((e) => console.error('Video play error:', e));
-            };
-        }
-    }
-
     private handleCameraInitializationFailure(): void {
         this.isCameraEnabled = false;
         this.previewMode = false;
+        this.isCameraReady = false;
     }
 
     private configureInterviewVideo(): void {
@@ -399,6 +490,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         this.showRulesAndPreview = false;
         this.isInterviewInProgress = true;
         this.previewMode = false;
+        this.showLanguageDropdown = false; // Hide language dropdown when interview starts
         this.interviewStartTime = Date.now();
 
         try {
@@ -468,7 +560,6 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
                     console.log('Silence detected, ready for speech recognition');
                     resolve();
                 }
-
 
                 if (Date.now() - startTime > maxWaitTime) {
                     clearInterval(checkInterval);
@@ -864,6 +955,7 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
         const stats = this.tts.getCacheStats();
         console.log('Current TTS Cache:', stats);
     }
+
     private monitorCameraAndAudio(): void {
         if (!this.stream) return;
 
@@ -891,7 +983,4 @@ export class InterviewMeetingComponent implements AfterViewInit, OnDestroy {
 
         }, 1000);
     }
-
-
-
 }

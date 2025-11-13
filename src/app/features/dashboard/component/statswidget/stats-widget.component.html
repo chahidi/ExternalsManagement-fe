@@ -1,9 +1,9 @@
 <div class="stats-container">
   <div class="stats-header">
-    <h2 class="stats-title">Candidate Statistics</h2>
+    <h2 class="stats-title">{{ 'dashboard.statistics.title' | translate }}</h2>
     <p-card class="total-card">
       <div class="total-candidates">
-        <span class="total-label">Total Candidates:</span>
+        <span class="total-label">{{ 'dashboard.statistics.totalCandidates' | translate }}</span>
         <span class="candidate-count">{{ totalCandidates }}</span>
       </div>
     </p-card>
@@ -11,62 +11,73 @@
 
   <p-tabs value="0">
     <p-tablist>
-      <p-tab value="0">Languages</p-tab>
-      <p-tab value="1">Skills</p-tab>
-      <p-tab value="2">Experience</p-tab>
+      <p-tab value="0">{{ 'dashboard.statistics.tabs.languages' | translate }}</p-tab>
+      <p-tab value="1">{{ 'dashboard.statistics.tabs.skills' | translate }}</p-tab>
+      <p-tab value="2">{{ 'dashboard.statistics.tabs.experience' | translate }}</p-tab>
     </p-tablist>
+
+    
     <!-- Languages Tab -->
     <p-tabpanel value="0">
-    <p-card class="chart-card">
-      <h3>Candidates by Language</h3>
-      <div *ngIf="!languageChartData" class="loading-indicator">
-        Loading language data...
-      </div>
-      <p-chart
-        *ngIf="languageChartData"
-        type="bar"
-        [data]="languageChartData"
-        [options]="chartOptions"
-        height="300px"
-        width="100%">
-      </p-chart>
-    </p-card>
+      <p-card class="chart-card">
+        <h3>{{ 'dashboard.statistics.charts.languages.title' | translate }}</h3>
+        @if (!languageChartData) {
+          <div class="loading-indicator">
+            {{ 'dashboard.statistics.charts.languages.loading' | translate }}
+          </div>
+        }
+        @if (languageChartData) {
+          <p-chart
+            type="bar"
+            [data]="languageChartData"
+            [options]="chartOptions"
+            height="300px"
+            width="100%">
+          </p-chart>
+        }
+      </p-card>
     </p-tabpanel>
 
     <!-- Skills Tab -->
     <p-tabpanel value="1">
-    <p-card class="chart-card">
-      <h3>Candidates by Skill</h3>
-      <div *ngIf="!skillsChartData" class="loading-indicator">
-        Loading skill data...
-      </div>
-      <p-chart
-        *ngIf="skillsChartData"
-        type="pie"
-        [data]="skillsChartData"
-        [options]="chartOptions"
-        height="300px"
-        width="100%">
-      </p-chart>
-    </p-card>
+      <p-card class="chart-card">
+        <h3>{{ 'dashboard.statistics.charts.skills.title' | translate }}</h3>
+        @if (!skillsChartData) {
+          <div class="loading-indicator">
+            {{ 'dashboard.statistics.charts.skills.loading' | translate }}
+          </div>
+        }
+        @if (skillsChartData) {
+          <p-chart
+            type="pie"
+            [data]="skillsChartData"
+            [options]="chartOptions"
+            height="300px"
+            width="100%">
+          </p-chart>
+        }
+      </p-card>
     </p-tabpanel>
 
     <!-- Experience Tab -->
     <p-tabpanel value="2">
-    <p-card class="chart-card">
-      <h3>Candidates by years of experience</h3>
-      <div *ngIf="!experienceChartData" class="loading-indicator">
-        Loading experience data...
-      </div>
-      <p-chart
-        *ngIf="experienceChartData"
-        type="bar"
-        [data]="experienceChartData"
-        [options]="chartOptions"
-        height="300px"
-        width="100%">
-      </p-chart>
-    </p-card>
+      <p-card class="chart-card">
+        <h3>{{ 'dashboard.statistics.charts.experience.title' | translate }}</h3>
+        @if (!experienceChartData) {
+          <div class="loading-indicator">
+            {{ 'dashboard.statistics.charts.experience.loading' | translate }}
+          </div>
+        }
+        @if (experienceChartData) {
+          <p-chart
+            type="bar"
+            [data]="experienceChartData"
+            [options]="chartOptions"
+            height="300px"
+            width="100%">
+          </p-chart>
+        }
+      </p-card>
     </p-tabpanel>
   </p-tabs>
 </div>
